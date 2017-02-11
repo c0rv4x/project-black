@@ -4,25 +4,25 @@ from time import sleep
 from kombu import Connection
 
 
-def process_media(body, message):
-    print body
+def process_task(body, message):
+    print "[T] " + str(body)
+    message.ack()
+
+def process_notification(body, message):
+    print "[N] " + str(body)
     message.ack()
 
 # connections
 with Connection('amqp://guest:guest@localhost//') as conn:
     while True:
-        with conn.Consumer(task_queue, accept=['pickle','json'], callbacks=[process_media]) as consumer:
+        with conn.Consumer(task_queue, accept=['pickle','json'], callbacks=[process_task]) as tasks_consumer:
             try:
-                print "Getting data from queue"
-                sleep(0.5)
                 conn.drain_events(timeout=1)
             except Exception as e:
                 pass
 
-        with conn.Consumer(notifications_queue, accept=['pickle','json'], callbacks=[process_media]) as consumer:
+        with conn.Consumer(notifications_queue, accept=['pickle','json'], callbacks=[process_notification]) as notifications_consumer:
             try:
-                print "Getting notificatoins from queue"
-                sleep(0.5)
                 conn.drain_events(timeout=1)
             except Exception as e:
                 pass
