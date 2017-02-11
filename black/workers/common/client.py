@@ -3,8 +3,7 @@ from kombu.pools import producers
 from queues import task_exchange
 
 
-
-def send_as_task(connection, value, routing_key='nmap_task'):
+def send_as_task(connection, value, routing_key='generic_task'):
     payload = {'i': value}
 
     with producers[connection].acquire(block=True) as producer:
@@ -29,7 +28,6 @@ def send_as_notification(connection, value, routing_key='notification_task'):
 
 if __name__ == '__main__':
     from kombu import Connection
-    from tasks import hello_task
 
     connection = Connection('amqp://guest:guest@localhost:5672//')
     for i in xrange(0,10):
