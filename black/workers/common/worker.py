@@ -1,25 +1,46 @@
+from queues import task_queue, notifications_queue
+from time import sleep
+import threading
+
 from kombu import Connection
 
 
-class Worker(object):
-    def __init__(self, task_queue, notifications_queue, process_task,  process_notification):
-        self.task_queue = task_queue
-        self.notifications_queue = notifications_queue
+working_threads = []
 
-        self.process_task = process_task
-        self.process_notification = process_notification
+def long_function():
+    for i in xrange(0,10):
+        sleep(0.5)
+        print "     Work: {}".format(i)
 
-    def start(self):
-        with Connection('amqp://guest:guest@localhost//') as conn:
-            while True:
-                with conn.Consumer(self.task_queue, accept=['pickle','json'], callbacks=[self.process_task]) as tasks_consumer:
+def process_task(body, message):
+    print "[T] " + str(body)
+    t = threading.Thread(target=long_function)
+    working_threads.append(t)
+    t.start()
+
+    message.ack()
+
+def process_notification(body, message):
+    print "[N] " + str(body)
+    message.ack()
+
+def start():
+    global working_threads
+
+    with Connection('amqp://guest:guest@localhost//') as conn:
+        while True:
+            working_threads = filter(lambda x: x.is_alive(), working_threads)
+            if len(working_threads) < 3:
+                with conn.Consumer(task_queue, accept=['pickle','json'], callbacks=[process_task]) as tasks_consumer:
                     try:
                         conn.drain_events(timeout=1)
                     except Exception as e:
                         pass
 
-                with conn.Consumer(self.notifications_queue, accept=['pickle','json'], callbacks=[self.process_notification]) as notifications_consumer:
-                    try:
-                        conn.drain_events(timeout=1)
-                    except Exception as e:
-                        pass
+            with conn.Consumer(notifications_queue, accept=['pickle','json'], callbacks=[process_notification]) as notifications_consumer:
+                try:
+                    conn.drain_events(timeout=1)
+                except Exception as e:
+                    pass
+
+start()
