@@ -1,6 +1,3 @@
-# from queues import task_queue, notifications_queue
-from time import sleep
-
 from kombu import Connection
 
 
