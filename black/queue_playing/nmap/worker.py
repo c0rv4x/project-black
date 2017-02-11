@@ -1,44 +1,28 @@
-from kombu.mixins import ConsumerMixin
-from kombu.log import get_logger
-from kombu.utils import kwdict, reprcall
-
-from queues import task_queues
+from queues import task_queue, notifications_queue
 from time import sleep
 
-logger = get_logger(__name__)
+from kombu import Connection
 
 
-class Worker(ConsumerMixin):
+def process_media(body, message):
+    print body
+    message.ack()
 
-    def __init__(self, connection):
-        self.connection = connection
+# connections
+with Connection('amqp://guest:guest@localhost//') as conn:
+    while True:
+        with conn.Consumer(task_queue, accept=['pickle','json'], callbacks=[process_media]) as consumer:
+            try:
+                print "Getting data from queue"
+                sleep(0.5)
+                conn.drain_events(timeout=1)
+            except Exception as e:
+                pass
 
-    def get_consumers(self, Consumer, channel):
-        return [Consumer(queues=task_queues,
-                         accept=['pickle', 'json'],
-                         callbacks=[self.process_task])]
-
-    def process_task(self, body, message):
-        fun = body['fun']
-        args = body['args']
-        kwargs = body['kwargs']
-        logger.info('Got task: {}'.format(message.properties))
-        try:
-            sleep(0.5)
-            fun(*args, **kwdict(kwargs))
-        except Exception as exc:
-            logger.error('task raised exception: %r', exc)
-        message.ack()
-
-if __name__ == '__main__':
-    from kombu import Connection
-    from kombu.utils.debug import setup_logging
-    # setup root logger
-    setup_logging(loglevel='INFO', loggers=[''])
-
-    with Connection('redis+socket:///tmp/redis.sock') as conn:
-        try:
-            worker = Worker(conn)
-            worker.run()
-        except KeyboardInterrupt:
-            print('bye bye')
+        with conn.Consumer(notifications_queue, accept=['pickle','json'], callbacks=[process_media]) as consumer:
+            try:
+                print "Getting notificatoins from queue"
+                sleep(0.5)
+                conn.drain_events(timeout=1)
+            except Exception as e:
+                pass
