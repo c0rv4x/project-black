@@ -1,11 +1,12 @@
 from queues import task_queue, notifications_queue
 from time import sleep
+from subprocess import Popen, PIPE
 import threading
 
 from kombu import Connection
 
 
-working_threads = []
+working_processes = []
 
 def long_function():
     for i in xrange(0,10):
@@ -14,9 +15,8 @@ def long_function():
 
 def process_task(body, message):
     print "[T] " + str(body)
-    t = threading.Thread(target=long_function)
-    working_threads.append(t)
-    t.start()
+    p = Popen(['./test.sh'], shell=True, stdout=PIPE, stderr=PIPE)
+    working_processes.append(p)
 
     message.ack()
 
@@ -24,23 +24,40 @@ def process_notification(body, message):
     print "[N] " + str(body)
     message.ack()
 
-def start():
-    global working_threads
+def track_processes():
+    global working_processes
 
-    with Connection('amqp://guest:guest@localhost//') as conn:
+    for i in xrange(0, len(working_processes)):
+        pc = working_processes[i]
+
+        if pc.poll() is not None:
+            print "Finished:"
+            (stdout, stderr) = pc.communicate()
+            print stdout
+            print stderr
+
+    return True
+
+def start():
+    with Connection('redis://localhost:6379/') as conn:
         while True:
-            working_threads = filter(lambda x: x.is_alive(), working_threads)
-            if len(working_threads) < 3:
+            ready_for_task = track_processes()
+
+            if ready_for_task:
                 with conn.Consumer(task_queue, accept=['pickle','json'], callbacks=[process_task]) as tasks_consumer:
+                    print "-"*20
                     try:
-                        conn.drain_events(timeout=1)
+                        conn.drain_events(timeout=2)
                     except Exception as e:
+                        print "[T_E] " + str(e)
                         pass
 
+            print "-"*20
             with conn.Consumer(notifications_queue, accept=['pickle','json'], callbacks=[process_notification]) as notifications_consumer:
                 try:
-                    conn.drain_events(timeout=1)
+                    conn.drain_events(timeout=2)
                 except Exception as e:
+                    print "[N_E] " + str(e)
                     pass
 
 start()
