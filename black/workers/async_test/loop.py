@@ -1,8 +1,9 @@
+import os
 import asyncio
 import aioredis
 from time import sleep
 
-from concurrent.futures._base import TimeoutError as TimeoutError
+from concurrent.futures._base import TimeoutError
 
 from asyncio.subprocess import PIPE
 
@@ -41,58 +42,58 @@ class Worker(object):
         # Remember the channel
         self.notifications_channel = subscription_result[0]
 
-
     async def process_tasks_queue(self):
-        """ Check if tasks queue has any data. If any, launch the tasks execution """
+        """ Check if tasks queue has any data. 
+        If any, launch the tasks execution """
         try:
             # Try to read data from queue with a timeout
             msg = await asyncio.wait_for(self.tasks_channel.get_json(), 1)
         except TimeoutError as e:
             # Timeout of the queue consuming occured
-            print("[Tasks] Timeout")
-
-            # Proceed to the notifications queue parsing
-            # await self.process_tasks_queue()
+            print("[Task] Timeout")
         else:
             # Launch the tasks execution
             await self.start_task(msg)
 
-
     async def process_notifications_queue(self):
-        """ Check if notifications queue has any data. If any, launch the notifications execution """
+        """ Check if notifications queue has any data.
+        If any, launch the notifications execution """
         try:
             # Try to read data from queue with a timeout
             msg = await asyncio.wait_for(self.notifications_channel.get_json(), 1)
         except TimeoutError as e:
             # Timeout of the queue consuming occured
-            print("[notifications] Timeout")
-
-            # Proceed to the notifications queue parsing
-            # await self.process_notifications_queue()
+            print("[Notif] Timeout")
         else:
             # Launch the notifications execution
             await self.start_notifications(msg)
 
+    async def update_active_processes(self):
+        """ Check all the running processes and see if any has finished(terminated) """
+        # Remember, which processes should be marked as finished(terminated)
+        to_remove = list()
 
-    async def start_task(self, command="sleep 3; curl -i ya.ru"):
-        """ Method launches the task execution, remembering the 
-            processes's object. """
-        # Spawn the process
-        proc = await asyncio.create_subprocess_shell("sleep 3; curl -i ya.ru",
-                                                     stdin=PIPE,
-                                                     stdout=PIPE)
+        # Iterate
+        for i in range(0, len(self.active_processes)):
+            # Examined process
+            proc = self.active_processes[i]
+            try:
+                (stdout, stderr) = await asyncio.wait_for(proc.communicate(), 0.1)
+            except TimeoutError as e:
+                print("[Task][Poll] Timeout")
+            else:
+                exit_code = proc.wait()
 
-        # Store the object that points to the process
-        self.active_processes.append(proc)
+                print("[Task][Poll] Finished")
+                print(stdout, stderr)
+                print(exit_code)
 
-        print("pid: %s" % proc.pid)
+                to_remove.append(i)
 
-
-    async def start_notification(self, command):
-        """ Method launches the notification execution, remembering the 
-            processes's object. """
-        print("Looks like notification has been processed")
-
+        # Mark the finished/terminated tasks as so.
+        if to_remove:
+            for i in reversed(to_remove):
+                self.active_processes.pop(i)
 
     async def process_queues(self):
         """ Infinite loop for processing both queues """
@@ -105,16 +106,31 @@ class Worker(object):
         # Check the notifications queue
         await self.process_notifications_queue()
 
+        # Update processes list
+        await self.update_active_processes()
+
         # Infinite loop
         await self.process_queues()
 
+    async def start_task(self, command="sleep 3; curl -i ya.ru"):
+        """ Method launches the task execution, remembering the 
+            processes's object. """
+
+        # Spawn the process
+        proc = await asyncio.create_subprocess_shell("sleep 3; curl -i ya.ru",
+                                                     stdout=PIPE, stderr=PIPE)
+
+        # Store the object that points to the process
+        self.active_processes.append(proc)
+        print("YEEEE LOGGER")
+
+    async def start_notification(self, command):
+        """ Method launches the notification execution, remembering the 
+            processes's object. """
+        print("YEEEE LOGGER")
 
     # async def process_task(self, proc):
-    #     try:
     #         stdout, stderr = await asyncio.wait_for(proc.communicate(), 1)
-    #     except Exception as e:
-    #         await self.process_task(proc)
-    #     else:
     #         print("nmap read: %r" % stdout.decode('ascii'))
     #         exitcode = await proc.wait()
     #         print("(exit code %s)" % exitcode)
