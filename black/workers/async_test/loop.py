@@ -151,12 +151,6 @@ class Worker(object):
             processes's object. """
         print("YEEEE LOGGER")
 
-    # async def process_task(self, proc):
-    #         stdout, stderr = await asyncio.wait_for(proc.communicate(), 1)
-    #         print("nmap read: %r" % stdout.decode('ascii'))
-    #         exitcode = await proc.wait()
-    #         print("(exit code %s)" % exitcode)
-
 
 loop = asyncio.get_event_loop()
 worker = Worker()
