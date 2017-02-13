@@ -15,8 +15,13 @@ class Worker(object):
     If any, process them ASAP."""
 
     def __init__(self):
+        # Channel (queue) for receiving tasks
         self.tasks_channel = None
+
+        # Channel (queue) for receiving notifications
         self.notifications_channel = None
+
+        # List of actively running processes
         self.active_processes = list()
 
     async def init(self):
