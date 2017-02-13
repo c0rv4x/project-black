@@ -87,10 +87,12 @@ class Worker(object):
 
         print("pid: %s" % proc.pid)
 
+
     async def start_notification(self, command):
         """ Method launches the notification execution, remembering the 
             processes's object. """
         print("Looks like notification has been processed")
+
 
     async def process_queues(self):
         """ Infinite loop for processing both queues """
@@ -103,7 +105,9 @@ class Worker(object):
         # Check the notifications queue
         await self.process_notifications_queue()
 
+        # Infinite loop
         await self.process_queues()
+
 
     # async def process_task(self, proc):
     #     try:
