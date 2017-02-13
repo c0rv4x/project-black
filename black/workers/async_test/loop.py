@@ -52,10 +52,8 @@ class Worker(object):
             # Try to read data from queue with a timeout
             msg = await asyncio.wait_for(self.tasks_channel.get_json(), 1)
         except TimeoutError as e:
-            # Timeout of the queue consuming occured
             print("[Task] Timeout")
         else:
-            # Launch the tasks execution
             await self.start_task(msg)
 
     async def process_notifications_queue(self):
@@ -65,15 +63,13 @@ class Worker(object):
             # Try to read data from queue with a timeout
             msg = await asyncio.wait_for(self.notifications_channel.get_json(), 1)
         except TimeoutError as e:
-            # Timeout of the queue consuming occured
             print("[Notif] Timeout")
         else:
-            # Launch the notifications execution
             await self.start_notifications(msg)
 
     async def update_active_processes(self):
         """ Check all the running processes and see if any has finished(terminated) """
-        # Remember, which processes should be marked as finished(terminated)
+        # Remember, which processes should be removed from the list of active processes
         to_remove = list()
 
         for i in range(0, len(self.active_processes)):
