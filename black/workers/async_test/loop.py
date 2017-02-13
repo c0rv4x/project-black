@@ -25,6 +25,9 @@ class Worker(object):
         # List of actively running processes
         self.active_processes = list()
 
+        # List of finished processes
+        self.finished_processes = list()
+
     async def initialize(self):
         """ Init variables and run queues checkers """
         # Create connect to redis
@@ -73,24 +76,37 @@ class Worker(object):
         # Remember, which processes should be marked as finished(terminated)
         to_remove = list()
 
-        # Iterate
         for i in range(0, len(self.active_processes)):
-            # Examined process
-            proc = self.active_processes[i]
+            tag = self.active_processes[i]['tag']
+            proc = self.active_processes[i]['process']
             try:
+                # Give 0.1s for a check that a process has exited
                 (stdout, stderr) = await asyncio.wait_for(proc.communicate(), 0.1)
             except TimeoutError as e:
+                # Not yet finished
                 print("[Task][Poll] Timeout")
             else:
-                exit_code = proc.wait()
+                # The process have exited.
+                # Grab the exit code of the process
+                exit_code = await proc.wait()
 
+                # For now leave these prints
                 print("[Task][Poll] Finished")
                 print(stdout, stderr)
                 print(exit_code)
 
+                # Save the data about the process, so we can grab it next time
+                # or serialize and save locally
+                self.finished_processes.append({
+                    "tag": tag,
+                    "stdout": stdout,
+                    "stderr": stderr,
+                    "exit_code": exit_code,
+                    "status": "finished" if exit_code == 0 else "terminated"
+                })
                 to_remove.append(i)
 
-        # Mark the finished/terminated tasks as so.
+        # Remove finished/terminated tasks from the list of active tasks
         if to_remove:
             for i in reversed(to_remove):
                 self.active_processes.pop(i)
@@ -112,17 +128,27 @@ class Worker(object):
         # Infinite loop
         await self.process_queues()
 
-    async def start_task(self, command="sleep 3; curl -i ya.ru"):
+    async def start_task(self, message):
         """ Method launches the task execution, remembering the 
             processes's object. """
 
+        # Add a unique tag to the task, so we can track the notifications 
+        # which are addressed to the ceratin task
+        message = message[1]
+        task_tag = message['tag']
+        command = message['command']
+
         # Spawn the process
-        proc = await asyncio.create_subprocess_shell("sleep 3; curl -i ya.ru",
+        proc = await asyncio.create_subprocess_shell(command,
                                                      stdout=PIPE, stderr=PIPE)
 
         # Store the object that points to the process
-        self.active_processes.append(proc)
-        print("YEEEE LOGGER")
+        self.active_processes.append({
+            "tag": task_tag, 
+            "process": proc,
+            "command": command
+        })
+        # print("YEEEE LOGGER") 
 
     async def start_notification(self, command):
         """ Method launches the notification execution, remembering the 
