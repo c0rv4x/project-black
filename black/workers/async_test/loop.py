@@ -24,7 +24,7 @@ class Worker(object):
         # List of actively running processes
         self.active_processes = list()
 
-    async def init(self):
+    async def initialize(self):
         """ Init variables and run queues checkers """
         # Create connect to redis
         connection = await aioredis.create_redis(('localhost', 6379))
@@ -118,5 +118,5 @@ class Worker(object):
 
 loop = asyncio.get_event_loop()
 worker = Worker()
-loop.run_until_complete(worker.init())
+loop.run_until_complete(worker.initialize())
 loop.run_until_complete(worker.process_queues())
