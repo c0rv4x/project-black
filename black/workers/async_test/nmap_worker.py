@@ -58,6 +58,7 @@ class NmapWorker(Worker):
 
         # Add a unique tag to the task, so we can track the notifications 
         # which are addressed to the ceratin task
+        print("[Task] Started")
         message = message[1]
         task_tag = message['tag']
         command = message['command']
@@ -74,10 +75,31 @@ class NmapWorker(Worker):
         })
         # print("YEEEE LOGGER") 
 
-    async def start_notification(self, command):
+    async def start_notification(self, message):
         """ Method launches the notification execution, remembering the 
             processes's object. """
-        print("YEEEE LOGGER")
+        message = message[1]
+        task_tag = message['tag']
+        command = message['command']
+
+        for pc_object in self.active_processes:
+            tag = pc_object['tag']
+
+            if tag == task_tag:
+                pc = pc_object['process']
+                print("Found process to send the notif")
+
+                if command == 'pause':
+                    print("[Notif] Pause")
+                    pc.send_signal(19) # SIGSTOP
+                    pc.send_signal(19) # SIGSTOP
+                elif command == 'stop':
+                    print("[Notif] Stop")
+                    pc.terminate() # SIGTERM
+                elif command == 'unpause':
+                    print("[Notif] Unpause")
+                    pc.send_signal(18) # SIGCONT
+                    # pc.send_signal(18) # SIGCONT
 
 
 loop = asyncio.get_event_loop()
