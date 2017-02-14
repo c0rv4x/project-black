@@ -22,7 +22,7 @@ class NmapWorker(Worker):
             proc = self.active_processes[i]['process']
             try:
                 # Give 0.1s for a check that a process has exited
-                (stdout, stderr) = await asyncio.wait_for(proc.communicate(), 0.1)
+                await asyncio.wait_for(proc.communicate(), 0.1)
             except TimeoutError as e:
                 # Not yet finished
                 print("[Task][Poll] Timeout")
@@ -33,15 +33,15 @@ class NmapWorker(Worker):
 
                 # For now leave these prints
                 print("[Task][Poll] Finished")
-                print(stdout, stderr)
+                # print(stdout, stderr)
                 print(exit_code)
 
                 # Save the data about the process, so we can grab it next time
                 # or serialize and save locally
                 self.finished_processes.append({
                     "tag": tag,
-                    "stdout": stdout,
-                    "stderr": stderr,
+                    # "stdout": stdout,
+                    # "stderr": stderr,
                     "exit_code": exit_code,
                     "status": "finished" if exit_code == 0 else "terminated"
                 })
@@ -64,8 +64,7 @@ class NmapWorker(Worker):
         command = message['command']
 
         # Spawn the process
-        proc = await asyncio.create_subprocess_shell(command,
-                                                     stdout=PIPE, stderr=PIPE)
+        proc = await asyncio.create_subprocess_shell(command)
 
         # Store the object that points to the process
         self.active_processes.append({
