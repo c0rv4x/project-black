@@ -91,15 +91,13 @@ class NmapWorker(Worker):
 
                 if command == 'pause':
                     print("[Notif] Pause")
-                    pc.send_signal(19) # SIGSTOP
-                    pc.send_signal(19) # SIGSTOP
+                    pc.send_signal(17) # SIGSTOP
                 elif command == 'stop':
                     print("[Notif] Stop")
                     pc.terminate() # SIGTERM
                 elif command == 'unpause':
                     print("[Notif] Unpause")
-                    pc.send_signal(18) # SIGCONT
-                    # pc.send_signal(18) # SIGCONT
+                    pc.send_signal(19) # SIGCONT
 
 
 loop = asyncio.get_event_loop()
