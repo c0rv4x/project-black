@@ -24,7 +24,7 @@ class NmapTask(object):
         return self.id
 
     async def start(self):
-        self.proc = await asyncio.create_subprocess_shell(self.command)
+        self.proc = await asyncio.create_subprocess_exec(*self.command)
         self.status = "Working"
 
     async def process_notification(self, command):
