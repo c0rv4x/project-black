@@ -1,3 +1,4 @@
+import signal
 import asyncio
 import platform
 import aioredis
@@ -30,23 +31,13 @@ class NmapTask(object):
         if command == 'pause':
             print("[Notif] Pause")
 
-            if self.platform == "Darwin":
-                self.proc.send_signal(17)  # SIGSTOP
-            elif self.platform == "Linux":
-                self.proc.send_signal(20)  # SIGSTOP
-            else:
-                raise Exception("Poshel nahui")
+            self.proc.send_signal(signal.SIGSTOP.value)  # SIGSTOP
         elif command == 'stop':
             print("[Notif] Stop")
             self.proc.terminate()  # SIGTERM
         elif command == 'unpause':
             print("[Notif] Unpause")
-            if self.platform == "Darwin":
-                self.proc.send_signal(19)  # SIGSTOP
-            elif self.platform == "Linux":
-                self.proc.send_signal(18)  # SIGSTOP
-            else:
-                raise Exception("Poshel nahui")
+            self.proc.send_signal(signal.SIGCONT.value)  # SIGCONT
 
     async def check_if_exited(self):
         try:

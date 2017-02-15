@@ -12,15 +12,15 @@ def main():
             ('localhost', 6379))
 
         random_id = "nmap_task_"+str(uuid4())
-        res = await pub.publish_json('nmap_tasks', {"task_id": random_id, "command": "nmap -p - ya.ru --stats-every 0.5"})
+        res = await pub.publish_json('nmap_tasks', {"task_id": random_id, "command": "nmap ya.ru --top-ports=30 --stats-every 0.5"})
 
-        await asyncio.sleep(3)
+        await asyncio.sleep(1)
         print("Pausing task")
         res = await pub.publish_json('nmap_notifications', {"task_id": random_id, "command": "pause"})
 
-        await asyncio.sleep(15)
+        # await asyncio.sleep(15)
         print("Unpausing task")
-        res = await pub.publish_json('nmap_notifications', {"task_id": random_id, "command": "unpause"})
+        # res = await pub.publish_json('nmap_notifications', {"task_id": random_id, "command": "unpause"})
 
 
         pub.close()
