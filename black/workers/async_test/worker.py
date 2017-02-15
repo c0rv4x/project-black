@@ -113,12 +113,12 @@ class Worker(object):
         # Add a unique tag to the task, so we can track the notifications 
         # which are addressed to the ceratin task
         message = message[1]
-        task_tag = message['tag']
+        task_id = message['task_id']
         command = message['command']
 
         # Spawn the process
         # proc = await asyncio.create_subprocess_shell(command)
-        proc = self.process_class(task_tag, command)
+        proc = self.process_class(task_id, command)
         await proc.start()
 
         # Store the object that points to the process
@@ -128,11 +128,11 @@ class Worker(object):
         """ Method launches the notification execution, remembering the 
             processes's object. """
         message = message[1]
-        task_tag = message['tag']
+        task_id = message['task_id']
         command = message['command']
 
         for process in self.active_processes:
             tag = process.get_id()
 
-            if tag == task_tag:
+            if tag == task_id:
                 await process.process_notification(command)
