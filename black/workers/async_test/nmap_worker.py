@@ -1,6 +1,5 @@
 import signal
 import asyncio
-import platform
 import aioredis
 from concurrent.futures._base import TimeoutError
 
@@ -10,7 +9,6 @@ from worker import Worker
 class NmapTask(object):
 
     def __init__(self, process_id, command):
-        self.platform = platform.system()
         self.id = process_id
         self.command = command
         self.status = "New"
@@ -30,7 +28,6 @@ class NmapTask(object):
     async def process_notification(self, command):
         if command == 'pause':
             print("[Notif] Pause")
-
             self.proc.send_signal(signal.SIGSTOP.value)  # SIGSTOP
         elif command == 'stop':
             print("[Notif] Stop")
