@@ -110,7 +110,7 @@ class Worker(object):
         """ Method launches the task execution, remembering the 
             processes's object. """
 
-        # Add a unique tag to the task, so we can track the notifications 
+        # Add a unique id to the task, so we can track the notifications 
         # which are addressed to the ceratin task
         message = message[1]
         task_id = message['task_id']
@@ -132,7 +132,7 @@ class Worker(object):
         command = message['command']
 
         for process in self.active_processes:
-            tag = process.get_id()
+            task_id_restored = process.get_id()
 
-            if tag == task_id:
+            if task_id_restored == task_id:
                 await process.process_notification(command)

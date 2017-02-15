@@ -6,7 +6,7 @@ from concurrent.futures._base import TimeoutError
 from worker import Worker
 
 
-class NmapProcess(object):
+class NmapTask(object):
 
     def __init__(self, process_id, command):
         self.platform = platform.system()
@@ -66,12 +66,12 @@ class NmapProcess(object):
             if self.exit_code == 0:
                 self.status = "Finished"
             else:
-                self.status = "Aborted "
+                self.status = "Aborted"
 
             return True
 
 
 loop = asyncio.get_event_loop()
-nmap = Worker('nmap', NmapProcess)
+nmap = Worker('nmap', NmapTask)
 loop.run_until_complete(nmap.initialize())
 loop.run_until_complete(nmap.process_queues())
