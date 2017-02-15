@@ -15,7 +15,7 @@ class Worker(object):
     Another redis channel is monitored for all notifications.
     If any, process them ASAP."""
 
-    def __init__(self, worker_name):
+    def __init__(self, worker_name, process_class):
         # Channel (queue) for receiving tasks
         self.tasks_channel = None
 
@@ -25,6 +25,8 @@ class Worker(object):
         self.active_processes = list()
         self.finished_processes = list()
         self.name = worker_name
+
+        self.process_class = process_class
 
     async def initialize(self):
         """ Init variables and run queues checkers """
@@ -68,10 +70,6 @@ class Worker(object):
             await self.start_notification(msg)
             await self.process_notifications_queue()
 
-    async def update_active_processes(self):
-        """ Check all the running processes and see if any has finished(terminated) """
-        pass
-
     async def process_queues(self):
         """ Infinite loop for processing both queues """
         # Check that we have not exceeded the limit
@@ -89,14 +87,52 @@ class Worker(object):
         # Infinite loop
         await self.process_queues()
 
+    async def update_active_processes(self):
+        """ Check all the running processes and see if any has finished(terminated) """
+        # Remember, which processes should be removed from the list of active processes
+        to_remove = list()
+
+        for i in range(0, len(self.active_processes)):
+            proc = self.active_processes[i]
+
+            # Ask the process instance if he has exited
+            if await proc.check_if_exited():
+                # If so, move it from the list of active processes to the inactive list
+                self.finished_processes.append(proc)
+                to_remove.append(i)
+
+        # Remove finished/terminated tasks from the list of active tasks
+        if to_remove:
+            for i in reversed(to_remove):
+                self.active_processes.pop(i)
+
     async def start_task(self, message):
         """ Method launches the task execution, remembering the 
             processes's object. """
-        pass
 
-    async def start_notification(self, command):
+        # Add a unique tag to the task, so we can track the notifications 
+        # which are addressed to the ceratin task
+        message = message[1]
+        task_tag = message['tag']
+        command = message['command']
+
+        # Spawn the process
+        # proc = await asyncio.create_subprocess_shell(command)
+        proc = self.process_class(task_tag, command)
+        await proc.start()
+
+        # Store the object that points to the process
+        self.active_processes.append(proc)
+
+    async def start_notification(self, message):
         """ Method launches the notification execution, remembering the 
             processes's object. """
-        pass
+        message = message[1]
+        task_tag = message['tag']
+        command = message['command']
 
+        for process in self.active_processes:
+            tag = process.get_id()
 
+            if tag == task_tag:
+                await process.process_notification(command)

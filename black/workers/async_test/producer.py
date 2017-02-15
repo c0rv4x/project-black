@@ -12,7 +12,7 @@ def main():
             ('localhost', 6379))
 
         random_tag = "nmap_task_"+str(uuid4())
-        res = await pub.publish_json('nmap_tasks', {"tag": random_tag, "command": "nmap ya.ru --stats-every 0.5"})
+        res = await pub.publish_json('nmap_tasks', {"tag": random_tag, "command": "nmap -p - ya.ru --stats-every 0.5"})
 
         await asyncio.sleep(3)
         print("Pausing task")
