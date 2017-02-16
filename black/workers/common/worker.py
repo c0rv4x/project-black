@@ -12,7 +12,7 @@ class Worker(object):
     Another redis channel is monitored for all notifications.
     If any, process them ASAP."""
 
-    def __init__(self, worker_name, process_class):
+    def __init__(self, worker_name, task_class):
         # Queue for receiving tasks
         self.tasks_queue = None
 
@@ -23,7 +23,7 @@ class Worker(object):
         self.finished_processes = list()
         self.name = worker_name
 
-        self.process_class = process_class
+        self.task_class = task_class
 
         self.semaphore = asyncio.Semaphore(value=3)
 
@@ -82,7 +82,7 @@ class Worker(object):
         command = message['command']
 
         # Spawn the process
-        proc = self.process_class(task_id, command)
+        proc = self.task_class(task_id, command)
         await proc.start()
 
         # Store the object that points to the process
