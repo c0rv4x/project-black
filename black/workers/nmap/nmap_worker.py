@@ -3,7 +3,7 @@ import asyncio
 import aioredis
 from concurrent.futures._base import TimeoutError
 
-from worker import Worker
+from black.workers.common.worker import Worker
 
 
 class NmapTask(object):
