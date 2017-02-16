@@ -1,5 +1,5 @@
 import asyncio
-import aioredis
+import asynqp
 
 from uuid import uuid4
 
@@ -8,22 +8,45 @@ def main():
     loop = asyncio.get_event_loop()
 
     async def go():
-        pub = await aioredis.create_redis(
-            ('localhost', 6379))
 
         random_id = "nmap_task_"+str(uuid4())
-        res = await pub.publish_json('nmap_tasks', {"task_id": random_id, "command": ["/usr/bin/nmap", "ya.ru"]})
 
-        await asyncio.sleep(1)
-        print("Pausing task")
-        res = await pub.publish_json('nmap_notifications', {"task_id": random_id, "command": "pause"})
+        connection = await asynqp.connect('localhost', 5672, username='guest', password='guest')
 
-        await asyncio.sleep(15)
-        print("Unpausing task")
-        res = await pub.publish_json('nmap_notifications', {"task_id": random_id, "command": "unpause"})
+        # Open a communications channel
+        channel = await connection.open_channel()
 
+        # Create 2 queues and an exchange on the broker
+        exchange = await channel.declare_exchange('tasks.exchange', 'direct')
+        tasks_queue = await channel.declare_queue('nmap_tasks')
+        notifications_queue = await channel.declare_queue('nmap_notifications')
 
-        pub.close()
+        # Bind the queue to the exchange, so the queue will get messages published to the exchange
+        await tasks_queue.bind(exchange, routing_key='nmap_tasks') 
+        await notifications_queue.bind(exchange, routing_key='nmap_notifications') 
+
+        print("-"*20)
+        print("Sending task")
+
+        task_id = str(uuid4())
+        msg = asynqp.Message({
+            'task_id': 'nmap_task_' + task_id,
+            'command': ['nmap', '--top-ports', '4000', 'ya.ru']
+        })
+        exchange.publish(msg, 'nmap_tasks')
+        print("Sent task")
+        print("-"*20)
+        print("Now i am sleeping")
+        await asyncio.sleep(3)
+        print("-"*20)
+        print("Sending pause")
+
+        msg = asynqp.Message({
+            'task_id': 'nmap_task_' + task_id,
+            'command': 'pause'
+        })
+        exchange.publish(msg, 'nmap_notifications')
+        print("Sent pause")
 
     loop.run_until_complete(go())
 

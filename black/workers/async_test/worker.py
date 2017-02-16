@@ -1,6 +1,6 @@
 import os
 import asyncio
-import aioredis
+import asynqp
 from time import sleep
 
 from concurrent.futures._base import TimeoutError
@@ -16,11 +16,11 @@ class Worker(object):
     If any, process them ASAP."""
 
     def __init__(self, worker_name, process_class):
-        # Channel (queue) for receiving tasks
-        self.tasks_channel = None
+        # Queue for receiving tasks
+        self.tasks_queue = None
 
-        # Channel (queue) for receiving notifications
-        self.notifications_channel = None
+        # Queue for receiving notifications
+        self.notifications_queue = None
 
         self.active_processes = list()
         self.finished_processes = list()
@@ -28,111 +28,124 @@ class Worker(object):
 
         self.process_class = process_class
 
+        self.semaphore = asyncio.Semaphore(value=3)
+
     async def initialize(self):
-        """ Init variables and run queues checkers """
-        # Create connect to redis
-        connection = await aioredis.create_redis(('localhost', 6379))
+        """ Init variables """
+        # connect to the RabbitMQ broker
+        connection = await asynqp.connect('localhost', 5672, username='guest', password='guest')
 
-        # Subscribe to the channel 'nmap_tasks'
-        subscription_result = await connection.psubscribe(self.name +'_tasks')
+        # Open a communications channel
+        channel = await connection.open_channel()
 
-        # Remember the channel
-        self.tasks_channel = subscription_result[0]
+        # Create an exchange on the broker
+        exchange = await channel.declare_exchange('tasks.exchange', 'direct')
 
-        # Subscribe to the channel 'nmap_notifications'
-        subscription_result = await connection.psubscribe(self.name + '_notifications')
+        # Create two queues on the exchange
+        self.tasks_queue = await channel.declare_queue(self.name + '_tasks')
+        self.notifications_queue = await channel.declare_queue(self.name + '_notifications')
 
-        # Remember the channel
-        self.notifications_channel = subscription_result[0]
+        # Bind the queue to the exchange, so the queue will get messages published to the exchange
+        await self.tasks_queue.bind(exchange, routing_key=self.name + '_tasks') 
+        await self.notifications_queue.bind(exchange, routing_key=self.name + '_notifications')        
 
-    async def process_tasks_queue(self):
+    async def acquire_resources(self):
+        # Function that captures resources, now it is just a semaphore
+        await self.semaphore.acquire()
+
+    def release_resources(self):
+        # Function that releases resources, now it is just a semaphore
+        self.semaphore.release()
+
+
+    async def start_tasks_consumer(self):
         """ Check if tasks queue has any data. 
         If any, launch the tasks execution """
+        await self.tasks_queue.consume(self._start_task)
+
+    def _start_task(self, message):
+        """ Wrapper of start_task that puts the task to the event loop """
         try:
-            # Try to read data from queue with a timeout
-            msg = await asyncio.wait_for(self.tasks_channel.get_json(), 1)
-        except TimeoutError as e:
-            # print("[Task] Timeout")
-            pass
+            loop = asyncio.get_event_loop()
+            loop.create_task(self.start_task(message))
+        except Exception as e:
+            print(e)
         else:
-            await self.start_task(msg)
-
-    async def process_notifications_queue(self):
-        """ Check if notifications queue has any data.
-        If any, launch the notifications execution """
-        try:
-            # Try to read data from queue with a timeout
-            msg = await asyncio.wait_for(self.notifications_channel.get_json(), 1)
-        except TimeoutError as e:
-            # print("[Notif] Timeout")
-            pass
-        else:
-            await self.start_notification(msg)
-            await self.process_notifications_queue()
-
-    async def process_queues(self):
-        """ Infinite loop for processing both queues """
-        # Check that we have not exceeded the limit
-        if len(self.active_processes) < 3:
-            await self.process_tasks_queue()
-        else:
-            print("Too many processes have been run at this time")
-
-        # Check the notifications queue
-        await self.process_notifications_queue()
-
-        # Update processes list
-        await self.update_active_processes()
-
-        # Infinite loop
-        await self.process_queues()
-
-    async def update_active_processes(self):
-        """ Check all the running processes and see if any has finished(terminated) """
-        # Remember, which processes should be removed from the list of active processes
-        to_remove = list()
-
-        for i in range(0, len(self.active_processes)):
-            proc = self.active_processes[i]
-
-            # Ask the process instance if he has exited
-            if await proc.check_if_exited():
-                # If so, move it from the list of active processes to the inactive list
-                self.finished_processes.append(proc)
-                to_remove.append(i)
-
-        # Remove finished/terminated tasks from the list of active tasks
-        if to_remove:
-            for i in reversed(to_remove):
-                self.active_processes.pop(i)
+            message.ack()
 
     async def start_task(self, message):
         """ Method launches the task execution, remembering the 
             processes's object. """
+        await self.acquire_resources()
 
         # Add a unique id to the task, so we can track the notifications 
         # which are addressed to the ceratin task
-        message = message[1]
+        message = message.json()
         task_id = message['task_id']
         command = message['command']
 
         # Spawn the process
-        # proc = await asyncio.create_subprocess_shell(command)
         proc = self.process_class(task_id, command)
         await proc.start()
 
         # Store the object that points to the process
         self.active_processes.append(proc)
 
-    async def start_notification(self, message):
-        """ Method launches the notification execution, remembering the 
-            processes's object. """
-        message = message[1]
+    def handle_finished_task(self, proc):
+        self.active_processes.remove(proc)
+        self.finished_processes.append(proc)
+
+        self.release_resources()
+
+
+    async def start_notifications_consumer(self):
+        """ Check if tasks queue has any data. 
+        If any, launch the tasks execution """
+        await self.notifications_queue.consume(self.handle_notification)
+
+    def handle_notification(self, message):
+        """ Handle the notification, just received. """
+        print("Notification received")
+        # Add a unique id to the task, so we can track the notifications 
+        # which are addressed to the ceratin task
+        message.ack()
+        message = message.json()
         task_id = message['task_id']
         command = message['command']
 
-        for process in self.active_processes:
-            task_id_restored = process.get_id()
+        for proc in self.active_processes:
+            if proc.get_id() == task_id:
+                print("Now sending")
+                proc.send_notification(command)
 
-            if task_id_restored == task_id:
-                await process.process_notification(command)
+
+    async def update_active_processes(self):
+        """ Check all the running processes and see if any has finished(terminated) """
+        for proc in self.active_processes:
+            # Ask the process instance if he has exited
+            if await proc.check_if_exited():
+                # If so, move it from the list of active processes to the inactive list
+                self.handle_finished_task(proc)
+
+        # Schedule this task again
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.update_active_processes())
+
+    # async def process_notifications_queue(self):
+    #     """ Check if notifications queue has any data.
+    #     If any, launch the notifications execution """
+    #     # msg = await self.notifications_queue.consume(self.start_notification)
+    #     pass
+
+    # async def start_notification(self, message):
+    #     """ Method launches the notification execution, remembering the 
+    #         processes's object. """
+    #     message = message[1]
+    #     task_id = message['task_id']
+    #     command = message['command']
+
+    #     for process in self.active_processes:
+    #         task_id_restored = process.get_id()
+
+    #         if task_id_restored == task_id:
+    #             await process.process_notification(command)

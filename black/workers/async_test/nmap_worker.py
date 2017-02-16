@@ -25,7 +25,8 @@ class NmapTask(object):
         self.proc = await asyncio.create_subprocess_exec(*self.command)
         self.status = "Working"
 
-    async def process_notification(self, command):
+    def send_notification(self, command):
+        print(command)
         if command == 'pause':
             print("[Notif] Pause")
             self.proc.send_signal(signal.SIGSTOP.value)  # SIGSTOP
@@ -62,4 +63,8 @@ class NmapTask(object):
 loop = asyncio.get_event_loop()
 nmap = Worker('nmap', NmapTask)
 loop.run_until_complete(nmap.initialize())
-loop.run_until_complete(nmap.process_queues())
+loop.run_until_complete(nmap.start_tasks_consumer())
+loop.run_until_complete(nmap.start_notifications_consumer())
+
+loop.run_until_complete(nmap.update_active_processes())
+loop.run_forever()
