@@ -38,13 +38,10 @@ class NmapTask(object):
     def send_notification(self, command):
         """ Sends 'command' notification to the current process. """        
         if command == 'pause':
-            print("[Notif] Pause")
             self.proc.send_signal(signal.SIGSTOP.value)  # SIGSTOP
         elif command == 'stop':
-            print("[Notif] Stop")
             self.proc.terminate()  # SIGTERM
         elif command == 'unpause':
-            print("[Notif] Unpause")
             self.proc.send_signal(signal.SIGCONT.value)  # SIGCONT
 
     async def check_if_exited(self):
@@ -77,6 +74,5 @@ nmap = Worker('nmap', NmapTask)
 loop.run_until_complete(nmap.initialize())
 loop.run_until_complete(nmap.start_tasks_consumer())
 loop.run_until_complete(nmap.start_notifications_consumer())
-
 loop.run_until_complete(nmap.update_active_processes())
 loop.run_forever()
