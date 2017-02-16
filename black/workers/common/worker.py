@@ -1,65 +1,129 @@
-from queues import task_queue, notifications_queue
-from time import sleep
-import socket
-from subprocess import Popen, PIPE
+""" Basic worker """
+import asyncio
+import asynqp
 
-from kombu import Connection
-
-
-working_processes = []
+from concurrent.futures._base import TimeoutError
 
 
-def process_task(body, message):
-    print "[T] " + str(body)
-    # args = []
-    # args.append(body['command'])
-    # args += body['flags']
-    # args.append(body['target'])
-    # print args
-    # p = Popen(['/usr/local/bin/nmap','ya.ru'], shell=True, stdout=PIPE, stderr=PIPE)
-    p = Popen(['nmap'], shell=True, stdout=PIPE, stderr=PIPE)
-    working_processes.append(p)
+class Worker(object):
 
-    message.ack()
+    """Worker keeps track of new tasks on the redis channel and 
+    launches them in the background.
+    Another redis channel is monitored for all notifications.
+    If any, process them ASAP."""
 
-def process_notification(body, message):
-    print "[N] " + str(body)
-    message.ack()
+    def __init__(self, worker_name, process_class):
+        # Queue for receiving tasks
+        self.tasks_queue = None
 
-def track_processes():
-    global working_processes
-    print "   -> " + str(len(working_processes))
-    for i in xrange(0, len(working_processes)):
-        pc = working_processes[i]
+        # Queue for receiving notifications
+        self.notifications_queue = None
 
-        if pc.poll() is not None:
-            print "Finished:"
-            (stdout, stderr) = pc.communicate()
-            print stdout
-            print stderr
-            del working_processes[i]
+        self.active_processes = list()
+        self.finished_processes = list()
+        self.name = worker_name
 
-    return True
+        self.process_class = process_class
 
-def start():
-    with Connection('redis://localhost:6379/') as conn:
-        while True:
-            ready_for_task = track_processes()
+        self.semaphore = asyncio.Semaphore(value=3)
 
-            if ready_for_task:
-                with conn.Consumer(task_queue, accept=['pickle','json'], callbacks=[process_task]) as tasks_consumer:
-                    try:
-                        conn.drain_events(timeout=2)
-                    except socket.timeout as e:
-                        print "[T_E] " + str(e.message)
-                        # raise e.message
-                        pass
+    async def initialize(self):
+        """ Init variables """
+        # connect to the RabbitMQ broker
+        connection = await asynqp.connect('localhost', 5672, username='guest', password='guest')
 
-            # with conn.Consumer(notifications_queue, accept=['pickle','json'], callbacks=[process_notification]) as notifications_consumer:
-            #     try:
-            #         conn.drain_events(timeout=2)
-            #     except Exception as e:
-            #         print "[N_E] " + str(e)
-            #         pass
+        # Open a communications channel
+        channel = await connection.open_channel()
 
-start()
+        # Create an exchange on the broker
+        exchange = await channel.declare_exchange('tasks.exchange', 'direct')
+
+        # Create two queues on the exchange
+        self.tasks_queue = await channel.declare_queue(self.name + '_tasks')
+        self.notifications_queue = await channel.declare_queue(self.name + '_notifications')
+
+        # Bind the queue to the exchange, so the queue will get messages published to the exchange
+        await self.tasks_queue.bind(exchange, routing_key=self.name + '_tasks') 
+        await self.notifications_queue.bind(exchange, routing_key=self.name + '_notifications')        
+
+    async def acquire_resources(self):
+        # Function that captures resources, now it is just a semaphore
+        await self.semaphore.acquire()
+
+    def release_resources(self):
+        # Function that releases resources, now it is just a semaphore
+        self.semaphore.release()
+
+
+    async def start_tasks_consumer(self):
+        """ Check if tasks queue has any data. 
+        If any, launch the tasks execution """
+        await self.tasks_queue.consume(self._start_task)
+
+    def _start_task(self, message):
+        """ Wrapper of start_task that puts the task to the event loop """
+        try:
+            loop = asyncio.get_event_loop()
+            loop.create_task(self.start_task(message))
+        except Exception as e:
+            print(e)
+        else:
+            message.ack()
+
+    async def start_task(self, message):
+        """ Method launches the task execution, remembering the 
+            processes's object. """
+        await self.acquire_resources()
+
+        # Add a unique id to the task, so we can track the notifications 
+        # which are addressed to the ceratin task
+        message = message.json()
+        task_id = message['task_id']
+        command = message['command']
+
+        # Spawn the process
+        proc = self.process_class(task_id, command)
+        await proc.start()
+
+        # Store the object that points to the process
+        self.active_processes.append(proc)
+
+    def handle_finished_task(self, proc):
+        self.active_processes.remove(proc)
+        self.finished_processes.append(proc)
+
+        self.release_resources()
+
+
+    async def start_notifications_consumer(self):
+        """ Check if tasks queue has any data. 
+        If any, launch the tasks execution """
+        await self.notifications_queue.consume(self.handle_notification)
+
+    def handle_notification(self, message):
+        """ Handle the notification, just received. """
+        print("Notification received")
+        # Add a unique id to the task, so we can track the notifications 
+        # which are addressed to the ceratin task
+        message.ack()
+        message = message.json()
+        task_id = message['task_id']
+        command = message['command']
+
+        for proc in self.active_processes:
+            if proc.get_id() == task_id:
+                print("Now sending")
+                proc.send_notification(command)
+
+
+    async def update_active_processes(self):
+        """ Check all the running processes and see if any has finished(terminated) """
+        for proc in self.active_processes:
+            # Ask the process instance if he has exited
+            if await proc.check_if_exited():
+                # If so, move it from the list of active processes to the inactive list
+                self.handle_finished_task(proc)
+
+        # Schedule this task again
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.update_active_processes())
