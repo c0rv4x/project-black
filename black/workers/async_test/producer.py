@@ -21,9 +21,10 @@ def main():
         tasks_queue = await channel.declare_queue('nmap_tasks')
         notifications_queue = await channel.declare_queue('nmap_notifications')
 
-        # Bind the queue to the exchange, so the queue will get messages published to the exchange
-        await tasks_queue.bind(exchange, routing_key='nmap_tasks') 
-        await notifications_queue.bind(exchange, routing_key='nmap_notifications') 
+        # Bind the queue to the exchange, so the queue will get messages
+        # published to the exchange
+        await tasks_queue.bind(exchange, routing_key='nmap_tasks')
+        await notifications_queue.bind(exchange, routing_key='nmap_notifications')
 
         print("-"*20)
         print("Sending task")

@@ -9,11 +9,17 @@ from worker import Worker
 class NmapTask(object):
 
     def __init__(self, process_id, command):
+        # ID returned from the queue
         self.id = process_id
+
+        # Command, just for the record
         self.command = command
         self.status = "New"
+
+        # Points the the asyncio.Process object
         self.proc = None
 
+        # Keep track of the data
         self.stdout = None
         self.stderr = None
         self.exit_code = None
@@ -21,12 +27,16 @@ class NmapTask(object):
     def get_id(self):
         return self.id
 
+    def get_status(self):
+        return self.status
+
     async def start(self):
+        """ Launch the task """
         self.proc = await asyncio.create_subprocess_exec(*self.command)
         self.status = "Working"
 
     def send_notification(self, command):
-        print(command)
+        """ Sends 'command' notification to the current process. """        
         if command == 'pause':
             print("[Notif] Pause")
             self.proc.send_signal(signal.SIGSTOP.value)  # SIGSTOP
@@ -38,6 +48,8 @@ class NmapTask(object):
             self.proc.send_signal(signal.SIGCONT.value)  # SIGCONT
 
     async def check_if_exited(self):
+        """ Check if the process exited. If so, 
+        save stdout, stderr, exit_code and update the status. """
         try:
             # Give 0.1s for a check that a process has exited
             (stdout, stderr) = await asyncio.wait_for(self.proc.communicate(), 0.1)

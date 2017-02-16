@@ -130,22 +130,3 @@ class Worker(object):
         # Schedule this task again
         loop = asyncio.get_event_loop()
         loop.create_task(self.update_active_processes())
-
-    # async def process_notifications_queue(self):
-    #     """ Check if notifications queue has any data.
-    #     If any, launch the notifications execution """
-    #     # msg = await self.notifications_queue.consume(self.start_notification)
-    #     pass
-
-    # async def start_notification(self, message):
-    #     """ Method launches the notification execution, remembering the 
-    #         processes's object. """
-    #     message = message[1]
-    #     task_id = message['task_id']
-    #     command = message['command']
-
-    #     for process in self.active_processes:
-    #         task_id_restored = process.get_id()
-
-    #         if task_id_restored == task_id:
-    #             await process.process_notification(command)
