@@ -1,2 +1,4 @@
 Django
 psycopg2
+libnmap
+

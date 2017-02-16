@@ -2,6 +2,7 @@ import signal
 import asyncio
 import aioredis
 from concurrent.futures._base import TimeoutError
+from libnmap.parser import NmapParser
 
 from black.workers.common.worker import Worker
 
@@ -58,6 +59,7 @@ class NmapTask(object):
             # Save the data locally.]
             print("The process finished OK")
             self.stdout = stdout
+            self.parse_results(self.stdout)
             self.stderr = stderr
             self.exit_code = await self.proc.wait()
 
@@ -67,3 +69,9 @@ class NmapTask(object):
                 self.status = "Aborted"
 
             return True
+
+    def parse_results(self, stdout):
+        nmap_report = NmapParser.parse(stdout)
+        print(nmap_report.get_dict())
+
+

@@ -54,7 +54,6 @@ class Worker(object):
         # Function that releases resources, now it is just a semaphore
         self.semaphore.release()
 
-
     async def start_tasks_consumer(self):
         """ Check if tasks queue has any data. 
         If any, launch the tasks execution """
@@ -94,7 +93,6 @@ class Worker(object):
 
         self.release_resources()
 
-
     async def start_notifications_consumer(self):
         """ Check if tasks queue has any data. 
         If any, launch the tasks execution """
@@ -114,7 +112,6 @@ class Worker(object):
             if proc.get_id() == task_id:
                 print("Now sending")
                 proc.send_notification(command)
-
 
     async def update_active_processes(self):
         """ Check all the running processes and see if any has finished(terminated) """
