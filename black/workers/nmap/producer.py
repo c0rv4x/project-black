@@ -32,7 +32,7 @@ def main():
         task_id = str(uuid4())
         msg = asynqp.Message({
             'task_id': 'nmap_task_' + task_id,
-            'command': ['nmap', '--top-ports', '4000', 'ya.ru']
+            'command': ['nmap', '--top-ports', '4000', 'ya.ru', '-oX', '-']
         })
         exchange.publish(msg, 'nmap_tasks')
         print("Sent task")
