@@ -15,7 +15,7 @@ class NmapTask(Task):
 
     async def start(self):
         """ Launch the task """
-        self.proc = await asyncio.create_subprocess_exec(*self.command)
+        self.proc = await asyncio.create_subprocess_exec(*self.command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         self.status = "Working"
 
     def send_notification(self, command):
@@ -26,6 +26,19 @@ class NmapTask(Task):
             self.proc.terminate()  # SIGTERM
         elif command == 'unpause':
             self.proc.send_signal(signal.SIGCONT.value)  # SIGCONT
+        elif command == 'get_progress':
+            print(self.get_progress())
+
+    def get_progress(self):
+        status = self.get_status()
+        if status == 'New':
+            return 0
+        elif status == 'Finished':
+            return 100
+        elif status == 'Aborted':
+            return -1
+        elif status == 'Working':
+            return self.stdout.read()
 
     async def check_if_exited(self):
         """ Check if the process exited. If so, 
