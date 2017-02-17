@@ -36,8 +36,6 @@ def main():
         })
         exchange.publish(msg, 'nmap_tasks')
         print("Sent task")
-        print("-"*20)
-        print("Now i am sleeping")
 
         await channel.close()
         await connection.close()

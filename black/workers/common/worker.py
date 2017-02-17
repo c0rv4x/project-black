@@ -107,7 +107,6 @@ class Worker(object):
 
     def handle_notification(self, message):
         """ Handle the notification, just received. """
-        print("Notification received")
         # Add a unique id to the task, so we can track the notifications 
         # which are addressed to the ceratin task
         message.ack()
