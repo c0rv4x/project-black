@@ -49,6 +49,12 @@ def main():
         exchange.publish(msg, 'nmap_notifications')
         print("Sent pause")
 
+        msg = asynqp.Message({
+            'task_id': 'nmap_task_' + task_id,
+            'command': 'unpause'
+        })
+        exchange.publish(msg, 'nmap_notifications')
+        print("Sent unpause")
     loop.run_until_complete(go())
 
 
