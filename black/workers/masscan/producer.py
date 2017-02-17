@@ -37,14 +37,6 @@ def main():
         exchange.publish(msg, 'masscan_tasks')
         print("Sent task")
 
-        # await asyncio.sleep(1)
-        # msg = asynqp.Message({
-        #     'task_id': 'masscan_task_' + task_id,
-        #     'command': 'get_progress'
-        # })
-        # exchange.publish(msg, 'masscan_notifications')
-        # print("Sent notification")
-
         await channel.close()
         await connection.close()
 

@@ -47,7 +47,16 @@ def main():
             'command': 'pause'
         })
         exchange.publish(msg, 'nmap_notifications')
-        print("Sent pause")
+        print("Sent unpause")
+        await asyncio.sleep(2)
+
+
+        msg = asynqp.Message({
+            'task_id': 'nmap_task_' + task_id,
+            'command': 'unpause'
+        })
+        exchange.publish(msg, 'nmap_notifications')
+        print("Sent unpause")
 
     loop.run_until_complete(go())
 

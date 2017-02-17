@@ -1,1 +1,1 @@
-from .nmap_worker import NmapTask
+from .nmap_task import NmapTask

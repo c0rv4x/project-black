@@ -4,30 +4,13 @@ import aioredis
 from asyncio.subprocess import PIPE
 from concurrent.futures._base import TimeoutError
 
+from black.workers.common.task import Task
 
-class NmapTask(object):
+
+class NmapTask(Task):
 
     def __init__(self, process_id, command):
-        # ID returned from the queue
-        self.id = process_id
-
-        # Command, just for the record
-        self.command = command
-        self.status = "New"
-
-        # Points the the asyncio.Process object
-        self.proc = None
-
-        # Keep track of the data
-        self.stdout = None
-        self.stderr = None
-        self.exit_code = None
-
-    def get_id(self):
-        return self.id
-
-    def get_status(self):
-        return self.status
+        Task.__init__(self.process, process_id, command)
 
     async def start(self):
         """ Launch the task """
