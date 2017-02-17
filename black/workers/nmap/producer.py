@@ -32,38 +32,15 @@ def main():
         task_id = str(uuid4())
         msg = asynqp.Message({
             'task_id': 'nmap_task_' + task_id,
-            'command': ['nmap', '--top-ports', '4000', 'ya.ru', '-oX', '-']
+            'command': ['nmap', '--top-ports', '10', 'ya.ru', '-oX', '-']
         })
         exchange.publish(msg, 'nmap_tasks')
         print("Sent task")
         print("-"*20)
         print("Now i am sleeping")
-        await asyncio.sleep(3)
-        print("-"*20)
-        print("Sending pause")
 
-        msg = asynqp.Message({
-            'task_id': 'nmap_task_' + task_id,
-            'command': 'pause'
-        })
-        exchange.publish(msg, 'nmap_notifications')
-        print("Sent unpause")
-        await asyncio.sleep(2)
-
-
-        msg = asynqp.Message({
-            'task_id': 'nmap_task_' + task_id,
-            'command': 'unpause'
-        })
-        exchange.publish(msg, 'nmap_notifications')
-        print("Sent unpause")
-
-        msg = asynqp.Message({
-            'task_id': 'nmap_task_' + task_id,
-            'command': 'unpause'
-        })
-        exchange.publish(msg, 'nmap_notifications')
-        print("Sent unpause")
+        await channel.close()
+        await connection.close()
     loop.run_until_complete(go())
 
 

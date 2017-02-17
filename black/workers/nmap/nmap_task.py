@@ -1,6 +1,7 @@
 import signal
 import asyncio
 import aioredis
+from asyncio.subprocess import PIPE
 from concurrent.futures._base import TimeoutError
 from libnmap.parser import NmapParser
 
@@ -10,7 +11,7 @@ from black.workers.common.task import Task
 class NmapTask(Task):
 
     def __init__(self, process_id, command):
-        Task.__init__(self.process, process_id, command)
+        Task.__init__(self, process_id, command)
 
     async def start(self):
         """ Launch the task """
@@ -40,6 +41,7 @@ class NmapTask(Task):
             # Save the data locally.]
             print("The process finished OK")
             self.stdout = stdout
+            print(len(stdout))
             self.parse_results(self.stdout)
             self.stderr = stderr
             self.exit_code = await self.proc.wait()
@@ -52,7 +54,13 @@ class NmapTask(Task):
             return True
 
     def parse_results(self, stdout):
-        nmap_report = NmapParser.parse(stdout)
+        stdout = stdout.decode('ascii')
+        print('-'*20)
+        print(stdout)
+        print('-'*20)
+        print(type(stdout))
+        print('-'*20)
+        nmap_report = NmapParser.parse(stdout, incomplete=False)
         print(nmap_report.get_dict())
 
 
