@@ -1,8 +1,11 @@
+""" Keeps class with the interfaces that are pulled by worker
+to manager the launched instance of scan. """
 import re
 import signal
-import asyncio
 import threading
 from time import sleep
+
+import asyncio
 from asyncio.subprocess import PIPE
 
 from black.workers.common.task import Task
@@ -64,7 +67,6 @@ class MasscanTask(Task):
             else:
                 loop = asyncio.get_event_loop()
                 loop.create_task(self.read_stdout())
-
 
     async def read_stderr(self):
         """ Similar to read_stdout """
