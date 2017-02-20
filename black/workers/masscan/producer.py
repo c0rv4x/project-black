@@ -8,7 +8,6 @@ def main():
     loop = asyncio.get_event_loop()
 
     async def go():
-
         random_id = "masscan_task_"+str(uuid4())
 
         connection = await asynqp.connect('localhost', 5672, username='guest', password='guest')
@@ -29,10 +28,10 @@ def main():
         print("-"*20)
         print("Sending task")
 
-        task_id = str(uuid4())
+
         msg = asynqp.Message({
-            'task_id': 'masscan_task_' + task_id,
-            'command': ['sudo', 'masscan', '-p80-5000', '213.180.204.3']
+            'task_id': 'masscan_task_' + random_id,
+            'command': ['sudo', 'masscan', '-oX', '-', '-p80-1000', '213.180.204.3']
         })
         exchange.publish(msg, 'masscan_tasks')
         print("Sent task")
