@@ -24,12 +24,16 @@ class MasscanTask(Task):
         self.stderr = []
 
     async def start(self):
-        """ Launch the task """
+        """ Launch the task and readers of stdout, stderr """
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
         self.status = "Working"
+
+        # Launch readers
         loop = asyncio.get_event_loop()
         loop.create_task(self.read_stdout())
         loop.create_task(self.read_stderr())
+
+        # Launch status poller
         self.spawn_status_poller()
 
     def send_notification(self, command):
@@ -48,14 +52,18 @@ class MasscanTask(Task):
             stdout_chunk = await self.proc.stdout.read(1024)
             self.stdout.append(stdout_chunk)
 
-            # Create the task on reading the leftover
+            # Create the task on reading the next chunk of data
             loop = asyncio.get_event_loop()
             loop.create_task(self.read_stdout())
 
         # If the task has finished, drain stdout
         elif self.status == 'Aborted' or self.status == 'Finished':
             try:
+                # Try to read from stdout for quite some time
                 stdout_chunk = await asyncio.wait_for(self.proc.stdout.read(), 0.5)
+
+                # Wierd thing: while reading from the stdout of finished process,
+                # b'' is read in a while loop, so we need to check.
                 if len(stdout_chunk) == 0:
                     raise Exception("No data left")
                 else:
@@ -64,9 +72,6 @@ class MasscanTask(Task):
                 pass
             except Exception as _:
                 pass
-            else:
-                loop = asyncio.get_event_loop()
-                loop.create_task(self.read_stdout())
 
     async def read_stderr(self):
         """ Similar to read_stdout """
@@ -74,8 +79,11 @@ class MasscanTask(Task):
             stderr_chunk = await self.proc.stderr.read(1024)
             self.stderr.append(stderr_chunk)
 
+            # Create the task on reading the next chunk of data
             loop = asyncio.get_event_loop()
             loop.create_task(self.read_stderr())
+
+        # If the task has finished, drain stderr
         elif self.status == 'Aborted' or self.status == 'Finished':
             try:
                 stderr_chunk = await asyncio.wait_for(self.proc.stderr.read(), 0.5)
@@ -87,10 +95,6 @@ class MasscanTask(Task):
                 pass
             except Exception as _:
                 pass
-            else:
-                print(3)
-                loop = asyncio.get_event_loop()
-                loop.create_task(self.read_stderr())
 
     def spawn_status_poller(self):
         """ Spawn the thread that will poll for the progress """
@@ -111,6 +115,7 @@ class MasscanTask(Task):
                     percent = re.findall(r"([0-9]{1,3}\.[0-9]{1,3})%", data)
                     time_left = re.findall(r"([0-9]{1,4}:[0-9]{1,2}:[0-9]{1,2})", data)
                     found = re.findall(r"found=([0-9]{0,5000})", data)
+
                     print("[-] Working {}%, {} left, {} found".format(
                         percent[0],
                         time_left[0],
@@ -124,11 +129,10 @@ class MasscanTask(Task):
     async def wait_for_exit(self):
         """ Check if the process exited. If so,
         save stdout, stderr, exit_code and update the status. """
-        print("Waiting for exit")
+        print("Task started")
         exit_code = await self.proc.wait()
         self.exit_code = exit_code
-        # The process have exited.
-        # Save the data locally.
+        # The process has exited.
         print("The process finished OK")
         print(self.stdout)
 
