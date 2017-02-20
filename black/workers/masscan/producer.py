@@ -32,7 +32,7 @@ def main():
         task_id = str(uuid4())
         msg = asynqp.Message({
             'task_id': 'masscan_task_' + task_id,
-            'command': ['sudo', 'masscan', '-p80-5000', '213.180.204.3']
+            'command': ['sudo', 'masscan', '-p80-1000', '213.180.204.3']
         })
         exchange.publish(msg, 'masscan_tasks')
         print("Sent task")
