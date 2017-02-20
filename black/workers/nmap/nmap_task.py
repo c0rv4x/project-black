@@ -1,7 +1,5 @@
 import signal
 import asyncio
-import aioredis
-from concurrent.futures._base import TimeoutError
 
 from black.workers.common.task import Task
 
@@ -10,6 +8,13 @@ class NmapTask(Task):
 
     def __init__(self, process_id, command):
         Task.__init__(self.process, process_id, command)
+
+        self.proc = None
+        self.status = "New"
+
+        self.exit_code = None
+        self.stdout = []
+        self.stderr = []
 
     async def start(self):
         """ Launch the task """
@@ -31,7 +36,7 @@ class NmapTask(Task):
         try:
             # Give 0.1s for a check that a process has exited
             (stdout, stderr) = await asyncio.wait_for(self.proc.communicate(), 0.1)
-        except TimeoutError as e:
+        except TimeoutError as _:
             # Not yet finished
             return False
         else:
