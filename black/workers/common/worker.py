@@ -43,39 +43,39 @@ class Worker(object):
         self.notifications_queue = await channel.declare_queue(self.name + '_notifications')
 
         # Bind the queue to the exchange, so the queue will get messages published to the exchange
-        await self.tasks_queue.bind(exchange, routing_key=self.name + '_tasks') 
-        await self.notifications_queue.bind(exchange, routing_key=self.name + '_notifications')        
+        await self.tasks_queue.bind(exchange, routing_key=self.name + '_tasks')
+        await self.notifications_queue.bind(exchange, routing_key=self.name + '_notifications')
 
     async def acquire_resources(self):
-        # Function that captures resources, now it is just a semaphore
+        """ Function that captures resources, now it is just a semaphore """
         await self.semaphore.acquire()
 
     def release_resources(self):
-        # Function that releases resources, now it is just a semaphore
+        """ Function that releases resources, now it is just a semaphore """
         self.semaphore.release()
 
 
     async def start_tasks_consumer(self):
-        """ Check if tasks queue has any data. 
+        """ Check if tasks queue has any data.
         If any, launch the tasks execution """
-        await self.tasks_queue.consume(self._start_task)
+        await self.tasks_queue.consume(self.schedule_task)
 
-    def _start_task(self, message):
-        """ Wrapper of start_task that puts the task to the event loop """
+    def schedule_task(self, message):
+        """ Wrapper of execute_task that puts the task to the event loop """
         try:
             loop = asyncio.get_event_loop()
-            loop.create_task(self.start_task(message))
+            loop.create_task(self.execute_task(message))
         except Exception as e:
             print(e)
         else:
             message.ack()
 
-    async def start_task(self, message):
-        """ Method launches the task execution, remembering the 
+    async def execute_task(self, message):
+        """ Method launches the task execution, remembering the
             processes's object. """
         await self.acquire_resources()
 
-        # Add a unique id to the task, so we can track the notifications 
+        # Add a unique id to the task, so we can track the notifications
         # which are addressed to the ceratin task
         message = message.json()
         task_id = message['task_id']
@@ -88,42 +88,48 @@ class Worker(object):
         # Store the object that points to the process
         self.active_processes.append(proc)
 
+        # Wait till finishing the task
+        await proc.wait_for_exit()
+
+        # Do some finalization
+        self.handle_finished_task(proc)
+
     def handle_finished_task(self, proc):
+        """ After the task is finished, remove it from 'active' list """
         self.active_processes.remove(proc)
         self.finished_processes.append(proc)
 
+        print("task finished, realeasing")
         self.release_resources()
 
 
     async def start_notifications_consumer(self):
-        """ Check if tasks queue has any data. 
+        """ Check if tasks queue has any data.
         If any, launch the tasks execution """
         await self.notifications_queue.consume(self.handle_notification)
 
     def handle_notification(self, message):
         """ Handle the notification, just received. """
         print("Notification received")
-        # Add a unique id to the task, so we can track the notifications 
+        # Add a unique id to the task, so we can track the notifications
         # which are addressed to the ceratin task
         message.ack()
         message = message.json()
         task_id = message['task_id']
         command = message['command']
 
+        sent = False
         for proc in self.active_processes:
             if proc.get_id() == task_id:
                 print("Now sending")
                 proc.send_notification(command)
+                sent = True
 
-
-    async def update_active_processes(self):
-        """ Check all the running processes and see if any has finished(terminated) """
-        for proc in self.active_processes:
-            # Ask the process instance if he has exited
-            if await proc.check_if_exited():
-                # If so, move it from the list of active processes to the inactive list
-                self.handle_finished_task(proc)
-
-        # Schedule this task again
-        loop = asyncio.get_event_loop()
-        loop.create_task(self.update_active_processes())
+        if not sent:
+            for proc in self.finished_processes:
+                if proc.get_id() == task_id:
+                    print("Now sending")
+                    proc.send_notification(command)
+                    sent = True
+        if not sent:
+            raise Exception("Mess with the queues")
