@@ -14,8 +14,7 @@ class AsyncWorker(Worker):
 
     def __init__(self, worker_name, task_class):
         Worker.__init__(self, worker_name, task_class)
-        # TODO: add something similar
-        #   self.semaphore = asyncio.Semaphore(value=3)
+        self.semaphore = asyncio.Semaphore(value=3)
 
     async def initialize(self):
         """ Init variables """
