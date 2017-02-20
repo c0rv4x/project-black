@@ -7,25 +7,15 @@ from .worker import Worker
 
 class AsyncWorker(Worker):
 
-    """Worker keeps track of new tasks on the redis channel and 
+    """Worker keeps track of new tasks on the redis channel and
     launches them in the background.
     Another redis channel is monitored for all notifications.
     If any, process them ASAP."""
 
     def __init__(self, worker_name, task_class):
-        # Queue for receiving tasks
-        self.tasks_queue = None
-
-        # Queue for receiving notifications
-        self.notifications_queue = None
-
-        self.active_processes = list()
-        self.finished_processes = list()
-        self.name = worker_name
-
-        self.task_class = task_class
-
-        self.semaphore = asyncio.Semaphore(value=3)
+        Worker.__init__(self, worker_name, task_class)
+        # TODO: add something similar
+        #   self.semaphore = asyncio.Semaphore(value=3)
 
     async def initialize(self):
         """ Init variables """
