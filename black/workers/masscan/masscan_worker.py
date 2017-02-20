@@ -4,7 +4,7 @@ from black.workers.common.worker import Worker
 
 
 class MasscanWorker(Worker):
-    """ """
+    """ Main class that monitors and manager instances of running masscan. """
     def __init__(self):
         Worker.__init__(self, 'masscan', MasscanTask)
 
