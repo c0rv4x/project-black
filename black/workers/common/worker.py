@@ -117,7 +117,18 @@ class Worker(object):
         task_id = message['task_id']
         command = message['command']
 
+        sent = False
         for proc in self.active_processes:
             if proc.get_id() == task_id:
                 print("Now sending")
                 proc.send_notification(command)
+                sent = True
+
+        if not sent:
+            for proc in self.finished_processes:
+                if proc.get_id() == task_id:
+                    print("Now sending")
+                    proc.send_notification(command)
+                    sent = True
+        if not sent:
+            raise Exception("Mess with the queues")
