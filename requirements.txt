@@ -1,4 +1,4 @@
 Django
 psycopg2
-libnmap
-
+python-libnmap
+pika
