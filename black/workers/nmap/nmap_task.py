@@ -1,14 +1,16 @@
 import signal
+import threading
+
 import asyncio
+from asyncio.subprocess import PIPE
 
 from black.workers.common.task import Task
 
 
 class NmapTask(Task):
-
-    def __init__(self, process_id, command):
-        Task.__init__(self.process, process_id, command)
-
+    """ Major class for working with nmap """
+    def __init__(self, task_id, command):
+        Task.__init__(self, task_id, command)
         self.proc = None
         self.status = "New"
 
@@ -18,11 +20,15 @@ class NmapTask(Task):
 
     async def start(self):
         """ Launch the task """
-        self.proc = await asyncio.create_subprocess_exec(*self.command)
+        self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
         self.status = "Working"
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.read_stdout())
+        loop.create_task(self.read_stderr())
+        self.spawn_status_poller()
 
     def send_notification(self, command):
-        """ Sends 'command' notification to the current process. """        
+        """ Sends 'command' notification to the current process. """
         if command == 'pause':
             self.proc.send_signal(signal.SIGSTOP.value)  # SIGSTOP
         elif command == 'stop':
@@ -30,26 +36,76 @@ class NmapTask(Task):
         elif command == 'unpause':
             self.proc.send_signal(signal.SIGCONT.value)  # SIGCONT
 
-    async def check_if_exited(self):
-        """ Check if the process exited. If so, 
-        save stdout, stderr, exit_code and update the status. """
-        try:
-            # Give 0.1s for a check that a process has exited
-            (stdout, stderr) = await asyncio.wait_for(self.proc.communicate(), 0.1)
-        except TimeoutError as _:
-            # Not yet finished
-            return False
-        else:
-            # The process have exited.
-            # Save the data locally.]
-            print("The process finished OK")
-            self.stdout = stdout
-            self.stderr = stderr
-            self.exit_code = await self.proc.wait()
+    async def read_stdout(self):
+        """ Read from stdout by chunks, store it in self.stdout """
+        # If we know, that there will be some data, we read it
+        if self.status == 'New' or self.status == 'Working':
+            stdout_chunk = await self.proc.stdout.read(1024)
+            self.stdout.append(stdout_chunk)
 
-            if self.exit_code == 0:
-                self.status = "Finished"
+            # Create the task on reading the leftover
+            loop = asyncio.get_event_loop()
+            loop.create_task(self.read_stdout())
+
+        # If the task has finished, drain stdout
+        elif self.status == 'Aborted' or self.status == 'Finished':
+            try:
+                stdout_chunk = await asyncio.wait_for(self.proc.stdout.read(), 0.5)
+                if len(stdout_chunk) == 0:
+                    raise Exception("No data left")
+                else:
+                    self.stdout.append(stdout_chunk)
+            except TimeoutError as _:
+                pass
+            except Exception as _:
+                pass
             else:
-                self.status = "Aborted"
+                loop = asyncio.get_event_loop()
+                loop.create_task(self.read_stdout())
 
-            return True
+    async def read_stderr(self):
+        """ Similar to read_stdout """
+        if self.status == 'New' or self.status == 'Working':
+            stderr_chunk = await self.proc.stderr.read(1024)
+            self.stderr.append(stderr_chunk)
+
+            loop = asyncio.get_event_loop()
+            loop.create_task(self.read_stderr())
+        elif self.status == 'Aborted' or self.status == 'Finished':
+            try:
+                stderr_chunk = await asyncio.wait_for(self.proc.stderr.read(), 0.5)
+                if len(stderr_chunk) == 0:
+                    raise Exception("No data left")
+                else:
+                    self.stderr.append(stderr_chunk)
+            except TimeoutError as _:
+                pass
+            except Exception as _:
+                pass
+            else:
+                print(3)
+                loop = asyncio.get_event_loop()
+                loop.create_task(self.read_stderr())
+
+    def spawn_status_poller(self):
+        thread = threading.Thread(target=self.progress_poller)
+        thread.start()
+
+    def progress_poller(self):
+        pass
+
+    async def wait_for_exit(self):
+        """ Check if the process exited. If so,
+        save stdout, stderr, exit_code and update the status. """
+        print("Waiting for exit")
+        exit_code = await self.proc.wait()
+        self.exit_code = exit_code
+        # The process have exited.
+        # Save the data locally.
+        print("The process finished OK")
+        print(self.stdout)
+
+        if self.exit_code == 0:
+            self.status = "Finished"
+        else:
+            self.status = "Aborted"
