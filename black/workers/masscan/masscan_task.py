@@ -14,8 +14,8 @@ from black.workers.common.task import Task
 class MasscanTask(Task):
     """ Major class for working with masscan """
 
-    def __init__(self, process_id, command):
-        Task.__init__(self, process_id, command)
+    def __init__(self, task_id, command):
+        Task.__init__(self, task_id, command)
         self.proc = None
         self.status = "New"
 
