@@ -112,14 +112,15 @@ class MasscanTask(Task):
             elif self.status == "Working":
                 try:
                     data = str(self.stderr[-1])
-                    percent = re.findall(r"([0-9]{1,3}\.[0-9]{1,3})%", data)
-                    time_left = re.findall(r"([0-9]{1,4}:[0-9]{1,2}:[0-9]{1,2})", data)
-                    found = re.findall(r"found=([0-9]{0,5000})", data)
+                    if data:
+                        percent = re.findall(r"([0-9]{1,3}\.[0-9]{1,3})%", data)
+                        time_left = re.findall(r"([0-9]{1,4}:[0-9]{1,2}:[0-9]{1,2})", data)
+                        found = re.findall(r"found=([0-9]{0,5000})", data)
 
-                    print("[-] Working {}%, {} left, {} found".format(
-                        percent[0],
-                        time_left[0],
-                        found[0]))
+                        print("[-] Working {}%, {} left, {} found".format(
+                            percent[0],
+                            time_left[0],
+                            found[0]))
                 except Exception as exc:
                     print(exc)
 
