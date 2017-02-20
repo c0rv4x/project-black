@@ -130,6 +130,7 @@ class MasscanTask(Task):
         # The process have exited.
         # Save the data locally.
         print("The process finished OK")
+        print(self.stdout)
 
         if self.exit_code == 0:
             self.status = "Finished"
