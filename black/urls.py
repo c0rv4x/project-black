@@ -16,6 +16,16 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from django.http import HttpResponse
+
+
+def start_nmap(request):
+	from black.workers.nmap.producer import sync_go
+	sync_go()
+
+	return HttpResponse("Meh")
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^$', start_nmap)
 ]
