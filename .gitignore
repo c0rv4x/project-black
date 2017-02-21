@@ -2,3 +2,4 @@
 **/*.xml
 .env
 .idea
+**/.DS_Store
