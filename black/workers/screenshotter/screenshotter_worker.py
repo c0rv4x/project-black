@@ -11,4 +11,4 @@ class ScreenshotterWorker(SyncWorker):
 
     def start(self):
         """ Start all the necessary consumers """
-        self.start_tasks_consumer()
+        self.start_consuming()

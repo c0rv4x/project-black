@@ -16,5 +16,5 @@ class ClassName(object):
 		
 
 w = ScreenshotterWorker()
-w.produce_sample()
+# w.produce_sample()
 w.start()
