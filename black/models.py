@@ -31,4 +31,4 @@ class Scan(models.Model):
     banner = models.CharField(max_length=2048)
     screenshot_path = models.CharField(max_length=256)
     task_id = models.ForeignKey(Task, on_delete=models.DO_NOTHING)
-    project_name = models.CharField(max_length=200)
+    project_name = models.ForeignKey(Project, on_delete=models.CASCADE)
