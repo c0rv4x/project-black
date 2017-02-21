@@ -21,10 +21,10 @@ class ScreenshotterTask(Task):
         self.status = "Working"
         print("Starting work")
         print(self.command)
-        protocol = self.command["protocol"]
+        protocol = self.command["protocol"] or 'http'
         hostname = self.command["hostname"]
-        port = self.command["port"]
-        path = self.command["path"]
+        port = self.command["port"] or 80
+        path = self.command["path"] or '/'
         self.result = make_screenshot(
             protocol + "//" + hostname + ":" + str(port) + path,
             "black/screenshots/" + self.task_id)
@@ -51,4 +51,3 @@ class ScreenshotterTask(Task):
 
     def save(self):
         """ Save the information to the DB. """
-        
