@@ -2,6 +2,8 @@
 to manager the launched instance of scan. """
 from selenium import webdriver
 
+# from black.models import Scan
+
 from black.workers.common.task import Task
 from .screenshot_maker import make_screenshot
 
@@ -19,7 +21,14 @@ class ScreenshotterTask(Task):
         self.status = "Working"
         print("Starting work")
         print(self.command)
-        self.result = make_screenshot(self.command, "black/screenshots/" + self.task_id)
+        protocol = self.command["protocol"]
+        hostname = self.command["hostname"]
+        port = self.command["port"]
+        path = self.command["path"]
+        self.result = make_screenshot(
+            protocol + "//" + hostname + ":" + str(port) + path,
+            "black/screenshots/" + self.task_id)
+
         print("Finished work")
 
     def send_notification(self, command):
@@ -36,5 +45,10 @@ class ScreenshotterTask(Task):
         save stdout, stderr, exit_code and update the status. """
         if self.result['success']:
             self.status = "Finished"
+            self.save()
         else:
             self.status = "Aborted"
+
+    def save(self):
+        """ Save the information to the DB. """
+        

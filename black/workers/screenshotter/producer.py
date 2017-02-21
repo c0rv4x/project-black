@@ -31,7 +31,12 @@ def main():
 
             msg = asynqp.Message({
                 'task_id': random_id,
-                'command': 'https://ya.ru'
+                'command': {
+                    'protocol': 'https:',
+                    'hostname': 'ya.ru',
+                    'port': 443,
+                    'path': '/'
+                }
             })
             exchange.publish(msg, 'screenshotter_tasks')
             print("Sent task")
@@ -52,7 +57,12 @@ def main():
 
             msg = asynqp.Message({
                 'task_id': random_id,
-                'command': 'https://ya.ru'
+                'command': {
+                    'protocol': 'https:',
+                    'hostname': 'ya.ru',
+                    'port': 443,
+                    'path': '/'
+                }
             })
             exchange.publish(msg, 'screenshotter_tasks')
 
