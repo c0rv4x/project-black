@@ -1,10 +1,9 @@
 """ Keeps class with the interfaces that are pulled by worker
 to manager the launched instance of scan. """
-import signal
-from time import sleep
 from selenium import webdriver
 
 from black.workers.common.task import Task
+from .screenshot_maker import make_screenshot
 
 
 class ScreenshotterTask(Task):
@@ -13,33 +12,29 @@ class ScreenshotterTask(Task):
     def __init__(self, task_id, command):
         Task.__init__(self, task_id, command)
         self.status = "New"
+        self.result = None
 
     def start(self):
         """ Launch the task and readers of stdout, stderr """
         self.status = "Working"
         print("Starting work")
-        sleep(5)
+        print(self.command)
+        self.result = make_screenshot(self.command, self.task_id)
         print("Finished work")
 
-    def get_screenshot(self, site="https://github.com"):
-        driver = webdriver.PhantomJS()
-        driver.set_window_size(1024, 768) # set the window size that you need 
-        driver.get(site)
-        driver.save_screenshot('github.png')        
-
     def send_notification(self, command):
-        """ Sends 'command' notification to the current process. """
+        """ Sendms 'command' notification to the current process. """
         if command == 'pause':
-            self.proc.send_signal(signal.SIGSTOP.value)  # SIGSTOP
+            pass
         elif command == 'stop':
-            self.proc.terminate()  # SIGTERM
+            pass
         elif command == 'unpause':
-            self.proc.send_signal(signal.SIGCONT.value)  # SIGCONT
+            pass
 
     def wait_for_exit(self):
         """ Check if the process exited. If so,
         save stdout, stderr, exit_code and update the status. """
-        if self.exit_code == 0:
+        if self.result['success']:
             self.status = "Finished"
         else:
             self.status = "Aborted"
