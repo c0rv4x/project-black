@@ -52,7 +52,7 @@ def make_screenshot(url, screenshot_name, proxy=None, timeout=10):
 
     if basic_response is not None and basic_response.status_code == 401:
         make_auth_screenshot(basic_response)
-    else:
+    elif basic_response is not None:
         browser.set_page_load_timeout((timeout))
         old_url = browser.current_url
         browser.get(url.strip())
@@ -108,3 +108,6 @@ def make_screenshot(url, screenshot_name, proxy=None, timeout=10):
             browser.save_screenshot(screenshot_name + ".png")
 
             return {"success": True, "error": None}
+    else:
+        return {"success": None, "error": True}
+

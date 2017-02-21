@@ -19,7 +19,7 @@ class ScreenshotterTask(Task):
         self.status = "Working"
         print("Starting work")
         print(self.command)
-        self.result = make_screenshot(self.command, self.task_id)
+        self.result = make_screenshot(self.command, "black/screenshots/" + self.task_id)
         print("Finished work")
 
     def send_notification(self, command):
