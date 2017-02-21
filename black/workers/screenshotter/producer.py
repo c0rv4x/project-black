@@ -2,7 +2,7 @@ import asyncio
 from uuid import uuid4
 
 import asynqp
-
+import sys
 
 def main():
     loop = asyncio.get_event_loop()
@@ -25,15 +25,52 @@ def main():
         await tasks_queue.bind(exchange, routing_key='screenshotter_tasks')
         await notifications_queue.bind(exchange, routing_key='screenshotter_notifications')
 
-        print("-"*20)
-        print("Sending task")
+        if sys.argv[1] == 'task':
+            print("-"*20)
+            print("Sending task")
 
-        msg = asynqp.Message({
-            'task_id': 'screenshotter_task_' + random_id,
-            'command': 'ya.ru'
-        })
-        exchange.publish(msg, 'screenshotter_tasks')
-        print("Sent task")
+            msg = asynqp.Message({
+                'task_id': random_id,
+                'command': 'ya.ru'
+            })
+            exchange.publish(msg, 'screenshotter_tasks')
+            print("Sent task")
+
+        elif sys.argv[1] == 'note':
+            print("-"*20)
+            print("Sending notification")
+
+            msg = asynqp.Message({
+                'task_id': random_id,
+                'command': 'pause'
+            })
+            exchange.publish(msg, 'screenshotter_notifications')
+            print("Sent notification")
+        else:
+            print("-"*20)
+            print("Sending task")
+
+            msg = asynqp.Message({
+                'task_id': random_id,
+                'command': 'ya.ru'
+            })
+            exchange.publish(msg, 'screenshotter_tasks')
+
+            print("Sent task")            
+
+
+            from time import sleep
+            sleep(2)
+
+            print("-"*20)
+            print("Sending notification")
+
+            msg = asynqp.Message({
+                'task_id': random_id,
+                'command': 'pause'
+            })
+            exchange.publish(msg, 'screenshotter_notifications')
+            print("Sent notification")
 
         await channel.close()
         await connection.close()
