@@ -2,7 +2,7 @@
 to manager the launched instance of scan. """
 from selenium import webdriver
 
-# from black.models import Scan
+from black.models import Scan
 
 from black.workers.common.task import Task
 from .screenshot_maker import make_screenshot
@@ -11,7 +11,7 @@ from .screenshot_maker import make_screenshot
 class ScreenshotterTask(Task):
     """ Major class for working with selenium """
 
-    def __init__(self, task_id, command):
+    def __init__(self, task_id, command, project_name):
         Task.__init__(self, task_id, command)
         self.status = "New"
         self.result = None
