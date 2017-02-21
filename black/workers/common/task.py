@@ -5,12 +5,13 @@ against 1 target) """
 class Task(object):
     """ Base class for the task """
 
-    def __init__(self, task_id, command):
+    def __init__(self, task_id, command, project_name):
         # ID returned from the queue
         self.task_id = task_id
 
         # Command, just for the record
         self.command = command
+        self.project_name = project_name
         self.status = "New"
 
         # Points the the asyncio.Process object

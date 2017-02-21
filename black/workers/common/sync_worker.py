@@ -135,7 +135,7 @@ class SyncWorker(Worker):
                     proc.send_notification(command)
                     sent = True
         if not sent:
-            raise Exception("Mess with the queues")
+            print("Mess with the queues: notification destination not found")
 
     def start_consuming(self):
         """ Launch both queues and start consuming """
