@@ -30,10 +30,8 @@ class SyncWorker(Worker):
         self.channel.exchange_declare(
             exchange="tasks.exchange",
             exchange_type="direct",
-            passive=False,
-            durable=True,
-            auto_delete=False)
-        self.channel.queue_declare(queue=self.name + "_tasks", auto_delete=True)
+            durable=True)
+        self.channel.queue_declare(queue=self.name + "_tasks", durable=True)
         self.channel.queue_bind(
             queue=self.name + "_tasks",
             exchange="tasks.exchange",
@@ -60,16 +58,18 @@ class SyncWorker(Worker):
     def start_tasks_consumer(self):
         """ Check if tasks queue has any data.
         If any, launch the tasks execution """
-        print(self.channel.basic_consume(
+        self.channel.basic_consume(
             consumer_callback=self.schedule_task,
-            queue=self.name + '_tasks'))
-        print(self.channel.start_consuming())
+            queue=self.name + '_tasks')
+        self.channel.start_consuming()
 
     def schedule_task(self, something, method, properties, body):
         """ Wrapper of execute_task that puts the task to the event loop """
+        print("Got msg {}".format(body))
         self.channel.basic_ack(delivery_tag=method.delivery_tag)
 
         self.acquire_resources()
+        print("Enough resources on {}".format(body))
         thread = threading.Thread(target=self.execute_task, args=(body,))
         thread.start()
 
@@ -100,7 +100,7 @@ class SyncWorker(Worker):
         self.active_processes.remove(proc)
         self.finished_processes.append(proc)
 
-        print("task finished, realeasing")
+        print("Releasing resources")
         self.release_resources()
 
 
