@@ -61,7 +61,6 @@ class SyncWorker(Worker):
         self.channel.basic_consume(
             consumer_callback=self.schedule_task,
             queue=self.name + '_tasks')
-        self.channel.start_consuming()
 
     def schedule_task(self, something, method, properties, body):
         """ Wrapper of execute_task that puts the task to the event loop """
@@ -84,10 +83,12 @@ class SyncWorker(Worker):
 
         # Spawn the process
         proc = self.task_class(task_id, command)
-        proc.start()
 
         # Store the object that points to the process
         self.active_processes.append(proc)
+
+        # Launch
+        proc.start()
 
         # Wait till finishing the task
         proc.wait_for_exit()
@@ -104,33 +105,40 @@ class SyncWorker(Worker):
         self.release_resources()
 
 
-    # async def start_notifications_consumer(self):
-    #     """ Check if tasks queue has any data.
-    #     If any, launch the tasks execution """
-    #     self.channel.consume(self.schedule_task, self.name + '_notifications')
+    def start_notifications_consumer(self):
+        """ Check if tasks queue has any data.
+        If any, launch the tasks execution """
+        self.channel.basic_consume(
+            consumer_callback=self.handle_notification,
+            queue=self.name + '_notifications')
 
-    # def handle_notification(self, message):
-    #     """ Handle the notification, just received. """
-    #     print("Notification received")
-    #     # Add a unique id to the task, so we can track the notifications
-    #     # which are addressed to the ceratin task
-    #     message.ack()
-    #     message = message.json()
-    #     task_id = message['task_id']
-    #     command = message['command']
+    def handle_notification(self, something, method, properties, body):
+        """ Handle the notification, just received. """
+        print("Notification received")
+        self.channel.basic_ack(delivery_tag=method.delivery_tag)
+        # Add a unique id to the task, so we can track the notifications
+        # which are addressed to the ceratin task
+        message = json.loads(body)
+        task_id = message['task_id']
+        command = message['command']
+        sent = False
+        for proc in self.active_processes:
+            if proc.get_id() == task_id:
+                print("Now sending")
+                proc.send_notification(command)
+                sent = True
 
-    #     sent = False
-    #     for proc in self.active_processes:
-    #         if proc.get_id() == task_id:
-    #             print("Now sending")
-    #             proc.send_notification(command)
-    #             sent = True
+        if not sent:
+            for proc in self.finished_processes:
+                if proc.get_id() == task_id:
+                    print("Now sending")
+                    proc.send_notification(command)
+                    sent = True
+        if not sent:
+            raise Exception("Mess with the queues")
 
-    #     if not sent:
-    #         for proc in self.finished_processes:
-    #             if proc.get_id() == task_id:
-    #                 print("Now sending")
-    #                 proc.send_notification(command)
-    #                 sent = True
-    #     if not sent:
-    #         raise Exception("Mess with the queues")
+    def start_consuming(self):
+        """ Launch both queues and start consuming """
+        self.start_tasks_consumer()
+        self.start_notifications_consumer()
+        self.channel.start_consuming()
