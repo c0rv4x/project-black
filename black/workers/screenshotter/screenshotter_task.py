@@ -12,7 +12,7 @@ class ScreenshotterTask(Task):
     """ Major class for working with selenium """
 
     def __init__(self, task_id, command, project_name):
-        Task.__init__(self, task_id, command)
+        Task.__init__(self, task_id, command, project_name)
         self.status = "New"
         self.result = None
 
