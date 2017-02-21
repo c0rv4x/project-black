@@ -1,5 +1,4 @@
 """ Module that will accumulate all the tasks described """
-import asyncio
 from black.workers.common.sync_worker import SyncWorker
 # from black.workers.masscan.masscan_worker import MasscanWorker
 
@@ -11,11 +10,12 @@ from black.workers.common.sync_worker import SyncWorker
 
 class ClassName(object):
 	"""docstring for ClassName"""
-	def __init__(self, arg):
+	def __init__(self, arg, sd):
 		super(ClassName, self).__init__()
 		self.arg = arg
 		
 
 w = SyncWorker('test', ClassName)
 w.initialize()
+w.produce_sample()
 w.start_tasks_consumer()
