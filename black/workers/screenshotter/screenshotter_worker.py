@@ -1,15 +1,14 @@
 """ Module that will accumulate all the tasks described """
-from black.workers.screenshotter import ScreenshotterTask
-from black.workers.common.worker import Worker
+from black.workers.screenshotter.screenshotter_task import ScreenshotterTask
+from black.workers.common.sync_worker import SyncWorker
 
 
-class ScreenshotterWorker(Worker):
+class ScreenshotterWorker(SyncWorker):
     """ Main class that monitors and manager instances of running screenshotter. """
     def __init__(self):
-        Worker.__init__(self, 'screenshotter', ScreenshotterTask)
+        SyncWorker.__init__(self, 'screenshotter', ScreenshotterTask)
+        self.initialize()
 
-    async def start(self):
+    def start(self):
         """ Start all the necessary consumers """
-        await self.initialize()
-        await self.start_tasks_consumer()
-        await self.start_notifications_consumer()
+        self.start_tasks_consumer()

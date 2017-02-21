@@ -1,6 +1,7 @@
 """ Keeps class with the interfaces that are pulled by worker
 to manager the launched instance of scan. """
 import signal
+from time import sleep
 from selenium import webdriver
 
 from black.workers.common.task import Task
@@ -16,6 +17,9 @@ class ScreenshotterTask(Task):
     def start(self):
         """ Launch the task and readers of stdout, stderr """
         self.status = "Working"
+        print("Starting work")
+        sleep(5)
+        print("Finished work")
 
     def get_screenshot(self, site="https://github.com"):
         driver = webdriver.PhantomJS()
@@ -35,8 +39,6 @@ class ScreenshotterTask(Task):
     def wait_for_exit(self):
         """ Check if the process exited. If so,
         save stdout, stderr, exit_code and update the status. """
-        print("Task started")
-
         if self.exit_code == 0:
             self.status = "Finished"
         else:

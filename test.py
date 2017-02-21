@@ -1,5 +1,5 @@
 """ Module that will accumulate all the tasks described """
-from black.workers.common.sync_worker import SyncWorker
+from black.workers.screenshotter.screenshotter_worker import ScreenshotterWorker
 # from black.workers.masscan.masscan_worker import MasscanWorker
 
 
@@ -15,7 +15,6 @@ class ClassName(object):
 		self.arg = arg
 		
 
-w = SyncWorker('test', ClassName)
-w.initialize()
+w = ScreenshotterWorker()
 w.produce_sample()
-w.start_tasks_consumer()
+w.start()
