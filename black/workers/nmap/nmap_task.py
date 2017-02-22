@@ -120,7 +120,7 @@ class NmapTask(Task):
         try:
             nmap_report = NmapParser.parse(stdout)
         except NmapParserException:
-            nmap_report = NmapParser.parse(stdout, incomplete = True)
+            nmap_report = NmapParser.parse(stdout, incomplete=True)
         for scanned_host in nmap_report.hosts:
             for service_of_host in scanned_host.services:
                 if service_of_host.open():
