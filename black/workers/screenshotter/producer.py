@@ -36,7 +36,8 @@ def main():
                     'hostname': 'ya.ru',
                     'port': 443,
                     'path': '/'
-                }
+                },
+                'project_name': 'test_project'
             })
             exchange.publish(msg, 'screenshotter_tasks')
             print("Sent task")

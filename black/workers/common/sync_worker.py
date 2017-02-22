@@ -80,9 +80,10 @@ class SyncWorker(Worker):
         message = json.loads(message)
         task_id = message['task_id']
         command = message['command']
+        project_name = message['project_name']
 
         # Spawn the process
-        proc = self.task_class(task_id, command)
+        proc = self.task_class(task_id, command, project_name)
 
         # Store the object that points to the process
         self.active_processes.append(proc)
