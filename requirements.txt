@@ -1,3 +1,4 @@
-Django
 psycopg2
 selenium
+flask
+sqlalchemy
