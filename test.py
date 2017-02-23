@@ -8,13 +8,16 @@ from black.workers.screenshotter.screenshotter_worker import ScreenshotterWorker
 # loop.create_task(masscan.start())
 # loop.run_forever()
 
-class ClassName(object):
-	"""docstring for ClassName"""
-	def __init__(self, arg, sd):
-		super(ClassName, self).__init__()
-		self.arg = arg
+# class ClassName(object):
+# 	"""docstring for ClassName"""
+# 	def __init__(self, arg, sd):
+# 		super(ClassName, self).__init__()
+# 		self.arg = arg
 		
 
-w = ScreenshotterWorker()
-# w.produce_sample()
-w.start()
+# w = ScreenshotterWorker()
+# # w.produce_sample()
+# w.start()
+
+
+import black.workers.screenshotter.db_save

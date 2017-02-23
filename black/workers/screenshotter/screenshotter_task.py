@@ -1,6 +1,7 @@
 """ Keeps class with the interfaces that are pulled by worker
 to manager the launched instance of scan. """
 from selenium import webdriver
+from sqlalchemy import create_engine
 
 from black.workers.common.task import Task
 from .screenshot_maker import make_screenshot
@@ -51,4 +52,4 @@ class ScreenshotterTask(Task):
         """ Save the information to the DB. """
         # TODO: wait, wait, at which position should i save the picture?
         # Meaning, if we rescan, should save to the last one?
-        pass
+        
