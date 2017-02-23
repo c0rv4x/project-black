@@ -1,9 +1,10 @@
 from black.models import Project, get_new_session, destroy_session
 
 
-session = get_new_session()
-project = Project(project_name="test_project")
-session.add(project)
-session.commit()
-destroy_session(session)
-print("Done")
+def save_screenshot_data(task_id, command, project_name, screenshot_path):
+	session = get_new_session()
+	project = session.query(Project).first()
+
+	
+
+	destroy_session(session)

@@ -5,6 +5,7 @@ from sqlalchemy import create_engine
 
 from black.workers.common.task import Task
 from .screenshot_maker import make_screenshot
+from .db_save import save_screenshot_data
 
 
 class ScreenshotterTask(Task):
@@ -14,6 +15,7 @@ class ScreenshotterTask(Task):
         Task.__init__(self, task_id, command, project_name)
         self.status = "New"
         self.result = None
+        self.screeshot_path = "black/screenshots/" + self.task_id
 
     def start(self):
         """ Launch the task and readers of stdout, stderr """
@@ -24,9 +26,10 @@ class ScreenshotterTask(Task):
         hostname = self.command["hostname"]
         port = self.command["port"] or 80
         path = self.command["path"] or '/'
+
         self.result = make_screenshot(
             protocol + "//" + hostname + ":" + str(port) + path,
-            "black/screenshots/" + self.task_id)
+            self.screen_path)
 
         print("Finished work")
 
@@ -52,4 +55,8 @@ class ScreenshotterTask(Task):
         """ Save the information to the DB. """
         # TODO: wait, wait, at which position should i save the picture?
         # Meaning, if we rescan, should save to the last one?
-        
+        save_screenshot_data(
+            self.task_id,
+            self.command,
+            self.project_name,
+            self.screen_path)

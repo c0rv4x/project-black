@@ -35,8 +35,15 @@ class Project(Base):
        return "<Project(project_name='%s'>" % (
                             self.project_name)
 
+class Scan(Base):
+    __tablename__ = 'scans'
+    project_name = Column(String, primary_key=True)
+
+    def __repr__(self):
+       return "<Project(project_name='%s'>" % (
+                            self.project_name)
+
+
 session = get_new_session()
-
 Base.metadata.create_all(engine, checkfirst=True)
-
 destroy_session(session)
