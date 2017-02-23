@@ -35,6 +35,17 @@ class Project(Base):
        return "<Project(project_name='%s'>" % (
                             self.project_name)
 
+
+class Task(Base):
+	__tablename__ == 'tasks'
+	task_id = Column(String, primary_key=True)
+	task_type = Column(String)
+	target = Column(String)
+	params = Column(String)
+	status = Column(String)
+    project_name = Column(String, ForeignKey('projects.project_name'))
+
+
 class Scan(Base):
     __tablename__ = 'scans'
     id = Column(String, primary_key=True)
@@ -74,11 +85,4 @@ destroy_session(session)
 
 # class Scan(models.Model):
 #     """ Scan """
-#     target = models.CharField(max_length=256)
-#     port_number = models.IntegerField()
-#     protocol = models.CharField(max_length=64)
-#     banner = models.CharField(max_length=2048)
-#     screenshot_path = models.CharField(max_length=256)
 #     task_id = models.ForeignKey(Task, on_delete=models.DO_NOTHING)
-#     project_name = models.CharField(max_length=200)
-
