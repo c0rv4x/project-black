@@ -49,6 +49,21 @@ class Task(Base):
     #    return "<Task(task_id='%s', task_type='%s',)>" % (
     #                         self.project_name)
 
+
+class Scope(Base):
+    __tablename__ = 'scopes'
+    scope_id = Column(String, primary_key=True)
+    hostname = Column(String)
+    ip_address = Column(String)
+    project_name = Column(String, ForeignKey('projects.project_name'))
+
+    def __repr__(self):
+       return """<Scope(scope_id='%s', hostname='%s',
+                        ip_address='%s', project_name='%s')>""" % (
+                        self.scope_id, self.hostname,
+                        self.ip_address, self.project_name)
+
+
 class Scan(Base):
     __tablename__ = 'scans'
     id = Column(String, primary_key=True)
@@ -68,9 +83,3 @@ class Scan(Base):
 session = get_new_session()
 Base.metadata.create_all(engine, checkfirst=True)
 destroy_session(session)
-
-# class Scope(models.Model):
-#     """ Scope """
-#     hostname = models.CharField(max_length=256)
-#     ip_address = models.CharField(max_length=128)
-#     project_name = models.CharField(max_length=200)
