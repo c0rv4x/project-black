@@ -37,6 +37,7 @@ def main():
                     'port': 443,
                     'path': '/'
                 },
+                'params': [],
                 'project_name': 'test_project'
             })
             exchange.publish(msg, 'screenshotter_tasks')
@@ -63,7 +64,9 @@ def main():
                     'hostname': 'ya.ru',
                     'port': 443,
                     'path': '/'
-                }
+                },
+                'params': [],
+                'project_name': 'test_project'
             })
             exchange.publish(msg, 'screenshotter_tasks')
 
