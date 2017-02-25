@@ -11,8 +11,8 @@ from .db_save import save_screenshot_data
 class ScreenshotterTask(Task):
     """ Major class for working with selenium """
 
-    def __init__(self, task_id, command, project_name):
-        Task.__init__(self, task_id, command, project_name, 'screenshot')
+    def __init__(self, task_id, target, params, project_name):
+        Task.__init__(self, task_id, 'screenshot', target, params, project_name)
         self.result = None
         self.screenshot_path = "black/screenshots/" + self.task_id
 
@@ -20,11 +20,13 @@ class ScreenshotterTask(Task):
         """ Launch the task and readers of stdout, stderr """
         self.set_status("Working")
         print("Starting work")
-        print(self.command)
-        protocol = self.command["protocol"] or 'http:'
-        hostname = self.command["hostname"]
-        port = self.command["port"] or 80
-        path = self.command["path"] or '/'
+        print(self.target)
+        protocol = self.target["protocol"] or 'http:'
+        hostname = self.target["hostname"]
+        port = self.target["port"] or 80
+        path = self.target["path"] or '/'
+
+        # TODO: add params parsing
 
         # self.result = make_screenshot(
         #     protocol + "//" + hostname + ":" + str(port) + path,

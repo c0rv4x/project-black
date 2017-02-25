@@ -31,7 +31,7 @@ def main():
 
             msg = asynqp.Message({
                 'task_id': random_id,
-                'command': {
+                'target': {
                     'protocol': 'https:',
                     'hostname': 'ya.ru',
                     'port': 443,
@@ -58,7 +58,7 @@ def main():
 
             msg = asynqp.Message({
                 'task_id': random_id,
-                'command': {
+                'target': {
                     'protocol': 'https:',
                     'hostname': 'ya.ru',
                     'port': 443,
@@ -68,7 +68,6 @@ def main():
             exchange.publish(msg, 'screenshotter_tasks')
 
             print("Sent task")            
-
 
             from time import sleep
             sleep(2)
