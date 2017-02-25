@@ -13,13 +13,12 @@ class ScreenshotterTask(Task):
 
     def __init__(self, task_id, command, project_name):
         Task.__init__(self, task_id, command, project_name)
-        self.status = "New"
         self.result = None
         self.screenshot_path = "black/screenshots/" + self.task_id
 
     def start(self):
         """ Launch the task and readers of stdout, stderr """
-        self.status = "Working"
+        self.set_status("Working")
         print("Starting work")
         print(self.command)
         protocol = self.command["protocol"] or 'http:'
@@ -47,10 +46,10 @@ class ScreenshotterTask(Task):
         """ Check if the process exited. If so,
         save stdout, stderr, exit_code and update the status. """
         if self.result['success']:
-            self.status = "Finished"
+            self.set_status("Finished")
             self.save()
         else:
-            self.status = "Aborted"
+            self.set_status("Aborted")
 
     def save(self):
         """ Save the information to the DB. """

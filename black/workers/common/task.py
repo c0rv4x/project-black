@@ -12,7 +12,7 @@ class Task(object):
         # Command, just for the record
         self.command = command
         self.project_name = project_name
-        self.status = "New"
+        self.set_status("New")
 
         # Points the the asyncio.Process object
         self.proc = None
@@ -25,6 +25,10 @@ class Task(object):
     def get_id(self):
         """ Return the id of the current task"""
         return self.task_id
+
+    def set_status(self, new_status):
+        """ Change the status of the current task """
+        self.status = new_status
 
     def get_status(self):
         """ Return the status of the current task"""

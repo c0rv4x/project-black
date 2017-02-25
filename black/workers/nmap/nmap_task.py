@@ -15,7 +15,7 @@ class NmapTask(Task):
     async def start(self):
         """ Launch the task """
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        self.status = "Working"
+        self.set_status("Working")
 
     def send_notification(self, command):
         """ Sends 'command' notification to the current process. """        
@@ -57,8 +57,8 @@ class NmapTask(Task):
             self.exit_code = await self.proc.wait()
 
             if self.exit_code == 0:
-                self.status = "Finished"
+                self.set_status("Finished")
             else:
-                self.status = "Aborted"
+                self.set_status("Aborted")
 
             return True

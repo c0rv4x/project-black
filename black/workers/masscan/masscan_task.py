@@ -17,7 +17,6 @@ class MasscanTask(Task):
     def __init__(self, task_id, command):
         Task.__init__(self, task_id, command)
         self.proc = None
-        self.status = "New"
 
         self.exit_code = None
         self.stdout = []
@@ -26,7 +25,7 @@ class MasscanTask(Task):
     async def start(self):
         """ Launch the task and readers of stdout, stderr """
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
-        self.status = "Working"
+        self.set_status("Working")
 
         # Launch readers
         loop = asyncio.get_event_loop()
@@ -138,6 +137,6 @@ class MasscanTask(Task):
         print(self.stdout)
 
         if self.exit_code == 0:
-            self.status = "Finished"
+            self.set_status("Finished")
         else:
-            self.status = "Aborted"
+            self.set_status("Aborted")
