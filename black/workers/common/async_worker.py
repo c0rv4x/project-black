@@ -68,13 +68,12 @@ class AsyncWorker(Worker):
         # which are addressed to the ceratin task
         message = message.json()
         task_id = message['task_id']
-        task_type = message['task_type']
         target = message['target']
         params = message['params']
         project_name = message['project_name']
 
         # Spawn the process
-        proc = self.task_class(task_id, task_type, target, params, project_name)
+        proc = self.task_class(task_id, self.name, target, params, project_name)
         await proc.start()
 
         # Store the object that points to the process
