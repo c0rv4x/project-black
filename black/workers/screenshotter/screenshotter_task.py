@@ -57,8 +57,9 @@ class ScreenshotterTask(Task):
         """ Save the information to the DB. """
         # TODO: wait, wait, at which position should i save the picture?
         # Meaning, if we rescan, should save to the last one?
-        save_screenshot_data(
-            self.task_id,
-            self.command,
-            self.project_name,
-            self.screenshot_path)
+        # save_screenshot_data(
+        #     self.task_id,
+        #     self.command,
+        #     self.project_name,
+        #     self.screenshot_path)
+        pass

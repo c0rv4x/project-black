@@ -1,6 +1,6 @@
 """ Basic class for Task (the isntance of a running scan
 against 1 target) """
-from black.db import sessions, Task
+from black.db import sessions, models
 
 
 class Task(object):
@@ -65,7 +65,15 @@ class Task(object):
 
     def create_db_record(self):
         """ Creates the record of the task in a special DB table """
-        # self.db_object = Task(
-        #     task_id=self.task_id),
-        #     task_type=task_type)
-        pass
+        session = sessions.get_new_session()
+
+        self.db_object = models.Task(
+            task_id=self.task_id,
+            task_type=self.task_type,
+            target=str(self.target),
+            params=str(self.params),
+            project_name=self.project_name)
+
+        session.add(self.db_object)
+        session.commit()
+        sessions.destroy_session(session)
