@@ -14,7 +14,9 @@ class Task(object):
         self.project_name = project_name
         self.set_status("New")
 
-        # Points the the asyncio.Process object
+        # Points the the asyncio.Process object 
+        #   (if the task is launched via Popen)
+        # Otherwise nothing
         self.proc = None
 
         # Keep track of the data
