@@ -14,8 +14,8 @@ from black.workers.common.task import Task
 class MasscanTask(Task):
     """ Major class for working with masscan """
 
-    def __init__(self, task_id, command):
-        Task.__init__(self, task_id, command)
+    def __init__(self, task_id, target, params, project_name):
+        Task.__init__(self, task_id, 'masscan', target, params, project_name)
         self.proc = None
 
         self.exit_code = None
@@ -24,6 +24,7 @@ class MasscanTask(Task):
 
     async def start(self):
         """ Launch the task and readers of stdout, stderr """
+        self.command = list(target) + params
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
         self.set_status("Working")
 

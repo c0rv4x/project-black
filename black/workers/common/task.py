@@ -6,17 +6,26 @@ from black.db import sessions, Task
 class Task(object):
     """ Base class for the task """
 
-    def __init__(self, task_id, command, project_name):
+    def __init__(self, task_id, task_type, target, params, project_name):
         # ID returned from the queue
         self.task_id = task_id
+
+        # Name of the task (nmap, dnsscan ...)
+        self.task_type = task_type
+
+        # Target of the task
+        self.target = target
+
+        # Special parameters
+        self.params = params
+
+        # Project, on which the task has been launched
+        self.project_name = project_name
 
         # Point to the object of ORM
         self.db_object = None
         self.create_db_record()
 
-        # Command, just for the record
-        self.command = command
-        self.project_name = project_name
         self.set_status("New")
 
         # Points the the asyncio.Process object 
