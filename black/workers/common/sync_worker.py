@@ -49,7 +49,7 @@ class SyncWorker(Worker):
         """ Quick funcitons for submitting a task sample """
         from uuid import uuid4
         task_id = self.name + "_task_" + str(uuid4())
-        msg = {"task_id": task_id, "command": "hey", "project_name": "test_project"}
+        msg = {"task_id": task_id, "target": "hey", "parameters": ["some params"], "project_name": "test_project"}
         self.channel.basic_publish(exchange='tasks.exchange',
                                    routing_key=self.name + '_tasks',
                                    body=json.dumps(msg),
