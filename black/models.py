@@ -45,6 +45,9 @@ class Task(Base):
     status = Column(String)
     project_name = Column(String, ForeignKey('projects.project_name'))
 
+    # def __repr__(self):
+    #    return "<Task(task_id='%s', task_type='%s',)>" % (
+    #                         self.project_name)
 
 class Scan(Base):
     __tablename__ = 'scans'
@@ -54,35 +57,20 @@ class Scan(Base):
     protocol = Column(String)
     banner = Column(String)
     screenshot_path = Column(String)
-    task_id = Column(String, ForeignKey('tasks.task_id'))
+    task_id = Column(String, ForeignKey('tasks.task_id')) # TODO: add on_delete
     project_name = Column(String, ForeignKey('projects.project_name'))
 
-    def __repr__(self):
-       return "<Project(project_name='%s'>" % (
-                            self.project_name)
+    # def __repr__(self):
+    #    return "<Scan(project_name='%s'>" % (
+    #                         self.project_name)
 
 
 session = get_new_session()
 Base.metadata.create_all(engine, checkfirst=True)
 destroy_session(session)
 
-# class Task(models.Model):
-#     """ Task model """
-#     task_type = models.CharField(max_length=50)
-#     target = models.CharField(max_length=256)
-#     params = models.CharField(max_length=1024)
-#     previous_scan = models.IntegerField()
-#     status = models.CharField(max_length=35)
-#     project_name = models.ForeignKey(Project, on_delete=models.CASCADE)
-
-
 # class Scope(models.Model):
 #     """ Scope """
 #     hostname = models.CharField(max_length=256)
 #     ip_address = models.CharField(max_length=128)
 #     project_name = models.CharField(max_length=200)
-
-
-# class Scan(models.Model):
-#     """ Scan """
-#     task_id = models.ForeignKey(Task, on_delete=models.DO_NOTHING)
