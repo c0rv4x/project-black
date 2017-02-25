@@ -5,25 +5,25 @@ from sqlalchemy.ext.declarative import declarative_base
 
 
 engine = create_engine(
-	'postgresql://black:black101@localhost/black', 
-	echo=True)
+    'postgresql://black:black101@localhost/black', 
+    echo=True)
 
 Session_builder = sessionmaker(bind=engine)
 
 sessions = list()
 
 def get_new_session():
-	session = Session_builder()
-	sessions.append(session)
+    session = Session_builder()
+    sessions.append(session)
 
-	return session
+    return session
 
 def destroy_session(session):
-	sessions_by_class = filter(lambda x: x == session, sessions)
+    sessions_by_class = filter(lambda x: x == session, sessions)
 
-	for session in sessions_by_class:
-		session.close()
-		sessions.remove(session)
+    for session in sessions_by_class:
+        session.close()
+        sessions.remove(session)
 
 Base = declarative_base()
 
@@ -37,12 +37,12 @@ class Project(Base):
 
 
 class Task(Base):
-	__tablename__ == 'tasks'
-	task_id = Column(String, primary_key=True)
-	task_type = Column(String)
-	target = Column(String)
-	params = Column(String)
-	status = Column(String)
+    __tablename__ = 'tasks'
+    task_id = Column(String, primary_key=True)
+    task_type = Column(String)
+    target = Column(String)
+    params = Column(String)
+    status = Column(String)
     project_name = Column(String, ForeignKey('projects.project_name'))
 
 
@@ -54,7 +54,7 @@ class Scan(Base):
     protocol = Column(String)
     banner = Column(String)
     screenshot_path = Column(String)
-    task_id = Column(String) # Must be foreign key
+    task_id = Column(String, ForeignKey('tasks.task_id'))
     project_name = Column(String, ForeignKey('projects.project_name'))
 
     def __repr__(self):
