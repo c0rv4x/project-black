@@ -26,8 +26,6 @@ class Task(object):
         self.db_object = None
         self.create_db_record()
 
-        self.set_status("New")
-
         # Points the the asyncio.Process object 
         #   (if the task is launched via Popen)
         # Otherwise nothing
@@ -78,9 +76,10 @@ class Task(object):
             task_type=self.task_type,
             target=str(self.target),
             params=str(self.params),
-            status="New",
             project_name=self.project_name)
 
         session.add(self.db_object)
         session.commit()
         sessions.destroy_session(session)
+
+        self.set_status("New")
