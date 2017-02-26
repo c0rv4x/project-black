@@ -46,6 +46,12 @@ class Task(object):
         """ Change the status of the current task """
         self.status = new_status
 
+        session = sessions.get_new_session()
+        self.db_object.status = new_status
+        session.add(self.db_object)
+        session.commit()
+        sessions.destroy_session(session)
+
     def get_status(self):
         """ Return the status of the current task """
         return self.status
@@ -72,6 +78,7 @@ class Task(object):
             task_type=self.task_type,
             target=str(self.target),
             params=str(self.params),
+            status="New",
             project_name=self.project_name)
 
         session.add(self.db_object)
