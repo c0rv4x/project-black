@@ -22,9 +22,9 @@ class NmapTask(Task):
 
     async def start(self):
         """ Launch the task """
-        self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
+        self.proc = await asyncio.create_subprocess_exec(*self.command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
-        self.status = "Working"
+        self.set_status("Working")
         loop = asyncio.get_event_loop()
         loop.create_task(self.read_stdout())
         loop.create_task(self.read_stderr())
@@ -112,7 +112,17 @@ class NmapTask(Task):
         if self.exit_code == 0:
             self.status = "Finished"
         else:
-            self.status = "Aborted"
+            # The process have exited.
+            # Save the data locally.]
+            print("The process finished OK")
+            self.stdout = stdout
+            self.stderr = stderr
+            self.exit_code = await self.proc.wait()
+
+            if self.exit_code == 0:
+                self.set_status("Finished")
+            else:
+                self.set_status("Aborted")
 
     def parse_results(self, stdout):
         stdout = stdout.decode('ascii')
