@@ -3,8 +3,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 engine = create_engine(
-    'postgresql://black:black101@localhost/black', 
-    echo=True)
+    'postgresql://black:black101@localhost/black')
 
 Session_builder = sessionmaker(bind=engine)
 

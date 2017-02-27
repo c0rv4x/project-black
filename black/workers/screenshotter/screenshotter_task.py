@@ -16,11 +16,12 @@ class ScreenshotterTask(Task):
         self.result = None
         self.screenshot_path = "black/screenshots/" + self.task_id
 
+        self.scan_id = self.params["scan_id"]
+
     def start(self):
         """ Launch the task and readers of stdout, stderr """
         self.set_status("Working")
-        print("Starting work")
-        print(self.target)
+
         protocol = self.target["protocol"] or 'http:'
         hostname = self.target["hostname"]
         port = self.target["port"] or 80
@@ -55,11 +56,9 @@ class ScreenshotterTask(Task):
 
     def save(self):
         """ Save the information to the DB. """
-        # TODO: wait, wait, at which position should i save the picture?
-        # Meaning, if we rescan, should save to the last one?
-        # save_screenshot_data(
-        #     self.task_id,
-        #     self.command,
-        #     self.project_name,
-        #     self.screenshot_path)
-        pass
+        save_screenshot_data(
+            self.target,
+            self.scan_id,
+            self.project_name,
+            self.screenshot_path,
+            self.task_id)

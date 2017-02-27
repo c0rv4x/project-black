@@ -37,7 +37,7 @@ def main():
                     'port': 443,
                     'path': '/'
                 },
-                'params': [],
+                'params': {'scan_id': '123'},
                 'project_name': 'test_project'
             })
             exchange.publish(msg, 'screenshotter_tasks')
@@ -65,7 +65,7 @@ def main():
                     'port': 443,
                     'path': '/'
                 },
-                'params': [],
+                'params': {'scan_id': '123'},
                 'project_name': 'test_project'
             })
             exchange.publish(msg, 'screenshotter_tasks')
