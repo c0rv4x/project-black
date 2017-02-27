@@ -99,7 +99,7 @@ class Scan(Base):
     # ID of the related task (the task, which resulted in the current data)
     # TODO: should think about the following:
     #    many scans can update one record, should we store all the ids?
-    task_id = Column(String, ForeignKey('tasks.task_id')) # TODO: add on_delete
+    tasks_ids = Column(String) # TODO: add on_delete
 
     # The name of the related project
     project_name = Column(String, ForeignKey('projects.project_name'))

@@ -1,12 +1,12 @@
 """ Module that will accumulate all the tasks described """
 from black.workers.masscan import MasscanTask
-from black.workers.common.worker import Worker
+from black.workers.common.async_worker import AsyncWorker
 
 
-class MasscanWorker(Worker):
+class MasscanWorker(AsyncWorker):
     """ Main class that monitors and manager instances of running masscan. """
     def __init__(self):
-        Worker.__init__(self, 'masscan', MasscanTask)
+        AsyncWorker.__init__(self, 'masscan', MasscanTask)
 
     async def start(self):
         """ Start all the necessary consumers """

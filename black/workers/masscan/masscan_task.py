@@ -14,10 +14,9 @@ from black.workers.common.task import Task
 class MasscanTask(Task):
     """ Major class for working with masscan """
 
-    def __init__(self, task_id, command):
-        Task.__init__(self, task_id, command)
+    def __init__(self, task_id, target, params, project_name):
+        Task.__init__(self, task_id, 'masscan', target, params, project_name)
         self.proc = None
-        self.status = "New"
 
         self.exit_code = None
         self.stdout = []
@@ -25,8 +24,9 @@ class MasscanTask(Task):
 
     async def start(self):
         """ Launch the task and readers of stdout, stderr """
+        self.command = ['sudo', 'masscan'] + [self.target] + ['-oX', '-'] + self.params['program']
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
-        self.status = "Working"
+        self.set_status("Working")
 
         # Launch readers
         loop = asyncio.get_event_loop()
@@ -103,7 +103,7 @@ class MasscanTask(Task):
 
     def progress_poller(self):
         """ Gets the current progress and prints it
-        Should be:
+        TODO:
             * This thing should run in another thread (done)
             * Should put result back to the queue (not yet and not rdy for this) """
         while self.status != "Finished" and self.status != "Aborted":
@@ -135,9 +135,11 @@ class MasscanTask(Task):
         self.exit_code = exit_code
         # The process has exited.
         print("The process finished OK")
-        print(self.stdout)
 
         if self.exit_code == 0:
-            self.status = "Finished"
+            self.set_status("Finished")
         else:
-            self.status = "Aborted"
+            self.set_status("Aborted")
+
+    def save(self):
+        save_raw_output(self.stdout[0])

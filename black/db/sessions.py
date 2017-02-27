@@ -3,22 +3,21 @@ from sqlalchemy.orm import sessionmaker
 
 
 engine = create_engine(
-    'postgresql://black:black101@localhost/black', 
-    echo=True)
+    'postgresql://black:black101@localhost/black')
 
 Session_builder = sessionmaker(bind=engine)
 
-sessions = list()
+sessions_list = list()
 
 def get_new_session():
     session = Session_builder()
-    sessions.append(session)
+    sessions_list.append(session)
 
     return session
 
 def destroy_session(session):
-    sessions_by_class = filter(lambda x: x == session, sessions)
+    sessions_by_class = filter(lambda x: x == session, sessions_list)
 
     for session in sessions_by_class:
         session.close()
-        sessions.remove(session)
+        sessions_list.remove(session)

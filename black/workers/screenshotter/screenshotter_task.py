@@ -11,21 +11,23 @@ from .db_save import save_screenshot_data
 class ScreenshotterTask(Task):
     """ Major class for working with selenium """
 
-    def __init__(self, task_id, command, project_name):
-        Task.__init__(self, task_id, command, project_name)
-        self.status = "New"
+    def __init__(self, task_id, target, params, project_name):
+        Task.__init__(self, task_id, 'screenshot', target, params, project_name)
         self.result = None
         self.screenshot_path = "black/screenshots/" + self.task_id
 
+        self.scan_id = self.params["scan_id"]
+
     def start(self):
         """ Launch the task and readers of stdout, stderr """
-        self.status = "Working"
-        print("Starting work")
-        print(self.command)
-        protocol = self.command["protocol"] or 'http:'
-        hostname = self.command["hostname"]
-        port = self.command["port"] or 80
-        path = self.command["path"] or '/'
+        self.set_status("Working")
+
+        protocol = self.target["protocol"] or 'http:'
+        hostname = self.target["hostname"]
+        port = self.target["port"] or 80
+        path = self.target["path"] or '/'
+
+        # TODO: add params parsing
 
         self.result = make_screenshot(
             protocol + "//" + hostname + ":" + str(port) + path,
@@ -47,17 +49,16 @@ class ScreenshotterTask(Task):
         """ Check if the process exited. If so,
         save stdout, stderr, exit_code and update the status. """
         if self.result['success']:
-            self.status = "Finished"
+            self.set_status("Finished")
             self.save()
         else:
-            self.status = "Aborted"
+            self.set_status("Aborted")
 
     def save(self):
         """ Save the information to the DB. """
-        # TODO: wait, wait, at which position should i save the picture?
-        # Meaning, if we rescan, should save to the last one?
         save_screenshot_data(
-            self.task_id,
-            self.command,
+            self.target,
+            self.scan_id,
             self.project_name,
-            self.screenshot_path)
+            self.screenshot_path,
+            self.task_id)

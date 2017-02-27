@@ -1,17 +1,17 @@
+import json
 from uuid import uuid4
 
-from black.models import Project, Scan, get_new_session, destroy_session
+from black.db import Project, Scan, get_new_session, destroy_session
 
 
-def save_screenshot_data(task_id, command, project_name, screenshot_path):
+def save_screenshot_data(target, scan_id, project_name, screenshot_path, task_id):
 	session = get_new_session()
-	project = session.query(Project).first()
-	print("command=" + str(command))
+	print("target=" + str(target))
 
 	scans = session.query(Scan).filter_by(
-		task_id=task_id,
-		target=command["hostname"],
-		port_number=command["port"]).all()
+		target=target["hostname"],
+		port_number=target["port"],
+		scan_id=scan_id).all()
 
 	print(scans)
 	if len(scans) > 1:
@@ -24,7 +24,17 @@ def save_screenshot_data(task_id, command, project_name, screenshot_path):
 		print("Hey, error occured: race condition screenshotter/db_save.py")
 	else:
 		scan = scans[0]
-		scan.screenshot_path = screenshotter
+		scan.screenshot_path = screenshot_path
+
+		old_tasks_ids = scan.tasks_ids
+		if old_tasks_ids is None:
+			new_tasks_ids = [task_id]
+		else:
+			new_tasks_ids = json.loads(old_tasks_ids)
+			new_tasks_ids.append(task_id)
+
+		scan.tasks_ids = json.dumps(new_tasks_ids)
+
 		session.commit()
 
 	destroy_session(session)

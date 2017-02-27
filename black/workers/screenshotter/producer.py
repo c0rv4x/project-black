@@ -31,12 +31,13 @@ def main():
 
             msg = asynqp.Message({
                 'task_id': random_id,
-                'command': {
+                'target': {
                     'protocol': 'https:',
                     'hostname': 'ya.ru',
                     'port': 443,
                     'path': '/'
                 },
+                'params': {'scan_id': '123'},
                 'project_name': 'test_project'
             })
             exchange.publish(msg, 'screenshotter_tasks')
@@ -58,17 +59,18 @@ def main():
 
             msg = asynqp.Message({
                 'task_id': random_id,
-                'command': {
+                'target': {
                     'protocol': 'https:',
                     'hostname': 'ya.ru',
                     'port': 443,
                     'path': '/'
-                }
+                },
+                'params': {'scan_id': '123'},
+                'project_name': 'test_project'
             })
             exchange.publish(msg, 'screenshotter_tasks')
 
             print("Sent task")            
-
 
             from time import sleep
             sleep(2)
