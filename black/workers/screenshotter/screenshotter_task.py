@@ -16,7 +16,7 @@ class ScreenshotterTask(Task):
         self.result = None
         self.screenshot_path = "black/screenshots/" + self.task_id
 
-        self.scan_id = self.params["scan_id"]
+        self.scan_id = self.params["saver"]["scan_id"]
 
     def start(self):
         """ Launch the task and readers of stdout, stderr """
@@ -29,10 +29,10 @@ class ScreenshotterTask(Task):
 
         # TODO: add params parsing
 
-        # self.result = make_screenshot(
-        #     protocol + "//" + hostname + ":" + str(port) + path,
-        #     self.screen_path)
-        self.result = {"success": True}
+        self.result = make_screenshot(
+            protocol + "//" + hostname + ":" + str(port) + path,
+            self.screenshot_path)
+        # self.result = {"success": True}
 
         print("Finished work")
 

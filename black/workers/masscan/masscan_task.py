@@ -24,7 +24,7 @@ class MasscanTask(Task):
 
     async def start(self):
         """ Launch the task and readers of stdout, stderr """
-        self.command = list(target) + params
+        self.command = ['sudo', 'masscan'] + [self.target] + ['-oX', '-'] + self.params['program']
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
         self.set_status("Working")
 
@@ -103,7 +103,7 @@ class MasscanTask(Task):
 
     def progress_poller(self):
         """ Gets the current progress and prints it
-        Should be:
+        TODO:
             * This thing should run in another thread (done)
             * Should put result back to the queue (not yet and not rdy for this) """
         while self.status != "Finished" and self.status != "Aborted":
@@ -135,9 +135,11 @@ class MasscanTask(Task):
         self.exit_code = exit_code
         # The process has exited.
         print("The process finished OK")
-        print(self.stdout)
 
         if self.exit_code == 0:
             self.set_status("Finished")
         else:
             self.set_status("Aborted")
+
+    def save(self):
+        save_raw_output(self.stdout[0])
