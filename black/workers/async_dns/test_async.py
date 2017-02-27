@@ -1,5 +1,6 @@
 import asyncio
 import aiodns
+import time
 # from pycares.errno import errorcode
 
 domain_to_brute = 'iamiad.com'
@@ -18,7 +19,7 @@ def error_checker_callback(future):
 
 
 def start_dnscan(domain):
-    with open('wordlist.txt', 'r') as wordlist_file:
+    with open('test-dict.txt', 'r') as wordlist_file:
         subdomains = map(lambda x: x.strip(), wordlist_file.readlines())
 
     loop = asyncio.get_event_loop()
@@ -33,4 +34,6 @@ def start_dnscan(domain):
 
     result = loop.run_until_complete(asyncio.wait(futures))
 
+time_start = time.time()
 start_dnscan(domain_to_brute)
+print(time.time() - time_start)
