@@ -24,7 +24,9 @@ class MasscanTask(Task):
 
     async def start(self):
         """ Launch the task and readers of stdout, stderr """
-        self.command = ['sudo', 'masscan'] + list(self.target) + ['-oX', '-'] + self.params 
+        print(self.target)
+        self.command = ['sudo', 'masscan'] + [self.target] + ['-oX', '-'] + self.params 
+        print(self.command)
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
         self.set_status("Working")
 
@@ -135,9 +137,11 @@ class MasscanTask(Task):
         self.exit_code = exit_code
         # The process has exited.
         print("The process finished OK")
-        print(self.stdout)
 
         if self.exit_code == 0:
             self.set_status("Finished")
         else:
             self.set_status("Aborted")
+
+    def save(self):
+        save_raw_output(self.stdout[0])
