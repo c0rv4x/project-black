@@ -21,7 +21,9 @@ def sync_go():
     task_id = str(uuid4())
     channel.basic_publish(body=str({
         'task_id': 'nmap_task_' + task_id,
-        'command': ['nmap', '--top-ports', '10', 'ya.ru', '-oX', '-']
+        'target': 'ya.ru',
+        'params': ['--top-ports', '10'],
+        'project_name': 'test_project'
     }), exchange="", routing_key='nmap_tasks')
     print("Sent task")
 
@@ -53,7 +55,9 @@ async def async_go():
     task_id = str(uuid4())
     msg = asynqp.Message({
         'task_id': 'nmap_task_' + task_id,
-        'command': ['nmap', '--top-ports', '10', 'ya.ru', '-oX', '-']
+        'target': 'ya.ru',
+        'params': ['--top-ports', '10'],
+        'project_name': 'test_project'
     })
     exchange.publish(msg, 'nmap_tasks')
     print("Sent task")

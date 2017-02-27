@@ -4,15 +4,15 @@ import threading
 import asyncio
 from asyncio.subprocess import PIPE
 from libnmap.parser import NmapParser
-from black.models import Scan
+from black.db.models import Scan
 
 from black.workers.common.task import Task
 
 
 class NmapTask(Task):
     """ Major class for working with nmap """
-    def __init__(self, task_id, command):
-        Task.__init__(self, task_id, command)
+    def __init__(self, task_id, target, params, project_name):
+        Task.__init__(self, task_id, 'nmap', target, params, project_name)
         self.proc = None
         self.status = "New"
 
@@ -22,6 +22,7 @@ class NmapTask(Task):
 
     async def start(self):
         """ Launch the task """
+        self.command = ['nmap', '-oX', '-'] + self.params + [self.target]
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
         self.set_status("Working")
