@@ -22,7 +22,10 @@ def sync_go():
     channel.basic_publish(body=str({
         'task_id': 'nmap_task_' + task_id,
         'target': 'ya.ru',
-        'params': ['--top-ports', '10'],
+        'params': {
+            'program': ['--top-ports', '10'],
+            'saver': {'scan_id': 123}
+        },
         'project_name': 'test_project'
     }), exchange="", routing_key='nmap_tasks')
     print("Sent task")
@@ -56,7 +59,10 @@ async def async_go():
     msg = asynqp.Message({
         'task_id': 'nmap_task_' + task_id,
         'target': 'ya.ru',
-        'params': ['--top-ports', '10'],
+        'params': {
+            'program': ['--top-ports', '10'],
+            'saver': {'scan_id': 123}
+        },
         'project_name': 'test_project'
     })
     exchange.publish(msg, 'nmap_tasks')
