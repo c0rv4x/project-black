@@ -33,7 +33,9 @@ def main():
             'task_id': 'masscan_task_' + random_id,
             # TODO: move this to the new extended prototype
             'target': '213.180.204.3',
-            'params': ['-p80-1000'],
+            'params': {
+                'program': ['-p80-1000']
+            },
             'project_name': 'test_project'
         })
         exchange.publish(msg, 'masscan_tasks')
