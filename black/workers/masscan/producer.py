@@ -32,7 +32,11 @@ def main():
         msg = asynqp.Message({
             'task_id': 'masscan_task_' + random_id,
             # TODO: move this to the new extended prototype
-            'command': ['sudo', 'masscan', '-oX', '-', '-p80-1000', '213.180.204.3']
+            'target': '213.180.204.3',
+            'params': {
+                'program': ['-p80-1000']
+            },
+            'project_name': 'test_project'
         })
         exchange.publish(msg, 'masscan_tasks')
         print("Sent task")
