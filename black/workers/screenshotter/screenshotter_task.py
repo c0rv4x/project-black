@@ -27,10 +27,10 @@ class ScreenshotterTask(Task):
         port = self.command["port"] or 80
         path = self.command["path"] or '/'
 
-        # self.result = make_screenshot(
-        #     protocol + "//" + hostname + ":" + str(port) + path,
-        #     self.screen_path)
-        self.result = {"success": True}
+        self.result = make_screenshot(
+            protocol + "//" + hostname + ":" + str(port) + path,
+            self.screenshot_path)
+        # self.result = {"success": True}
 
         print("Finished work")
 
