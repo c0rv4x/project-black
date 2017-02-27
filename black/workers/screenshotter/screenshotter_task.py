@@ -16,7 +16,7 @@ class ScreenshotterTask(Task):
         self.result = None
         self.screenshot_path = "black/screenshots/" + self.task_id
 
-        self.scan_id = self.params["scan_id"]
+        self.scan_id = self.params["saver"]["scan_id"]
 
     def start(self):
         """ Launch the task and readers of stdout, stderr """

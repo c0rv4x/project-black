@@ -37,7 +37,9 @@ def main():
                     'port': 443,
                     'path': '/'
                 },
-                'params': {'scan_id': '123'},
+                'params': {
+                    'saver': {'scan_id': '123'}
+                },
                 'project_name': 'test_project'
             })
             exchange.publish(msg, 'screenshotter_tasks')
