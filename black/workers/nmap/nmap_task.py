@@ -4,7 +4,7 @@ import threading
 import asyncio
 from asyncio.subprocess import PIPE
 from libnmap.parser import NmapParser
-from black.models import Scan
+from black.db import Project, Scan, get_new_session, destroy_session
 
 from black.workers.common.task import Task
 
@@ -125,8 +125,9 @@ class NmapTask(Task):
                 self.set_status("Aborted")
 
     def parse_results(self, stdout):
+        session = get_new_session()
+        scans = session.query(Scan).all()
         stdout = stdout.decode('ascii')
-        print(stdout)
         try:
             nmap_report = NmapParser.parse(stdout)
         except NmapParserException:
@@ -134,8 +135,42 @@ class NmapTask(Task):
         for scanned_host in nmap_report.hosts:
             for service_of_host in scanned_host.services:
                 if service_of_host.open():
-                    query = Scan(target=scanned_host, port_number=service_of_host.port, protocol=service_of_host.service)
-                    query.save()
-        all_entries = Scan.objects.all()
-        print(all_entries)
-        print(dict_of_ports)
+                    query = Scan.insert(target=scanned_host, port_number=service_of_host.port, protocol=service_of_host.service)
+
+        for scan in session.query(Scan)
+            print(scan)
+        session.commit()
+        destroy_session(session)
+
+'''
+        scans = session.query(Scan).filter_by(
+                target=target["hostname"],
+                port_number=target["port"],
+                scan_id=scan_id).all()
+
+            print(scans)
+            if len(scans) > 1:
+                # TODO: add logger
+                print("HEY, error here: screenshotter/db_save.py. Multiple shits")
+                print(scans)
+
+            elif len(scans) == 0:
+                # TODO: add logger
+                print("Hey, error occured: race condition screenshotter/db_save.py")
+            else:
+                scan = scans[0]
+                scan.screenshot_path = screenshot_path
+
+                old_tasks_ids = scan.tasks_ids
+                if old_tasks_ids is None:
+                    new_tasks_ids = [task_id]
+                else:
+                    new_tasks_ids = json.loads(old_tasks_ids)
+                    new_tasks_ids.append(task_id)
+
+                scan.tasks_ids = json.dumps(new_tasks_ids)
+
+                session.commit()
+
+            destroy_session(session)
+'''
