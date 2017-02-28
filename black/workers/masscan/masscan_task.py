@@ -8,14 +8,14 @@ from time import sleep
 import asyncio
 from asyncio.subprocess import PIPE
 
-from black.workers.common.task import Task
+from black.workers.common.async_task import AsyncTask
 from black.workers.masscan.db_save import save_raw_output
 
-class MasscanTask(Task):
+class MasscanTask(AsyncTask):
     """ Major class for working with masscan """
 
     def __init__(self, task_id, target, params, project_name):
-        Task.__init__(self, task_id, 'masscan', target, params, project_name)
+        AsyncTask.__init__(self, task_id, 'masscan', target, params, project_name)
         self.proc = None
 
         self.exit_code = None
