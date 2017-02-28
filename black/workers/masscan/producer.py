@@ -30,7 +30,7 @@ def main():
 
 
         msg = asynqp.Message({
-            'task_id': 'masscan_task_' + random_id,
+            'task_id': random_id,
             'target': '213.180.193.0/28',
             'params': {
                 'program': ['-p80-1000']
