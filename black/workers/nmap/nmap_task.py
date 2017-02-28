@@ -140,9 +140,10 @@ class NmapTask(Task):
         for scanned_host in nmap_report.hosts:
             for service_of_host in scanned_host.services:
                 if service_of_host.open():
-                    query = Scan.insert(target=scanned_host, port_number=service_of_host.port, protocol=service_of_host.service)
-
-        for scan in session.query(Scan)
+                    query = Scan.insert(target=scanned_host, port_number=service_of_host.port, protocol=service_of_host.service, banner=service_of_host.banner, project_name=self.project_name)
+                    session.commit()
+                       
+        for scan in session.query(Scan):
             print(scan)
         session.commit()
         destroy_session(session)

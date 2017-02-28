@@ -4,6 +4,7 @@ import asyncio
 
 from uuid import uuid4
 
+
 def sync_go():
     random_id = "nmap_task_"+str(uuid4())
 
