@@ -22,7 +22,6 @@ def save_raw_output(task_id, output, project_name):
 
 			port_state = port_data['state']
 			port_status = port_state['@state']
-			port_reason = port_state['@reason']
 
 			if port_state != 'closed':
 				new_scan = Scan(
