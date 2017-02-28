@@ -131,9 +131,7 @@ class NmapTask(AsyncTask):
     def parse_results(self):
         def create_new_scan(data, task_id):
             session = get_new_session()
-
             new_scan = Scan(**data)
-
             old_tasks_ids = new_scan.tasks_ids
             if old_tasks_ids is None:
                 new_tasks_ids = [task_id]
@@ -144,9 +142,18 @@ class NmapTask(AsyncTask):
 
             session.add(new_scan)
             session.commit()
-
             destroy_session(session)
 
+        def update_banner(given_scan_id, banner, task_id):
+            session = get_new_session()
+            existing_scans = session.query(Scan).filter_by(scan_id=given_scan_id).all()
+            existing_scan = existing_scans[0]
+            existing_scan.banner = banner
+            new_tasks_ids = json.loads(existing_scan.tasks_ids)
+            new_tasks_ids.append(task_id)
+            existing_scan.tasks_ids = json.dumps(new_tasks_ids)
+            session.commit()
+            destroy_session(session)
 
         stdout = "".join(map(lambda x: x.decode(), self.stdout))
 
@@ -165,6 +172,8 @@ class NmapTask(AsyncTask):
                         'project_name': self.project_name,
                         'scan_id': str(uuid4())
                     }, str(self.task_id))
+
+                    update_banner('209bde4a-de21-41a1-a8b6-ce5ae211633d', 'jopa', str(self.task_id))
                        
 '''
         scans = session.query(Scan).filter_by(
