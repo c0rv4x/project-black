@@ -9,7 +9,7 @@ import asyncio
 from asyncio.subprocess import PIPE
 
 from black.workers.common.task import Task
-
+from black.workers.masscan.db_save import save_raw_output
 
 class MasscanTask(Task):
     """ Major class for working with masscan """
@@ -124,7 +124,7 @@ class MasscanTask(Task):
                 except Exception as exc:
                     print(exc)
 
-            sleep(0.5)
+            sleep(1)
         print(self.status)
 
     async def wait_for_exit(self):
@@ -137,9 +137,14 @@ class MasscanTask(Task):
         print("The process finished OK")
 
         if self.exit_code == 0:
+            self.save()
             self.set_status("Finished")
         else:
             self.set_status("Aborted")
 
     def save(self):
-        save_raw_output(self.stdout[0])
+        save_raw_output(
+            self.task_id,
+            self.stdout,
+            self.project_name)
+        # pass
