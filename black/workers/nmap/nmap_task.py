@@ -4,11 +4,7 @@ import threading
 import asyncio
 from asyncio.subprocess import PIPE
 from libnmap.parser import NmapParser
-<<<<<<< HEAD
 from black.db import Project, Scan, get_new_session, destroy_session
-=======
-from black.db.models import Scan
->>>>>>> 6079851f9a1337af56a8a01bf6ec8743a1f8b6e2
 
 from black.workers.common.task import Task
 
@@ -112,7 +108,7 @@ class NmapTask(Task):
         # Save the data locally.
         print("The process finished OK")
         print(self.stdout)
-        parse_results("".join(self.stdout))
+        self.parse_results()
 
         if self.exit_code == 0:
             self.status = "Finished"
@@ -120,8 +116,7 @@ class NmapTask(Task):
             # The process have exited.
             # Save the data locally.]
             print("The process finished OK")
-            self.stdout = stdout
-            self.stderr = stderr
+            print(self.stdout)
             self.exit_code = await self.proc.wait()
 
             if self.exit_code == 0:
@@ -129,11 +124,8 @@ class NmapTask(Task):
             else:
                 self.set_status("Aborted")
 
-    def parse_results(self, stdout):
-        session = get_new_session()
-        scans = session.query(Scan).all()
-        stdout = stdout.decode('ascii')
-        try:
+    def parse_results(self):
+        stdout = "".join(map(lambda x: x.decode(), self.stdout))
             nmap_report = NmapParser.parse(stdout)
         except NmapParserException:
             nmap_report = NmapParser.parse(stdout, incomplete=True)
