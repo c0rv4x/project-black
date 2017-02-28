@@ -24,7 +24,7 @@ class Task(object):
 
         # Point to the object of ORM
         self.db_object = None
-        self.create_db_record()
+        # self.create_db_record()
 
         # Points the the asyncio.Process object 
         #   (if the task is launched via Popen)
@@ -34,7 +34,7 @@ class Task(object):
         # Keep track of the data
         self.stdout = None
         self.stderr = None
-        self.exit_code = None
+        self.exit_code = None        
 
     def get_id(self):
         """ Return the id of the current task """
