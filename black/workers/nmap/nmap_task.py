@@ -6,13 +6,13 @@ from asyncio.subprocess import PIPE
 from libnmap.parser import NmapParser
 from black.db import Project, Scan, get_new_session, destroy_session
 
-from black.workers.common.task import Task
+from black.workers.common.async_task import AsyncTask
 
 
-class NmapTask(Task):
+class NmapTask(AsyncTask):
     """ Major class for working with nmap """
     def __init__(self, task_id, target, params, project_name):
-        Task.__init__(self, task_id, 'nmap', target, params, project_name)
+        AsyncTask.__init__(self, task_id, 'nmap', target, params, project_name)
         self.proc = None
         self.status = "New"
 
