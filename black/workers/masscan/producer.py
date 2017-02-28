@@ -31,8 +31,7 @@ def main():
 
         msg = asynqp.Message({
             'task_id': 'masscan_task_' + random_id,
-            # TODO: move this to the new extended prototype
-            'target': '213.180.204.3',
+            'target': '213.180.193.0/28',
             'params': {
                 'program': ['-p80-1000']
             },
