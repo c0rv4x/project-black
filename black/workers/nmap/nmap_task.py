@@ -108,7 +108,7 @@ class NmapTask(Task):
         # Save the data locally.
         print("The process finished OK")
         print(self.stdout)
-        parse_results("".join(self.stdout))
+        self.parse_results()
 
         if self.exit_code == 0:
             self.status = "Finished"
@@ -116,8 +116,7 @@ class NmapTask(Task):
             # The process have exited.
             # Save the data locally.]
             print("The process finished OK")
-            self.stdout = stdout
-            self.stderr = stderr
+            print(self.stdout)
             self.exit_code = await self.proc.wait()
 
             if self.exit_code == 0:
@@ -125,9 +124,8 @@ class NmapTask(Task):
             else:
                 self.set_status("Aborted")
 
-    def parse_results(self, stdout):
-        stdout = stdout.decode('ascii')
-        print(stdout)
+    def parse_results(self):
+        stdout = "".join(map(lambda x: x.decode(), self.stdout))
         try:
             nmap_report = NmapParser.parse(stdout)
         except NmapParserException:
