@@ -146,4 +146,3 @@ class MasscanTask(Task):
             self.task_id,
             self.stdout,
             self.project_name)
-        # pass
