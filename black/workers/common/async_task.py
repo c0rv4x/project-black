@@ -4,7 +4,7 @@ from black.db import sessions, models
 from black.workers.common.task import Task
 
 
-class AsyncTask(object):
+class AsyncTask(Task):
     """ Async class for the task """
 
     def __init__(self, task_id, task_type, target, params, project_name):

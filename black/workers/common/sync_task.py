@@ -3,7 +3,7 @@ from black.db import sessions, models
 from black.workers.common.task import Task
 
 
-class SyncTask(object):
+class SyncTask(Task):
     """ Sync class for the task """
 
     def __init__(self, task_id, task_type, target, params, project_name):
