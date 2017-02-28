@@ -1,3 +1,4 @@
+import json
 import signal
 import threading
 
@@ -7,6 +8,8 @@ from libnmap.parser import NmapParser
 from black.db import Project, Scan, get_new_session, destroy_session
 
 from black.workers.common.async_task import AsyncTask
+from uuid import uuid4
+from black.workers.common.task import Task
 
 
 class NmapTask(AsyncTask):
@@ -124,22 +127,45 @@ class NmapTask(AsyncTask):
             else:
                 self.set_status("Aborted")
 
+
     def parse_results(self):
+        def create_new_scan(data, task_id):
+            session = get_new_session()
+
+            new_scan = Scan(**data)
+
+            old_tasks_ids = new_scan.tasks_ids
+            if old_tasks_ids is None:
+                new_tasks_ids = [task_id]
+            else:
+                new_tasks_ids = json.loads(new_scan.tasks_ids)
+                new_tasks_ids.append(task_id)
+            new_scan.tasks_ids = json.dumps(new_tasks_ids)
+
+            session.add(new_scan)
+            session.commit()
+
+            destroy_session(session)
+
+
         stdout = "".join(map(lambda x: x.decode(), self.stdout))
+
+        try:
             nmap_report = NmapParser.parse(stdout)
         except NmapParserException:
             nmap_report = NmapParser.parse(stdout, incomplete=True)
         for scanned_host in nmap_report.hosts:
             for service_of_host in scanned_host.services:
                 if service_of_host.open():
-                    query = Scan.insert(target=scanned_host, port_number=service_of_host.port, protocol=service_of_host.service, banner=service_of_host.banner, project_name=self.project_name)
-                    session.commit()
+                    create_new_scan({
+                        'target': str(scanned_host.address),
+                        'port_number': int(service_of_host.port),
+                        'protocol': str(service_of_host.service),
+                        'banner': str(service_of_host.banner),
+                        'project_name': self.project_name,
+                        'scan_id': str(uuid4())
+                    }, str(self.task_id))
                        
-        for scan in session.query(Scan):
-            print(scan)
-        session.commit()
-        destroy_session(session)
-
 '''
         scans = session.query(Scan).filter_by(
                 target=target["hostname"],

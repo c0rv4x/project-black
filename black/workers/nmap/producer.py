@@ -61,8 +61,8 @@ async def async_go():
         'task_id': 'nmap_task_' + task_id,
         'target': 'ya.ru',
         'params': {
-            'program': ['--top-ports', '10'],
-            'saver': {'scan_id': 123}
+            'program': ['--top-ports', '10', '--stats-every', '1', '-sV'],
+            'saver': {'scan_id': None}
         },
         'project_name': 'test_project'
     })
