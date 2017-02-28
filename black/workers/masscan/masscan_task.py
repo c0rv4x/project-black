@@ -104,7 +104,6 @@ class MasscanTask(Task):
     def progress_poller(self):
         """ Gets the current progress and prints it
         TODO:
-            * This thing should run in another thread (done)
             * Should put result back to the queue (not yet and not rdy for this) """
         while self.status != "Finished" and self.status != "Aborted":
             if self.status == "New":

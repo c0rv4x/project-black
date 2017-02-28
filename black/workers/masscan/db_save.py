@@ -6,27 +6,37 @@ from black.db import sessions, Scan
 
 
 def save_raw_output(task_id, output, project_name):
-	# concated = "".join(map(lambda x: x.decode(), output))
+	try:
+		concated = "".join(map(lambda x: x.decode(), output))
+		parsed_dict = xmltodict.parse(concated)
 
-	concated = """<?xml version="1.0"?>
-	<!-- masscan v1.0 scan -->
-	<?xml-stylesheet href="" type="text/xsl"?>
-	<nmaprun scanner="masscan" start="1488272554" version="1.0-BETA"  xmloutputversion="1.03">
-	<scaninfo type="syn" protocol="tcp" />
-	<host endtime="1488272554"><address addr="213.180.193.14" addrtype="ipv4"/><ports><port protocol="tcp" portid="80"><state state="open" reason="syn-ack" reason_ttl="54"/></port></ports></host>
-	<host endtime="1488272557"><address addr="213.180.193.3" addrtype="ipv4"/><ports><port protocol="tcp" portid="80"><state state="open" reason="syn-ack" reason_ttl="55"/></port></ports></host>
-	<host endtime="1488272595"><address addr="213.180.193.14" addrtype="ipv4"/><ports><port protocol="tcp" portid="443"><state state="open" reason="syn-ack" reason_ttl="54"/></port></ports></host>
-	<host endtime="1488272636"><address addr="213.180.193.12" addrtype="ipv4"/><ports><port protocol="tcp" portid="443"><state state="open" reason="syn-ack" reason_ttl="53"/></port></ports></host>
-	<host endtime="1488272640"><address addr="213.180.193.12" addrtype="ipv4"/><ports><port protocol="tcp" portid="80"><state state="open" reason="syn-ack" reason_ttl="54"/></port></ports></host>
-	<host endtime="1488272658"><address addr="213.180.193.3" addrtype="ipv4"/><ports><port protocol="tcp" portid="443"><state state="open" reason="syn-ack" reason_ttl="54"/></port></ports></host>
-	<runstats>
-	<finished time="1488272695" timestr="2017-02-28 12:04:55" elapsed="160" />
-	<hosts up="6" down="0" total="6" />
-	</runstats>
-	</nmaprun>
-	"""
+		open_ports = dict()
+		session = sessions.get_new_session()
+		for each_host in parsed_dict['nmaprun']['host']:
+			address = each_host['address']['@addr']
 
-	parsed_dict = xmltodict.parse(concated)
+			port_data = each_host['ports']['port']
 
-	for each_host in parsed_dict['nmaprun']['host']:
-		print(each_host)
+			protocol = port_data['@protocol']
+			port_number = int(port_data['@portid'])
+
+			port_state = port_data['state']
+			port_status = port_state['@state']
+			port_reason = port_state['@reason']
+
+			if port_state != 'closed':
+				new_scan = Scan(
+					scan_id=str(uuid4()),
+					target=address,
+					port_number=port_number,
+					tasks_ids=str([task_id]),
+					project_name=project_name)
+
+				session.add(new_scan)
+				session.commit()
+
+		sessions.destroy_session(session)
+
+	except Exception as e:
+		# TODO: add logger here
+		print(e)
