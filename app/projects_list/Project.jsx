@@ -11,9 +11,10 @@ class Project extends React.Component {
 
     render() {
         return (
-            <div>
-            Project Name = <span>{this.state.projectName}</span>
-            </div>
+            <tr>
+                <td>{this.state.projectName}</td>
+                <td>Some scope</td>
+            </tr>
         );
     }
 
