@@ -1,1 +1,2 @@
-websockets
+flask
+flask-socketio
