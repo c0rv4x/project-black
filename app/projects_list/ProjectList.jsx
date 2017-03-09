@@ -5,38 +5,30 @@ import Reflux from 'reflux';
 import Project from './Project.jsx';
 import ProjectStore from './ProjectStore.js';
 
+class ProjectList extends Reflux.Component
+{
 
-// module.exports = React.createClass({
-class ProjectList extends React.Component {
-
-    constructor(props) {
-        super(props)
-
+    constructor(props)
+    {
+        super(props);
         this.state = {};
-        this.state['projects'] = [<Project projectName="project_1" uuid="uuid_1" key="uuid_1" />];
-        this.state['projectsStore'] = Reflux.connect(ProjectStore, 'projectsStore');
+        this.store = ProjectStore;
     }
 
-
-    render() {
-        var store = this.state.projectsStore;
-
-        if (store.loading) {
-            return <div className='alert alert-info'>Loading...</div>;
-        }
-
-        if (store.errorMessage) {
-            return <div className='alert alert-danger'>{store.errorMessage}</div>;
-        }
-
-        var projects = this.state.projects;
+    render()
+    {
+        var projects = _.map(this.state.projects, (x) => {
+            return <Project projectName={x.projectName} uuid={x.uuid} key={x.uuid} />
+        });
 
         return (
             <table>
                 <thead>
                     <tr>
-                        <th>Project Name</th>
-                        <th>Scope</th>
+                        <td>UUID</td>
+                        <td>Project Name</td>
+                        <td>Scope</td>
+                        <td>Control</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,6 +37,7 @@ class ProjectList extends React.Component {
             </table>
         );
     }
-};
+
+}
 
 export default ProjectList;

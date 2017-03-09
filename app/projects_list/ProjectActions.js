@@ -1,5 +1,3 @@
 var Reflux = require('reflux');
 
-module.exports = Reflux.createActions([
-	'delete',
-]);
+module.exports = Reflux.createActions(['delete']);

@@ -1,19 +1,32 @@
 import React from 'react';
 
+import ProjectActions from './ProjectActions.js';
+
 class Project extends React.Component {
 
     constructor(props) {
         super(props);
 
-        var projectName = props["projectName"] || null;
-        this.state = {projectName : projectName};
+        this.state = {
+            projectName : props["projectName"] || null, 
+            uuid: props["uuid"]
+        };
+
+        this.delete = this.delete.bind(this);
+    }
+
+    delete(e) {
+        e.preventDefault();
+        ProjectActions.delete(this.state.uuid);
     }
 
     render() {
         return (
             <tr>
+                <td>{this.state.uuid}</td>
                 <td>{this.state.projectName}</td>
                 <td>Some scope</td>
+                <td><button onClick={this.delete}>Delete</button></td>
             </tr>
         );
     }

@@ -1,76 +1,32 @@
 var _ = require('lodash');
 var Reflux = require('reflux');
-var io = require('socket.io-client');
-var socket = io();
 var ProjectActions = require('./ProjectActions.js');
 
-var initialState = {
-    loading: false,
-    errorMessage: '',
-    users: [],
-};
 
-module.exports = Reflux.createStore({
+class ProjectClass
+{
 
-    listenables: [ProjectActions],
+    constructor(projectName, uuid)
+    {
+        this.projectName = projectName;
+        this.uuid = uuid;
+    }
 
-    init() {
-        socket.on('connect', () => {
-            this.fetchUsers();
-        });
-    },
+}
 
-    getInitialState() {
-        return this.state = initialState;
-    },
+class ProjectStore extends Reflux.Store
+{
+    constructor()
+    {
+        super();
+        this.state = {"projects" : [new ProjectClass("project_1", "uuid_1")]}; // <- set store's default state much like in React
+        this.listenables = ProjectActions;
+    }
 
-    fetchUsers() {
-        this.state.errorMessage = '';
-        this.state.loading = true;
-        socket.emit('users:all', this.updateUsers.bind(this));
-    },
+    onDelete(projectUUID)
+    {
+        alert("Deleting " + projectUUID);
+    }
+}
 
-    updateUsers(err, users) {
-        this.state.errorMessage = '';
-        this.state.loading = false;
-
-        if (err) {
-            console.error('Error updating users:', err);
-            this.state.errorMessage = err;
-            this.trigger(this.state);
-            return;
-        }
-
-        this.state.users = users;
-        this.trigger(this.state);
-    },
-
-    onDelete(userID) {
-
-        var user = _.find(this.state.users, { id: userID });
-
-        // Indicate the user is being updated.
-        this.state.errorMessage = '';
-        this.state.loading = true;
-        this.trigger(this.state);
-
-        socket.emit(
-            'users:delete',
-            userID,
-            function (err) {
-                // The callback has been fired so indicate the request has finished.
-                user.loading = false;
-
-                if (err) {
-                    console.error('Error deleting user:', err);
-                    this.state.errorMessage = err;
-                    this.trigger(this.state);
-                    return;
-                }
-
-                // TODO: Delete the user from the list of users here...
-                this.trigger(this.state);
-            }.bind(this)
-        );
-    },
-});
+export default ProjectStore
