@@ -6,7 +6,7 @@ class App extends React.Component {
 	render () {
 		return (
 			<div>
-			<p> Hello React!</p>
+			<h1>Project Black</h1>
 			<ProjectList />
 			</div>
 		);
