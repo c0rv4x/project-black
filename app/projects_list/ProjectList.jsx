@@ -21,8 +21,10 @@ class ProjectList extends React.Component {
 
                 <table>
                     <thead>
-                        <tr><td>Project Name</td></tr>
-                        <tr><td>Scope</td></tr>
+                        <tr>
+                            <td>Project Name</td>
+                            <td>Scope</td>
+                        </tr>
                     </thead>
                     <tbody>
                         {this.state.projects}
