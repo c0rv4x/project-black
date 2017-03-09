@@ -36,10 +36,6 @@ class ProjectStore extends Reflux.Store
     {
         var projects = this.state.projects;
         var targeted = _.findIndex(projects, {'uuid' : uuid});
-        console.log(projects[0]);
-        console.log(projects[1]);
-        console.log(uuid);
-        console.log(targeted);
         projects.splice(targeted, 1);
 
         this.trigger(this.state);
