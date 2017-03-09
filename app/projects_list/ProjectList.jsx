@@ -12,7 +12,6 @@ class ProjectList extends React.Component {
     constructor(props) {
         super(props)
 
-        console.log(this.state);
         this.state = {};
         this.state['projects'] = [<Project projectName="project_1" uuid="uuid_1" key="uuid_1" />];
         this.state['projectsStore'] = Reflux.connect(ProjectStore, 'projectsStore');
@@ -20,7 +19,6 @@ class ProjectList extends React.Component {
 
 
     render() {
-        console.log(this.state);
         var store = this.state.projectsStore;
 
         if (store.loading) {
