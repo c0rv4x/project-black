@@ -31,21 +31,26 @@ def handle_custom_event():
 def handle_project_creation(msg):
     """ When received this message, send back all the projects """
     project_name = msg
-    print(projects)
+
     existing_project = list(filter(lambda x: x['projectName'] == project_name, projects))
+
+    # Check that we don't have the same project name
     if len(existing_project) > 0:
         emit('projects:create:' + project_name, json.dumps({
             'status': 'error',
             'text': 'Already exists that specific project name.'
         }))
     else :
+        # Create a new project
         project = {
             "projectName": project_name,
             "uuid": str(uuid.uuid4()) 
         }
 
+        # Append it to existing
         projects.append(project)
 
+        # Send the project back
         emit('projects:create:' + project_name, json.dumps({
             'status': 'success',
             'text': project

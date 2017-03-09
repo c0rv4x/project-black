@@ -28,8 +28,6 @@ class ProjectStore extends Reflux.Store
         };
         this.listenables = ProjectActions;
 
-
-
         this.connector = new Connector();
         this.connector.listen('connect', () => {
             this.connector.emit('projects:all:get');
