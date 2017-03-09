@@ -19,13 +19,30 @@ class ProjectStore extends Reflux.Store
     constructor()
     {
         super();
-        this.state = {"projects" : [new ProjectClass("project_1", "uuid_1")]}; // <- set store's default state much like in React
+        this.state = {"projects" : [new ProjectClass("project_1", "uuid_1")]};
         this.listenables = ProjectActions;
     }
 
-    onDelete(projectUUID)
+    onCreate(projectName, uuid)
     {
-        alert("Deleting " + projectUUID);
+        var projects = this.state.projects;
+        projects.push(new ProjectClass(projectName, uuid));
+        this.setState(projects : projects);
+
+        this.trigger(this.state);
+    }
+
+    onDelete(uuid)
+    {
+        var projects = this.state.projects;
+        var targeted = _.findIndex(projects, {'uuid' : uuid});
+        console.log(projects[0]);
+        console.log(projects[1]);
+        console.log(uuid);
+        console.log(targeted);
+        projects.splice(targeted, 1);
+
+        this.trigger(this.state);
     }
 }
 
