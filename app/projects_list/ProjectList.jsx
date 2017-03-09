@@ -17,17 +17,13 @@ class ProjectList extends Reflux.Component
             'newProject': {
                 'name': "", 
                 'uuid': ""
-            },
-            loading: false,
-            errorMessage: "",
-            projects: []
+            }
         };
         this.store = ProjectStore;
 
         this.create = this.create.bind(this);
 
         this.handleNewProjectNameChange = this.handleNewProjectNameChange.bind(this);
-        this.handleNewProjectUUIDChange = this.handleNewProjectUUIDChange.bind(this);
     }
 
 
@@ -44,15 +40,17 @@ class ProjectList extends Reflux.Component
         this.setState({newProject: project});
     }    
 
-    handleNewProjectUUIDChange(event) 
-    {
-        var project = this.state.newProject;
-        project['uuid'] = event.target.value;
-        this.setState({newProject: project});
-    }  
-
     render()
     {
+        if (this.state.loading) {
+            return <div>Loading...</div>;
+        }
+
+        if (this.state.errorMessage) {
+            return <div>{this.state.errorMessage}</div>;
+        }
+
+
         var projects = _.map(this.state.projects, (x) => {
             return <Project projectName={x.projectName} uuid={x.uuid} key={x.uuid} />
         });
@@ -64,11 +62,6 @@ class ProjectList extends Reflux.Component
                     placeholder="projectName" 
                     value={this.state.newProject.name}
                     onChange={this.handleNewProjectNameChange} />
-                <input 
-                    id="uuid" 
-                    placeholder="uuid" 
-                    value={this.state.newProject.uuid}
-                    onChange={this.handleNewProjectUUIDChange} />
                 <button onClick={this.create}>Add new</button>
 
                 <br />

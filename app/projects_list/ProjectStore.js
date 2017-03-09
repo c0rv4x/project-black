@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import Reflux from 'reflux';
-import io from 'socket.io-client';
 
 import ProjectActions from './ProjectActions.js';
+import Connector from '../SocketConnector.jsx';
 
 
 class ProjectClass
@@ -21,19 +21,27 @@ class ProjectStore extends Reflux.Store
     constructor()
     {
         super();
-        this.state = {"projects" : [new ProjectClass("project_1", "uuid_1")]};
+        this.state = {
+            "projects" : [new ProjectClass("project_1", "uuid_1")],
+            "loading": false,
+            "errorMessage": null
+        };
         this.listenables = ProjectActions;
 
-        this.socketio = io("http://127.0.0.1:5000");
-        this.socketio.on('connect', () => {
-            this.socketio.emit('projects:all');
-            this.socketio.on('projects:all:back', this.updateProjects.bind(this));
-        });   
+
+
+        this.connector = new Connector();
+        this.connector.listen('connect', () => {
+            this.connector.emit('projects:all:get');
+            this.connector.listen('projects:all:get:back', this.updateProjects.bind(this));            
+        });
     }
 
     updateProjects(projects) {
-        this.state.errorMessage = '';
-        this.state.loading = false;
+        this.setState({
+            errorMessage: "", 
+            loading: false
+        });
         projects = JSON.parse(projects);
 
         var recvProjects = [];
@@ -47,13 +55,43 @@ class ProjectStore extends Reflux.Store
         this.trigger(this.state);
     }
 
-    onCreate(projectName, uuid)
+    onCreate(projectName)
     {
-        var projects = this.state.projects;
-        projects.push(new ProjectClass(projectName, uuid));
-        this.setState(projects: projects);
-
+        this.setState({
+            errorMessage: "", 
+            loading: true
+        });
         this.trigger(this.state);
+
+        var projects = this.state.projects;
+
+        this.connector.emit('projects:create', projectName);
+        this.connector.listen('projects:create:' + projectName, (msg) => {
+            var parsedMsg = JSON.parse(msg);
+
+            if (parsedMsg['status'] == 'success') {
+                var project = parsedMsg['text']
+                var uuid = project['uuid'];
+
+                projects.push(new ProjectClass(projectName, uuid));
+
+                this.setState({
+                    projects: projects,
+                    errorMessage: "", 
+                    loading: false
+                });
+
+                this.trigger(this.state);
+            }
+            else {
+                this.setState({
+                    projects: projects,
+                    errorMessage: parsedMsg['text'], 
+                    loading: false
+                });
+            }
+         
+        });
     }
 
     onDelete(uuid)
