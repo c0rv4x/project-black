@@ -52,6 +52,7 @@ def handle_project_creation(msg):
 
         # Send the project back
         emit('projects:create:' + project_name, json.dumps({
+            # 'status': 'error',
             'status': 'success',
             'text': project
         }))

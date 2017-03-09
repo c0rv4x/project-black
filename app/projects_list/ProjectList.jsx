@@ -26,7 +26,6 @@ class ProjectList extends Reflux.Component
         this.handleNewProjectNameChange = this.handleNewProjectNameChange.bind(this);
     }
 
-
     create(e)
     {
         e.preventDefault();
@@ -42,21 +41,19 @@ class ProjectList extends Reflux.Component
 
     render()
     {
-        if (this.state.loading) {
-            return <div>Loading...</div>;
-        }
-
-        if (this.state.errorMessage) {
-            return <div>{this.state.errorMessage}</div>;
-        }
-
-
         var projects = _.map(this.state.projects, (x) => {
             return <Project projectName={x.projectName} uuid={x.uuid} key={x.uuid} />
         });
 
         return (
             <div>
+                {this.state.loading && 
+                    <div>Loading...</div>
+                }
+                {this.state.errorMessage && 
+                    <div>{this.state.errorMessage}</div>
+                }
+                
                 <input 
                     id="projectName" 
                     placeholder="projectName" 

@@ -31,35 +31,39 @@ class ProjectStore extends Reflux.Store
         this.connector = new Connector();
         this.connector.listen('connect', () => {
             this.connector.emit('projects:all:get');
-            this.connector.listen('projects:all:get:back', this.updateProjects.bind(this));            
+            this.connector.listen('projects:all:get:back', this.initializeProjects.bind(this));            
         });
     }
 
-    updateProjects(projects) {
-        this.setState({
-            errorMessage: "", 
-            loading: false
-        });
+    initializeProjects(projects) {
+        this.loading("", false);
+
         projects = JSON.parse(projects);
 
         var recvProjects = [];
-
         for (var project of projects) {
-            console.log(project);
             recvProjects.push(new ProjectClass(project["projectName"], project["uuid"]));
         }
 
-        this.state.projects = recvProjects;
+        this.setState({
+            projects: recvProjects
+        });
         this.trigger(this.state);
+    }
+
+    loading(errorMessage, status) {
+        // Make a mark that loading status = 'status'
+        this.setState({
+            errorMessage: errorMessage, 
+            loading: status
+        });
+
+        this.trigger(this.state);        
     }
 
     onCreate(projectName)
     {
-        this.setState({
-            errorMessage: "", 
-            loading: true
-        });
-        this.trigger(this.state);
+        this.loading("", true);
 
         var projects = this.state.projects;
 
@@ -73,20 +77,10 @@ class ProjectStore extends Reflux.Store
 
                 projects.push(new ProjectClass(projectName, uuid));
 
-                this.setState({
-                    projects: projects,
-                    errorMessage: "", 
-                    loading: false
-                });
-
-                this.trigger(this.state);
+                this.loading("", false);
             }
             else {
-                this.setState({
-                    projects: projects,
-                    errorMessage: parsedMsg['text'], 
-                    loading: false
-                });
+                this.loading(parsedMsg['text'], false);
             }
          
         });
