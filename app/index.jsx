@@ -22,7 +22,7 @@ class App extends React.Component {
 
                         <div>
                             <Route exact path="/" component={ProjectList} />
-                            <Route exact path="/project/" component={ProjectDetails} />
+                            <Route exact path="/project/:projectName" component={ProjectDetails} />
                         </div>
                     </div>
                 </Router>            
