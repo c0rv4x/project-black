@@ -19,7 +19,7 @@ class App extends React.Component {
 
                         <div>
                             <Route exact path="/" component={ProjectList} />
-                            <Route exact path="/test" component={ProjectList} />
+                            <Route exact path="/project/" component={ProjectList} />
                         </div>
                     </div>
                 </Router>            
