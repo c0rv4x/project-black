@@ -33,8 +33,9 @@
     "babel-preset-react": "^6.23.0",
     "history": "1.13.x",
     "react": "^15.4.2",
-    "react-dom": "^15.4.2",
-    "react-router": "1.0.2",
+    "react-dom": "latest",
+    "react-router": "latest",
+    "react-router-dom": "latest",
     "reflux": "^6.4.1",
     "socket.io-client": "^1.7.3"
   }
