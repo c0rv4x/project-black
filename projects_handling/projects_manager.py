@@ -7,6 +7,7 @@ class ProjectManager(object):
     def __init__(self):
         self.projects = [{
             "projectName": "proj_name_1",
+            "scope": "scope_1",
             "uuid": str(uuid.uuid4())}
         ]
 
@@ -26,11 +27,12 @@ class ProjectManager(object):
 
         return filtered
 
-    def create_project(self, project_name):
+    def create_project(self, project_name, scope):
         """ Creates a new project """
         if len(self.find_project(project_name=project_name)) == 0:
             project = {
                 "projectName": project_name,
+                "scope": scope,
                 "uuid": str(uuid.uuid4()) 
             }
 
@@ -52,7 +54,6 @@ class ProjectManager(object):
         filtered_projects = self.find_project(project_name, project_uuid)
 
         if len(filtered_projects) != 0:
-            print(filtered_projects)
             for to_delete in filtered_projects:
                 # Remove the project from everywhere
                 self.projects.remove(to_delete)

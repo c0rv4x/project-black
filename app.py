@@ -29,10 +29,11 @@ def handle_custom_event():
 @socketio.on('projects:create')
 def handle_project_creation(msg):
     """ When received this message, create a new projects """
-    project_name = msg
+    project_name = msg['projectName']
+    scope = msg['scope']
 
     # Create new project (and register it)
-    create_result = project_manager.create_project(project_name)
+    create_result = project_manager.create_project(project_name, scope)
 
     if create_result["status"] == "success":
         # Send the project back

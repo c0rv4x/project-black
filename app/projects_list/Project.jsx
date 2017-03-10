@@ -9,6 +9,7 @@ class Project extends React.Component {
 
         this.state = {
             projectName : props["projectName"] || null, 
+            scope: props["scope"],
             uuid: props["uuid"]
         };
 
@@ -25,7 +26,7 @@ class Project extends React.Component {
             <tr>
                 <td>{this.state.uuid}</td>
                 <td>{this.state.projectName}</td>
-                <td>Some scope</td>
+                <td>{this.state.scope}</td>
                 <td><button onClick={this.delete}>Delete</button></td>
             </tr>
         );

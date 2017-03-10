@@ -8,9 +8,10 @@ import Connector from '../SocketConnector.jsx';
 class ProjectClass
 {
 
-    constructor(projectName, uuid)
+    constructor(projectName, scope, uuid)
     {
         this.projectName = projectName;
+        this.scope = scope;
         this.uuid = uuid;
     }
 
@@ -22,7 +23,7 @@ class ProjectStore extends Reflux.Store
     {
         super();
         this.state = {
-            "projects" : [new ProjectClass("project_1", "uuid_1")],
+            "projects" : [],
             "loading": false,
             "errorMessage": null
         };
@@ -42,7 +43,7 @@ class ProjectStore extends Reflux.Store
 
         var recvProjects = [];
         for (var project of projects) {
-            recvProjects.push(new ProjectClass(project["projectName"], project["uuid"]));
+            recvProjects.push(new ProjectClass(project["projectName"], project["scope"], project["uuid"]));
         }
 
         this.setState({
@@ -61,13 +62,19 @@ class ProjectStore extends Reflux.Store
         this.trigger(this.state);        
     }
 
-    onCreate(projectName)
+    onCreate(projectName, scope)
     {
         this.loading("", true);
 
         var projects = this.state.projects;
 
-        this.connector.emit('projects:create', projectName);
+        // Send a note that we want to create a project
+        this.connector.emit('projects:create', {
+            projectName: projectName,
+            scope: scope
+        });
+
+        // Receive the data about the created project
         this.connector.listen('projects:create:' + projectName, (msg) => {
             var parsedMsg = JSON.parse(msg);
 
@@ -75,7 +82,7 @@ class ProjectStore extends Reflux.Store
                 var project = parsedMsg['text']
                 var uuid = project['uuid'];
 
-                projects.push(new ProjectClass(projectName, uuid));
+                projects.push(new ProjectClass(projectName, scope, uuid));
                 this.setState({
                     projects: projects
                 });
