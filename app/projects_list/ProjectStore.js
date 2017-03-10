@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Reflux from 'reflux';
 
 import ProjectActions from './ProjectActions.js';
-import Connector from '../SocketConnector.jsx';
+import Connector from '../common/SocketConnector.jsx';
 
 
 class ProjectClass
