@@ -28,6 +28,11 @@ def send_main():
     """ Simple server of statics """
     return send_from_directory('public', 'index.html')
 
+@app.route('/test')
+def send_main_for_test():
+    """ Simple server of statics """
+    return send_from_directory('public', 'index.html')
+
 @app.route('/<regex(".*\.js"):path>')
 def send_js(path):
     """ Simple server of statics """
