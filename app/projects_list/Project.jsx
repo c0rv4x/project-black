@@ -23,7 +23,7 @@ class Project extends React.Component {
     }
 
     render() {
-        var link = <Link to={"/project/" + this.state.projectName}>Details</Link>;
+        var detailsLink = <Link to={"/project/" + this.state.projectName}>Details</Link>;
 
         return (
             <tr>
@@ -31,7 +31,7 @@ class Project extends React.Component {
                 <td>{this.state.projectName}</td>
                 <td>{this.state.scope}</td>
                 <td>
-                    {link}
+                    {detailsLink}
                    <button onClick={this.delete}>Delete</button>
                 </td>
             </tr>
