@@ -28,7 +28,7 @@ def handle_custom_event():
 
 @socketio.on('projects:create')
 def handle_project_creation(msg):
-    """ When received this message, send back all the projects """
+    """ When received this message, create a new projects """
     project_name = msg
 
     # Create new project (and register it)
@@ -49,27 +49,27 @@ def handle_project_creation(msg):
         }))
 
 
-# @socketio.on('projects:delete')
-# def handle_project_creation(msg):
-#     """ When received this message, send back all the projects """
-#     project_name = msg
+@socketio.on('projects:delete')
+def handle_project_creation(msg):
+    """ When received this message, delete the project """
+    project_name = msg
 
-#     # Create new project (and register it)
-#     create_result = project_manager.create_project(project_name)
+    # Delete new project (and register it)
+    delete_result = project_manager.delete_project(project_name)
 
-#     if create_result["status"] == "success":
-#         # Send the project back
-#         emit('projects:create:' + project_name, json.dumps({
-#             'status': 'success',
-#             'text': create_result["new_project"]
-#         }))
+    if delete_result["status"] == "success":
+        # Send the project back
+        emit('projects:delete:' + project_name, json.dumps({
+            'status': 'success',
+            'text': delete_result["new_project"]
+        }))
 
-#     else:
-#         # Error occured
-#         emit('projects:create:' + project_name, json.dumps({
-#             'status': 'error',
-#             'text': create_result["text"]
-#         }))
+    else:
+        # Error occured
+        emit('projects:delete:' + project_name, json.dumps({
+            'status': 'error',
+            'text': delete_result["text"]
+        }))
 
 if __name__ == '__main__':
     socketio.run(app)
