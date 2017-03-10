@@ -15,7 +15,7 @@ class App extends React.Component {
                 <Router>
                     <div>
                         <h1>Project Black</h1>
-                        <Link to="/test">Home</Link>
+                        <Link to="/">Home</Link>
 
                         <div>
                             <Route exact path="/" component={ProjectList} />
