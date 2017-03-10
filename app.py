@@ -9,8 +9,6 @@ from flask_socketio import SocketIO, emit
 from projects_handling import ProjectManager
 
 
-
-
 # Define Flask app and wrap it into SocketIO
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'KIwTR8ZUNG20UkhrXR0Pv0B9ZZigzQpVVT5KK6FA1M'
@@ -33,9 +31,7 @@ def send_main():
 @app.route('/<regex(".*\.js"):path>')
 def send_js(path):
     """ Simple server of statics """
-    print(path)
     return send_from_directory('public', path)
-
 
 
 @socketio.on('projects:all:get')
