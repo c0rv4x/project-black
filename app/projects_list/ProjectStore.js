@@ -76,6 +76,9 @@ class ProjectStore extends Reflux.Store
                 var uuid = project['uuid'];
 
                 projects.push(new ProjectClass(projectName, uuid));
+                this.setState({
+                    projects: projects
+                });
 
                 this.loading("", false);
             }
@@ -88,11 +91,28 @@ class ProjectStore extends Reflux.Store
 
     onDelete(uuid)
     {
-        var projects = this.state.projects;
-        var targeted = _.findIndex(projects, {'uuid' : uuid});
-        projects.splice(targeted, 1);
+        this.loading("", true);
 
-        this.trigger(this.state);
+        this.connector.emit('projects:delete:uuid', uuid);
+        this.connector.listen('projects:delete:uuid:' + uuid, (msg) => {
+            var parsedMsg = JSON.parse(msg);
+
+            if (parsedMsg['status'] == 'success') {
+                var projects = _.filter(this.state.projects, (x) => {
+                    return x['uuid'] != uuid;
+                });
+
+                this.setState({
+                    projects: projects
+                });
+
+                this.loading("", false);
+            }
+            else {
+                this.loading(parsedMsg['text'], false);
+            }
+         
+        });        
     }
 }
 

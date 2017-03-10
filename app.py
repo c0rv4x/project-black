@@ -49,24 +49,23 @@ def handle_project_creation(msg):
         }))
 
 
-@socketio.on('projects:delete')
+@socketio.on('projects:delete:uuid')
 def handle_project_creation(msg):
     """ When received this message, delete the project """
-    project_name = msg
+    project_uuid = msg
 
     # Delete new project (and register it)
-    delete_result = project_manager.delete_project(project_name)
+    delete_result = project_manager.delete_project(project_uuid=project_uuid)
 
     if delete_result["status"] == "success":
-        # Send the project back
-        emit('projects:delete:' + project_name, json.dumps({
-            'status': 'success',
-            'text': delete_result["new_project"]
+        # Send the success result
+        emit('projects:delete:uuid:' + project_uuid, json.dumps({
+            'status': 'success'
         }))
 
     else:
         # Error occured
-        emit('projects:delete:' + project_name, json.dumps({
+        emit('projects:delete:uuid:' + project_uuid, json.dumps({
             'status': 'error',
             'text': delete_result["text"]
         }))
