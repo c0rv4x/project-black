@@ -1,6 +1,6 @@
 let instance = null;
 
-class Connector {
+class ProjectManager {
 
     constructor() {
         if(!instance){
@@ -12,4 +12,4 @@ class Connector {
 
 }
 
-export default Connector;
+export default ProjectManager;
