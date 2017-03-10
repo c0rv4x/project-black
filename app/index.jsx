@@ -8,6 +8,9 @@ import {
 
 
 import ProjectList from './projects_list/ProjectList.jsx';
+import ProjectDetails from './project_details/ProjectDetails.jsx';
+
+
 class App extends React.Component {
     render () {
         return (
@@ -19,7 +22,7 @@ class App extends React.Component {
 
                         <div>
                             <Route exact path="/" component={ProjectList} />
-                            <Route exact path="/project/" component={ProjectList} />
+                            <Route exact path="/project/" component={ProjectDetails} />
                         </div>
                     </div>
                 </Router>            
