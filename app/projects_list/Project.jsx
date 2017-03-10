@@ -23,13 +23,15 @@ class Project extends React.Component {
     }
 
     render() {
+        var link = <Link to={"/project/" + this.state.projectName}>Details</Link>;
+
         return (
             <tr>
                 <td>{this.state.uuid}</td>
                 <td>{this.state.projectName}</td>
                 <td>{this.state.scope}</td>
                 <td>
-                   <Link to="sdf">Details</Link>
+                    {link}
                    <button onClick={this.delete}>Delete</button>
                 </td>
             </tr>
