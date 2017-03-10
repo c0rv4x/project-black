@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import ProjectActions from './ProjectActions.js';
 
@@ -31,8 +31,8 @@ class Project extends React.Component {
                 <td>{this.state.projectName}</td>
                 <td>{this.state.scope}</td>
                 <td>
-                    {detailsLink}
-                   <button onClick={this.delete}>Delete</button>
+                    <Link to={"/project/" + this.state.projectName}>Details</Link>
+                    <button onClick={this.delete}>Delete</button>
                 </td>
             </tr>
         );
