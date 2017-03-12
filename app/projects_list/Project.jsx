@@ -10,7 +10,6 @@ class Project extends React.Component {
 
         this.state = {
             projectName : props["projectName"] || null, 
-            scope: props["scope"],
             uuid: props["uuid"]
         };
 
@@ -29,7 +28,6 @@ class Project extends React.Component {
             <tr>
                 <td>{this.state.uuid}</td>
                 <td>{this.state.projectName}</td>
-                <td>{this.state.scope}</td>
                 <td>
                     <Link to={"/project/" + this.state.projectName}>Details</Link>
                     <button onClick={this.delete}>Delete</button>

@@ -45,11 +45,11 @@ class ProjectStore extends Reflux.Store
         this.trigger(this.state);        
     }
 
-    onCreate(projectName, scope)
+    onCreate(projectName)
     {
         this.loading("", true);
 
-        this.projectManager.createProject(projectName, scope, (result) => {
+        this.projectManager.createProject(projectName, (result) => {
             if (result['status'] == 'success') {
                 this.setState({
                     projects: this.projectManager.getProjects()

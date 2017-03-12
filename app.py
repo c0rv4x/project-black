@@ -50,10 +50,9 @@ def handle_custom_event():
 def handle_project_creation(msg):
     """ When received this message, create a new projects """
     project_name = msg['projectName']
-    scope = msg['scope']
 
     # Create new project (and register it)
-    create_result = project_manager.create_project(project_name, scope)
+    create_result = project_manager.create_project(project_name)
 
     if create_result["status"] == "success":
         # Send the project back

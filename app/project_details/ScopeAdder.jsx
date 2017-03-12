@@ -34,7 +34,7 @@ function findScopeType(target) {
 }
 
 
-class ScopeList extends Reflux.Component
+class ScopeAdder extends Reflux.Component
 {
 
     constructor(props)
@@ -130,4 +130,4 @@ class ScopeList extends Reflux.Component
 
 }
 
-export default ScopeList;
+export default ScopeAdder;

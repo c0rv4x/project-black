@@ -3,10 +3,9 @@ import Connector from '../common/SocketConnector.jsx';
 class ProjectClass
 {
 
-    constructor(projectName, scope, uuid)
+    constructor(projectName, uuid)
     {
         this.projectName = projectName;
-        this.scope = scope;
         this.uuid = uuid;
     }
 
@@ -40,7 +39,7 @@ class ProjectManager
                 this.projects = [];
                 for (var project of projects) {
                     // Create a new project
-                    var newProject = new ProjectClass(project["projectName"], project["scope"], project["uuid"]);
+                    var newProject = new ProjectClass(project["projectName"], project["uuid"]);
                     this.projects.push(newProject);
                 }
 
@@ -50,10 +49,9 @@ class ProjectManager
         });
     }
 
-    createProject(projectName, scope, callback) {
+    createProject(projectName, callback) {
         this.connector.emit('projects:create', {
-            projectName: projectName,
-            scope: scope
+            projectName: projectName
         });
 
         this.connector.listen('projects:create:' + projectName, (msg) => {
@@ -63,7 +61,7 @@ class ProjectManager
                 var project = parsedMsg['newProject']
                 var uuid = project['uuid'];
 
-                var newProject = new ProjectClass(projectName, scope, uuid);
+                var newProject = new ProjectClass(projectName, uuid);
                 this.projects.push(newProject);
                 // OK
                 callback({

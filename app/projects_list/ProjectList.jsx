@@ -15,8 +15,7 @@ class ProjectList extends Reflux.Component
         super(props);
         this.state = {
             'newProject': {
-                'name': "",
-                'scope':""
+                'name': ""
             }
         };
         this.store = ProjectStore;
@@ -24,13 +23,12 @@ class ProjectList extends Reflux.Component
         this.create = this.create.bind(this);
 
         this.handleNewProjectNameChange = this.handleNewProjectNameChange.bind(this);
-        this.handleNewProjectScopeChange = this.handleNewProjectScopeChange.bind(this);
     }
 
     create(e)
     {
         e.preventDefault();
-        ProjectActions.create(this.state.newProject.name, this.state.newProject.scope);        
+        ProjectActions.create(this.state.newProject.name);        
     }
 
     handleNewProjectNameChange(event) 
@@ -40,17 +38,10 @@ class ProjectList extends Reflux.Component
         this.setState({newProject: project});
     }    
 
-    handleNewProjectScopeChange(event) 
-    {
-        var project = this.state.newProject;
-        project['scope'] = event.target.value;
-        this.setState({newProject: project});
-    }
-
     render()
     {
         var projects = _.map(this.state.projects, (x) => {
-            return <Project projectName={x.projectName} scope={x.scope} uuid={x.uuid} key={x.uuid} />
+            return <Project projectName={x.projectName} uuid={x.uuid} key={x.uuid} />
         });
 
         return (
@@ -67,11 +58,7 @@ class ProjectList extends Reflux.Component
                     placeholder="projectName" 
                     value={this.state.newProject.name}
                     onChange={this.handleNewProjectNameChange} />
-                <input 
-                    id="scope" 
-                    placeholder="scope" 
-                    value={this.state.newProject.scope}
-                    onChange={this.handleNewProjectScopeChange} />                    
+
                 <button onClick={this.create}>Add new</button>
 
                 <br />
