@@ -4,6 +4,7 @@ import Reflux from 'reflux';
 
 import ScopeStore from './ScopeStore.js';
 import ScopeTable from './ScopeTable.jsx';
+import ScopeAdder from './ScopeAdder.jsx';
 
 
 class ProjectDetails extends Reflux.Component
@@ -35,6 +36,7 @@ class ProjectDetails extends Reflux.Component
 		return (
 			<div>
 				<h2>Project Details {this.projectName}</h2>
+				<ScopeAdder />
 				<table>
 					<thead>
 						<tr>
