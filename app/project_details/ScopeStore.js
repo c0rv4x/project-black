@@ -70,7 +70,6 @@ class ScopeStore extends Reflux.Store
 
         this.scopeManager.deleteScope(scopeID, (result) => {
             if (result['status'] == 'success') {
-                console.log(this.scopeManager.getScopes());
                 this.setState({
                     scopes: this.scopeManager.getScopes()
                 });
