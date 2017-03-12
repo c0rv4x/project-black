@@ -121,7 +121,7 @@ def handle_scope_creation(msg):
             create_result = scope_manager.create_scope(None, scope['target'], project_name)
         else:
             create_result = {
-                "error": True,
+                "status": 'error',
                 "text": "CIDR is not implemented yet"
             }
 
