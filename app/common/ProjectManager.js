@@ -3,9 +3,9 @@ import Connector from '../common/SocketConnector.jsx';
 class ProjectClass
 {
 
-    constructor(projectName, uuid)
+    constructor(project_name, uuid)
     {
-        this.projectName = projectName;
+        this.project_name = project_name;
         this.uuid = uuid;
     }
 
@@ -39,7 +39,7 @@ class ProjectManager
                 this.projects = [];
                 for (var project of projects) {
                     // Create a new project
-                    var newProject = new ProjectClass(project["projectName"], project["uuid"]);
+                    var newProject = new ProjectClass(project["project_name"], project["uuid"]);
                     this.projects.push(newProject);
                 }
 
@@ -49,19 +49,19 @@ class ProjectManager
         });
     }
 
-    createProject(projectName, callback) {
+    createProject(project_name, callback) {
         this.connector.emit('projects:create', {
-            projectName: projectName
+            project_name: project_name
         });
 
-        this.connector.listen('projects:create:' + projectName, (msg) => {
-            var parsedMsg = JSON.parse(msg);
+        this.connector.listen('projects:create:' + project_name, (msg) => {
+            var parsed_msg = JSON.parse(msg);
 
-            if (parsedMsg['status'] == 'success') {
-                var project = parsedMsg['newProject']
+            if (parsed_msg['status'] == 'success') {
+                var project = parsed_msg['newProject']
                 var uuid = project['uuid'];
 
-                var newProject = new ProjectClass(projectName, uuid);
+                var newProject = new ProjectClass(project_name, uuid);
                 this.projects.push(newProject);
                 // OK
                 callback({
@@ -74,7 +74,7 @@ class ProjectManager
                 console.log(callback);
                 callback({
                     'status': 'error',
-                    'text': parsedMsg['text']
+                    'text': parsed_msg['text']
                 });                
             }
          
@@ -85,9 +85,9 @@ class ProjectManager
     deleteProject(uuid, callback) {
         this.connector.emit('projects:delete:uuid', uuid);
         this.connector.listen('projects:delete:uuid:' + uuid, (msg) => {
-            var parsedMsg = JSON.parse(msg);
+            var parsed_msg = JSON.parse(msg);
 
-            if (parsedMsg['status'] == 'success') {
+            if (parsed_msg['status'] == 'success') {
                 this.projects = _.filter(this.projects, (x) => {
                     return x['uuid'] != uuid;
                 });

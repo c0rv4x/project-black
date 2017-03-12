@@ -45,11 +45,11 @@ class ScopeStore extends Reflux.Store
         this.trigger(this.state);        
     }
 
-    onCreate(newScopes, projectName)
+    onCreate(new_scopes, project_name)
     {
         this.loading("", true);
 
-        this.scopeManager.createScope(newScopes, projectName, (result) => {
+        this.scopeManager.createScope(new_scopes, project_name, (result) => {
             if (result['status'] == 'success') {
                 this.setState({
                     scopes: this.scopeManager.getScopes()
@@ -63,11 +63,11 @@ class ScopeStore extends Reflux.Store
         });
     }
 
-    onDelete(scopeID)
+    onDelete(scope_id)
     {
         this.loading("", true);
 
-        this.scopeManager.deleteScope(scopeID, (result) => {
+        this.scopeManager.deleteScope(scope_id, (result) => {
             if (result['status'] == 'success') {
                 this.setState({
                     scopes: this.scopeManager.getScopes()

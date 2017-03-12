@@ -3,12 +3,12 @@ import Connector from '../common/SocketConnector.jsx';
 class ScopeClass
 {
 
-    constructor(hostname, IP, scopeID, projectName)
+    constructor(hostname, ip_address, scope_id, project_name)
     {
         this.hostname = hostname;
-        this.IP = IP;
-        this.scopeID = scopeID;
-        this.projectName = projectName;
+        this.ip_address = ip_address;
+        this.scope_id = scope_id;
+        this.project_name = project_name;
     }
 
 }
@@ -42,8 +42,8 @@ class ScopeManager
                 this.scopes = [];
                 for (var scope of scopes) {
                     // Create a new scope
-                    var newScope = new ScopeClass(scope["hostname"], scope["IP"], scope["scopeID"], scope["projectName"]);
-                    this.scopes.push(newScope);
+                    var new_scope = new ScopeClass(scope["hostname"], scope["ip_address"], scope["scope_id"], scope["project_name"]);
+                    this.scopes.push(new_scope);
                 }
 
                 // Callback everything, we just saved
@@ -56,53 +56,53 @@ class ScopeManager
         return this.scopes;
     }
 
-    createScope(scopes, projectName, callback) {
+    createScope(scopes, project_name, callback) {
         this.connector.emit('scopes:create', {
-            projectName: projectName,
+            project_name: project_name,
             scopes: scopes
         });
 
-        this.connector.listen('scopes:create:' + projectName, (msg) => {
-            var parsedMsg = JSON.parse(msg);
+        this.connector.listen('scopes:create:' + project_name, (msg) => {
+            var parsed_msg = JSON.parse(msg);
 
-            if (parsedMsg['status'] == 'success') {
-                var newScopes = parsedMsg['newScopes'];
-                console.log(parsedMsg);
-                console.log(newScopes);
+            if (parsed_msg['status'] == 'success') {
+                var new_scopes = parsed_msg['new_scopes'];
+                console.log(parsed_msg);
+                console.log(new_scopes);
 
-                for (var scope of newScopes) {
-                    var newScope = new ScopeClass(
+                for (var scope of new_scopes) {
+                    var new_scope = new ScopeClass(
                         scope["hostname"], 
-                        scope["IP"],
-                        scope["scopeID"], 
-                        projectName);
-                    this.scopes.push(newScope);
+                        scope["ip_address"],
+                        scope["scope_id"], 
+                        project_name);
+                    this.scopes.push(new_scope);
                 }
 
                 // OK
                 callback({
                     'status': 'success'
-                    // 'newScopes': newScopes
+                    // 'new_scopes': new_scopes
                 });
             }
             else {
                 // Err
                 callback({
                     'status': 'error',
-                    'text': parsedMsg['text']
+                    'text': parsed_msg['text']
                 });                
             }
          
         });        
     }
-    deleteScope(scopeID, callback) {
-        this.connector.emit('scopes:delete:scopeID', scopeID);
-        this.connector.listen('scopes:delete:scopeID:' + scopeID, (msg) => {
-            var parsedMsg = JSON.parse(msg);
+    deleteScope(scope_id, callback) {
+        this.connector.emit('scopes:delete:scope_id', scope_id);
+        this.connector.listen('scopes:delete:scope_id:' + scope_id, (msg) => {
+            var parsed_msg = JSON.parse(msg);
 
-            if (parsedMsg['status'] == 'success') {
+            if (parsed_msg['status'] == 'success') {
                 this.scopes = _.filter(this.scopes, (x) => {
-                    return x['scopeID'] != scopeID;
+                    return x['scope_id'] != scope_id;
                 });
 
                 callback({

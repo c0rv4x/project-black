@@ -6,7 +6,7 @@ class ProjectManager(object):
     exposing some interfaces for public use. """
     def __init__(self):
         self.projects = [{
-            "projectName": "proj_name_1",
+            "project_name": "proj_name_1",
             "uuid": str(uuid.uuid4())}
         ]
 
@@ -19,7 +19,7 @@ class ProjectManager(object):
         filtered = self.projects
 
         if project_name:
-            filtered = list(filter(lambda x: x['projectName'] == project_name, filtered))
+            filtered = list(filter(lambda x: x['project_name'] == project_name, filtered))
 
         if project_uuid:
             filtered = list(filter(lambda x: x['uuid'] == project_uuid, filtered))
@@ -30,7 +30,7 @@ class ProjectManager(object):
         """ Creates a new project """
         if len(self.find_project(project_name=project_name)) == 0:
             project = {
-                "projectName": project_name,
+                "project_name": project_name,
                 "uuid": str(uuid.uuid4()) 
             }
 

@@ -49,7 +49,7 @@ def handle_custom_event():
 @socketio.on('projects:create')
 def handle_project_creation(msg):
     """ When received this message, create a new projects """
-    project_name = msg['projectName']
+    project_name = msg['project_name']
 
     # Create new project (and register it)
     create_result = project_manager.create_project(project_name)
@@ -105,7 +105,7 @@ def handle_custom_event():
 def handle_scope_creation(msg):
     """ When received this message, create a new scope """
     scopes = msg['scopes']
-    project_name = msg['projectName']
+    project_name = msg['project_name']
 
     new_scopes = []
 
@@ -116,7 +116,7 @@ def handle_scope_creation(msg):
         # Create new scope (and register it)
         if scope['type'] == 'hostname':
             create_result = scope_manager.create_scope(scope['target'], None, project_name)
-        elif scope['type'] == 'IP':
+        elif scope['type'] == 'ip_address':
             create_result = scope_manager.create_scope(None, scope['target'], project_name)
         else:
             create_result = {
@@ -126,7 +126,7 @@ def handle_scope_creation(msg):
 
         if create_result["status"] == "success":
             new_scope = create_result["new_scope"]
-
+            print(new_scope)
             if new_scope:
                 new_scopes.append(new_scope)
             
@@ -148,27 +148,27 @@ def handle_scope_creation(msg):
         # Send the scope back
         emit('scopes:create:' + project_name, json.dumps({
             'status': 'success',
-            'newScopes': new_scopes
+            'new_scopes': new_scopes
         }))
 
 
-@socketio.on('scopes:delete:scopeID')
+@socketio.on('scopes:delete:scope_id')
 def handle_scope_deletiong(msg):
     """ When received this message, delete the scope """
-    scopeID = msg
+    scope_id = msg
 
     # Delete new scope (and register it)
-    delete_result = scope_manager.delete_scope(scopeID=scopeID)
+    delete_result = scope_manager.delete_scope(scope_id=scope_id)
 
     if delete_result["status"] == "success":
         # Send the success result
-        emit('scopes:delete:scopeID:' + scopeID, json.dumps({
+        emit('scopes:delete:scope_id:' + scope_id, json.dumps({
             'status': 'success'
         }))
 
     else:
         # Error occured
-        emit('scopes:delete:scopeID:' + scopeID, json.dumps({
+        emit('scopes:delete:scope_id:' + scope_id, json.dumps({
             'status': 'error',
             'text': delete_result["text"]
         }))

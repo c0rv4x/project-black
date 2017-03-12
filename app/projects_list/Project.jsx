@@ -9,7 +9,7 @@ class Project extends React.Component {
         super(props);
 
         this.state = {
-            projectName : props["projectName"] || null, 
+            project_name : props["project_name"] || null, 
             uuid: props["uuid"]
         };
 
@@ -22,14 +22,14 @@ class Project extends React.Component {
     }
 
     render() {
-        var detailsLink = <Link to={"/project/" + this.state.projectName}>Details</Link>;
+        var detailsLink = <Link to={"/project/" + this.state.project_name}>Details</Link>;
 
         return (
             <tr>
                 <td>{this.state.uuid}</td>
-                <td>{this.state.projectName}</td>
+                <td>{this.state.project_name}</td>
                 <td>
-                    <Link to={"/project/" + this.state.projectName}>Details</Link>
+                    <Link to={"/project/" + this.state.project_name}>Details</Link>
                     <button onClick={this.delete}>Delete</button>
                 </td>
             </tr>

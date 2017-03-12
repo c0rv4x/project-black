@@ -41,7 +41,7 @@ class ProjectList extends Reflux.Component
     render()
     {
         var projects = _.map(this.state.projects, (x) => {
-            return <Project projectName={x.projectName} uuid={x.uuid} key={x.uuid} />
+            return <Project project_name={x.project_name} uuid={x.uuid} key={x.uuid} />
         });
 
         return (
@@ -54,8 +54,8 @@ class ProjectList extends Reflux.Component
                 }
                 
                 <input 
-                    id="projectName" 
-                    placeholder="projectName" 
+                    id="project_name" 
+                    placeholder="project_name" 
                     value={this.state.newProject.name}
                     onChange={this.handleNewProjectNameChange} />
 

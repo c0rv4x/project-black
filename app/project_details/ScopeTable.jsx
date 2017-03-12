@@ -8,10 +8,10 @@ class ScopeTable extends React.Component {
         super(props);
 
         this.state = {
-            projectName : props["projectName"] || null, 
+            project_name : props["project_name"] || null, 
             hostname : props["hostname"] || null,
-            IP : props["IP"] || null,
-            scopeID : props["scopeID"] || null
+            ip_address : props["ip_address"] || null,
+            scope_id : props["scope_id"] || null
         };
 
         this.delete = this.delete.bind(this);
@@ -19,16 +19,16 @@ class ScopeTable extends React.Component {
 
     delete(e) {
         e.preventDefault();
-        ScopeActions.delete(this.state.scopeID);
+        ScopeActions.delete(this.state.scope_id);
     }
 
     render() {
         return (
             <tr>
-                <td>{this.state.scopeID}</td>
+                <td>{this.state.scope_id}</td>
                 <td>{this.state.hostname}</td>
-                <td>{this.state.IP}</td>
-                <td>{this.state.projectName}</td>
+                <td>{this.state.ip_address}</td>
+                <td>{this.state.project_name}</td>
                 <td>
                     <button onClick={this.delete}>Delete</button>
                 </td>

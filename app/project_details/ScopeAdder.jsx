@@ -7,11 +7,11 @@ import ScopeActions from './ScopeActions.js';
 
 
 function findScopeType(target) {
-    function tryIPNetwork(target) {
+    function tryip_addressNetwork(target) {
         return target.match(/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2}$/);
     }
 
-    function tryIPAddress(target) {
+    function tryip_addressAddress(target) {
         return target.match(/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/);
     }
 
@@ -19,11 +19,11 @@ function findScopeType(target) {
         return target.match(/^([a-zA-Z]{1}[a-zA-Z0-9\-]{0,255}\.){1,}[a-zA-Z]{2,15}$/);
     }
 
-    if (tryIPNetwork(target)) {
+    if (tryip_addressNetwork(target)) {
         return "network";
     }
-    else if (tryIPAddress(target)) {
-        return "IP";
+    else if (tryip_addressAddress(target)) {
+        return "ip_address";
     }
     else if (tryHostname(target)) {
         return "hostname";
@@ -41,7 +41,7 @@ class ScopeAdder extends Reflux.Component
     {
         super(props);
         this.state = {
-            'newScope': {
+            'new_scope': {
                 'targets': ""
             },
             'errorMessage': ""
@@ -59,7 +59,7 @@ class ScopeAdder extends Reflux.Component
 
         var errorMsg = "";
 
-        var newTargets = this.state.newScope['targets'].split(',');
+        var newTargets = this.state.new_scope['targets'].split(',');
         var niceTargets = _.map(newTargets, _.trim);
 
         var preparedTargets = [];
@@ -69,7 +69,7 @@ class ScopeAdder extends Reflux.Component
 
             if (targetType == 'error') {
                 if (!errorMsg) {
-                    errorMsg += "Please use IP, CIDR, hostnames divided with comma. This is bad: " + target;
+                    errorMsg += "Please use ip_address, CIDR, hostnames divided with comma. This is bad: " + target;
                 }
                 else {
                     errorMsg += ", " + target;
@@ -95,7 +95,7 @@ class ScopeAdder extends Reflux.Component
                 errorMessage: 'ok'
             });
 
-            ScopeActions.create(preparedTargets, this.props.projectName);        
+            ScopeActions.create(preparedTargets, this.props.project_name);        
 
             // this.trigger(this.state);              
         }
@@ -103,9 +103,9 @@ class ScopeAdder extends Reflux.Component
 
     handleNewScopeChange(event) 
     {
-        var scope = this.state.newScope;
+        var scope = this.state.new_scope;
         scope['targets'] = event.target.value;
-        this.setState({newScope: scope});
+        this.setState({new_scope: scope});
     }
 
     render()
@@ -120,7 +120,7 @@ class ScopeAdder extends Reflux.Component
                 <input 
                     id="scope" 
                     placeholder="scope" 
-                    value={this.state.newScope.targets}
+                    value={this.state.new_scope.targets}
                     onChange={this.handleNewScopeChange} />                    
                 <button onClick={this.create}>Add new</button>
 
