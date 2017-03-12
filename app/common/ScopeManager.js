@@ -3,11 +3,12 @@ import Connector from '../common/SocketConnector.jsx';
 class ScopeClass
 {
 
-    constructor(hostname, IP, scopeID)
+    constructor(hostname, IP, scopeID, projectName)
     {
         this.hostname = hostname;
         this.IP = IP;
         this.scopeID = scopeID;
+        this.projectName = projectName;
     }
 
 }
@@ -30,9 +31,10 @@ class ScopeManager
 
     initialize(callback) {
         // Upon connecting to the server, request the data
-        this.connector.listen('connect', () => {
+        this.connector.after_connected(() => {
             this.connector.emit('scopes:all:get');
             this.connector.listen('scopes:all:get:back', (scopes) => {
+            console.log('back');
                 // After we got the scopes, add them and callback the result
                 scopes = JSON.parse(scopes);
 
@@ -40,7 +42,7 @@ class ScopeManager
                 this.scopes = [];
                 for (var scope of scopes) {
                     // Create a new scope
-                    var newProject = new ProjectClass(scope["hostname"], scope["IP"], scope["scopeID"], scope["projectName"]);
+                    var newProject = new ScopeClass(scope["hostname"], scope["IP"], scope["scopeID"], scope["projectName"]);
                     this.scopes.push(newProject);
                 }
 

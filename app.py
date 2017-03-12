@@ -6,7 +6,7 @@ from werkzeug.routing import BaseConverter
 
 from flask_socketio import SocketIO, emit
 
-from projects_handling import ProjectManager
+from projects_handling import ProjectManager, ScopeManager
 
 
 # Define Flask app and wrap it into SocketIO
@@ -91,6 +91,66 @@ def handle_project_creation(msg):
             'status': 'error',
             'text': delete_result["text"]
         }))
+
+
+
+scope_manager = ScopeManager()
+
+@socketio.on('scopes:all:get')
+def handle_custom_event():
+    """ When received this message, send back all the scopes """
+    emit('scopes:all:get:back', json.dumps(scope_manager.get_scopes()))
+
+
+@socketio.on('scopes:create')
+def handle_scope_creation(msg):
+    """ When received this message, create a new scope """
+    hostname = msg['hostname']
+    IP = msg['IP']
+    projectName = msg['projectName']
+
+    # Create new scope (and register it)
+    create_result = scope_manager.create_scope(hostname, IP, projectName)
+
+    if create_result["status"] == "success":
+        # Send the scope back
+        emit('scopes:create:' + scope_name, json.dumps({
+            'status': 'success',
+            'newProject': create_result["new_scope"]
+        }))
+
+
+    else:
+        # Error occured
+        # already_existed_scope = getattr(create_result, 'found_scope', None)
+
+        emit('scopes:create:' + scope_name, json.dumps({
+            'status': 'error',
+            'text': create_result["text"]
+        }))
+
+
+@socketio.on('scopes:delete:uuid')
+def handle_scope_creation(msg):
+    """ When received this message, delete the scope """
+    scope_uuid = msg
+
+    # Delete new scope (and register it)
+    delete_result = scope_manager.delete_scope(scope_uuid=scope_uuid)
+
+    if delete_result["status"] == "success":
+        # Send the success result
+        emit('scopes:delete:uuid:' + scope_uuid, json.dumps({
+            'status': 'success'
+        }))
+
+    else:
+        # Error occured
+        emit('scopes:delete:uuid:' + scope_uuid, json.dumps({
+            'status': 'error',
+            'text': delete_result["text"]
+        }))
+
 
 if __name__ == '__main__':
     socketio.run(app)

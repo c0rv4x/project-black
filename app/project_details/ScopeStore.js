@@ -26,7 +26,7 @@ class ScopeStore extends Reflux.Store
     }
 
     initializeScopes(scopes) {
-        console.log('recieved scopes');
+        console.log(scopes);
         this.loading("", false);
 
         this.setState({
