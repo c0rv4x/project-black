@@ -1,18 +1,30 @@
 import uuid
 
+from black.black.db import sessions, Project
+
 
 class ProjectManager(object):
     """ ProjectManager keeps track of all projects in the system,
     exposing some interfaces for public use. """
     def __init__(self):
-        self.projects = [{
-            "project_name": "proj_name_1",
-            "uuid": str(uuid.uuid4())}
-        ]
+        self.projects = []
+        self.update_from_db()
+        # self.create_project("proj_name_1")
 
     def get_projects(self):
         """ Returns the list of projects """
         return self.projects
+
+    def update_from_db(self):
+        """ Extract all the projects from the DB """
+        session = sessions.get_new_session()
+        projects_db = session.query(Project).all()
+        self.projects = list(map(lambda x: {
+            'project_name': x.project_name, 
+            'project_uuid': x.project_uuid
+            }, 
+            projects_db))
+        sessions.destroy_session(session)        
 
     def find_project(self, project_name=None, project_uuid=None):
         """ Serach for a project with a specific name """
@@ -22,16 +34,32 @@ class ProjectManager(object):
             filtered = list(filter(lambda x: x['project_name'] == project_name, filtered))
 
         if project_uuid:
-            filtered = list(filter(lambda x: x['uuid'] == project_uuid, filtered))
+            filtered = list(filter(lambda x: x['project_uuid'] == project_uuid, filtered))
 
         return filtered
 
     def create_project(self, project_name):
-        """ Creates a new project """
+        """ Create a new project instance, save it to db and add
+        minimal information for the web. """
         if len(self.find_project(project_name=project_name)) == 0:
+            project_uuid = str(uuid.uuid4())
+
+            try: 
+                session = sessions.get_new_session()
+                project_db = Project(project_uuid=project_uuid,
+                                     project_name=project_name)
+                session.add(project_db)
+                session.commit()
+                sessions.destroy_session(session)
+            except Exception as e:
+                return {
+                    "status": "error",
+                    "text": e.text
+                }    
+
             project = {
                 "project_name": project_name,
-                "uuid": str(uuid.uuid4()) 
+                "project_uuid": project_uuid
             }
 
             # Append the new ptoject to existing
@@ -39,12 +67,26 @@ class ProjectManager(object):
 
             return {
                 "status": "success",
-                "new_project": project
+                "project": project
+            }
+        else:
+            return {
+                "status": "error",
+                "text": 'Already exists that specific project name.'
+            }            
+
+    def add_new_project(self, project_name):
+        """ Creates a new project """
+        create_result = self.create_project(project_name)
+        if create_result['status'] == 'success':
+            return {
+                "status": "success",
+                "new_project": create_result['project']
             }
         else: 
             return {
                 "status": "error",
-                "text": 'Already exists that specific project name.'
+                "text": create_result["text"]
             }
 
     def delete_project(self, project_name=None, project_uuid=None):
@@ -54,7 +96,21 @@ class ProjectManager(object):
         if len(filtered_projects) != 0:
             for to_delete in filtered_projects:
                 # Remove the project from everywhere
-                self.projects.remove(to_delete)
+                try: 
+                    print(to_delete)
+                    session = sessions.get_new_session()
+                    session.query(Project).filter_by(project_uuid=to_delete['project_uuid']).delete()
+                    session.commit()
+                    sessions.destroy_session(session)
+
+                    self.projects.remove(to_delete)
+                except Exception as e:
+                    print(e)
+                    return {
+                        "status": "error",
+                        "text": e.text
+                    }    
+
 
             return {
                 "status": "success"

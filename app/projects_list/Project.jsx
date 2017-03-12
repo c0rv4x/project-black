@@ -10,7 +10,7 @@ class Project extends React.Component {
 
         this.state = {
             project_name : props["project_name"] || null, 
-            uuid: props["uuid"]
+            project_uuid: props["project_uuid"]
         };
 
         this.delete = this.delete.bind(this);
@@ -18,7 +18,7 @@ class Project extends React.Component {
 
     delete(e) {
         e.preventDefault();
-        ProjectActions.delete(this.state.uuid);
+        ProjectActions.delete(this.state.project_uuid);
     }
 
     render() {
@@ -26,7 +26,7 @@ class Project extends React.Component {
 
         return (
             <tr>
-                <td>{this.state.uuid}</td>
+                <td>{this.state.project_uuid}</td>
                 <td>{this.state.project_name}</td>
                 <td>
                     <Link to={"/project/" + this.state.project_name}>Details</Link>

@@ -2,3 +2,4 @@ node_modules/
 public/
 .env/
 __pycache__/
+black/

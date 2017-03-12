@@ -52,13 +52,13 @@ def handle_project_creation(msg):
     project_name = msg['project_name']
 
     # Create new project (and register it)
-    create_result = project_manager.create_project(project_name)
+    addition_result = project_manager.add_new_project(project_name)
 
-    if create_result["status"] == "success":
+    if addition_result["status"] == "success":
         # Send the project back
         emit('projects:create:' + project_name, json.dumps({
             'status': 'success',
-            'newProject': create_result["new_project"]
+            'newProject': addition_result["new_project"]
         }))
 
 
@@ -66,11 +66,11 @@ def handle_project_creation(msg):
         # Error occured
         emit('projects:create:' + project_name, json.dumps({
             'status': 'error',
-            'text': create_result["text"]
+            'text': addition_result["text"]
         }))
 
 
-@socketio.on('projects:delete:uuid')
+@socketio.on('projects:delete:project_uuid')
 def handle_project_creation(msg):
     """ When received this message, delete the project """
     project_uuid = msg
@@ -80,13 +80,13 @@ def handle_project_creation(msg):
 
     if delete_result["status"] == "success":
         # Send the success result
-        emit('projects:delete:uuid:' + project_uuid, json.dumps({
+        emit('projects:delete:project_uuid:' + project_uuid, json.dumps({
             'status': 'success'
         }))
 
     else:
         # Error occured
-        emit('projects:delete:uuid:' + project_uuid, json.dumps({
+        emit('projects:delete:project_uuid:' + project_uuid, json.dumps({
             'status': 'error',
             'text': delete_result["text"]
         }))
