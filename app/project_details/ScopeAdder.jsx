@@ -60,14 +60,18 @@ class ScopeList extends Reflux.Component
         var errorMsg = "";
 
         var newTargets = this.state.newScope['targets'].split(',');
-        for (var target of newTargets) {
+        var niceTargets = _.map(newTargets, _.trim);
+
+        for (var target of niceTargets) {
             var targetType = findScopeType(target);
 
             if (targetType == 'error') {
                 if (!errorMsg) {
-                    errorMsg += "Bad type of scope: ";
+                    errorMsg += "Please use IP, CIDR, hostnames divided with comma. This is bad: " + target;
                 }
-                errorMsg += target + ", ";
+                else {
+                    errorMsg += ", " + target;
+                }
             }
         }
 
