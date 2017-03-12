@@ -30,7 +30,7 @@ class ProjectManager
 
     initialize(callback) {
         // Upon connecting to the server, request the data
-        this.connector.listen('connect', () => {
+        this.connector.after_connected(() => {
             this.connector.emit('projects:all:get');
             this.connector.listen('projects:all:get:back', (projects) => {
                 // After we got the projects, add them and callback the result
