@@ -42,8 +42,8 @@ class ScopeManager
                 this.scopes = [];
                 for (var scope of scopes) {
                     // Create a new scope
-                    var newProject = new ScopeClass(scope["hostname"], scope["IP"], scope["scopeID"], scope["projectName"]);
-                    this.scopes.push(newProject);
+                    var newScope = new ScopeClass(scope["hostname"], scope["IP"], scope["scopeID"], scope["projectName"]);
+                    this.scopes.push(newScope);
                 }
 
                 // Callback everything, we just saved
@@ -54,6 +54,29 @@ class ScopeManager
 
     getScopes() {
         return this.scopes;
+    }
+
+    deleteScope(scopeID, callback) {
+        this.connector.emit('scopes:delete:scopeID', scopeID);
+        this.connector.listen('scopes:delete:scopeID:' + scopeID, (msg) => {
+            var parsedMsg = JSON.parse(msg);
+
+            if (parsedMsg['status'] == 'success') {
+                this.scopes = _.filter(this.scopes, (x) => {
+                    return x['scopeID'] != scopeID;
+                });
+
+                callback({
+                    'status': 'success'
+                });
+            }
+            else {
+                callback({
+                    'status': 'error',
+                    'text': msg['text']
+                });                
+            }
+        });
     }
 
 }

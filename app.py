@@ -130,23 +130,23 @@ def handle_scope_creation(msg):
         }))
 
 
-@socketio.on('scopes:delete:uuid')
+@socketio.on('scopes:delete:scopeID')
 def handle_scope_creation(msg):
     """ When received this message, delete the scope """
-    scope_uuid = msg
+    scopeID = msg
 
     # Delete new scope (and register it)
-    delete_result = scope_manager.delete_scope(scope_uuid=scope_uuid)
+    delete_result = scope_manager.delete_scope(scopeID=scopeID)
 
     if delete_result["status"] == "success":
         # Send the success result
-        emit('scopes:delete:uuid:' + scope_uuid, json.dumps({
+        emit('scopes:delete:scopeID:' + scopeID, json.dumps({
             'status': 'success'
         }))
 
     else:
         # Error occured
-        emit('scopes:delete:uuid:' + scope_uuid, json.dumps({
+        emit('scopes:delete:scopeID:' + scopeID, json.dumps({
             'status': 'error',
             'text': delete_result["text"]
         }))

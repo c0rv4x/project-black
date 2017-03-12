@@ -64,13 +64,13 @@ class ScopeStore extends Reflux.Store
         });
     }
 
-    // bad
-    onDelete(uuid)
+    onDelete(scopeID)
     {
         this.loading("", true);
 
-        this.scopeManager.deleteScope(uuid, (result) => {
+        this.scopeManager.deleteScope(scopeID, (result) => {
             if (result['status'] == 'success') {
+                console.log(this.scopeManager.getScopes());
                 this.setState({
                     scopes: this.scopeManager.getScopes()
                 });
