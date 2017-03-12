@@ -62,6 +62,8 @@ class ScopeList extends Reflux.Component
         var newTargets = this.state.newScope['targets'].split(',');
         var niceTargets = _.map(newTargets, _.trim);
 
+        var preparedTargets = [];
+
         for (var target of niceTargets) {
             var targetType = findScopeType(target);
 
@@ -72,6 +74,12 @@ class ScopeList extends Reflux.Component
                 else {
                     errorMsg += ", " + target;
                 }
+            }
+            else {
+                preparedTargets.push({
+                    'type': targetType,
+                    'target': target
+                });
             }
         }
 
@@ -87,9 +95,10 @@ class ScopeList extends Reflux.Component
                 errorMessage: 'ok'
             });
 
+            ScopeActions.create(preparedTargets, this.props.projectName);        
+
             // this.trigger(this.state);              
         }
-        // ScopeActions.create(this.state.newScope);        
     }
 
     handleNewScopeChange(event) 

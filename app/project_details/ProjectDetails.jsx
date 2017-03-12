@@ -36,7 +36,7 @@ class ProjectDetails extends Reflux.Component
 		return (
 			<div>
 				<h2>Project Details {this.projectName}</h2>
-				<ScopeAdder />
+				<ScopeAdder projectName={this.projectName}/>
 				<table>
 					<thead>
 						<tr>
