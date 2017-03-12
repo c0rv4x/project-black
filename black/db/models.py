@@ -10,7 +10,7 @@ class Project(Base):
     in the system """
     __tablename__ = 'projects'
 
-    project_id = Column(String, primary_key=True)
+    project_uuid = Column(String, primary_key=True)
     project_name = Column(String)
 
     def __repr__(self):
