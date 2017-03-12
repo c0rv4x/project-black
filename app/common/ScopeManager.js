@@ -56,6 +56,45 @@ class ScopeManager
         return this.scopes;
     }
 
+    createScope(scopes, projectName, callback) {
+        this.connector.emit('scopes:create', {
+            projectName: projectName,
+            scopes: scopes
+        });
+
+        this.connector.listen('scopes:create:' + projectName, (msg) => {
+            var parsedMsg = JSON.parse(msg);
+
+            if (parsedMsg['status'] == 'success') {
+                var newScopes = parsedMsg['newScopes'];
+                console.log(parsedMsg);
+                console.log(newScopes);
+
+                for (var scope of newScopes) {
+                    var newScope = new ScopeClass(
+                        scope["hostname"], 
+                        scope["IP"],
+                        scope["scopeID"], 
+                        projectName);
+                    this.scopes.push(newScope);
+                }
+
+                // OK
+                callback({
+                    'status': 'success'
+                    // 'newScopes': newScopes
+                });
+            }
+            else {
+                // Err
+                callback({
+                    'status': 'error',
+                    'text': parsedMsg['text']
+                });                
+            }
+         
+        });        
+    }
     deleteScope(scopeID, callback) {
         this.connector.emit('scopes:delete:scopeID', scopeID);
         this.connector.listen('scopes:delete:scopeID:' + scopeID, (msg) => {

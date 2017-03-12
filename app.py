@@ -105,33 +105,56 @@ def handle_custom_event():
 @socketio.on('scopes:create')
 def handle_scope_creation(msg):
     """ When received this message, create a new scope """
-    hostname = msg['hostname']
-    IP = msg['IP']
-    projectName = msg['projectName']
+    scopes = msg['scopes']
+    project_name = msg['projectName']
 
-    # Create new scope (and register it)
-    create_result = scope_manager.create_scope(hostname, IP, projectName)
+    new_scopes = []
 
-    if create_result["status"] == "success":
-        # Send the scope back
-        emit('scopes:create:' + scope_name, json.dumps({
-            'status': 'success',
-            'newProject': create_result["new_scope"]
+    error_found = False
+    error_text = ""
+
+    for scope in scopes:
+        # Create new scope (and register it)
+        if scope['type'] == 'hostname':
+            create_result = scope_manager.create_scope(scope['target'], None, project_name)
+        elif scope['type'] == 'IP':
+            create_result = scope_manager.create_scope(None, scope['target'], project_name)
+        else:
+            create_result = {
+                "error": True,
+                "text": "CIDR is not implemented yet"
+            }
+
+        if create_result["status"] == "success":
+            new_scope = create_result["new_scope"]
+
+            if new_scope:
+                new_scopes.append(new_scope)
+            
+        else:
+            error_found = True
+            new_err = create_result["text"]
+
+            if new_err not in error_text:
+                error_text += new_err
+
+
+    if error_found:        
+        emit('scopes:create:' + project_name, json.dumps({
+            'status': 'error',
+            'text': error_text
         }))
 
-
     else:
-        # Error occured
-        # already_existed_scope = getattr(create_result, 'found_scope', None)
-
-        emit('scopes:create:' + scope_name, json.dumps({
-            'status': 'error',
-            'text': create_result["text"]
+        # Send the scope back
+        emit('scopes:create:' + project_name, json.dumps({
+            'status': 'success',
+            'newScopes': new_scopes
         }))
 
 
 @socketio.on('scopes:delete:scopeID')
-def handle_scope_creation(msg):
+def handle_scope_deletiong(msg):
     """ When received this message, delete the scope """
     scopeID = msg
 

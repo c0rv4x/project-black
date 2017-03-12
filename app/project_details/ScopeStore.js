@@ -45,11 +45,11 @@ class ScopeStore extends Reflux.Store
         this.trigger(this.state);        
     }
 
-    onCreate(newScope, projectName)
+    onCreate(newScopes, projectName)
     {
         this.loading("", true);
 
-        this.scopeManager.createScope(newScope, projectName, (result) => {
+        this.scopeManager.createScope(newScopes, projectName, (result) => {
             if (result['status'] == 'success') {
                 this.setState({
                     scopes: this.scopeManager.getScopes()

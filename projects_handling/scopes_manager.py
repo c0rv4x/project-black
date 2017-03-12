@@ -43,7 +43,7 @@ class ScopeManager(object):
         """ Creates a new scope """
         found_scopes = self.find_scope(hostname=hostname, IP=IP, projectName=projectName)
 
-        if found_scopes == 0:
+        if len(found_scopes) == 0:
             scope = {
                 "hostname": hostname,
                 "IP": IP,
@@ -60,9 +60,9 @@ class ScopeManager(object):
             }
         else: 
             return {
-                "status": "error",
+                "status": "success",
                 "text": 'That specific scope already exists.',
-                "found_scope": found_scopes[0]
+                "new_scope": None
             }
 
     def delete_scope(self, hostname=None, IP=None, projectName=None, scopeID=None):
