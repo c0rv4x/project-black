@@ -70,7 +70,6 @@ class ProjectList extends Reflux.Component
                         <tr>
                             <td>UUID</td>
                             <td>Project Name</td>
-                            <td>Scope</td>
                             <td>Control</td>
                         </tr>
                     </thead>
