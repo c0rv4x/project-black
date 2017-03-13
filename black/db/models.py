@@ -1,5 +1,6 @@
 """ Models for SQLAlchemy ORM """
 from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -10,8 +11,11 @@ class Project(Base):
     in the system """
     __tablename__ = 'projects'
 
-    project_uuid = Column(String, primary_key=True)
-    project_name = Column(String)
+    project_uuid = Column(String)
+    project_name = Column(String, primary_key=True)
+    scopes_relationship = relationship('Scope', cascade="all, delete-orphan")
+    tasks_relationship = relationship('Task', cascade="all, delete-orphan")
+    scans_relationship = relationship('Scan', cascade="all, delete-orphan")
 
     def __repr__(self):
        return "<Project(project_name='%s'>" % (
@@ -40,7 +44,7 @@ class Task(Base):
     status = Column(String)
 
     # The name of the related project
-    project_name = Column(String, ForeignKey('projects.project_name'))
+    project_name = Column(String, ForeignKey('projects.project_name', ondelete='CASCADE'))
 
     # def __repr__(self):
     #    return "<Task(task_id='%s', task_type='%s',)>" % (
@@ -65,7 +69,7 @@ class Scope(Base):
     ip_address = Column(String)
 
     # The name of the related project
-    project_name = Column(String, ForeignKey('projects.project_name'))
+    project_name = Column(String, ForeignKey('projects.project_name', ondelete="CASCADE"))
 
     def __repr__(self):
        return """<Scope(scope_id='%s', hostname='%s',
@@ -103,7 +107,7 @@ class Scan(Base):
     tasks_ids = Column(String) # TODO: add on_delete
 
     # The name of the related project
-    project_name = Column(String, ForeignKey('projects.project_name'))
+    project_name = Column(String, ForeignKey('projects.project_name', ondelete='CASCADE'))
 
     # def __repr__(self):
     #    return "<Scan(project_name='%s'>" % (
