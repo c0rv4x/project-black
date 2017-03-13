@@ -54,7 +54,7 @@ class ProjectManager(object):
             except Exception as e:
                 return {
                     "status": "error",
-                    "text": e.text
+                    "text": str(e)
                 }    
 
             project = {
