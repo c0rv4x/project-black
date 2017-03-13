@@ -1,27 +1,31 @@
 import uuid
 
-from black.black.db import sessions, Project, Scope
+from black.black.db import sessions, Scope
 
 
 class ScopeManager(object):
     """ ScopeManager keeps track of all scopes in the system,
     exposing some interfaces for public use. """
     def __init__(self):
-        self.scopes = [{
-            "hostname": "somehostname",
-            "ip_address": "1.2.2.2",
-            "scope_id": str(uuid.uuid4()),
-            "project_name": "proj_name_1"
-        }, {
-            "hostname": "sdf",
-            "ip_address": "1.2.3.2",
-            "scope_id": str(uuid.uuid4()),
-            "project_name": "sdf"
-        }]
+        self.scopes = []
+        self.update_from_db()
 
     def get_scopes(self):
         """ Returns the list of scopes """
         return self.scopes
+
+    def update_from_db(self):
+        """ Extract all the scopes from the DB """
+        session = sessions.get_new_session()
+        scopes_from_db = session.query(Scope).all()
+        self.scopes = list(map(lambda x: {
+            'hostname': x.hostname, 
+            'ip_address': x.ip_address,
+            'project_name': x.project_name,
+            'scope_id': x.scope_id
+            }, 
+            scopes_from_db))
+        sessions.destroy_session(session)  
 
     def find_scope(self, hostname=None, ip_address=None, project_name=None, scope_id=None):
         """ Serach for a scope with a specific name """
