@@ -97,7 +97,6 @@ class ProjectManager(object):
             for to_delete in filtered_projects:
                 # Remove the project from everywhere
                 try: 
-                    print(to_delete)
                     session = sessions.get_new_session()
                     session.query(Project).filter_by(project_uuid=to_delete['project_uuid']).delete()
                     session.commit()

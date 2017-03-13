@@ -126,7 +126,7 @@ def handle_scope_creation(msg):
 
         if create_result["status"] == "success":
             new_scope = create_result["new_scope"]
-            print(new_scope)
+
             if new_scope:
                 new_scopes.append(new_scope)
             

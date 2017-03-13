@@ -47,20 +47,25 @@ class ScopeStore extends Reflux.Store
 
     onCreate(new_scopes, project_name)
     {
-        this.loading("", true);
+        if (new_scopes['status'] == 'success') {            
+            this.loading("", true);
 
-        this.scopeManager.createScope(new_scopes, project_name, (result) => {
-            if (result['status'] == 'success') {
-                this.setState({
-                    scopes: this.scopeManager.getScopes()
-                });
+            this.scopeManager.createScope(new_scopes['prepared_targets'], project_name, (result) => {
+                if (result['status'] == 'success') {
+                    this.setState({
+                        scopes: this.scopeManager.getScopes()
+                    });
 
-                this.loading("", false);
-            }
-            else {
-                this.loading(result['text'], false);                
-            }
-        });
+                    this.loading("", false);
+                }
+                else {
+                    this.loading(result['text'], false);                
+                }
+            });
+        }
+        else {
+            this.loading(new_scopes['text'], false);
+        }
     }
 
     onDelete(scope_id)

@@ -67,8 +67,6 @@ class ScopeManager
 
             if (parsed_msg['status'] == 'success') {
                 var new_scopes = parsed_msg['new_scopes'];
-                console.log(parsed_msg);
-                console.log(new_scopes);
 
                 for (var scope of new_scopes) {
                     var new_scope = new ScopeClass(

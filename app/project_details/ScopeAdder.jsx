@@ -43,8 +43,7 @@ class ScopeAdder extends Reflux.Component
         this.state = {
             'new_scope': {
                 'targets': ""
-            },
-            'errorMessage': ""
+            }
         };
         this.store = ScopeStore;
 
@@ -67,7 +66,7 @@ class ScopeAdder extends Reflux.Component
         for (var target of niceTargets) {
             var targetType = findScopeType(target);
 
-            if (targetType == 'error') {
+            if ((targetType == 'error') || (targetType == 'netowrk'))  {
                 if (!errorMsg) {
                     errorMsg += "Please use ip_address, CIDR, hostnames divided with comma. This is bad: " + target;
                 }
@@ -84,20 +83,16 @@ class ScopeAdder extends Reflux.Component
         }
 
         if (errorMsg) {
-            this.setState({
-                errorMessage: errorMsg
-            });
-
-            // this.trigger(this.state);              
+            ScopeActions.create({
+                'status': 'error',
+                'text': errorMsg
+            }, this.props.project_name);            
         }
         else {
-            this.setState({
-                errorMessage: 'ok'
-            });
-
-            ScopeActions.create(preparedTargets, this.props.project_name);        
-
-            // this.trigger(this.state);              
+            ScopeActions.create({
+                'status': 'success',
+                'prepared_targets': preparedTargets
+            }, this.props.project_name);        
         }
     }
 
