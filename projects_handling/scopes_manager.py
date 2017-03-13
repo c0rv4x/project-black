@@ -60,7 +60,7 @@ class ScopeManager(object):
             }
         else: 
             return {
-                "status": "success",
+                "status": "duplicate",
                 "text": 'That specific scope already exists.',
                 "new_scope": None
             }

@@ -26,7 +26,6 @@ class ProjectDetails extends Reflux.Component
 		});
 
 		var displayedScopes = _.map(onlyMineScope, (x) => {
-			console.log(x);
 			return <ScopeTable 
 					key={x.scope_id}
 					scope_id={x.scope_id}

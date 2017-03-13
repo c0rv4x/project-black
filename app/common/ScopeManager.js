@@ -23,6 +23,8 @@ class ScopeManager
             instance = this;
             this.connector = new Connector();
 
+            this.registered_project_names = [];
+
             this.scopes = [];
         }
 
@@ -34,7 +36,6 @@ class ScopeManager
         this.connector.after_connected(() => {
             this.connector.emit('scopes:all:get');
             this.connector.listen('scopes:all:get:back', (scopes) => {
-            console.log('back');
                 // After we got the scopes, add them and callback the result
                 scopes = JSON.parse(scopes);
 
@@ -62,36 +63,44 @@ class ScopeManager
             scopes: scopes
         });
 
-        this.connector.listen('scopes:create:' + project_name, (msg) => {
-            var parsed_msg = JSON.parse(msg);
+        if (!(project_name in this.registered_project_names)) {
+            this.registered_project_names.push(project_name);
 
-            if (parsed_msg['status'] == 'success') {
-                var new_scopes = parsed_msg['new_scopes'];
+            this.connector.listen('scopes:create:' + project_name, (msg) => {
+                var parsed_msg = JSON.parse(msg);
 
-                for (var scope of new_scopes) {
-                    var new_scope = new ScopeClass(
-                        scope["hostname"], 
-                        scope["ip_address"],
-                        scope["scope_id"], 
-                        project_name);
-                    this.scopes.push(new_scope);
+                if (parsed_msg['status'] == 'success') {
+                    var new_scopes = parsed_msg['new_scopes'];
+
+                    for (var scope of new_scopes) {
+                        var new_scope = new ScopeClass(
+                            scope["hostname"], 
+                            scope["ip_address"],
+                            scope["scope_id"], 
+                            project_name);
+                        this.scopes.push(new_scope);
+                    }
+
+                    // OK
+                    callback({
+                        'status': 'success'
+                        // 'new_scopes': new_scopes
+                    });
                 }
+                else {
+                    // Err
+                    callback({
+                        'status': 'error',
+                        'text': parsed_msg['text']
+                    });                
+                }
+             
+            });        
+        }
+        else {
+            console.log('already registered this project name');
+        }
 
-                // OK
-                callback({
-                    'status': 'success'
-                    // 'new_scopes': new_scopes
-                });
-            }
-            else {
-                // Err
-                callback({
-                    'status': 'error',
-                    'text': parsed_msg['text']
-                });                
-            }
-         
-        });        
     }
     deleteScope(scope_id, callback) {
         this.connector.emit('scopes:delete:scope_id', scope_id);

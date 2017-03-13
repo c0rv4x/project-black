@@ -130,7 +130,7 @@ def handle_scope_creation(msg):
             if new_scope:
                 new_scopes.append(new_scope)
             
-        else:
+        elif create_result["status"] == "error":
             error_found = True
             new_err = create_result["text"]
 

@@ -71,7 +71,6 @@ class ProjectManager
             }
             else {
                 // Err
-                console.log(callback);
                 callback({
                     'status': 'error',
                     'text': parsed_msg['text']

@@ -35,7 +35,6 @@ class Connector {
 
     emit(eventName, message=null) {
     	if (message != null) {
-    		console.log(eventName, message);
 	        this.socketio.emit(eventName, message);
     	} 
     	else {
