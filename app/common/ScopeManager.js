@@ -63,7 +63,7 @@ class ScopeManager
             scopes: scopes
         });
 
-        if (!(project_name in this.registered_project_names)) {
+        if (this.registered_project_names.indexOf(project_name) === -1) {
             this.registered_project_names.push(project_name);
 
             this.connector.listen('scopes:create:' + project_name, (msg) => {
