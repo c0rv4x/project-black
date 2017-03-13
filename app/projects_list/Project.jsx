@@ -11,28 +11,21 @@ class Project extends React.Component {
 
         const project = props['project'];
 
-        this.state = {
-            project: project
-        };
-
         this.delete = this.delete.bind(this);
     }
 
     delete(e) {
         e.preventDefault();
-        ProjectActions.delete(this.state.project['project_uuid']);
+        ProjectActions.delete(this.props.project['project_uuid']);
     }
 
     render() {
         return (
             <tr>
-                <td>{this.state.project['project_uuid']}</td>
-                <td>{this.state.project['project_name']}</td>
+                <td>{this.props.project['project_uuid']}</td>
+                <td>{this.props.project['project_name']}</td>
                 <td>
-                    <Link to={{
-                        pathname: "/project/" + this.state.project['project_name'],
-                        state: { project: this.state.project }
-                    }}>
+                    <Link to={"/project/" + this.props.project['project_name']}>
                         <Button bsStyle="default">Details</Button>
                     </Link>
                     <Button bsStyle="danger" onClick={this.delete}>Delete</Button>
