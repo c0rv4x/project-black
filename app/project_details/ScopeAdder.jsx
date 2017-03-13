@@ -114,14 +114,14 @@ class ScopeAdder extends Reflux.Component
                 }
                 <form>
                     <FormGroup>
-                        <ControlLabel>Create new project or select the existing</ControlLabel>
+                        <ControlLabel>Use comma to separate the targets that you want to add to scope. Hostnames/IPs for now.</ControlLabel>
 
-                        <FormControl placeholder="scope" 
+                        <FormControl placeholder="10.0.0.1, ya.ru" 
                                      value={this.state.new_scope.targets}
                                      onChange={this.handleNewScopeChange} />
                     </FormGroup>
                 </form>
-                <Button bsStyle="primary" onClick={this.create}>Add new</Button>
+                <Button bsStyle="primary" onClick={this.create}>Add to scope</Button>
 
             </div>
         );
