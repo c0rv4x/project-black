@@ -6,6 +6,7 @@ import { Table } from 'react-bootstrap'
 import ScopeStore from './ScopeStore.js';
 import ScopeTable from './ScopeTable.jsx';
 import ScopeAdder from './ScopeAdder.jsx';
+import ProjectComment from './ProjectComment.jsx';
 
 
 class ProjectDetails extends Reflux.Component
@@ -37,6 +38,7 @@ class ProjectDetails extends Reflux.Component
 		return (
 			<div>
 				<h2>Project Details {this.project_name}</h2>
+				<ProjectComment project_name={this.project_name}/>
 				<ScopeAdder project_name={this.project_name}/>
 				<br/>
 

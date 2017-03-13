@@ -21,7 +21,8 @@ class ProjectManager(object):
         projects_db = session.query(Project).all()
         self.projects = list(map(lambda x: {
             'project_name': x.project_name, 
-            'project_uuid': x.project_uuid
+            'project_uuid': x.project_uuid,
+            'comment': x.comment, 
             }, 
             projects_db))
         sessions.destroy_session(session)        
@@ -47,7 +48,8 @@ class ProjectManager(object):
             try: 
                 session = sessions.get_new_session()
                 project_db = Project(project_uuid=project_uuid,
-                                     project_name=project_name)
+                                     project_name=project_name,
+                                     comment="")
                 session.add(project_db)
                 session.commit()
                 sessions.destroy_session(session)
