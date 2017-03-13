@@ -85,6 +85,7 @@ class ScopeStore extends Reflux.Store
          
         });        
     }
+
 }
 
 export default ScopeStore

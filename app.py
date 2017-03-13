@@ -93,6 +93,32 @@ def handle_project_creation(msg):
 
 
 
+@socketio.on('projects:update')
+def handle_project_updating(msg):
+    """ When received this message, update the project """
+    project_uuid = msg['project_uuid']
+    project_name = msg['project_name']
+    comment = msg['comment']
+
+    # Update the existing project
+    updating_status = project_manager.update_project(project_uuid, project_name, comment)
+
+    if updating_status["status"] == "success":
+        # Send the project back
+        emit('projects:create:' + project_name, json.dumps({
+            'status': 'success'
+        }))
+
+
+    else:
+        # Error occured
+        emit('projects:create:' + project_name, json.dumps({
+            'status': 'error',
+            'text': updating_status["text"]
+        }))
+
+
+
 scope_manager = ScopeManager()
 
 @socketio.on('scopes:all:get')

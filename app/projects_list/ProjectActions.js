@@ -1,3 +1,3 @@
 var Reflux = require('reflux');
 
-module.exports = Reflux.createActions(['create', 'delete']);
+module.exports = Reflux.createActions(['create', 'delete', 'commit', 'inited']);

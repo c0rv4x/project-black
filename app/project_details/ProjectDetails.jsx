@@ -3,6 +3,7 @@ import React from 'react';
 import Reflux from 'reflux';
 import { Table } from 'react-bootstrap'
 
+import ProjectStore from '../projects_list/ProjectStore.js';
 import ScopeStore from './ScopeStore.js';
 import ScopeTable from './ScopeTable.jsx';
 import ScopeAdder from './ScopeAdder.jsx';
@@ -14,14 +15,21 @@ class ProjectDetails extends Reflux.Component
 
 	constructor(props) {
 		super(props);
-        this.store = ScopeStore;
-
+        this.stores = [ScopeStore, ProjectStore];
 		this.project_name = props['match']['params']['project_name'];
 	}
 
 	render() {
-		var scopes = this.state.scopes;
+		console.log(this.state);
+		var projects = this.state.projects;
+		var currentProjects = _.filter(projects, (x) => {
+			return x["project_name"] == this.project_name;
+		});
+		var currentProject = currentProjects[0];
+		console.log(projects);
+		console.log(currentProjects);
 
+		var scopes = this.state.scopes;
 		var onlyMineScope = _.filter(scopes, (x) => {
 			return x["project_name"] == this.project_name;
 		});
@@ -38,8 +46,8 @@ class ProjectDetails extends Reflux.Component
 		return (
 			<div>
 				<h2>Project Details {this.project_name}</h2>
-				<ProjectComment project_name={this.project_name}/>
-				<ScopeAdder project_name={this.project_name}/>
+				<ProjectComment project_name={currentProject.project_name} comment={currentProject.comment}/>
+				<ScopeAdder project_name={currentProject.project_name}/>
 				<br/>
 
 				<h3>Currently in scope:</h3>

@@ -4,7 +4,14 @@ import Reflux from 'reflux';
 import { Button, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 
 import ProjectStore from '../projects_list/ProjectStore.js';
+import ProjectActions from '../projects_list/ProjectActions.js';
 
+
+function getItemByKey(list,itemKey){
+    return _.find(list, function(item) {
+        return item.key === itemKey;
+    });
+}
 
 class ProjectComment extends Reflux.Component
 {
@@ -13,19 +20,22 @@ class ProjectComment extends Reflux.Component
 		super(props);
 
 		this.state = {
-			"comment": ""
+			"comment": props['comment']
 		}
 
         this.store = ProjectStore;
 
+        this.project_uuid = null;
 		this.project_name = props['project_name'];
 
 		this.commit = this.commit.bind(this);
 		this.handleCommentChange = this.handleCommentChange.bind(this);
 	}
 
-	commit() {
+	commit(e) {
+		e.preventDefault();
 
+		ProjectActions.commit(this.project_uuid, this.project_name, this.state.comment);
 	}
 
     handleCommentChange(event) 
@@ -34,6 +44,7 @@ class ProjectComment extends Reflux.Component
     }
 
 	render() {
+		// Find a project's uuid by its name
 		return (
 			<div>
 				<FormGroup controlId="formControlsTextarea">
@@ -44,7 +55,6 @@ class ProjectComment extends Reflux.Component
 								 onChange={this.handleCommentChange} />
 				</FormGroup>			
 	            <Button bsStyle="primary" onClick={this.commit}>Commit comment</Button>
-		        <br/>
 		        <br/>
 		        <br/>
 	        </div>

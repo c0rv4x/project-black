@@ -42,7 +42,7 @@ class ProjectList extends Reflux.Component
     render()
     {
         var projects = _.map(this.state.projects, (x) => {
-            return <Project project_name={x.project_name} project_uuid={x.project_uuid} key={x.project_uuid} />
+            return <Project project={x} key={x.project_uuid} />
         });
 
         return (

@@ -3,10 +3,11 @@ import Connector from '../common/SocketConnector.jsx';
 class ProjectClass
 {
 
-    constructor(project_name, project_uuid)
+    constructor(project_name, project_uuid, comment)
     {
         this.project_name = project_name;
         this.project_uuid = project_uuid;
+        this.comment = comment;
     }
 
 }
@@ -39,7 +40,7 @@ class ProjectManager
                 this.projects = [];
                 for (var project of projects) {
                     // Create a new project
-                    var newProject = new ProjectClass(project["project_name"], project["project_uuid"]);
+                    var newProject = new ProjectClass(project["project_name"], project["project_uuid"], project["comment"]);
                     this.projects.push(newProject);
                 }
 
@@ -74,10 +75,10 @@ class ProjectManager
                 callback({
                     'status': 'error',
                     'text': parsed_msg['text']
-                });                
+                });
             }
          
-        });        
+        });
 
     }
 
@@ -101,6 +102,39 @@ class ProjectManager
                     'text': msg['text']
                 });                
             }
+        });
+    }
+
+    updateProject(project_uuid, project_name=null, comment=null, callback=null) {
+        this.connector.emit('projects:update', {
+            project_uuid: project_uuid,
+            project_name: project_name,
+            comment: comment
+        });
+
+        this.connector.listen('projects:update:' + project_uuid, (msg) => {
+            var parsed_msg = JSON.parse(msg);
+
+            if (parsed_msg['status'] == 'success') {
+                // var project = parsed_msg['newProject']
+                // var project_uuid = project['project_uuid'];
+
+                // var newProject = new ProjectClass(project_name, project_uuid);
+                // this.projects.push(newProject);
+                // OK
+                callback({
+                    'status': 'success',
+                    'newProject': newProject
+                });
+            }
+            else {
+                // Err
+                callback({
+                    'status': 'error',
+                    'text': parsed_msg['text']
+                });
+            }
+         
         });
     }
 

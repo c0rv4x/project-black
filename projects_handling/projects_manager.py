@@ -22,7 +22,7 @@ class ProjectManager(object):
         self.projects = list(map(lambda x: {
             'project_name': x.project_name, 
             'project_uuid': x.project_uuid,
-            'comment': x.comment, 
+            'comment': x.comment
             }, 
             projects_db))
         sessions.destroy_session(session)        
@@ -107,7 +107,6 @@ class ProjectManager(object):
 
                     self.projects.remove(to_delete)
                 except Exception as e:
-                    print(e)
                     return {
                         "status": "error",
                         "text": str(e)
@@ -121,4 +120,25 @@ class ProjectManager(object):
             return {
                 "status": "error",
                 "text": 'No such projects.'
+            }
+
+    def update_project(self, project_uuid, project_name=None, comment=None):
+        """ Update project base on uuid """
+        try:
+            session = sessions.get_new_session()
+            project_db = session.query(Project).filter_by(project_uuid=project_uuid).first()
+            if project_name:
+                project_db.project_name = project_name
+            if comment:
+                project_db.comment = comment  
+            session.commit()          
+            sessions.destroy_session(session)
+        except Exception as e:
+            return {
+                "status": "error",
+                "text": str(e)
+            }
+        else:
+            return {
+                "status": "success"
             }

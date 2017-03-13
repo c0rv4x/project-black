@@ -15,7 +15,6 @@ class ProjectStore extends Reflux.Store
             "loading": false,
             "errorMessage": null
         };
-
         // Create project manage
         this.projectManager = new ProjectManager();
 
@@ -23,7 +22,6 @@ class ProjectStore extends Reflux.Store
         this.projectManager.initialize(this.initializeProjects.bind(this));
 
         this.listenables = ProjectActions;
-
     }
 
     initializeProjects(projects) {
@@ -66,6 +64,7 @@ class ProjectStore extends Reflux.Store
     onDelete(project_uuid)
     {
         this.loading("", true);
+
         this.projectManager.deleteProject(project_uuid, (result) => {
             if (result['status'] == 'success') {
                 this.setState({
@@ -80,6 +79,35 @@ class ProjectStore extends Reflux.Store
          
         });        
     }
+
+    onCommit(project_uuid, project_name=null, comment=null) 
+    {
+        this.loading("", true);
+
+        this.projectManager.updateProject(project_uuid, project_name, comment, (result) => {
+            if (result['status'] == 'success') {
+                var projects = this.state.projects;
+                for (var i = 0; i < projects.length; i++) {
+                    if (projects[i]["project_uuid"] == project_uuid) {
+                        if (project_name) projects[i]["project_name"] = project_name;
+                        if (comment) projects[i]["comment"] = comment;
+                        break;
+                    } 
+                }
+
+                this.setState({
+                    projects: projects
+                });
+
+                this.loading("", false);
+            }
+            else {
+                this.loading(result['text'], false);
+            }
+         
+        });  
+
+    }    
 }
 
 export default ProjectStore
