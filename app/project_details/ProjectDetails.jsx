@@ -1,6 +1,7 @@
 import _  from 'lodash';
 import React from 'react';
 import Reflux from 'reflux';
+import { Table } from 'react-bootstrap'
 
 import ScopeStore from './ScopeStore.js';
 import ScopeTable from './ScopeTable.jsx';
@@ -38,19 +39,23 @@ class ProjectDetails extends Reflux.Component
 			<div>
 				<h2>Project Details {this.project_name}</h2>
 				<ScopeAdder project_name={this.project_name}/>
-				<table>
+				<br/>
+
+				<h3>Currently in scope:</h3>
+				<Table bordered>
 					<thead>
 						<tr>
 							<td>Scope ID</td>
 							<td>Hostname</td>
 							<td>ip_address</td>
 							<td>Project Name</td>
+							<td>Control</td>
 						</tr>
 					</thead>
 					<tbody>
 						{displayedScopes}
 					</tbody>
-				</table>
+				</Table>
 			</div>
 		)
 	}

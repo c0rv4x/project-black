@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from 'react-bootstrap'
 
 import ScopeActions from './ScopeActions.js';
 
@@ -30,7 +31,7 @@ class ScopeTable extends React.Component {
                 <td>{this.state.ip_address}</td>
                 <td>{this.state.project_name}</td>
                 <td>
-                    <button onClick={this.delete}>Delete</button>
+                    <Button bsStyle="danger" onClick={this.delete}>Delete</Button>
                 </td>
             </tr>
         );

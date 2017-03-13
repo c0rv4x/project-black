@@ -6,6 +6,7 @@ import {
     Link
 } from 'react-router-dom'
 
+import classnames from 'classnames';
 
 import ProjectList from './projects_list/ProjectList.jsx';
 import ProjectDetails from './project_details/ProjectDetails.jsx';
@@ -14,12 +15,14 @@ import ProjectDetails from './project_details/ProjectDetails.jsx';
 class App extends React.Component {
     render () {
         return (
-            <div>
+            <div className="container">
+                <br/>
                 <Router>
                     <div>
-                        <h1>Project Black</h1>
-                        <Link to="/">Home</Link>
-
+                        <div className={classnames("header", "clearfix")}>
+                            <Link to="/"><h1>Project Black</h1></Link>
+                        </div>
+                        <hr/>
                         <div>
                             <Route exact path="/" component={ProjectList} />
                             <Route exact path="/project/:project_name" component={ProjectDetails} />

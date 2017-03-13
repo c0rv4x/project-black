@@ -1,6 +1,7 @@
 import _  from 'lodash';
 import React from 'react';
 import Reflux from 'reflux';
+import { Button, FormGroup, ControlLabel, FormControl, Table } from 'react-bootstrap'
 
 import Project from './Project.jsx';
 import ProjectStore from './ProjectStore.js';
@@ -52,20 +53,25 @@ class ProjectList extends Reflux.Component
                 {this.state.errorMessage && 
                     <div>{this.state.errorMessage}</div>
                 }
-                
-                <input 
-                    id="project_name" 
-                    placeholder="project_name" 
-                    value={this.state.newProject.name}
-                    onChange={this.handleNewProjectNameChange} />
 
-                <button onClick={this.create}>Add new</button>
+                <h2>Projects</h2>
+                <form>
+                    <FormGroup>
+                        <ControlLabel>Create new project or select the existing</ControlLabel>
 
-                <br />
-                <br />
-                <br />
+                        <FormControl placeholder="Project Name"
+                                     type="text"
+                                     value={this.state.newProject.name}
+                                     onChange={this.handleNewProjectNameChange}/>
+                    </FormGroup>
+                </form>
 
-                <table>
+                <Button bsStyle="primary" onClick={this.create}>Add new</Button>
+
+                <hr />
+                <h2>Your projects:</h2>
+
+                <Table bordered>
                     <thead>
                         <tr>
                             <td>UUID</td>
@@ -76,7 +82,7 @@ class ProjectList extends Reflux.Component
                     <tbody>
                         {projects}
                     </tbody>
-                </table>
+                </Table>
             </div>
         );
     }

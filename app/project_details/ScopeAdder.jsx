@@ -1,6 +1,7 @@
 import _  from 'lodash';
 import React from 'react';
 import Reflux from 'reflux';
+import { Button, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 
 import ScopeStore from './ScopeStore.js';
 import ScopeActions from './ScopeActions.js';
@@ -111,13 +112,16 @@ class ScopeAdder extends Reflux.Component
                 {this.state.errorMessage && 
                     <div>{this.state.errorMessage}</div>
                 }
-                
-                <input 
-                    id="scope" 
-                    placeholder="scope" 
-                    value={this.state.new_scope.targets}
-                    onChange={this.handleNewScopeChange} />                    
-                <button onClick={this.create}>Add new</button>
+                <form>
+                    <FormGroup>
+                        <ControlLabel>Create new project or select the existing</ControlLabel>
+
+                        <FormControl placeholder="scope" 
+                                     value={this.state.new_scope.targets}
+                                     onChange={this.handleNewScopeChange} />
+                    </FormGroup>
+                </form>
+                <Button bsStyle="primary" onClick={this.create}>Add new</Button>
 
             </div>
         );
