@@ -105,14 +105,14 @@ def handle_project_updating(msg):
 
     if updating_status["status"] == "success":
         # Send the project back
-        emit('projects:create:' + project_name, json.dumps({
+        emit('projects:update:' + project_uuid, json.dumps({
             'status': 'success'
         }))
 
 
     else:
         # Error occured
-        emit('projects:create:' + project_name, json.dumps({
+        emit('projects:update:' + project_uuid, json.dumps({
             'status': 'error',
             'text': updating_status["text"]
         }))

@@ -15,22 +15,13 @@ class ProjectDetails extends Reflux.Component
 
 	constructor(props) {
 		super(props);
+		console.log(props);
         this.stores = [ScopeStore, ProjectStore];
 		this.project_name = props['match']['params']['project_name'];
 	}
 
 	render() {
-		console.log(this.state);
-		var projects = this.state.projects;
-		var currentProjects = _.filter(projects, (x) => {
-			return x["project_name"] == this.project_name;
-		});
-		var currentProject = currentProjects[0];
-		console.log(projects);
-		console.log(currentProjects);
-
-		var scopes = this.state.scopes;
-		var onlyMineScope = _.filter(scopes, (x) => {
+		var onlyMineScope = _.filter(this.state.scopes, (x) => {
 			return x["project_name"] == this.project_name;
 		});
 
@@ -43,11 +34,23 @@ class ProjectDetails extends Reflux.Component
 					project_name={x.project_name}/>
 		});
 
+		const projectComment = _.map(this.state.projects, (x) => {
+			if (x["project_name"] == this.project_name) {
+				return <ProjectComment project_uuid={x.project_uuid} project_name={x.project_name} comment={x.comment}/>
+			}
+		})[0];
+
+		const scopeAdder = _.map(this.state.projects, (x) => {
+			if (x["project_name"] == this.project_name) {
+				return <ScopeAdder project_name={x.project_name}/>
+			}
+		})[0];
+
 		return (
 			<div>
 				<h2>Project Details {this.project_name}</h2>
-				<ProjectComment project_name={currentProject.project_name} comment={currentProject.comment}/>
-				<ScopeAdder project_name={currentProject.project_name}/>
+				{projectComment}
+				{scopeAdder}
 				<br/>
 
 				<h3>Currently in scope:</h3>

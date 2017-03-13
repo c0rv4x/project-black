@@ -25,7 +25,7 @@ class ProjectComment extends Reflux.Component
 
         this.store = ProjectStore;
 
-        this.project_uuid = null;
+        this.project_uuid = props['project_uuid'];
 		this.project_name = props['project_name'];
 
 		this.commit = this.commit.bind(this);
@@ -34,7 +34,6 @@ class ProjectComment extends Reflux.Component
 
 	commit(e) {
 		e.preventDefault();
-
 		ProjectActions.commit(this.project_uuid, this.project_name, this.state.comment);
 	}
 

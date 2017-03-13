@@ -83,9 +83,9 @@ class ProjectStore extends Reflux.Store
     onCommit(project_uuid, project_name=null, comment=null) 
     {
         this.loading("", true);
-
         this.projectManager.updateProject(project_uuid, project_name, comment, (result) => {
             if (result['status'] == 'success') {
+
                 var projects = this.state.projects;
                 for (var i = 0; i < projects.length; i++) {
                     if (projects[i]["project_uuid"] == project_uuid) {

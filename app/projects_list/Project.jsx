@@ -24,12 +24,10 @@ class Project extends React.Component {
     }
 
     render() {
-        var detailsLink = <Link to={"/project/" + this.state.project['project_name']}>Details</Link>;
-
         return (
             <tr>
                 <td>{this.state.project['project_uuid']}</td>
-                <td>{this.state.project['project_name'] + ' ' + this.state.project['comment']}</td>
+                <td>{this.state.project['project_name']}</td>
                 <td>
                     <Link to={{
                         pathname: "/project/" + this.state.project['project_name'],

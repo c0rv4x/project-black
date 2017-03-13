@@ -131,8 +131,13 @@ class ProjectManager(object):
                 project_db.project_name = project_name
             if comment:
                 project_db.comment = comment  
-            session.commit()          
+            session.commit()
             sessions.destroy_session(session)
+
+            to_modify = list(filter(lambda x: x['project_uuid'] == project_uuid, self.projects))[0]
+            if comment: 
+                to_modify['comment'] = comment
+
         except Exception as e:
             return {
                 "status": "error",

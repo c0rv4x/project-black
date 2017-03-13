@@ -116,15 +116,9 @@ class ProjectManager
             var parsed_msg = JSON.parse(msg);
 
             if (parsed_msg['status'] == 'success') {
-                // var project = parsed_msg['newProject']
-                // var project_uuid = project['project_uuid'];
-
-                // var newProject = new ProjectClass(project_name, project_uuid);
-                // this.projects.push(newProject);
                 // OK
                 callback({
-                    'status': 'success',
-                    'newProject': newProject
+                    'status': 'success'
                 });
             }
             else {
