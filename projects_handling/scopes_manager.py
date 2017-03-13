@@ -1,5 +1,7 @@
 import uuid
 
+from black.black.db import sessions, Project, Scope
+
 
 class ScopeManager(object):
     """ ScopeManager keeps track of all scopes in the system,
@@ -44,10 +46,27 @@ class ScopeManager(object):
         found_scopes = self.find_scope(hostname=hostname, ip_address=ip_address, project_name=project_name)
 
         if len(found_scopes) == 0:
+            ready_scope_id = scope_id or str(uuid.uuid4())
+
+            try: 
+                session = sessions.get_new_session()
+                new_scope = Scope(scope_id=ready_scope_id,
+                                  hostname=hostname,
+                                  ip_address=ip_address,
+                                  project_name=project_name)
+                session.add(new_scope)
+                session.commit()
+                sessions.destroy_session(session)
+            except Exception as e:
+                return {
+                    "status": "error",
+                    "text": e.text
+                }    
+
             scope = {
                 "hostname": hostname,
                 "ip_address": ip_address,
-                "scope_id": scope_id or str(uuid.uuid4()),
+                "scope_id": ready_scope_id,
                 "project_name": project_name
             }
 
