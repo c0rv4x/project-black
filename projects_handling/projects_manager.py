@@ -98,7 +98,8 @@ class ProjectManager(object):
                 # Remove the project from everywhere
                 try: 
                     session = sessions.get_new_session()
-                    session.query(Project).filter_by(project_uuid=to_delete['project_uuid']).delete()
+                    db_obj = session.query(Project).filter_by(project_uuid=to_delete['project_uuid']).first()
+                    session.delete(db_obj)
                     session.commit()
                     sessions.destroy_session(session)
 
@@ -107,7 +108,7 @@ class ProjectManager(object):
                     print(e)
                     return {
                         "status": "error",
-                        "text": e.text
+                        "text": str(e)
                     }    
 
 
