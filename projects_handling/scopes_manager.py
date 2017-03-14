@@ -97,14 +97,13 @@ class ScopeManager(object):
                 # Remove the scope from everywhere
                 try: 
                     session = sessions.get_new_session()
-                    db.obj = session.query(Scope).filter_by(scope_id=to_delete['scope_id']).first()
+                    db_obj = session.query(Scope).filter_by(scope_id=to_delete['scope_id']).first()
                     session.delete(db_obj)
                     session.commit()
                     sessions.destroy_session(session)
 
                     self.scopes.remove(to_delete)
                 except Exception as e:
-                    print(e)
                     return {
                         "status": "error",
                         "text": str(e)

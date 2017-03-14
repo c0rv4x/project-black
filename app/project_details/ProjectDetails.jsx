@@ -15,36 +15,32 @@ class ProjectDetails extends Reflux.Component
 
 	constructor(props) {
 		super(props);
-		console.log(props);
+
         this.stores = [ScopeStore, ProjectStore];
 		this.project_name = props['match']['params']['project_name'];
 	}
 
 	render() {
-		var onlyMineScope = _.filter(this.state.scopes, (x) => {
+		const filteredScope = _.filter(this.state.scopes, (x) => {
 			return x["project_name"] == this.project_name;
 		});
 
-		var displayedScopes = _.map(onlyMineScope, (x) => {
-			return <ScopeTable 
-					key={x.scope_id}
-					scope_id={x.scope_id}
-					hostname={x.hostname}
-					ip_address={x.ip_address}
-					project_name={x.project_name}/>
+		var displayedScopes = _.map(filteredScope, (x) => {
+			return <ScopeTable scope={x} key={x.scope_id}/>
 		});
 
-		const projectComment = _.map(this.state.projects, (x) => {
-			if (x["project_name"] == this.project_name) {
-				return <ProjectComment project_uuid={x.project_uuid} project_name={x.project_name} comment={x.comment}/>
-			}
-		})[0];
+		const filteredProject = _.filter(this.state.projects, (x) => {
+			return x["project_name"] == this.project_name;
+		})[0];		
 
-		const scopeAdder = _.map(this.state.projects, (x) => {
-			if (x["project_name"] == this.project_name) {
-				return <ScopeAdder project_name={x.project_name}/>
-			}
-		})[0];
+		var projectComment = "";
+		var scopeAdder = "";
+		if (filteredProject) {
+			projectComment = <ProjectComment project_name={filteredProject.project_name}
+											 project_uuid={filteredProject.project_uuid}
+											 comment={filteredProject.comment}/>
+			scopeAdder = <ScopeAdder project_name={filteredProject.project_name}/>
+		}		
 
 		return (
 			<div>

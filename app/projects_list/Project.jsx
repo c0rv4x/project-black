@@ -9,8 +9,6 @@ class Project extends React.Component {
     constructor(props) {
         super(props);
 
-        const project = props['project'];
-
         this.delete = this.delete.bind(this);
     }
 

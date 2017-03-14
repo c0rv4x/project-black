@@ -3,12 +3,13 @@ import Connector from '../common/SocketConnector.jsx';
 class ScopeClass
 {
 
-    constructor(hostname, ip_address, scope_id, project_name)
+    constructor(scope)
     {
-        this.hostname = hostname;
-        this.ip_address = ip_address;
-        this.scope_id = scope_id;
-        this.project_name = project_name;
+        this.scope = scope;
+        this.hostname = scope.hostname;
+        this.ip_address = scope.ip_address;
+        this.scope_id = scope.scope_id;
+        this.project_name = scope.project_name;
     }
 
 }
@@ -43,7 +44,7 @@ class ScopeManager
                 this.scopes = [];
                 for (var scope of scopes) {
                     // Create a new scope
-                    var new_scope = new ScopeClass(scope["hostname"], scope["ip_address"], scope["scope_id"], scope["project_name"]);
+                    var new_scope = new ScopeClass(scope);
                     this.scopes.push(new_scope);
                 }
 
@@ -73,11 +74,8 @@ class ScopeManager
                     var new_scopes = parsed_msg['new_scopes'];
 
                     for (var scope of new_scopes) {
-                        var new_scope = new ScopeClass(
-                            scope["hostname"], 
-                            scope["ip_address"],
-                            scope["scope_id"], 
-                            project_name);
+                        scope["project_name"] = project_name;
+                        var new_scope = new ScopeClass(scope);
                         this.scopes.push(new_scope);
                     }
 

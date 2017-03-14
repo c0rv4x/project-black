@@ -30,7 +30,6 @@ class ProjectStore extends Reflux.Store
         this.setState({
             projects: projects
         });
-        this.trigger(this.state);
     }
 
     loading(errorMessage, status) {
