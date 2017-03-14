@@ -8,7 +8,7 @@ import {
 
 import classnames from 'classnames';
 
-import ProjectMain from './projects_list/components/ProjectsMain.jsx'
+import ProjectMain from './projects_list/containers/ProjectsMain.jsx'
 
 
 class App extends React.Component {
