@@ -13,6 +13,7 @@ class Project(Base):
 
     project_uuid = Column(String)
     project_name = Column(String, primary_key=True)
+    comment = Column(String)
     scopes_relationship = relationship('Scope', cascade="all, delete-orphan")
     tasks_relationship = relationship('Task', cascade="all, delete-orphan")
     scans_relationship = relationship('Scan', cascade="all, delete-orphan")
