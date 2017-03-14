@@ -8,8 +8,12 @@ import {
 
 import classnames from 'classnames';
 
+import { createStore } from 'redux';
+import project_reduce from './common/redux/reducers';
+
 import ProjectMain from './projects_list/containers/ProjectsMain.jsx'
 
+let store = createStore(project_reduce)
 
 class App extends React.Component {
     render () {
