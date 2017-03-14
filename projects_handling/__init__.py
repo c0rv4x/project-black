@@ -1,2 +1,0 @@
-from projects_handling.projects_manager import ProjectManager
-from projects_handling.scopes_manager import ScopeManager
