@@ -121,6 +121,11 @@ class ProjectManager
             var parsed_msg = JSON.parse(msg);
 
             if (parsed_msg['status'] == 'success') {
+                for (var i = 0; i < this.projects.length; i++) {
+                    if (this.projects[i]['project_uuid'] == project_uuid) {
+                        this.projects[i].comment = parsed_msg['new_project']['comment']
+                    }
+                }
 
                 // OK
                 callback({

@@ -19,31 +19,44 @@ class ProjectDetails extends Reflux.Component
         this.stores = [ScopeStore, ProjectStore];
 		this.project_name = props['match']['params']['project_name'];
 		this.project_uuid = null;
+
+		this.handleProjectCommentEdit = this.handleProjectCommentEdit.bind(this);
+	}
+
+	handleProjectCommentEdit(newValue) {
+		var projects = this.state.projects;
+		for (var i = 0; i < projects.length; i++) {
+			if (projects[i].project_uuid == this.uuid) {
+				projects.comment = newValue;
+				this.setState({projects: projects});
+			}
+		}
 	}
 
 	render() {
 		const filteredScope = _.filter(this.state.scopes, (x) => {
-			return x["project_uuid"] == this.project_uuid;
+			return x.project_uuid == this.project_uuid;
 		});
 
-		var displayedScopes = _.map(filteredScope, (x) => {
+		const displayedScopes = _.map(filteredScope, (x) => {
 			return <ScopeTable scope={x} key={x.scope_id}/>
 		});
 
-		const filteredProject = _.filter(this.state.projects, (x) => {
-			return x["project_name"] == this.project_name;
-		})[0];
+		const filteredProjects = _.filter(this.state.projects, (x) => {
+			return x.project_name == this.project_name;
+		});
 
-		var projectComment = "";
+		const projectComment = _.map(filteredProjects, (x) => {
+			return <ProjectComment project={x} 
+								   key={x.project_uuid} 
+								   onCommentEdit={this.handleProjectCommentEdit}/>
+		});
+
 		var scopeAdder = "";
+		if (filteredProjects.length) {
+			this.project_uuid = filteredProjects[0].project_uuid;
 
-		if (filteredProject) {
-			this.project_uuid = filteredProject.project_uuid;
-
-			projectComment = <ProjectComment project_name={filteredProject.project_name}
-											 project_uuid={filteredProject.project_uuid}
-											 comment={filteredProject.comment}/>
-			scopeAdder = <ScopeAdder project_uuid={filteredProject.project_uuid}/>
+			scopeAdder = <ScopeAdder project_uuid={filteredProjects[0].project_uuid}/>
 		}		
 
 		return (
