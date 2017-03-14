@@ -19,17 +19,21 @@ class ProjectStore extends Reflux.Store
         this.projectManager = new ProjectManager();
 
         // Obtain the data and redraw the table
-        this.projectManager.initialize(this.initializeProjects.bind(this));
+        this.projectManager.initialize(this.update_projects.bind(this));
 
         this.listenables = ProjectActions;
     }
 
-    initializeProjects(projects) {
-        this.loading("", false);
-
-        this.setState({
-            projects: projects
-        });
+    update_projects(result) {
+        if (result['status'] == 'success') {
+            this.setState({
+                projects: result['projects']
+            });            
+            this.loading("", false);
+        }
+        else {
+            this.loading(result['text'], false);
+        }
     }
 
     loading(errorMessage, status) {
@@ -46,65 +50,21 @@ class ProjectStore extends Reflux.Store
     {
         this.loading("", true);
 
-        this.projectManager.createProject(project_name, (result) => {
-            if (result['status'] == 'success') {
-                this.setState({
-                    projects: this.projectManager.getProjects()
-                });
-
-                this.loading("", false);
-            }
-            else {
-                this.loading(result['text'], false);                
-            }
-        });
+        this.projectManager.createProject(project_name);
     }
 
     onDelete(project_uuid)
     {
         this.loading("", true);
-
-        this.projectManager.deleteProject(project_uuid, (result) => {
-            if (result['status'] == 'success') {
-                this.setState({
-                    projects: this.projectManager.getProjects()
-                });
-
-                this.loading("", false);
-            }
-            else {
-                this.loading(result['text'], false);
-            }
-         
-        });        
+        console.log(this.connector);
+        this.projectManager.deleteProject(project_uuid);        
     }
 
     onCommit(project_uuid, project_name=null, comment=null) 
     {
         this.loading("", true);
-        this.projectManager.updateProject(project_uuid, project_name, comment, (result) => {
-            if (result['status'] == 'success') {
 
-                var projects = this.state.projects;
-                for (var i = 0; i < projects.length; i++) {
-                    if (projects[i]["project_uuid"] == project_uuid) {
-                        if (project_name) projects[i]["project_name"] = project_name;
-                        if (comment) projects[i]["comment"] = comment;
-                        break;
-                    } 
-                }
-
-                this.setState({
-                    projects: projects
-                });
-
-                this.loading("", false);
-            }
-            else {
-                this.loading(result['text'], false);
-            }
-         
-        });  
+        this.projectManager.updateProject(project_uuid, project_name, comment);  
 
     }    
 }

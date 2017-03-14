@@ -45,6 +45,13 @@ class ProjectDetails extends Reflux.Component
 		return (
 			<div>
 				<h2>Project Details {this.project_name}</h2>
+                {this.state.loading && 
+                    <div>Loading...</div>
+                }
+                {this.state.errorMessage && 
+                    <div>{this.state.errorMessage}</div>
+                }
+				
 				{projectComment}
 				{scopeAdder}
 				<br/>

@@ -40,13 +40,13 @@ def send_js(path):
 
 
 
-@socketio.on('projects:all:get')
+@socketio.on('projects:all:get', namespace='/black')
 def handle_custom_event():
     """ When received this message, send back all the projects """
-    emit('projects:all:get:back', json.dumps(project_manager.get_projects()))
+    emit('projects:all:get:back', json.dumps(project_manager.get_projects()), namespace='/black', broadcast=True)
 
 
-@socketio.on('projects:create')
+@socketio.on('projects:create', namespace='/black')
 def handle_project_creation(msg):
     """ When received this message, create a new projects """
     project_name = msg['project_name']
@@ -56,21 +56,19 @@ def handle_project_creation(msg):
 
     if addition_result["status"] == "success":
         # Send the project back
-        emit('projects:create:' + project_name, json.dumps({
+        emit('projects:create', json.dumps({
             'status': 'success',
-            'newProject': addition_result["new_project"]
-        }))
-
-
+            'new_roject': addition_result["new_project"]
+        }), namespace='/black', broadcast=True)
     else:
         # Error occured
-        emit('projects:create:' + project_name, json.dumps({
+        emit('projects:create', json.dumps({
             'status': 'error',
             'text': addition_result["text"]
-        }))
+        }), namespace='/black', broadcast=True)
 
 
-@socketio.on('projects:delete:project_uuid')
+@socketio.on('projects:delete:project_uuid', namespace='/black')
 def handle_project_creation(msg):
     """ When received this message, delete the project """
     project_uuid = msg
@@ -80,20 +78,21 @@ def handle_project_creation(msg):
 
     if delete_result["status"] == "success":
         # Send the success result
-        emit('projects:delete:project_uuid:' + project_uuid, json.dumps({
-            'status': 'success'
-        }))
+        emit('projects:delete', json.dumps({
+            'status': 'success',
+            'project_uuid': project_uuid
+        }), namespace='/black', broadcast=True)
 
     else:
         # Error occured
-        emit('projects:delete:project_uuid:' + project_uuid, json.dumps({
+        emit('projects:delete', json.dumps({
             'status': 'error',
             'text': delete_result["text"]
-        }))
+        }), namespace='/black', broadcast=True)
 
 
 
-@socketio.on('projects:update')
+@socketio.on('projects:update', namespace='/black')
 def handle_project_updating(msg):
     """ When received this message, update the project """
     project_uuid = msg['project_uuid']
@@ -106,8 +105,13 @@ def handle_project_updating(msg):
     if updating_status["status"] == "success":
         # Send the project back
         emit('projects:update:' + project_uuid, json.dumps({
-            'status': 'success'
-        }))
+            'status': 'success',
+            'new_project': {
+                'project_uuid': project_uuid,
+                'project_name': project_name,
+                'comment': comment,
+            }
+        }), namespace='/black', broadcast=True)
 
 
     else:
@@ -115,19 +119,19 @@ def handle_project_updating(msg):
         emit('projects:update:' + project_uuid, json.dumps({
             'status': 'error',
             'text': updating_status["text"]
-        }))
+        }), namespace='/black', broadcast=True)
 
 
 
 scope_manager = ScopeManager()
 
-@socketio.on('scopes:all:get')
+@socketio.on('scopes:all:get', namespace='/black')
 def handle_custom_event():
     """ When received this message, send back all the scopes """
-    emit('scopes:all:get:back', json.dumps(scope_manager.get_scopes()))
+    emit('scopes:all:get:back', json.dumps(scope_manager.get_scopes(), namespace='/black', broadcast=True))
 
 
-@socketio.on('scopes:create')
+@socketio.on('scopes:create', namespace='/black')
 def handle_scope_creation(msg):
     """ When received this message, create a new scope """
     scopes = msg['scopes']
@@ -168,17 +172,17 @@ def handle_scope_creation(msg):
         emit('scopes:create:' + project_name, json.dumps({
             'status': 'error',
             'text': error_text
-        }))
+        }), namespace='/black', broadcast=True)
 
     else:
         # Send the scope back
         emit('scopes:create:' + project_name, json.dumps({
             'status': 'success',
             'new_scopes': new_scopes
-        }))
+        }), namespace='/black', broadcast=True)
 
 
-@socketio.on('scopes:delete:scope_id')
+@socketio.on('scopes:delete:scope_id', namespace='/black')
 def handle_scope_deletiong(msg):
     """ When received this message, delete the scope """
     scope_id = msg
@@ -190,14 +194,14 @@ def handle_scope_deletiong(msg):
         # Send the success result
         emit('scopes:delete:scope_id:' + scope_id, json.dumps({
             'status': 'success'
-        }))
+        }), namespace='/black', broadcast=True)
 
     else:
         # Error occured
         emit('scopes:delete:scope_id:' + scope_id, json.dumps({
             'status': 'error',
             'text': delete_result["text"]
-        }))
+        }), namespace='/black', broadcast=True)
 
 
 if __name__ == '__main__':

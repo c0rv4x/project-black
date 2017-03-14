@@ -69,12 +69,12 @@ class ScopeManager
 
             this.connector.listen('scopes:create:' + project_name, (msg) => {
                 var parsed_msg = JSON.parse(msg);
-
                 if (parsed_msg['status'] == 'success') {
                     var new_scopes = parsed_msg['new_scopes'];
 
                     for (var scope of new_scopes) {
                         scope["project_name"] = project_name;
+
                         var new_scope = new ScopeClass(scope);
                         this.scopes.push(new_scope);
                     }
@@ -96,7 +96,7 @@ class ScopeManager
             });        
         }
         else {
-            console.log('already registered this project name');
+            console.log('Already registered this scope');
         }
 
     }
@@ -104,7 +104,7 @@ class ScopeManager
         this.connector.emit('scopes:delete:scope_id', scope_id);
         this.connector.listen('scopes:delete:scope_id:' + scope_id, (msg) => {
             var parsed_msg = JSON.parse(msg);
-
+            console.log(this.connector);
             if (parsed_msg['status'] == 'success') {
                 this.scopes = _.filter(this.scopes, (x) => {
                     return x['scope_id'] != scope_id;
