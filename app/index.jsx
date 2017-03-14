@@ -8,6 +8,8 @@ import {
 
 import classnames from 'classnames';
 
+import ProjectMain from './projects_list/components/ProjectsMain.jsx'
+
 
 class App extends React.Component {
     render () {
@@ -21,8 +23,8 @@ class App extends React.Component {
                         </div>
                         <hr/>
                         <div>
-                            <Route exact path="/" component={ProjectList} />
-                            <Route exact path="/project/:project_name" component={ProjectDetails} />
+                            <Route exact path="/" component={ProjectMain} />
+                            <Route exact path="/project/:project_name" component={ProjectMain} />
                         </div>
                     </div>
                 </Router>            
