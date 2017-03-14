@@ -90,7 +90,6 @@ class ScopeManager
 
     register_scopes_new_single(project_uuid, callback) {
         this.registered_project_uuids.push(project_uuid);
-        console.log('created registering   =   ' + project_uuid);
 
         this.connector.listen('scopes:create:' + project_uuid, (msg) => {
             var parsed_msg = JSON.parse(msg);
@@ -124,15 +123,12 @@ class ScopeManager
 
     register_scopes_delete(project_uuid, callback) {
         this.connector.listen('scopes:delete:' + project_uuid, (msg) => {
-            console.log(msg);
             var parsed_msg = JSON.parse(msg);
 
             if (parsed_msg['status'] == 'success') {
                 this.scopes = _.filter(this.scopes, (x) => {
                     return ((x['project_uuid'] == project_uuid) && (x['scope_id'] != parsed_msg['scope_id']));
                 });
-
-                console.log(this.scopes);
 
                 callback({
                     'status': 'success',

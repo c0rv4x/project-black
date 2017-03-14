@@ -145,7 +145,6 @@ class ProjectManager
     }
 
     deleteProject(project_uuid) {
-        console.log(this.connector);
         this.connector.emit('projects:delete:project_uuid', project_uuid);
     }
 
