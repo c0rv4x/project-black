@@ -1,53 +1,64 @@
 import _ from 'lodash';
+import { combineReducers } from 'redux'
+
 import { CREATE_PROJECT, DELETE_PROJECT } from './actions.js'
 
 
 const initialState = {
-	projects: [],
-	scopes: []
+	projects: []
 }
 
-function create_project(state = initialState, action) {
+function create_project(state = [], action) {
+	// const message = JSON.parse(action.data);
+	const message = action.message;
+
+	if (message["status"] == 'success') {
+		var state_new = state.slice();
+
+		state_new.push({
+			"project_name": message["new_project"]["project_name"],
+			"project_uuid": message["new_project"]["project_uuid"],
+			"comment": message["new_project"]["comment"]
+		});
+
+		return state_new;
+	} else {
+		/* TODO: add error handling */
+	}
+}
+
+function delete_project(state = [], action) {
+	// const message = JSON.parse(action.data);
+	const message = action.message;
+
+	if (message["status"] == 'success') {
+		var state_new = state.slice();
+
+		var projects_filtered = _.filter(state_new, (x) => {
+			return x["project_uuid"] != message["project_uuid"];
+		});
+		state_new = projects_filtered;
+
+		return state_new;
+	} else {
+		/* TODO: add error handling */
+	}
+}
+
+function project_reduce(state = [], action) {
 	switch (action.type) {
 		case CREATE_PROJECT:
-			const message = JSON.parse(action.data);
-
-			if (message["status"] == 'success') {
-				var state_new = Object.assign({}, state);
-
-				state_new["projects"].push({
-					"project_name": message["new_project"]["project_name"],
-					"project_uuid": message["new_project"]["project_uuid"],
-					"comment": message["new_project"]["comment"]
-				});
-
-				return state_new;
-			} else {
-				/* TODO: add error handling */
-			}
-
-		default:
-			return state;
-	}
-}
-
-function delete_project(state = initialState, action) {
-	switch (action.type) {
+			return create_project(state, action);
 		case DELETE_PROJECT:
-			const message = JSON.parse(action.data);
-
-			if (message["status"] == 'success') {
-				var state_new = Object.assign({}, state);
-				var projects_filtered = _.filter(state_new["projects"], (x) => {
-					return x["project_uuid"] != message["project_uuid"];
-				});
-				state_new["projects"] = projects_filtered;
-
-				return state_new;
-			} else {
-				/* TODO: add error handling */
-			}
+			return delete_project(state, action);
 		default:
 			return state;
 	}
 }
+
+const rdcs = combineReducers({
+	project_reduce
+})
+
+
+export default rdcs
