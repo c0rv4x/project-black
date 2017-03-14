@@ -21,13 +21,13 @@ class ScopeManager(object):
         self.scopes = list(map(lambda x: {
             'hostname': x.hostname, 
             'ip_address': x.ip_address,
-            'project_name': x.project_name,
+            'project_uuid': x.project_uuid,
             'scope_id': x.scope_id
             }, 
             scopes_from_db))
         sessions.destroy_session(session)  
 
-    def find_scope(self, hostname=None, ip_address=None, project_name=None, scope_id=None):
+    def find_scope(self, hostname=None, ip_address=None, project_uuid=None, scope_id=None):
         """ Serach for a scope with a specific name """
         filtered = self.scopes
 
@@ -37,17 +37,17 @@ class ScopeManager(object):
         if ip_address:
             filtered = list(filter(lambda x: x['ip_address'] == ip_address, filtered))
 
-        if project_name:
-            filtered = list(filter(lambda x: x['project_name'] == project_name, filtered))
+        if project_uuid:
+            filtered = list(filter(lambda x: x['project_uuid'] == project_uuid, filtered))
 
         if scope_id:
             filtered = list(filter(lambda x: x['scope_id'] == scope_id, filtered))
 
         return filtered
 
-    def create_scope(self, hostname, ip_address, project_name, scope_id=None):
+    def create_scope(self, hostname, ip_address, project_uuid, scope_id=None):
         """ Creates a new scope """
-        found_scopes = self.find_scope(hostname=hostname, ip_address=ip_address, project_name=project_name)
+        found_scopes = self.find_scope(hostname=hostname, ip_address=ip_address, project_uuid=project_uuid)
 
         if len(found_scopes) == 0:
             ready_scope_id = scope_id or str(uuid.uuid4())
@@ -57,7 +57,7 @@ class ScopeManager(object):
                 new_scope = Scope(scope_id=ready_scope_id,
                                   hostname=hostname,
                                   ip_address=ip_address,
-                                  project_name=project_name)
+                                  project_uuid=project_uuid)
                 session.add(new_scope)
                 session.commit()
                 sessions.destroy_session(session)
@@ -71,7 +71,7 @@ class ScopeManager(object):
                 "hostname": hostname,
                 "ip_address": ip_address,
                 "scope_id": ready_scope_id,
-                "project_name": project_name
+                "project_uuid": project_uuid
             }
 
             # Append the new scope to existing
@@ -88,9 +88,9 @@ class ScopeManager(object):
                 "new_scope": None
             }
 
-    def delete_scope(self, hostname=None, ip_address=None, project_name=None, scope_id=None):
+    def delete_scope(self, hostname=None, ip_address=None, project_uuid=None, scope_id=None):
         """ Deletes a new scope """
-        filtered_scopes = self.find_scope(hostname, ip_address, project_name, scope_id)
+        filtered_scopes = self.find_scope(hostname, ip_address, project_uuid, scope_id)
 
         if len(filtered_scopes) != 0:
             for to_delete in filtered_scopes:

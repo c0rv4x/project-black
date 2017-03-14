@@ -20,18 +20,22 @@ class ScopeStore extends Reflux.Store
         this.scopeManager = new ScopeManager();
 
         // Obtain the data and redraw the table
-        this.scopeManager.initialize(this.initializeScopes.bind(this));
+        this.scopeManager.initialize(this.updateScopes.bind(this));
 
         this.listenables = ScopeActions;
     }
 
-    initializeScopes(scopes) {
-        this.loading("", false);
+    updateScopes(result) {
+        if (result['status'] == 'success') {
+            this.setState({
+                scopes: result['scopes']
+            });
 
-        this.setState({
-            scopes: scopes
-        });
-        this.trigger(this.state);
+            this.loading("", false);
+        }
+        else {
+            this.loading(result['text'], false);
+        }
     }
 
     loading(errorMessage, status) {
@@ -44,12 +48,12 @@ class ScopeStore extends Reflux.Store
         this.trigger(this.state);        
     }
 
-    onCreate(new_scopes, project_name)
+    onCreate(new_scopes, project_uuid)
     {
         if (new_scopes['status'] == 'success') {            
             this.loading("", true);
 
-            this.scopeManager.createScope(new_scopes['prepared_targets'], project_name, (result) => {
+            this.scopeManager.createScope(new_scopes['prepared_targets'], project_uuid, (result) => {
                 if (result['status'] == 'success') {
                     this.setState({
                         scopes: this.scopeManager.getScopes()
@@ -67,23 +71,11 @@ class ScopeStore extends Reflux.Store
         }
     }
 
-    onDelete(scope_id)
+    onDelete(scope_id, project_uuid)
     {
         this.loading("", true);
 
-        this.scopeManager.deleteScope(scope_id, (result) => {
-            if (result['status'] == 'success') {
-                this.setState({
-                    scopes: this.scopeManager.getScopes()
-                });
-
-                this.loading("", false);
-            }
-            else {
-                this.loading(result['text'], false);
-            }
-         
-        });        
+        this.scopeManager.deleteScope(scope_id, project_uuid);        
     }
 
 }

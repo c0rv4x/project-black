@@ -56,7 +56,7 @@ class ProjectStore extends Reflux.Store
     onDelete(project_uuid)
     {
         this.loading("", true);
-        console.log(this.connector);
+
         this.projectManager.deleteProject(project_uuid);        
     }
 

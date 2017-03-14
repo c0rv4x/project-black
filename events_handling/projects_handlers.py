@@ -7,13 +7,13 @@ from managers import ProjectManager
 def initialize(socketio):
     project_manager = ProjectManager()
 
-    @socketio.on('projects:all:get', namespace='/black')
+    @socketio.on('projects:all:get')
     def handle_custom_event():
         """ When received this message, send back all the projects """
-        emit('projects:all:get:back', json.dumps(project_manager.get_projects()), namespace='/black', broadcast=True)
+        emit('projects:all:get:back', json.dumps(project_manager.get_projects()), broadcast=True)
 
 
-    @socketio.on('projects:create', namespace='/black')
+    @socketio.on('projects:create')
     def handle_project_creation(msg):
         """ When received this message, create a new projects """
         project_name = msg['project_name']
@@ -25,17 +25,17 @@ def initialize(socketio):
             # Send the project back
             emit('projects:create', json.dumps({
                 'status': 'success',
-                'new_roject': addition_result["new_project"]
-            }), namespace='/black', broadcast=True)
+                'new_project': addition_result["new_project"]
+            }), broadcast=True)
         else:
             # Error occured
             emit('projects:create', json.dumps({
                 'status': 'error',
                 'text': addition_result["text"]
-            }), namespace='/black', broadcast=True)
+            }), broadcast=True)
 
 
-    @socketio.on('projects:delete:project_uuid', namespace='/black')
+    @socketio.on('projects:delete:project_uuid')
     def handle_project_creation(msg):
         """ When received this message, delete the project """
         project_uuid = msg
@@ -48,17 +48,17 @@ def initialize(socketio):
             emit('projects:delete', json.dumps({
                 'status': 'success',
                 'project_uuid': project_uuid
-            }), namespace='/black', broadcast=True)
+            }), broadcast=True)
 
         else:
             # Error occured
             emit('projects:delete', json.dumps({
                 'status': 'error',
                 'text': delete_result["text"]
-            }), namespace='/black', broadcast=True)
+            }), broadcast=True)
             
 
-    @socketio.on('projects:update', namespace='/black')
+    @socketio.on('projects:update')
     def handle_project_updating(msg):
         """ When received this message, update the project """
         project_uuid = msg['project_uuid']
@@ -77,11 +77,11 @@ def initialize(socketio):
                     'project_name': project_name,
                     'comment': comment,
                 }
-            }), namespace='/black', broadcast=True)
+            }), broadcast=True)
 
         else:
             # Error occured
             emit('projects:update:' + project_uuid, json.dumps({
                 'status': 'error',
                 'text': updating_status["text"]
-            }), namespace='/black', broadcast=True)
+            }), broadcast=True)

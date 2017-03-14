@@ -87,13 +87,13 @@ class ScopeAdder extends Reflux.Component
             ScopeActions.create({
                 'status': 'error',
                 'text': errorMsg
-            }, this.props.project_name);            
+            }, this.props.project_uuid);            
         }
         else {
             ScopeActions.create({
                 'status': 'success',
                 'prepared_targets': preparedTargets
-            }, this.props.project_name);        
+            }, this.props.project_uuid);        
         }
     }
 

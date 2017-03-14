@@ -14,7 +14,7 @@ class ProjectClass
 
 let instance = null;
 
-class ProjectManager 
+class ProjectManager
 {
 
     constructor() {
@@ -70,7 +70,7 @@ class ProjectManager
             var parsed_msg = JSON.parse(msg);
 
             if (parsed_msg['status'] == 'success') {
-                var project = parsed_msg['new_roject']
+                var project = parsed_msg['new_project']
                 var project_uuid = project['project_uuid'];
 
                 var newProject = new ProjectClass(project['project_name'], project['project_uuid'], project['comment']);

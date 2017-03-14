@@ -18,11 +18,12 @@ class ProjectDetails extends Reflux.Component
 
         this.stores = [ScopeStore, ProjectStore];
 		this.project_name = props['match']['params']['project_name'];
+		this.project_uuid = null;
 	}
 
 	render() {
 		const filteredScope = _.filter(this.state.scopes, (x) => {
-			return x["project_name"] == this.project_name;
+			return x["project_uuid"] == this.project_uuid;
 		});
 
 		var displayedScopes = _.map(filteredScope, (x) => {
@@ -31,15 +32,18 @@ class ProjectDetails extends Reflux.Component
 
 		const filteredProject = _.filter(this.state.projects, (x) => {
 			return x["project_name"] == this.project_name;
-		})[0];		
+		})[0];
 
 		var projectComment = "";
 		var scopeAdder = "";
+
 		if (filteredProject) {
+			this.project_uuid = filteredProject.project_uuid;
+
 			projectComment = <ProjectComment project_name={filteredProject.project_name}
 											 project_uuid={filteredProject.project_uuid}
 											 comment={filteredProject.comment}/>
-			scopeAdder = <ScopeAdder project_name={filteredProject.project_name}/>
+			scopeAdder = <ScopeAdder project_uuid={filteredProject.project_uuid}/>
 		}		
 
 		return (

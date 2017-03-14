@@ -11,7 +11,7 @@ class Connector {
         this.connected = false;
 
         this.registered_event_names = [];
-        this.socketio = io("http://127.0.0.1:5000/black");
+        this.socketio = io("http://127.0.0.1:5000/");
 
         this.socketio.on('connect', () => {
             this.connected = true;
@@ -32,10 +32,8 @@ class Connector {
     }
 
     listen(eventName, callback) {
-        if (this.registered_event_names.indexOf(eventName) === -1) {
-            this.registered_event_names.push(eventName);
-        	this.socketio.on(eventName, callback);
-        }
+        this.registered_event_names.push(eventName);
+    	this.socketio.on(eventName, callback);
     }
 
     emit(eventName, message=null) {
