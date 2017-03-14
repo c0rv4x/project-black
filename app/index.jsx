@@ -8,9 +8,6 @@ import {
 
 import classnames from 'classnames';
 
-import ProjectList from './projects_list/ProjectList.jsx';
-import ProjectDetails from './project_details/ProjectDetails.jsx';
-
 
 class App extends React.Component {
     render () {
