@@ -15,6 +15,7 @@ class Connector {
 
         this.socketio.on('connect', () => {
             this.connected = true;
+            this.emit('projects:all:get');
         });        
 
         return instance;
