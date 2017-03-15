@@ -50,12 +50,27 @@ function delete_project(state = [], action) {
 	}
 }
 
+function renew_projects(state = [], action) {
+	const message = action.message;
+
+	if (message["status"] == 'success') {
+		var state_new = message['projects'];
+
+		return state_new;
+	} else {
+		/* TODO: add error handling */
+	}		
+}
+
 function project_reduce(state = [], action) {
+	console.log(action);
 	switch (action.type) {
 		case CREATE_PROJECT:
 			return create_project(state, action);
 		case DELETE_PROJECT:
 			return delete_project(state, action);
+		case RENEW_PROJECTS:
+			return renew_projects(state, action);			
 		default:
 			return state;
 	}

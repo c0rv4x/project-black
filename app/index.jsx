@@ -11,9 +11,16 @@ import classnames from 'classnames';
 import { createStore } from 'redux';
 import project_reduce from './common/redux/reducers';
 
+import ProjectsEventsSubsriber from './common/ProjectsSocketioEventsSubscriber';
+
 import ProjectMain from './projects_list/containers/ProjectsMain.jsx'
 
-let store = createStore(project_reduce)
+
+
+let store = createStore(project_reduce);
+let test = new ProjectsEventsSubsriber(store);
+test.basic_events_registration();
+
 
 class App extends React.Component {
     render () {
