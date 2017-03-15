@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux'
 
-import { CREATE_PROJECT, DELETE_PROJECT } from './actions.js'
+import { CREATE_PROJECT, DELETE_PROJECT, CREATE_PROJECT_REQUEST } from './actions.js'
 
 
 const initialState = {
