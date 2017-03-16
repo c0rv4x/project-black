@@ -16,6 +16,7 @@ class ProjectDetails extends React.Component {
 
 		this.handleNewScopeChange = this.handleNewScopeChange.bind(this);
 		this.submitNewScope = this.submitNewScope.bind(this);
+		this.deleteScope = this.deleteScope.bind(this);
 	}
 
 	handleNewScopeChange(e) {
@@ -24,6 +25,10 @@ class ProjectDetails extends React.Component {
 
 	submitNewScope(scopes) {
 		this.emitter.createScope(this.props.project.project_uuid, scopes);
+	}
+
+	deleteScope(scope_id) {
+		this.emitter.deleteScope(scope_id);
 	}
 
 	render() {
@@ -35,6 +40,7 @@ class ProjectDetails extends React.Component {
 							    		this.submitNewScope(scopes)
 							    }
 
+							    deleteScope={this.deleteScope}
 							    scopes={this.props.scopes}/>
 		)
 	}

@@ -16,6 +16,7 @@ function create_scope(state = [], action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
+		console.log(state);
 		return state.concat(_.map(message["new_scopes"], (x) => {
 			return {
 				"project_uuid": message["project_uuid"],
@@ -36,7 +37,7 @@ function delete_scope(state = [], action) {
 		var state_new = state.slice();
 
 		var scopes_filtered = _.filter(state_new, (x) => {
-			return x["scope_uuid"] != message["scope_uuid"];
+			return x["scope_id"] != message["scope_id"];
 		});
 		state_new = scopes_filtered;
 

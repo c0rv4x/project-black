@@ -60,7 +60,6 @@ def initialize(socketio):
 
         else:
             # Send the scope back
-            print(12341234123)
             emit('scopes:create', {
                 'status': 'success',
                 'project_uuid': project_uuid,
@@ -72,7 +71,6 @@ def initialize(socketio):
     def handle_scope_deletiong(msg):
         """ When received this message, delete the scope """
         scope_id = msg['scope_id']
-        project_uuid = msg['project_uuid']
 
         # Delete new scope (and register it)
         delete_result = scope_manager.delete_scope(scope_id=scope_id)

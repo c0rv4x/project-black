@@ -20,6 +20,7 @@ class ProjectDetailsPage extends React.Component {
 							  handleNewScopeChange={this.props.handleNewScopeChange}
 							  onNewScopeClick={this.props.onNewScopeClick} 
 
+							  deleteScope={this.props.deleteScope}
 							  scopes={this.props.scopes}/>
 			</div>
 		)

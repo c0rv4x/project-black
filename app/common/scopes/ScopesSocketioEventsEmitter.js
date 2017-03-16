@@ -57,11 +57,11 @@ class ScopesSocketioEventsEmitter {
 		});
 	}
 
-	// deleteScope(scope_uuid) {
-	// 	this.connector.emit('scopes:delete:scope_uuid', {
-	// 		'scope_uuid': scope_uuid
-	// 	});
-	// }
+	deleteScope(scope_id) {
+		this.connector.emit('scopes:delete:scope_id', {
+			'scope_id': scope_id
+		});
+	}
 
 	// updateScopes(scope_uuid, scope_name, comment) {
 	// 	this.connector.emit('scopes:update', {

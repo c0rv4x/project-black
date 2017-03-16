@@ -13,7 +13,9 @@ class ScopeTable extends React.Component {
 
 	render() {
 		const scopes = _.map(this.props.scopes, (x) => {
-			return <ScopeEntryLine key={x.scope_id} scope={x}/>
+			return <ScopeEntryLine key={x.scope_id} 
+								   scope={x} 
+								   deleteScope={() => this.props.deleteScope(x.scope_id)}/>
 		});
 
 		return (
