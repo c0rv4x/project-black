@@ -15,8 +15,8 @@ class ProjectInput extends React.Component
 		return (
 			<FormControl placeholder="Project Name"
 		                 type="text"
-		                 value="here will be project name"/*{TODO: add param}
-		                 onChange={/*TODO: add function}*//>
+		                 value={this.props.newProjectName}
+		                 onChange={(e) => this.props.onProjectNameChange(e.target.value)} />
 		)
 	}
 

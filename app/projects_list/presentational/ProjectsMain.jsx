@@ -22,11 +22,12 @@ class ProjectsMain extends React.Component
                     <FormGroup>
                         <ControlLabel>Create new project or select the existing</ControlLabel>
 
-                        <ProjectInput />
+                        <ProjectInput newProjectName={this.props.newProjectName}
+                                      onProjectNameChange={this.props.onProjectNameChange} />
                     </FormGroup>
                 </form>
 
-                <Button bsStyle="primary" onClick={this.create}>Add new</Button>
+                <Button bsStyle="primary" onClick={this.props.submitNewProject}>Add new</Button>
 
                 <ProjectsList projects={this.props.projects} onDelete={this.props.onDelete}/>
             </div>
