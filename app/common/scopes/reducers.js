@@ -16,7 +16,6 @@ function create_scope(state = [], action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
-		console.log(state);
 		return state.concat(_.map(message["new_scopes"], (x) => {
 			return {
 				"project_uuid": message["project_uuid"],
