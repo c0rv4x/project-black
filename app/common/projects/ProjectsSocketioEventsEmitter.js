@@ -10,7 +10,6 @@ class ProjectsSocketioEventsEmitter {
             instance = this;
 
             this.connector = new Connector();
-
         }
 
         return instance;

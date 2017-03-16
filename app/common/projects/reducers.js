@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { combineReducers } from 'redux'
 
 import { 
 	CREATE_PROJECT, 
@@ -73,9 +72,5 @@ function project_reduce(state = [], action) {
 	}
 }
 
-const rdcs = combineReducers({
-	projects: project_reduce
-})
 
-
-export default rdcs
+export default project_reduce

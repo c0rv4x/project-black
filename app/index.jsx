@@ -11,15 +11,18 @@ import classnames from 'classnames';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux'
 
-import project_reduce from './common/projects/reducers';
 import ProjectsEventsSubsriber from './common/projects/ProjectsSocketioEventsSubscriber';
+import ScopesEventsSubsriber from './common/scopes/ScopesSocketioEventsSubsriber';
+
+import rdcs from './common/reducers.js';
+
 import ProjectsMainComponentWrapper from './projects_list/components/ProjectsMainComponentWrapper.js';
 import ProjectDetails from './project_details/components/ProjectDetails.jsx';
 
 
-let store = createStore(project_reduce);
-let test = new ProjectsEventsSubsriber(store);
-test.basic_events_registration();
+let store = createStore(rdcs);
+let projectsSubcriber = new ProjectsEventsSubsriber(store);
+projectsSubcriber.basic_events_registration();
 
 
 class App extends React.Component {
