@@ -14,7 +14,6 @@ const initialState = {
 }
 
 function create_project(state = [], action) {
-	// const message = JSON.parse(action.data);
 	const message = action.message;
 
 	if (message["status"] == 'success') {
@@ -33,7 +32,6 @@ function create_project(state = [], action) {
 }
 
 function delete_project(state = [], action) {
-	// const message = JSON.parse(action.data);
 	const message = action.message;
 
 	if (message["status"] == 'success') {
