@@ -9,8 +9,9 @@ import {
 import classnames from 'classnames';
 
 import { createStore } from 'redux';
-import project_reduce from './common/redux/reducers';
+import { Provider } from 'react-redux'
 
+import project_reduce from './common/redux/reducers';
 import ProjectsEventsSubsriber from './common/ProjectsSocketioEventsSubscriber';
 import ProjectsMainComponent from './projects_list/components/ProjectsMainComponent.js'
 
@@ -23,6 +24,7 @@ test.basic_events_registration();
 class App extends React.Component {
     render () {
         return (
+            <Provider store={store}>
                 <div className="container">
                     <br/>
                     <Router>
@@ -38,6 +40,7 @@ class App extends React.Component {
                         </div>
                     </Router>            
                 </div>
+            </Provider>
         );
     }
 }

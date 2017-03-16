@@ -68,7 +68,7 @@ function project_reduce(state = [], action) {
 		case DELETE_PROJECT:
 			return delete_project(state, action);
 		case RENEW_PROJECTS:
-			return renew_projects(state, action);			
+			return renew_projects(state, action);
 		default:
 			return state;
 	}
