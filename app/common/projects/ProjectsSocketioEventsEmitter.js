@@ -1,4 +1,4 @@
-import Connector from './SocketConnector.jsx';
+import Connector from '../SocketConnector.jsx';
 
 
 let instance = null;

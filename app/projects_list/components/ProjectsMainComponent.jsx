@@ -1,7 +1,7 @@
 import React from 'react';
 
 import ProjectsMain from '../presentational/ProjectsMain.jsx';
-import ProjectsSocketioEventsEmitter from '../../common/ProjectsSocketioEventsEmitter.js';
+import ProjectsSocketioEventsEmitter from '../../common/projects/ProjectsSocketioEventsEmitter.js';
 
 
 class ProjectsMainComponent extends React.Component {

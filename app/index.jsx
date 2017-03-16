@@ -12,7 +12,7 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux'
 
 import project_reduce from './common/redux/reducers';
-import ProjectsEventsSubsriber from './common/ProjectsSocketioEventsSubscriber';
+import ProjectsEventsSubsriber from './common/projects/ProjectsSocketioEventsSubscriber';
 import ProjectsMainComponentWrapper from './projects_list/components/ProjectsMainComponentWrapper.js'
 
 

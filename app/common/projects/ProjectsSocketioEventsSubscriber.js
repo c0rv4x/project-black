@@ -3,9 +3,9 @@ import {
 	deleteProject,
 	renewProjects,
 	updateProject
-} from './redux/actions';
+} from './actions';
 
-import Connector from './SocketConnector.jsx';
+import Connector from '../SocketConnector.jsx';
 import ProjectsSocketioEventsEmitter from './ProjectsSocketioEventsEmitter.js';
 
 let instance = null;
