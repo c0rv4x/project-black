@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import ProjectDetails from './ProjectDetails.jsx';
@@ -22,7 +23,9 @@ function mapStateToProps(state, ownProps){
 
     return {
     	project: project,
-        scopes: state.scopes
+        scopes: _.filter(state.scopes, (x) => {
+        	return x.project_uuid == project['project_uuid']
+        })
     }
 }
 
