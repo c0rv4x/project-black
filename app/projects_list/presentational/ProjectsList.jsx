@@ -14,7 +14,9 @@ class ProjectsList extends React.Component
 
     render() {
         const projectsLines = _.map(this.props.projects, (x) => {
-            return <ProjectsListLine project={x} key={x.project_uuid} />
+            return <ProjectsListLine project={x} 
+                                     key={x.project_uuid} 
+                                     onDelete={this.props.onDelete}/>
         })
 
         return (

@@ -14,7 +14,9 @@ class ProjectsListLine extends React.Component
             <tr>
                 <td>{this.props.project.project_uuid}</td>
                 <td>{this.props.project.project_name}</td>
-                <td>{this.delete}</td>
+                <td>
+                    <button onClick={() => this.props.onDelete(this.props.project.project_uuid)}>Delete</button>
+                    </td>
             </tr>
         )
     }
