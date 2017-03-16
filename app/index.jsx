@@ -13,7 +13,7 @@ import { Provider } from 'react-redux'
 
 import project_reduce from './common/redux/reducers';
 import ProjectsEventsSubsriber from './common/ProjectsSocketioEventsSubscriber';
-import ProjectsMainComponent from './projects_list/components/ProjectsMainComponent.js'
+import ProjectsMainComponentWrapper from './projects_list/components/ProjectsMainComponentWrapper.js'
 
 
 let store = createStore(project_reduce);
@@ -34,8 +34,8 @@ class App extends React.Component {
                             </div>
                             <hr/>
                             <div>
-                                <Route exact path="/" component={ProjectsMainComponent} />
-                                <Route exact path="/project/:project_name" component={ProjectsMainComponent} />
+                                <Route exact path="/" component={ProjectsMainComponentWrapper} />
+                                <Route exact path="/project/:project_name" component={ProjectsMainComponentWrapper} />
                             </div>
                         </div>
                     </Router>            
