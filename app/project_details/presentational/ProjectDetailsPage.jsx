@@ -1,6 +1,6 @@
 import React from 'react'
-import { Button, Input } from 'react-bootstrap';
 
+import ProjectComment from './ProjectComment.jsx';
 
 class ProjectDetailsPage extends React.Component {
 
@@ -12,16 +12,10 @@ class ProjectDetailsPage extends React.Component {
 		return (
 			<div>
 				<h2>Project project_name </h2>
-
-				<FormGroup>
-					<Label for="projectComment">Comment</Label>
-					<Input type="text" id="projectComment" />
-					<FormText color="muted">
-					Go ahead and write some notes for yourself.
-					</FormText>
-				</FormGroup>
+				<br />
+				<ProjectComment />
+				<hr />
 			</div>
-
 		)
 	}
 
