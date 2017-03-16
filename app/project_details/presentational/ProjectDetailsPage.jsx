@@ -18,7 +18,9 @@ class ProjectDetailsPage extends React.Component {
 				<hr />
 				<ProjectScope newScopeInput={this.props.newScopeInput}
 							  handleNewScopeChange={this.props.handleNewScopeChange}
-							  onNewScopeClick={this.props.onNewScopeClick} />
+							  onNewScopeClick={this.props.onNewScopeClick} 
+
+							  scopes={this.props.scopes}/>
 			</div>
 		)
 	}
