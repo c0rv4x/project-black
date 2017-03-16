@@ -13,18 +13,18 @@ class ScopeTable extends React.Component {
 
 	render() {
 		const scopes = _.map(this.props.scopes, (x) => {
-			return <ScopeEntryLine scope={x}/>
+			return <ScopeEntryLine key={x.scope_id} scope={x}/>
 		});
 
 		return (
 			<Table bordered>
 				<thead>
 					<tr>
-						<td>Scope UUID</td>
-						<td>Hostname</td>
-						<td>IP</td>
-						<td>Control</td>
-						<td><Button bsStyle="danger">Delete</Button></td>
+						<th>Scope UUID</th>
+						<th>Hostname</th>
+						<th>IP</th>
+						<th>Control</th>
+						<th><Button bsStyle="danger">Delete</Button></th>
 					</tr>
 				</thead>
 				<tbody>

@@ -22,7 +22,8 @@ class ProjectDetails extends React.Component {
 		this.setState({ newScopeInput: e.target.value });
 	}
 
-	submitNewScope(project_uuid, scopes) {
+	submitNewScope(scopes) {
+		this.emitter.createScope(this.props.project.project_uuid, scopes);
 	}
 
 	render() {
@@ -30,9 +31,11 @@ class ProjectDetails extends React.Component {
 			<ProjectDetailsPage newScopeInput={this.state.newScopeInput}
 							    handleNewScopeChange={this.handleNewScopeChange}
 							    onNewScopeClick={
-							    	(project_uuid, scopes) => 
-							    		this.submitNewScope(project_uuid, scopes)
-							    }/>
+							    	(scopes) => 
+							    		this.submitNewScope(scopes)
+							    }
+
+							    scopes={this.props.scopes}/>
 		)
 	}
 }

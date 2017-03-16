@@ -14,17 +14,15 @@ const initialState = {
 
 function create_scope(state = [], action) {
 	const message = action.message;
+	console.log(message);
 
 	if (message["status"] == 'success') {
-		var state_new = state.slice();
-
-		state_new.push({
-			"scope_name": message["new_scope"]["scope_name"],
-			"scope_uuid": message["new_scope"]["scope_uuid"],
-			"comment": message["new_scope"]["comment"]
-		});
-
-		return state_new;
+		return state.concat(_.map(message["new_scopes"], (x) => {
+			return {
+				"project_uuid": message["project_uuid"],
+				"new_scopes": x
+			}
+		}));
 	} else {
 		/* TODO: add error handling */
 	}
@@ -51,10 +49,7 @@ function renew_scopes(state = [], action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
-		var state_new = message['scopes'];
-		console.log('doing many scopes');
-
-		return state_new;
+		return message['scopes'];
 	} else {
 		/* TODO: add error handling */
 	}		

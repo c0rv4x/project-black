@@ -66,7 +66,7 @@ class ScopeAdder extends React.Component {
 				</FormGroup>
 
 				<Button bsStyle="default" 
-						onClick={() => this.props.onNewScopeClick(x, this.props.newScopeInput)}>
+						onClick={() => this.props.onNewScopeClick(this.props.newScopeInput)}>
 						Add to scope
 				</Button>
 			</form>

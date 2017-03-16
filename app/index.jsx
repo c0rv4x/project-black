@@ -5,24 +5,25 @@ import {
     Route,
     Link
 } from 'react-router-dom';
-
 import classnames from 'classnames';
 
-import { createStore } from 'redux';
 import { Provider } from 'react-redux'
-
-import ProjectsEventsSubsriber from './common/projects/ProjectsSocketioEventsSubscriber';
-import ScopesEventsSubsriber from './common/scopes/ScopesSocketioEventsSubsriber';
 
 import rdcs from './common/reducers.js';
 
 import ProjectsMainComponentWrapper from './projects_list/components/ProjectsMainComponentWrapper.js';
 import ProjectsDetailsWrapper from './project_details/components/ProjectDetailsWrapper.js';
 
+import { createStore } from 'redux';
+
+import ScopesSocketioEventsSubsriber from './common/scopes/ScopesSocketioEventsSubsriber';
+import ProjectsSocketioEventsSubscriber from './common/projects/ProjectsSocketioEventsSubscriber';
+
+
 
 let store = createStore(rdcs);
-let projectsSubcriber = new ProjectsEventsSubsriber(store);
-projectsSubcriber.basic_events_registration();
+const projectsSubscriber = new ProjectsSocketioEventsSubscriber(store);
+const scopesSubscriber = new ScopesSocketioEventsSubsriber(store);
 
 
 class App extends React.Component {

@@ -7,24 +7,15 @@ import {
 	RENEW_PROJECTS 
 } from './actions.js'
 
-import ScopesSocketioEventsSubsriber from '../scopes/ScopesSocketioEventsSubsriber';
 
 const initialState = {
 	projects: []
 }
 
-
-const scopesSubscriber = new ScopesSocketioEventsSubsriber();
-
-
 function create_project(state = [], action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
-		// Add two event for handling scopes (create/delete scope of this project)
-		scopesSubscriber.register_project_specific_scope_tracker(
-			message["new_project"]["project_uuid"]);
-
 		var state_new = state.slice();
 
 		state_new.push({
@@ -62,10 +53,6 @@ function renew_projects(state = [], action) {
 	if (message["status"] == 'success') {
 		var state_new = message['projects'];
 
-		for (var project of state_new) {
-			// Add two event for handling scopes (create/delete scope of this project)
-			scopesSubscriber.register_project_specific_scope_tracker(project["project_uuid"]);			
-		}
 		return state_new;
 	} else {
 		/* TODO: add error handling */

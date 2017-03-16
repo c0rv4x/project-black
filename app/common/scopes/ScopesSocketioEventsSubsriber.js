@@ -7,9 +7,10 @@ import {
 import Connector from '../SocketConnector.jsx';
 import ScopesSocketioEventsEmitter from './ScopesSocketioEventsEmitter.js';
 
+
 let instance = null;
 
-class ScopesEventsSubsriber {
+class ScopesSocketioEventsSubsriber {
 	/* Singleton class for managing events subscription for the scopes */
 	constructor(store) {
         if(!instance){
@@ -24,6 +25,9 @@ class ScopesEventsSubsriber {
             	this.emitter = new ScopesSocketioEventsEmitter();
             	this.emitter.renewScopes();
             });
+
+            this.basic_events_registration();
+
         }
 
         return instance;
@@ -33,26 +37,18 @@ class ScopesEventsSubsriber {
 		/* Register handlers on basic events */
 		// Received all scopes in one message
 		this.register_socketio_handler('scopes:all:get:back', renewScopes);
-
+		this.register_project_new_scope();
+		this.register_project_delete_scope();
 	}
 
-	register_project_new_scope(project_uuid) {
-		/* This thing MUST be called on each new project */
-		this.register_socketio_handler('scopes:create:' + project_uuid, createScope);
+	register_project_new_scope() {
+		/* Check new scope */
+		this.register_socketio_handler('scopes:create', createScope);
 	}
 
-	register_project_delete_scope(project_uuid) {
-		/* This thing MUST be called on each new project */
-		this.register_socketio_handler('scopes:delete:' + project_uuid, deleteScope);
-	}
-
-	register_project_specific_scope_tracker(project_uuid) {
-		if (this.registered_projects_uuids.indexOf(project_uuid) === -1) {
-			this.registered_projects_uuids.push(project_uuid);
-
-			this.register_project_new_scope(project_uuid);
-			this.register_project_delete_scope(project_uuid);
-		}
+	register_project_delete_scope() {
+		/* Check deleted scope */
+		this.register_socketio_handler('scopes:delete', deleteScope);
 	}
 
 	register_socketio_handler(eventName, callback) {
@@ -63,4 +59,4 @@ class ScopesEventsSubsriber {
 	}
 }
 
-export default ScopesEventsSubsriber;
+export default ScopesSocketioEventsSubsriber;

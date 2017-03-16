@@ -23,6 +23,8 @@ class ProjectsEventsSubsriber {
             	this.emitter = new ProjectsSocketioEventsEmitter();
             	this.emitter.renewProjects();
             });
+
+            this.basic_events_registration();
         }
 
         return instance;
