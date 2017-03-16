@@ -16,7 +16,9 @@ class ProjectDetailsPage extends React.Component {
 				<br />
 				<ProjectComment />
 				<hr />
-				<ProjectScope />
+				<ProjectScope newScopeInput={this.props.newScopeInput}
+							  handleNewScopeChange={this.props.handleNewScopeChange}
+							  onNewScopeClick={this.props.onNewScopeClick} />
 			</div>
 		)
 	}

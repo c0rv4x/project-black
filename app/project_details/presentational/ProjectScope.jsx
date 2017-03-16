@@ -16,7 +16,9 @@ class ProjectScope extends React.Component {
 	render() {
 		return (
 			<div>
-				<ScopeAdder />
+				<ScopeAdder newScopeInput={this.props.newScopeInput}
+							handleNewScopeChange={this.props.handleNewScopeChange}
+							onNewScopeClick={this.props.onNewScopeClick} />
 				<ScopeTable />
 			</div>
 		)
