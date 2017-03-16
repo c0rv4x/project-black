@@ -3,6 +3,9 @@ import {
 	Table 
 } from 'react-bootstrap';
 
+import ScopeAdder from './ScopeAdder.jsx'
+import ScopeTable from './ScopeTable.jsx'
+
 
 class ProjectScope extends React.Component {
 
@@ -12,6 +15,10 @@ class ProjectScope extends React.Component {
 
 	render() {
 		return (
+			<div>
+				<ScopeAdder />
+				<ScopeTable />
+			</div>
 		)
 	}
 
