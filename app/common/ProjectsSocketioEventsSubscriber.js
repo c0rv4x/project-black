@@ -6,7 +6,7 @@ import {
 } from './redux/actions';
 
 import Connector from './SocketConnector.jsx';
-
+import ProjectsSocketioEventsEmitter from './ProjectsSocketioEventsEmitter.js';
 
 let instance = null;
 
@@ -20,7 +20,8 @@ class ProjectsEventsSubsriber {
             this.connector = new Connector();
 
             this.connector.after_connected((x) => {
-            	this.connector.emit('projects:all:get');
+            	this.emitter = new ProjectsSocketioEventsEmitter();
+            	this.emitter.renewProjects();
             });
         }
 
