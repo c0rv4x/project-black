@@ -61,7 +61,6 @@ function renew_projects(state = [], action) {
 }
 
 function project_reduce(state = [], action) {
-	console.log(action);
 	switch (action.type) {
 		case CREATE_PROJECT:
 			return create_project(state, action);

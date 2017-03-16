@@ -5,11 +5,10 @@ let instance = null;
 
 class ProjectsSocketioEventsEmitter {
 	/* Singleton class for managing events subscription for the projects */
-	constructor(store) {
+	constructor() {
         if(!instance){
             instance = this;
 
-            this.store = store;
             this.connector = new Connector();
 
         }
