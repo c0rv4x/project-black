@@ -11,10 +11,10 @@ class ScopeEntryLine extends React.Component {
 	render() {
 		return (
 			<tr>
-				<th>{this.props.scope.scope_id}</th>
-				<th>{this.props.scope.hostname}</th>
-				<th>{this.props.scope.ip_address}</th>
-				<th><Button bsStyle="danger" onClick={this.props.deleteScope}>Delete</Button></th>
+				<td>{this.props.scope.scope_id}</td>
+				<td>{this.props.scope.hostname}</td>
+				<td>{this.props.scope.ip_address}</td>
+				<td><Button bsStyle="danger" onClick={this.props.deleteScope}>Delete</Button></td>
 			</tr>
 		)
 	}

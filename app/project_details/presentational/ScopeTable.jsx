@@ -22,10 +22,10 @@ class ScopeTable extends React.Component {
 			<Table bordered>
 				<thead>
 					<tr>
-						<th>Scope UUID</th>
-						<th>Hostname</th>
-						<th>IP</th>
-						<th>Control</th>
+						<td>Scope UUID</td>
+						<td>Hostname</td>
+						<td>IP</td>
+						<td>Control</td>
 					</tr>
 				</thead>
 				<tbody>
