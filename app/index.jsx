@@ -4,7 +4,7 @@ import {
     BrowserRouter as Router,
     Route,
     Link
-} from 'react-router-dom'
+} from 'react-router-dom';
 
 import classnames from 'classnames';
 
@@ -13,7 +13,8 @@ import { Provider } from 'react-redux'
 
 import project_reduce from './common/redux/reducers';
 import ProjectsEventsSubsriber from './common/projects/ProjectsSocketioEventsSubscriber';
-import ProjectsMainComponentWrapper from './projects_list/components/ProjectsMainComponentWrapper.js'
+import ProjectsMainComponentWrapper from './projects_list/components/ProjectsMainComponentWrapper.js';
+import ProjectDetailsPage from './project_details/presentational/ProjectDetailsPage.jsx';
 
 
 let store = createStore(project_reduce);
@@ -35,7 +36,7 @@ class App extends React.Component {
                             <hr/>
                             <div>
                                 <Route exact path="/" component={ProjectsMainComponentWrapper} />
-                                <Route exact path="/project/:project_name" component={ProjectsMainComponentWrapper} />
+                                <Route exact path="/project/:project_name" component={ProjectDetailsPage} />
                             </div>
                         </div>
                     </Router>            
