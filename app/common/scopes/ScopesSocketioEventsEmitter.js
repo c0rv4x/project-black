@@ -1,5 +1,33 @@
+import _ from 'lodash';
 import Connector from '../SocketConnector.jsx';
 
+
+function findScopeType(target) {
+    function tryip_addressNetwork(target) {
+        return target.match(/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2}$/);
+    }
+
+    function tryip_addressAddress(target) {
+        return target.match(/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/);
+    }
+
+    function tryHostname(target) {
+        return target.match(/^([a-zA-Z]{1}[a-zA-Z0-9\-]{0,255}\.){1,}[a-zA-Z]{2,15}$/);
+    }
+
+    if (tryip_addressNetwork(target)) {
+        return "network";
+    }
+    else if (tryip_addressAddress(target)) {
+        return "ip_address";
+    }
+    else if (tryHostname(target)) {
+        return "hostname";
+    }
+    else {
+        return "error";
+    }
+}
 
 let instance = null;
 
@@ -15,13 +43,19 @@ class ScopesSocketioEventsEmitter {
         return instance;
 	}
 
-	// createProject(scope_name) {
-	// 	this.connector.emit('scopes:create', {
-	// 		'scope_name': scope_name
-	// 	});
-	// }
+	createScope(project_uuid, scopes) {
+		this.connector.emit('scopes:create', {
+			'project_uuid': project_uuid,
+			'scopes': _.map(scopes, (x) => {
+				return {
+					"type": findScopeType(x),
+					"target": x
+				}
+			});
+		});
+	}
 
-	// deleteProject(scope_uuid) {
+	// deleteScope(scope_uuid) {
 	// 	this.connector.emit('scopes:delete:scope_uuid', {
 	// 		'scope_uuid': scope_uuid
 	// 	});
