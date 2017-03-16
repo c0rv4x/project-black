@@ -13,7 +13,7 @@ class ScopeEntryLine extends React.Component {
 			<tr>
 				<th>{this.props.scope.scope_id}</th>
 				<th>{this.props.scope.hostname}</th>
-				<th>{this.props.scope.IP}</th>
+				<th>{this.props.scope.ip_address}</th>
 				<th><Button bsStyle="danger">Delete</Button></th>
 			</tr>
 		)

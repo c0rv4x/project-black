@@ -24,7 +24,6 @@ class ScopeTable extends React.Component {
 						<th>Hostname</th>
 						<th>IP</th>
 						<th>Control</th>
-						<th><Button bsStyle="danger">Delete</Button></th>
 					</tr>
 				</thead>
 				<tbody>

@@ -14,13 +14,14 @@ const initialState = {
 
 function create_scope(state = [], action) {
 	const message = action.message;
-	console.log(message);
 
 	if (message["status"] == 'success') {
 		return state.concat(_.map(message["new_scopes"], (x) => {
 			return {
 				"project_uuid": message["project_uuid"],
-				"new_scopes": x
+				"scope_id": x["scope_id"],
+				"hostname": x["hostname"],
+				"ip_address": x["ip_address"]
 			}
 		}));
 	} else {
