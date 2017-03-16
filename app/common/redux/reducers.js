@@ -75,7 +75,7 @@ function project_reduce(state = [], action) {
 }
 
 const rdcs = combineReducers({
-	project_reduce
+	projects: project_reduce
 })
 
 
