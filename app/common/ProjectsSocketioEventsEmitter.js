@@ -17,19 +17,19 @@ class ProjectsSocketioEventsEmitter {
         return instance;
 	}
 
-	create_project(project_name) {
+	createProject(project_name) {
 		this.connector.emit('projects:create', {
 			'project_name': project_name
 		});
 	}
 
-	delete_project(project_uuid) {
+	deleteProject(project_uuid) {
 		this.connector.emit('projects:delete:project_uuid', {
 			'project_uuid': project_uuid
 		});
 	}
 
-	update_projects(project_uuid, project_name, comment) {
+	updateProjects(project_uuid, project_name, comment) {
 		this.connector.emit('projects:update', {
 			'project_uuid': project_uuid,
 			'project_name': project_name,
@@ -37,7 +37,7 @@ class ProjectsSocketioEventsEmitter {
 		});
 	}
 
-	renew_projects() {
+	renewProjects() {
 		this.connector.emit('projects:all:get');
 	}
 
