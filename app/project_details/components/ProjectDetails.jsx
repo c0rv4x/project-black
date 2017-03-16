@@ -1,6 +1,7 @@
 import React from 'react';
 
 import ProjectDetailsPage from '../presentational/ProjectDetailsPage.jsx';
+import ScopesSocketioEventsEmitter from '../../common/scopes/ScopesSocketioEventsEmitter.js';
 
 
 class ProjectDetails extends React.Component {
@@ -10,6 +11,8 @@ class ProjectDetails extends React.Component {
 		this.state = {
 			"newScopeInput": ""
 		}
+		this.emitter = new ScopesSocketioEventsEmitter();
+
 
 		this.handleNewScopeChange = this.handleNewScopeChange.bind(this);
 		this.submitNewScope = this.submitNewScope.bind(this);
@@ -19,14 +22,17 @@ class ProjectDetails extends React.Component {
 		this.setState({ newScopeInput: e.target.value });
 	}
 
-	submitNewScope() {
+	submitNewScope(project_uuid, scopes) {
 	}
 
 	render() {
 		return (
 			<ProjectDetailsPage newScopeInput={this.state.newScopeInput}
 							    handleNewScopeChange={this.handleNewScopeChange}
-							    onNewScopeClick={this.submitNewScope}/>
+							    onNewScopeClick={
+							    	(project_uuid, scopes) => 
+							    		this.submitNewScope(project_uuid, scopes)
+							    }/>
 		)
 	}
 }
