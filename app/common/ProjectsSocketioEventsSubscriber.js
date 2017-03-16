@@ -18,6 +18,10 @@ class ProjectsEventsSubsriber {
 
             this.store = store;
             this.connector = new Connector();
+
+            this.connector.after_connected((x) => {
+            	this.connector.emit('projects:all:get');
+            });
         }
 
         return instance;

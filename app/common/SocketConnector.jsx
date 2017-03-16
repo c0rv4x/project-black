@@ -13,11 +13,6 @@ class Connector {
         this.registered_event_names = [];
         this.socketio = io("http://127.0.0.1:5000/");
 
-        this.socketio.on('connect', () => {
-            this.connected = true;
-            this.emit('projects:all:get');
-        });        
-
         return instance;
     }
 
