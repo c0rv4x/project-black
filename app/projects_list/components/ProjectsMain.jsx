@@ -2,8 +2,8 @@ import _  from 'lodash';
 import React from 'react';
 import { Button, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 
-import ProjectsList from "./ProjectsList.jsx";
-import ProjectInput from "./ProjectInput.jsx";
+import ProjectsList from "../presentational/ProjectsList.jsx";
+import ProjectInput from "../presentational/ProjectInput.jsx";
 
 class ProjectsMain extends React.Component
 {

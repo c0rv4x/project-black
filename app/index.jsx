@@ -13,7 +13,7 @@ import project_reduce from './common/redux/reducers';
 
 import ProjectsEventsSubsriber from './common/ProjectsSocketioEventsSubscriber';
 
-import ProjectMain from './projects_list/containers/ProjectsMain.jsx'
+import ProjectMain from './projects_list/components/ProjectsMain.jsx'
 
 
 
