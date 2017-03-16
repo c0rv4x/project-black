@@ -1,6 +1,7 @@
 import React from 'react'
 
 import ProjectComment from './ProjectComment.jsx';
+import ProjectScope from './ProjectScope.jsx';
 
 class ProjectDetailsPage extends React.Component {
 
@@ -15,6 +16,7 @@ class ProjectDetailsPage extends React.Component {
 				<br />
 				<ProjectComment />
 				<hr />
+				<ProjectScope />
 			</div>
 		)
 	}
