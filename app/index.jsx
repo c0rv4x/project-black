@@ -17,7 +17,7 @@ import ScopesEventsSubsriber from './common/scopes/ScopesSocketioEventsSubsriber
 import rdcs from './common/reducers.js';
 
 import ProjectsMainComponentWrapper from './projects_list/components/ProjectsMainComponentWrapper.js';
-import ProjectDetails from './project_details/components/ProjectDetails.jsx';
+import ProjectsDetailsWrapper from './project_details/components/ProjectDetailsWrapper.js';
 
 
 let store = createStore(rdcs);
@@ -39,7 +39,7 @@ class App extends React.Component {
                             <hr/>
                             <div>
                                 <Route exact path="/" component={ProjectsMainComponentWrapper} />
-                                <Route exact path="/project/:project_name" component={ProjectDetails} />
+                                <Route exact path="/project/:project_name" component={ProjectsDetailsWrapper} />
                             </div>
                         </div>
                     </Router>            

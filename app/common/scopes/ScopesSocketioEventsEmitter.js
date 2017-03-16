@@ -53,7 +53,7 @@ class ScopesSocketioEventsEmitter {
 					"type": findScopeType(scope),
 					"target": scope
 				}
-			});
+			})
 		});
 	}
 
