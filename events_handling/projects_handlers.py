@@ -1,4 +1,3 @@
-import json
 from flask_socketio import emit
 
 from managers import ProjectManager
@@ -10,7 +9,10 @@ def initialize(socketio):
     @socketio.on('projects:all:get')
     def handle_custom_event():
         """ When received this message, send back all the projects """
-        emit('projects:all:get:back', json.dumps(project_manager.get_projects()), broadcast=True)
+        emit('projects:all:get:back', {
+            'status': 'success',
+            'projects': project_manager.get_projects()
+        }, broadcast=True)
 
 
     @socketio.on('projects:create')
@@ -23,16 +25,16 @@ def initialize(socketio):
 
         if addition_result["status"] == "success":
             # Send the project back
-            emit('projects:create', json.dumps({
+            emit('projects:create', {
                 'status': 'success',
                 'new_project': addition_result["new_project"]
-            }), broadcast=True)
+            }, broadcast=True)
         else:
             # Error occured
-            emit('projects:create', json.dumps({
+            emit('projects:create', {
                 'status': 'error',
                 'text': addition_result["text"]
-            }), broadcast=True)
+            }, broadcast=True)
 
 
     @socketio.on('projects:delete:project_uuid')
@@ -45,17 +47,17 @@ def initialize(socketio):
 
         if delete_result["status"] == "success":
             # Send the success result
-            emit('projects:delete', json.dumps({
+            emit('projects:delete', {
                 'status': 'success',
                 'project_uuid': project_uuid
-            }), broadcast=True)
+            }, broadcast=True)
 
         else:
             # Error occured
-            emit('projects:delete', json.dumps({
+            emit('projects:delete', {
                 'status': 'error',
                 'text': delete_result["text"]
-            }), broadcast=True)
+            }, broadcast=True)
             
 
     @socketio.on('projects:update')
@@ -70,18 +72,18 @@ def initialize(socketio):
 
         if updating_status["status"] == "success":
             # Send the project back
-            emit('projects:update:' + project_uuid, json.dumps({
+            emit('projects:update:' + project_uuid, {
                 'status': 'success',
                 'new_project': {
                     'project_uuid': project_uuid,
                     'project_name': project_name,
                     'comment': comment,
                 }
-            }), broadcast=True)
+            }, broadcast=True)
 
         else:
             # Error occured
-            emit('projects:update:' + project_uuid, json.dumps({
+            emit('projects:update:' + project_uuid, {
                 'status': 'error',
                 'text': updating_status["text"]
-            }), broadcast=True)
+            }, broadcast=True)
