@@ -40,7 +40,7 @@ def initialize(socketio):
     @socketio.on('projects:delete:project_uuid')
     def handle_project_creation(msg):
         """ When received this message, delete the project """
-        project_uuid = msg
+        project_uuid = msg['project_uuid']
 
         # Delete new project (and register it)
         delete_result = project_manager.delete_project(project_uuid=project_uuid)
