@@ -11,7 +11,7 @@ import classnames from 'classnames';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux'
 
-import project_reduce from './common/redux/reducers';
+import project_reduce from './common/projects/reducers';
 import ProjectsEventsSubsriber from './common/projects/ProjectsSocketioEventsSubscriber';
 import ProjectsMainComponentWrapper from './projects_list/components/ProjectsMainComponentWrapper.js';
 import ProjectDetailsPage from './project_details/presentational/ProjectDetailsPage.jsx';
