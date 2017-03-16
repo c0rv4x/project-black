@@ -13,7 +13,6 @@ export function deleteProject(message) {
 }
 
 export function renewProjects(message) {
-	console.log('actions.js: renewProjects');
 	return { type: RENEW_PROJECTS, message }
 }
 

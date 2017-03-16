@@ -4,7 +4,6 @@ import ProjectsMain from '../presentational/ProjectsMain.jsx';
 
 
 function mapStateToProps(state){
-	console.log(state);
     return {
         projects: state.projects
     }
