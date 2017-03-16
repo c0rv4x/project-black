@@ -27,7 +27,7 @@ class ProjectsMain extends React.Component
 
                 <Button bsStyle="primary" onClick={this.create}>Add new</Button>
 
-                <ProjectsList />
+                <ProjectsList projects={this.props.projects} />
             </div>
 		)
 	}
