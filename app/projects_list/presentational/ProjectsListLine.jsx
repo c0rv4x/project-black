@@ -14,8 +14,8 @@ class ProjectsListLine extends React.Component
     render() {
         return (
             <tr>
-                <td>{this.props.project_uuid}</td>
-                <td>{this.props.project_name}</td>
+                <td>{this.props.project.project_uuid}</td>
+                <td>{this.props.project.project_name}</td>
                 <td>{this.delete}</td>
             </tr>
         )
