@@ -1,3 +1,4 @@
+import pika
 import uuid
 
 from black.black.db import sessions, Task
@@ -25,6 +26,12 @@ class ShadowTask(object):
     def set_progress(self, new_progress):
         self.progress = new_progress
 
+    def get_status(self):
+        return self.status
+
+    def get_progress(self):
+        return self.progress
+
     def commit_to_db(self):
         session = sessions.get_new_session()
         project_db = session.query(Task).filter_by(task_id=self.task_id).first()
@@ -46,8 +53,6 @@ class ShadowTask(object):
         session.commit()
         sessions.destroy_session(session)     
 
-    def get_status(self):
-        return self.status
 
 class TaskManager(object):
     """ TaskManager keeps track of all tasks in the system,
@@ -70,7 +75,7 @@ class TaskManager(object):
                            params,
                            status,
                            project_uuid),
-                     scopes_from_db))
+                     tasks_from_db))
         sessions.destroy_session(session)
 
         for task in tasks:
@@ -79,7 +84,9 @@ class TaskManager(object):
             else:
                 self.active_tasks.append(task)
 
+    def get_tasks(self):
+        return [self.active_tasks, self.finished_tasks]
+
     def create_task(self, task_type, target, params, project_uuid):
-        task = ShadowTask(self.amqp, task_type, target, params, project_uuid)
-
-
+        task = ShadowTask(task_type, target, params, project_uuid)
+        self.active_tasks.append(task)

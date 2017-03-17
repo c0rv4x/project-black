@@ -1,15 +1,16 @@
 from flask_socketio import emit
 
-# from managers import ProjectManager
+from managers import TaskManager
 
 
 def initialize(socketio):
-    # project_manager = ProjectManager()
+    task_manager = TaskManager()
 
     @socketio.on('tasks:all:get')
     def handle_custom_event():
         """ When received this message, send back all the tasks """
-        print('tasks:all:get')
+        emit('tasks:all:get:back', task_manager.get_tasks())
+        # task_manager.create_task()#task_type, target, params, project_uuid)
 
 
     @socketio.on('tasks:create')
