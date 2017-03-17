@@ -1,2 +1,3 @@
 from events_handling.projects_handlers import initialize as projects_handlers_init
 from events_handling.scopes_handlers import initialize as scopes_handlers_init
+from events_handling.tasks_handlers import initialize as tasks_handlers_init
