@@ -19,19 +19,9 @@ class ScopeTable extends React.Component {
 		});
 
 		return (
-			<Table bordered>
-				<thead>
-					<tr>
-						<td>Scope UUID</td>
-						<td>Hostname</td>
-						<td>IP</td>
-						<td>Control</td>
-					</tr>
-				</thead>
-				<tbody>
-					{scopes}
-				</tbody>
-			</Table>
+			<div>
+				{scopes}
+			</div>
 		)
 	}
 
