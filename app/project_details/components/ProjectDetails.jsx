@@ -1,8 +1,10 @@
+import _ from 'lodash';
 import React from 'react';
 
 import ProjectDetailsPage from '../presentational/ProjectDetailsPage.jsx';
 import ProjectsSocketioEventsEmitter from '../../common/projects/ProjectsSocketioEventsEmitter.js';
 import ScopesSocketioEventsEmitter from '../../common/scopes/ScopesSocketioEventsEmitter.js';
+import TasksSocketioEventsEmitter from '../../common/tasks/TasksSocketioEventsEmitter.js';
 
 
 class ProjectDetails extends React.Component {
@@ -15,6 +17,7 @@ class ProjectDetails extends React.Component {
 		}
 		this.projectsEmitter = new ProjectsSocketioEventsEmitter();
 		this.scopesEmitter = new ScopesSocketioEventsEmitter();
+		this.tasksEmitter = new TasksSocketioEventsEmitter();
 
 		this.handleNewScopeChange = this.handleNewScopeChange.bind(this);
 		this.submitNewScope = this.submitNewScope.bind(this);
@@ -22,6 +25,8 @@ class ProjectDetails extends React.Component {
 
 		this.onCommentInputChange = this.onCommentInputChange.bind(this);
 		this.commentSubmitted = this.commentSubmitted.bind(this);
+
+		this.runNmap = this.runNmap.bind(this);
 	}
 
 	handleNewScopeChange(e) {
@@ -55,6 +60,12 @@ class ProjectDetails extends React.Component {
 		}		
 	}
 
+	runNmap() {
+		this.tasksEmitter.createTask('nmap', _.map(this.props.scopes, (x) => {
+			return x.ip_address
+		}), "", this.props.project.project_uuid)
+	}
+
 	render() {
 		return (
 			<ProjectDetailsPage newScopeInput={this.state.newScopeInput}
@@ -71,7 +82,9 @@ class ProjectDetails extends React.Component {
 								onCommentInputChange={this.onCommentInputChange}
 								commentSubmitted={this.commentSubmitted} 
 
-								project={this.props.project}/>
+								project={this.props.project}
+
+								runNmap={this.runNmap}/>
 		)
 	}
 }

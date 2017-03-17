@@ -3,6 +3,8 @@ import React from 'react'
 import ProjectComment from './ProjectComment.jsx';
 import ProjectScope from './ProjectScope.jsx';
 
+import { DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap';
+
 class ProjectDetailsPage extends React.Component {
 
 	constructor(props) {
@@ -12,7 +14,12 @@ class ProjectDetailsPage extends React.Component {
 	render() {
 		return (
 			<div>
-				<h2>Project project_name </h2>
+				<h2>Project project_name<span>  </span>
+					<DropdownButton bsStyle="default" title="Start Task" id="dropdown-basic">
+						<MenuItem eventKey="1" onClick={this.props.runNmap}>Nmap</MenuItem>
+					</DropdownButton>
+
+				</h2>
 				<br />
 				<ProjectComment commentInput={this.props.commentInput}
 								onCommentInputChange={this.props.onCommentInputChange}

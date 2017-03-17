@@ -16,6 +16,7 @@ def initialize(socketio):
     @socketio.on('tasks:create')
     def handle_project_creation(msg):
         """ When received this message, create a new tasks """
+        print(msg)
         task_type = msg["task_type"]
         target = msg["target"]
         params = msg["params"]
