@@ -48,16 +48,11 @@ class ProjectDetails extends React.Component {
 	}
 
 	componentWillReceiveProps(newProps) {
-		console.log(newProps.project);
 		if ((newProps.project) && (newProps.project.comment != null)) {
 			this.setState({
 				"commentInput": newProps.project.comment
 			});
 		}		
-	}
-
-	componentDidMount() {
-
 	}
 
 	render() {

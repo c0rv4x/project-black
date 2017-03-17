@@ -10,7 +10,6 @@ function mapStateToProps(state, ownProps){
 		return x.project_name == project_name
 	});
 
-	console.log(filtered_projects);
 	let project = null;
 
 	if (filtered_projects.length) {
