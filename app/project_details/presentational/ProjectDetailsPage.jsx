@@ -14,14 +14,18 @@ class ProjectDetailsPage extends React.Component {
 			<div>
 				<h2>Project project_name </h2>
 				<br />
-				<ProjectComment />
+				<ProjectComment commentInput={this.props.commentInput}
+								onCommentInputChange={this.props.onCommentInputChange}
+								commentSubmitted={this.props.commentSubmitted} 
+
+								project={this.props.project}/>
 				<hr />
 				<ProjectScope newScopeInput={this.props.newScopeInput}
 							  handleNewScopeChange={this.props.handleNewScopeChange}
 							  onNewScopeClick={this.props.onNewScopeClick} 
 
 							  deleteScope={this.props.deleteScope}
-							  scopes={this.props.scopes}/>
+							  scopes={this.props.scopes} />
 			</div>
 		)
 	}

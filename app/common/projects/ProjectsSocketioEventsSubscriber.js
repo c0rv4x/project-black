@@ -42,19 +42,8 @@ class ProjectsEventsSubsriber {
 		// Backend tried to delete a project (both: successfully and not successfully)
 		this.register_socketio_handler('projects:delete', deleteProject);
 
-		/* 
-		Should be:
-		this.register_socketio_handler('projects:update:{project_uuid}', updateProject); 
-
-		This event should be handled separately for each project.
-		On creating a new project, we need to separately assign such event 
-		*/
-	}
-
-	register_project_update(project_uuid) {
-		/* After new project has been created, call this method to subscribe updates
-		on this project */
-		this.register_socketio_handler('projects:update:' + project_uuid, updateProject);
+		// Backend tried to update a project (both: successfully and not successfully)
+		this.register_socketio_handler('projects:update', updateProject);
 	}
 
 	register_socketio_handler(eventName, callback) {

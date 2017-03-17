@@ -72,7 +72,7 @@ def initialize(socketio):
 
         if updating_status["status"] == "success":
             # Send the project back
-            emit('projects:update:' + project_uuid, {
+            emit('projects:update', {
                 'status': 'success',
                 'new_project': {
                     'project_uuid': project_uuid,
@@ -83,7 +83,7 @@ def initialize(socketio):
 
         else:
             # Error occured
-            emit('projects:update:' + project_uuid, {
+            emit('projects:update', {
                 'status': 'error',
                 'text': updating_status["text"]
             }, broadcast=True)

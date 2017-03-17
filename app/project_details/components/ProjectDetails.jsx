@@ -1,6 +1,7 @@
 import React from 'react';
 
 import ProjectDetailsPage from '../presentational/ProjectDetailsPage.jsx';
+import ProjectsSocketioEventsEmitter from '../../common/projects/ProjectsSocketioEventsEmitter.js';
 import ScopesSocketioEventsEmitter from '../../common/scopes/ScopesSocketioEventsEmitter.js';
 
 
@@ -9,14 +10,18 @@ class ProjectDetails extends React.Component {
 		super(props);
 
 		this.state = {
-			"newScopeInput": ""
+			"newScopeInput": "",
+			"commentInput": ""
 		}
-		this.emitter = new ScopesSocketioEventsEmitter();
-
+		this.projectsEmitter = new ProjectsSocketioEventsEmitter();
+		this.scopesEmitter = new ScopesSocketioEventsEmitter();
 
 		this.handleNewScopeChange = this.handleNewScopeChange.bind(this);
 		this.submitNewScope = this.submitNewScope.bind(this);
 		this.deleteScope = this.deleteScope.bind(this);
+
+		this.onCommentInputChange = this.onCommentInputChange.bind(this);
+		this.commentSubmitted = this.commentSubmitted.bind(this);
 	}
 
 	handleNewScopeChange(e) {
@@ -24,11 +29,35 @@ class ProjectDetails extends React.Component {
 	}
 
 	submitNewScope(scopes) {
-		this.emitter.createScope(this.props.project.project_uuid, scopes);
+		this.scopesEmitter.createScope(this.props.project.project_uuid, scopes);
 	}
 
 	deleteScope(scope_id) {
-		this.emitter.deleteScope(scope_id);
+		this.scopesEmitter.deleteScope(scope_id);
+	}
+
+	onCommentInputChange(e) {
+		this.setState({ commentInput: e.target.value });
+	}
+
+	commentSubmitted() {
+		this.projectsEmitter.updateProject(
+			this.props.project.project_uuid,
+			null,
+			this.state.commentInput);
+	}
+
+	componentWillReceiveProps(newProps) {
+		console.log(newProps.project);
+		if ((newProps.project) && (newProps.project.comment != null)) {
+			this.setState({
+				"commentInput": newProps.project.comment
+			});
+		}		
+	}
+
+	componentDidMount() {
+
 	}
 
 	render() {
@@ -41,7 +70,13 @@ class ProjectDetails extends React.Component {
 							    }
 
 							    deleteScope={this.deleteScope}
-							    scopes={this.props.scopes}/>
+							    scopes={this.props.scopes}
+
+								commentInput={this.state.commentInput}
+								onCommentInputChange={this.onCommentInputChange}
+								commentSubmitted={this.commentSubmitted} 
+
+								project={this.props.project}/>
 		)
 	}
 }

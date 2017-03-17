@@ -21,12 +21,15 @@ class ProjectComment extends React.Component {
 					<FormGroup>
 						<ControlLabel>Comment</ControlLabel>
 
-						<FormControl componentClass="textarea" placeholder="
-						Enter some data to help yourself in further." />
+						<FormControl componentClass="textarea" 
+									 placeholder="
+						Enter some data to help yourself in further." 
+									 value={this.props.commentInput}
+								     onChange={this.props.onCommentInputChange}/>
 					</FormGroup>
 				</FormGroup>
 
-				<Button bsStyle="default">Submit comment</Button>
+				<Button bsStyle="default" onClick={this.props.commentSubmitted}>Submit comment</Button>
 			</form>
 		)
 	}

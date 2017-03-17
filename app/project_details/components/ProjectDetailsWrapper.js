@@ -10,8 +10,10 @@ function mapStateToProps(state, ownProps){
 		return x.project_name == project_name
 	});
 
+	console.log(filtered_projects);
 	let project = null;
-	if (filtered_projects) {
+
+	if (filtered_projects.length) {
 		project = filtered_projects[0]
 	} else {
 		project = {
@@ -25,7 +27,8 @@ function mapStateToProps(state, ownProps){
     	project: project,
         scopes: _.filter(state.scopes, (x) => {
         	return x.project_uuid == project['project_uuid']
-        })
+        }),
+        comment: project["comment"]
     }
 }
 

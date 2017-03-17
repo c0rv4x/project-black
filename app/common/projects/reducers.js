@@ -59,6 +59,31 @@ function renew_projects(state = [], action) {
 	}		
 }
 
+function update_project(state = [], action) {
+	const message = action.message;
+
+	if (message["status"] == 'success') {
+		var new_project = message["new_project"];
+		var project_name = null;
+
+		var state_new = _.filter(state, (x) => {
+			var matches_filter = x.project_uuid != new_project.project_uuid;
+
+			if (!matches_filter) project_name = x.project_name;
+
+			return matches_filter;
+		});
+
+		if (new_project.project_name === null) new_project.project_name = project_name;
+
+		state_new.push(new_project);
+
+		return state_new;
+	} else {
+		/* TODO: add error handling */
+	}		
+}
+
 function project_reduce(state = [], action) {
 	switch (action.type) {
 		case CREATE_PROJECT:
@@ -67,6 +92,8 @@ function project_reduce(state = [], action) {
 			return delete_project(state, action);
 		case RENEW_PROJECTS:
 			return renew_projects(state, action);
+		case UPDATE_PROJECT:
+			return update_project(state, action);
 		default:
 			return state;
 	}

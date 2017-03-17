@@ -27,7 +27,7 @@ class ProjectsSocketioEventsEmitter {
 		});
 	}
 
-	updateProjects(project_uuid, project_name, comment) {
+	updateProject(project_uuid, project_name, comment) {
 		this.connector.emit('projects:update', {
 			'project_uuid': project_uuid,
 			'project_name': project_name,
