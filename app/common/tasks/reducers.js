@@ -1,11 +1,11 @@
 import {
-	START_TASK,
-	STOP_TASK,
+	NEW_TASK,
+	CHANGE_STATUS_TASK,
 	RENEW_TASKS
 } from './actions';
 
 
-function create_task(state = [], action) {
+function start_task(state = [], action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
@@ -18,7 +18,7 @@ function create_task(state = [], action) {
 }
 
 
-function delete_task(state = [], action) {
+function change_status_task(state = [], action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
@@ -43,11 +43,11 @@ function renew_tasks(state = [], action) {
 
 function task_reduce(state = [], action) {
 	switch (action.type) {
-		case CREATE_SCOPE:
-			return create_task(state, action);
-		case DELETE_SCOPE:
-			return delete_task(state, action);
-		case RENEW_SCOPES:
+		case NEW_TASK:
+			return start_task(state, action);
+		case CHANGE_STATUS_TASK:
+			return change_status_task(state, action);
+		case RENEW_TASKS:
 			return renew_tasks(state, action);
 		default:
 			return state;

@@ -41,12 +41,12 @@ class TasksSocketioEventsSubsriber {
 
 	register_project_new_task() {
 		/* Check new task */
-		this.register_socketio_handler('tasks:new', createTask);
+		this.register_socketio_handler('tasks:new', newTask);
 	}
 
 	register_project_delete_task() {
 		/* Check deleted task */
-		this.register_socketio_handler('tasks:status_change', deleteTask);
+		this.register_socketio_handler('tasks:status_change', changeStatusTask);
 	}
 
 	register_socketio_handler(eventName, callback) {

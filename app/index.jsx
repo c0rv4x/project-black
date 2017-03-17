@@ -16,14 +16,16 @@ import ProjectsDetailsWrapper from './project_details/components/ProjectDetailsW
 
 import { createStore } from 'redux';
 
-import ScopesSocketioEventsSubsriber from './common/scopes/ScopesSocketioEventsSubsriber';
 import ProjectsSocketioEventsSubscriber from './common/projects/ProjectsSocketioEventsSubscriber';
+import ScopesSocketioEventsSubsriber from './common/scopes/ScopesSocketioEventsSubsriber';
+import TasksSocketioEventsSubsriber from './common/tasks/TasksSocketioEventsSubsriber';
 
 
 
 let store = createStore(rdcs);
 const projectsSubscriber = new ProjectsSocketioEventsSubscriber(store);
 const scopesSubscriber = new ScopesSocketioEventsSubsriber(store);
+const tasksSubscriber = new TasksSocketioEventsSubsriber(store);
 
 
 class App extends React.Component {
