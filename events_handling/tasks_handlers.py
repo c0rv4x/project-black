@@ -16,6 +16,12 @@ def initialize(socketio):
     @socketio.on('tasks:create')
     def handle_project_creation(msg):
         """ When received this message, create a new tasks """
+        task_type = msg["task_type"]
+        target = msg["target"]
+        params = msg["params"]
+        project_uuid = msg["project_uuid"]
+
+        task_manager.create_task(task_type, target, params, project_uuid)
 
 
     @socketio.on('tasks:delete:project_uuid')

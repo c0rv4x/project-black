@@ -6,8 +6,27 @@ from black.black.db import sessions, Task
 
 class ShadowTask(object):
     """ A shadow of the real task """
-    def __init__(self, amqp, task_type, target, params, project_uuid):
-        self.amqp = amqp
+    def __init__(self, task_type, target, params, project_uuid):
+        self.channel = None
+
+        """ Init variables """
+        # connect to the RabbitMQ broker
+        credentials = pika.PlainCredentials('guest', 'guest')
+        parameters = pika.ConnectionParameters('localhost', credentials=credentials)
+        connection = pika.BlockingConnection(parameters)
+
+        # Open a communications channel
+        self.channel = connection.channel()
+        self.channel.exchange_declare(
+            exchange="tasks.exchange",
+            exchange_type="direct",
+            durable=True)
+        self.channel.queue_declare(queue=self.name + "_tasks", durable=True)
+        self.channel.queue_bind(
+            queue=self.name + "_tasks",
+            exchange="tasks.exchange",
+            routing_key=self.name + "_tasks") 
+                   
         self.task_type = task_type
         self.target = target
         self.params = params
