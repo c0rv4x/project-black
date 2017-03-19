@@ -85,10 +85,9 @@ class AsyncWorker(Worker):
             # Do some finalization
             self.handle_finished_task(proc)
         except Exception as e:
-            self.release_resources()
-            print("Async_worker.py:execute_task ~ " + str(e))
+            print("++++++++++++ Async_worker.py:execute_task ~ " + str(e))
 
-            raise e
+            self.release_resources()
 
 
     def handle_finished_task(self, proc):
