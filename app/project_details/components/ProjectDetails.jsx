@@ -64,10 +64,9 @@ class ProjectDetails extends React.Component {
 		var targets = _.map(this.props.scopes, (x) => {
 			return x.ip_address || x.hostname
 		});
-		console.log(targets);
+
 		this.tasksEmitter.createTask('masscan', targets, "", this.props.project.project_uuid)
 	}
-
 	render() {
 		return (
 			<ProjectDetailsPage newScopeInput={this.state.newScopeInput}
