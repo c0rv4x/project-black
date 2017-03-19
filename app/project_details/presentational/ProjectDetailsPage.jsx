@@ -2,6 +2,7 @@ import React from 'react'
 
 import ProjectComment from './ProjectComment.jsx';
 import ProjectScope from './ProjectScope.jsx';
+import Tasks from './Tasks.jsx';
 
 import { DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap';
 
@@ -20,7 +21,8 @@ class ProjectDetailsPage extends React.Component {
 					</DropdownButton>
 
 				</h2>
-				<br />
+				<hr />
+				<Tasks tasks={this.props.tasks} />
 				<ProjectComment commentInput={this.props.commentInput}
 								onCommentInputChange={this.props.onCommentInputChange}
 								commentSubmitted={this.props.commentSubmitted} 
