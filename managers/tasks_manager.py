@@ -24,7 +24,6 @@ class ShadowTask(object):
         else:
             self.status = None
 
-
         self.channel = None
 
         # connect to the RabbitMQ broker

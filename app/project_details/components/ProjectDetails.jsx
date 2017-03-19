@@ -61,7 +61,7 @@ class ProjectDetails extends React.Component {
 	}
 
 	runNmap() {
-		this.tasksEmitter.createTask('nmap', _.map(this.props.scopes, (x) => {
+		this.tasksEmitter.createTask('masscan', _.map(this.props.scopes, (x) => {
 			return x.ip_address
 		}), "", this.props.project.project_uuid)
 	}
