@@ -8,7 +8,7 @@ from black.black.db import sessions, Task
 
 class ShadowTask(object):
     """ A shadow of the real task """
-    def __init__(self, task_id, task_type, target, params, status, progress, text, project_uuid):
+    def __init__(self, task_id, task_type, target, params, project_uuid, status=None, progress=None, text=None):
         self.task_type = task_type
         self.target = target
         self.params = params
@@ -140,10 +140,10 @@ class TaskManager(object):
                            x.task_type,
                            x.target,
                            x.params,
+                           x.project_uuid,
                            x.status,
                            x.progress,
-                           x.text,
-                           x.project_uuid),
+                           x.text),
                      tasks_from_db))
         sessions.destroy_session(session)
 
@@ -182,7 +182,9 @@ class TaskManager(object):
                           task_type=task_type,
                           target=target,
                           params=params,
+                          project_uuid=project_uuid,
                           status=None,
-                          project_uuid=project_uuid)
+                          progress=None,
+                          text=None)
         task.send_start_task()
         self.active_tasks.append(task)
