@@ -28,7 +28,7 @@ function mapStateToProps(state, ownProps){
         	return x.project_uuid == project['project_uuid']
         }),
         comment: project["comment"],
-        tasks: state.tasks
+        tasks: state.tasks.active
     }
 }
 

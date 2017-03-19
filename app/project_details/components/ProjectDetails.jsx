@@ -85,7 +85,9 @@ class ProjectDetails extends React.Component {
 
 								project={this.props.project}
 
-								runMasscan={this.runMasscan}/>
+								runMasscan={this.runMasscan}
+
+								tasks={this.props.tasks}/>
 		)
 	}
 }
