@@ -54,7 +54,7 @@ class ShadowTask(object):
                               routing_key=self.task_type + "_tasks",
                               body=json.dumps({
                                 'task_id': self.task_id,
-                                'target': self.task_type,
+                                'target': self.target,
                                 'params': {
                                     'program': ['-p80-1000']
                                 },
