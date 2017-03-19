@@ -106,13 +106,13 @@ class TaskManager(object):
             routing_key="tasks_statuses")
 
         self.channel.basic_consume(
-            consumer_callback=self.sample_function,
+            consumer_callback=self.parse_new_status,
             queue="tasks_statuses")
 
         t = threading.Thread(target=self.channel.start_consuming)
         t.start()
 
-    def sample_function(self, ch, method, properties, abc):
+    def parse_new_status(self, ch, method, properties, abc):
         print("*******")
         print(abc)
         print("*******")
