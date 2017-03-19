@@ -66,12 +66,12 @@ class TaskManager(object):
         tasks_from_db = session.query(Task).all()
         
         tasks = list(map(lambda x: 
-                ShadowTask(task_id,
-                           task_type,
-                           target,
-                           params,
-                           status,
-                           project_uuid),
+                ShadowTask(x.task_id,
+                           x.task_type,
+                           x.target,
+                           x.params,
+                           x.status,
+                           x.project_uuid),
                      tasks_from_db))
         sessions.destroy_session(session)
 
@@ -83,6 +83,27 @@ class TaskManager(object):
 
     def get_tasks(self):
         return [self.active_tasks, self.finished_tasks]
+
+    def get_tasks_native_objects(self):
+        active = list(map(lambda x: {
+            "task_id" : x.task_id,
+            "task_type" : x.task_type,
+            "target" : x.target,
+            "params" : x.params,
+            "status" : x.status,
+            "project_uuid" : x.project_uuid
+        }, self.active_tasks))
+
+        finished = list(map(lambda x: {
+            "task_id" : x.task_id,
+            "task_type" : x.task_type,
+            "target" : x.target,
+            "params" : x.params,
+            "status" : x.status,
+            "project_uuid" : x.project_uuid
+        }, self.finished_tasks))
+
+        return [active, finished]    
 
     def create_task(self, task_type, target, params, project_uuid):
         task = ShadowTask(task_type, target, params, project_uuid)

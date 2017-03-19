@@ -9,7 +9,10 @@ def initialize(socketio):
     @socketio.on('tasks:all:get')
     def handle_custom_event():
         """ When received this message, send back all the tasks """
-        emit('tasks:all:get:back', task_manager.get_tasks())
+        emit('tasks:all:get:back', {
+            "status": "success", 
+            "tasks": task_manager.get_tasks_native_objects()
+        })
         # task_manager.create_task()#task_type, target, params, project_uuid)
 
 
