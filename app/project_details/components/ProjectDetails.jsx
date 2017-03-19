@@ -26,7 +26,7 @@ class ProjectDetails extends React.Component {
 		this.onCommentInputChange = this.onCommentInputChange.bind(this);
 		this.commentSubmitted = this.commentSubmitted.bind(this);
 
-		this.runNmap = this.runNmap.bind(this);
+		this.runMasscan = this.runMasscan.bind(this);
 	}
 
 	handleNewScopeChange(e) {
@@ -60,9 +60,9 @@ class ProjectDetails extends React.Component {
 		}		
 	}
 
-	runNmap() {
+	runMasscan() {
 		this.tasksEmitter.createTask('masscan', _.map(this.props.scopes, (x) => {
-			return x.ip_address
+			return x.ip_address or x.hostname
 		}), "", this.props.project.project_uuid)
 	}
 
@@ -84,7 +84,7 @@ class ProjectDetails extends React.Component {
 
 								project={this.props.project}
 
-								runNmap={this.runNmap}/>
+								runMasscan={this.runMasscan}/>
 		)
 	}
 }

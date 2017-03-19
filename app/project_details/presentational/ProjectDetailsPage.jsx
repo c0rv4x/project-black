@@ -16,7 +16,7 @@ class ProjectDetailsPage extends React.Component {
 			<div>
 				<h2>Project project_name<span>  </span>
 					<DropdownButton bsStyle="default" title="Start Task" id="dropdown-basic">
-						<MenuItem eventKey="1" onClick={this.props.runNmap}>Nmap</MenuItem>
+						<MenuItem eventKey="1" onClick={this.props.runMasscan}>Masscan</MenuItem>
 					</DropdownButton>
 
 				</h2>
