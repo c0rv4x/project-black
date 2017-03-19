@@ -42,9 +42,22 @@ class ShadowTask(object):
             exchange="tasks.exchange",
             routing_key=self.task_type + "_tasks") 
 
+        self.channel.queue_declare(queue=self.task_type + "_notifications", durable=True)
+        self.channel.queue_bind(
+            queue=self.task_type + "_notifications",
+            exchange="tasks.exchange",
+            routing_key=self.task_type + "_notifications") 
 
-        self.status = None
-        self.progress = None
+        self.channel.queue_declare(queue="tasks_statuses", durable=True)
+
+
+        self.channel.basic_consume(
+            consumer_callback=self.sample_function,
+            queue="tasks_statuses")        
+
+
+    def sample_function(self, abc):
+        print(abc)
 
     def set_status(self, new_status):
         self.status = new_status
