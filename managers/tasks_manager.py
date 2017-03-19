@@ -50,27 +50,6 @@ class ShadowTask(object):
     def get_progress(self):
         return self.progress
 
-    def commit_to_db(self):
-        session = sessions.get_new_session()
-        project_db = session.query(Task).filter_by(task_id=self.task_id).first()
-
-        if project_db:
-            project_db.status = self.status
-            project_db.progress = self.progress
-        else:
-            new_project = Task(
-                task_type=this.task_type,
-                target=this.target,
-                params=this.params,
-                status=this.status,
-                progress=this.progress,
-                project_uuid=this.project_uuid)
-
-            session.add(new_project)
-
-        session.commit()
-        sessions.destroy_session(session)     
-
 
 class TaskManager(object):
     """ TaskManager keeps track of all tasks in the system,
