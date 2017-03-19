@@ -82,6 +82,15 @@ class ShadowTask(object):
     def get_status(self):
         return (self.status, self.progress, self.text)
 
+    def get_as_native_object(self):
+        return {
+            "task_id" : self.task_id,
+            "task_type" : self.task_type,
+            "target" : self.target,
+            "params" : self.params,
+            "status" : self.status,
+            "project_uuid" : self.project_uuid
+        }
 
 class TaskManager(object):
     """ TaskManager keeps track of all tasks in the system,
@@ -157,23 +166,8 @@ class TaskManager(object):
         return [self.active_tasks, self.finished_tasks]
 
     def get_tasks_native_objects(self):
-        active = list(map(lambda x: {
-            "task_id" : x.task_id,
-            "task_type" : x.task_type,
-            "target" : x.target,
-            "params" : x.params,
-            "status" : x.status,
-            "project_uuid" : x.project_uuid
-        }, self.active_tasks))
-
-        finished = list(map(lambda x: {
-            "task_id" : x.task_id,
-            "task_type" : x.task_type,
-            "target" : x.target,
-            "params" : x.params,
-            "status" : x.status,
-            "project_uuid" : x.project_uuid
-        }, self.finished_tasks))
+        active = list(map(lambda x: x.get_as_native_object(), self.active_tasks))
+        finished = list(map(lambda x: x.get_as_native_object(), self.finished_tasks))
 
         return [active, finished]    
 
@@ -188,3 +182,5 @@ class TaskManager(object):
                           text=None)
         task.send_start_task()
         self.active_tasks.append(task)
+
+        return task.get_as_native_object()
