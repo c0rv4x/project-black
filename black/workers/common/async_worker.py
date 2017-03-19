@@ -90,6 +90,8 @@ class AsyncWorker(Worker):
             self.release_resources()
             print("Async_worker.py:execute_task ~ " + str(e))
 
+            raise e
+
 
     def handle_finished_task(self, proc):
         """ After the task is finished, remove it from 'active' list """
