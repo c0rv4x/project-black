@@ -25,7 +25,12 @@ def initialize(socketio):
         params = msg["params"]
         project_uuid = msg["project_uuid"]
 
-        task_manager.create_task(task_type, target, params, project_uuid)
+        task = task_manager.create_task(task_type, target, params, project_uuid)
+
+        emit('tasks:new', {
+            'status': 'success',
+            'new_task': task
+        })
 
 
     @socketio.on('tasks:delete:project_uuid')
