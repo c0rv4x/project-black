@@ -5,11 +5,17 @@ import {
 } from './actions';
 
 
-function start_task(state = [], action) {
+function new_task(state = {'active': [], 'finished': []}, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
+		let active_tasks = Object.assign([], state['active'], null);
+		active_tasks.push(message['new_task']);
 
+		return {
+			'active': active_tasks,
+			'finished': state['finished']
+		}
 	} else {
 		/* TODO: add error handling */
 	}	
@@ -18,19 +24,7 @@ function start_task(state = [], action) {
 }
 
 
-function change_status_task(state = [], action) {
-	const message = action.message;
-
-	if (message["status"] == 'success') {
-		
-	} else {
-		/* TODO: add error handling */
-	}	
-	return state;
-}
-
-
-function renew_tasks(state = [], action) {
+function change_status_task(state = {'active': [], 'finished': []}, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
@@ -41,10 +35,25 @@ function renew_tasks(state = [], action) {
 	return state;
 }
 
-function task_reduce(state = [], action) {
+
+function renew_tasks(state = {'active': [], 'finished': []}, action) {
+	const message = action.message;
+
+	if (message["status"] == 'success') {
+		return { 
+			'active': message['tasks'][0],
+			'finished': message['tasks'][1]
+		};
+	} else {
+		/* TODO: add error handling */
+	}	
+	return state;
+}
+
+function task_reduce(state = {'active': [], 'finished': []}, action) {
 	switch (action.type) {
 		case NEW_TASK:
-			return start_task(state, action);
+			return new_task(state, action);
 		case CHANGE_STATUS_TASK:
 			return change_status_task(state, action);
 		case RENEW_TASKS:
