@@ -50,6 +50,7 @@ class ShadowTask(object):
             routing_key=self.task_type + "_notifications") 
 
 
+    def send_start_task(self):
         self.channel.basic_publish(exchange='',
                               routing_key=self.task_type + "_tasks",
                               body=json.dumps({
@@ -169,4 +170,5 @@ class TaskManager(object):
                           params=params,
                           status=None,
                           project_uuid=project_uuid)
+        task.send_start_task()
         self.active_tasks.append(task)
