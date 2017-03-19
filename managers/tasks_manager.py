@@ -120,12 +120,12 @@ class TaskManager(object):
         t.start()
 
     def parse_new_status(self, ch, method, properties, message):
-        message = message.json()
+        message = json.loads(message)
         task_id = message['task_id']
 
         for task in self.active_tasks:
             if task.task_id == task_id:
-                task.set_status(task['status'], task['progress'], task['text'])
+                task.set_status(message['status'], message['progress'], message['text'])
                 break
 
         ch.basic_ack(delivery_tag=method.delivery_tag)        
