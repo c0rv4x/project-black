@@ -143,7 +143,7 @@ class MasscanTask(AsyncTask):
                             time_left[0],
                             found[0]))
 
-                        self.set_status("Working", progress=int(percent[0]))
+                        self.set_status("Working", progress=int(percent[0].split('.')[0]))
                 except Exception as exc:
                     print(exc)
 
@@ -161,7 +161,7 @@ class MasscanTask(AsyncTask):
 
         if self.exit_code == 0:
             self.save()
-            self.set_status("Finished", progrss=100)
+            self.set_status("Finished", progress=100)
         else:
             self.set_status("Aborted", progress=-1, text=self.stderr)
 
