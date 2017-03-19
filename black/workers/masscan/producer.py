@@ -25,10 +25,6 @@ def main():
         await tasks_queue.bind(exchange, routing_key='masscan_tasks')
         await notifications_queue.bind(exchange, routing_key='masscan_notifications')
 
-        print("-"*20)
-        print("Sending task")
-
-
         msg = asynqp.Message({
             'task_id': random_id,
             'target': '213.180.193.0/28',

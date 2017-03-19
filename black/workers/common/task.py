@@ -36,7 +36,9 @@ class Task(object):
         # Keep track of the data
         self.stdout = None
         self.stderr = None
-        self.exit_code = None        
+        self.exit_code = None     
+
+        self.exchange = None   
 
     def get_id(self):
         """ Return the id of the current task """
@@ -83,5 +85,3 @@ class Task(object):
         session.add(task_new_object)
         session.commit()
         sessions.destroy_session(session)
-
-        self.set_status("New")

@@ -38,4 +38,5 @@ def save_raw_output(task_id, output, project_uuid):
 
 	except Exception as e:
 		# TODO: add logger here
-		print(e)
+		print("save_raw_output")
+		raise e

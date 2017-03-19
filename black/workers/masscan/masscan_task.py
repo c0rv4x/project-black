@@ -139,6 +139,7 @@ class MasscanTask(AsyncTask):
             self.save()
             self.set_status("Finished")
         else:
+            print(self.stderr)
             self.set_status("Aborted")
 
     def save(self):

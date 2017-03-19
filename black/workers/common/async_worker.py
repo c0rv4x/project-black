@@ -55,43 +55,47 @@ class AsyncWorker(Worker):
             loop = asyncio.get_event_loop()
             loop.create_task(self.execute_task(message))
         except Exception as e:
-            print(e)
-        else:
-            message.ack()
+            print("Async_worker.py:schedule_task ~ " + str(e))
+
+        message.ack()
 
     async def execute_task(self, message):
         """ Method launches the task execution, remembering the
             processes's object. """
         await self.acquire_resources()
 
-        # Add a unique id to the task, so we can track the notifications
-        # which are addressed to the ceratin task
-        message = message.json()
-        task_id = message['task_id']
-        target = message['target']
-        params = message['params']
-        project_name = message['project_name']
+        try:
+            # Add a unique id to the task, so we can track the notifications
+            # which are addressed to the ceratin task
+            message = message.json()
+            task_id = message['task_id']
+            target = message['target']
+            params = message['params']
+            project_uuid = message['project_uuid']
 
-        # Spawn the process
-        proc = self.task_class(task_id, target, params, project_name)
-        await proc.initialize()
-        await proc.start()
+            # Spawn the process
+            proc = self.task_class(task_id, target, params, project_uuid)
+            await proc.initialize()
+            await proc.start()
 
-        # Store the object that points to the process
-        self.active_processes.append(proc)
+            # Store the object that points to the process
+            self.active_processes.append(proc)
 
-        # Wait till finishing the task
-        await proc.wait_for_exit()
+            # Wait till finishing the task
+            await proc.wait_for_exit()
 
-        # Do some finalization
-        self.handle_finished_task(proc)
+            # Do some finalization
+            self.handle_finished_task(proc)
+        except Exception as e:
+            self.release_resources()
+            print("Async_worker.py:execute_task ~ " + str(e))
+
 
     def handle_finished_task(self, proc):
         """ After the task is finished, remove it from 'active' list """
         self.active_processes.remove(proc)
         self.finished_processes.append(proc)
 
-        print("task finished, realeasing")
         self.release_resources()
 
 

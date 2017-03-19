@@ -18,10 +18,17 @@ class AsyncTask(Task):
         channel = await connection.open_channel()
 
         # Create an exchange on the broker
-        exchange = await channel.declare_exchange('tasks.exchange', 'direct')
+        self.exchange = await channel.declare_exchange('tasks.exchange', 'direct')
+        queue = await channel.declare_queue('tasks_statuses')
+        await queue.bind(self.exchange, routing_key='tasks_statuses')
 
-        # Create two queues on the exchange
-        self.response_queue = await channel.declare_queue(self.task_id, auto_delete=True)
+        self.set_status("New")
 
-        # Bind the queue to the exchange, so the queue will get messages published to the exchange
-        await self.response_queue.bind(exchange, routing_key="tasks_statuses")
+    def set_status(self, new_status):
+        Task.set_status(self, new_status)
+
+        msg = asynqp.Message({
+            'task_id': self.task_id,
+            'status': new_status
+        })
+        self.exchange.publish(msg, 'tasks_statuses')
