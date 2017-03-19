@@ -25,7 +25,15 @@ class MasscanTask(AsyncTask):
     async def start(self):
         """ Launch the task and readers of stdout, stderr """
         self.command = ['sudo', 'masscan'] + [self.target] + ['-oX', '-'] + self.params['program']
-        self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
+
+        try:
+            self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
+        except Exception as e:
+            self.set_status("Aborted")
+            print(e)
+
+            raise e
+
         self.set_status("Working")
 
         # Launch readers
