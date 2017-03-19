@@ -8,7 +8,7 @@ from black.black.db import sessions, Task
 
 class ShadowTask(object):
     """ A shadow of the real task """
-    def __init__(self, task_id, task_type, target, params, status, project_uuid):
+    def __init__(self, task_id, task_type, target, params, status, progress, text, project_uuid):
         self.task_type = task_type
         self.target = target
         self.params = params
@@ -23,6 +23,17 @@ class ShadowTask(object):
             self.status = status
         else:
             self.status = None
+
+        if progress:
+            self.progress = progress
+        else:
+            self.progress = None
+
+        if text:
+            self.text = text
+        else:
+            self.text = None
+
 
         self.channel = None
 
@@ -52,28 +63,24 @@ class ShadowTask(object):
 
     def send_start_task(self):
         self.channel.basic_publish(exchange='',
-                              routing_key=self.task_type + "_tasks",
-                              body=json.dumps({
-                                'task_id': self.task_id,
-                                'target': self.target,
-                                'params': {
-                                    'program': ['-p80-1000']
-                                },
-                                'project_uuid': self.project_uuid
-                             }))
+                                   routing_key=self.task_type + "_tasks",
+                                   body=json.dumps({
+                                      'task_id': self.task_id,
+                                      'target': self.target,
+                                      'params': {
+                                         'program': ['-p80-1000']
+                                      },
+                                      'project_uuid': self.project_uuid
+                                   }))
 
 
-    def set_status(self, new_status):
+    def set_status(self, new_status, progress, text):
         self.status = new_status
-
-    def set_progress(self, new_progress):
-        self.progress = new_progress
+        self.progress = progress
+        self.text = text
 
     def get_status(self):
-        return self.status
-
-    def get_progress(self):
-        return self.progress
+        return (self.status, self.progress, self.text)
 
 
 class TaskManager(object):
@@ -112,10 +119,15 @@ class TaskManager(object):
         t = threading.Thread(target=self.channel.start_consuming)
         t.start()
 
-    def parse_new_status(self, ch, method, properties, abc):
-        print("*******")
-        print(abc)
-        print("*******")
+    def parse_new_status(self, ch, method, properties, message):
+        message = message.json()
+        task_id = message['task_id']
+
+        for task in self.active_tasks:
+            if task.task_id == task_id:
+                task.set_status(task['status'], task['progress'], task['text'])
+                break
+
         ch.basic_ack(delivery_tag=method.delivery_tag)        
 
     def update_from_db(self):
@@ -129,6 +141,8 @@ class TaskManager(object):
                            x.target,
                            x.params,
                            x.status,
+                           x.progress,
+                           x.text,
                            x.project_uuid),
                      tasks_from_db))
         sessions.destroy_session(session)
