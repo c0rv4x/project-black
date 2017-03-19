@@ -20,10 +20,8 @@ class SyncTask(Task):
             exchange="tasks.exchange",
             exchange_type="direct",
             durable=True)
-        self.channel.queue_declare(queue=self.task_id, durable=True, auto_delete=True)
+        self.channel.queue_declare(queue="tasks_statuses", durable=True, auto_delete=True)
         self.channel.queue_bind(
-            queue=self.task_id,
+            queue="tasks_statuses",
             exchange="tasks.exchange",
-            routing_key=self.task_id)
-
-        # TODO: add backward communication. From task back to the ShadowTask
+            routing_key="tasks_statuses")
