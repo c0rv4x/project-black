@@ -2,6 +2,7 @@
 to manager the launched instance of scan. """
 import re
 import signal
+import socket
 import threading
 from time import sleep
 
@@ -21,6 +22,19 @@ class MasscanTask(AsyncTask):
         self.exit_code = None
         self.stdout = []
         self.stderr = []
+
+        if type(self.target) == list:
+            targets = []
+            for target in self.target:
+                if re.match(r'^([a-zA-Z]{1}[a-zA-Z0-9\-]{0,255}\.){1,}[a-zA-Z]{2,15}$', target):
+                    try:
+                        targets.append(socket.gethostbyname(target))
+                    except Exception as e:
+                        pass
+                else:
+                    targets.append(target)
+
+            self.target = ",".join(targets)
 
     async def start(self):
         """ Launch the task and readers of stdout, stderr """
