@@ -51,11 +51,8 @@ class AsyncWorker(Worker):
 
     def schedule_task(self, message):
         """ Wrapper of execute_task that puts the task to the event loop """
-        try:
-            loop = asyncio.get_event_loop()
-            loop.create_task(self.execute_task(message))
-        except Exception as e:
-            print("Async_worker.py:schedule_task ~ " + str(e))
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.execute_task(message))
 
         message.ack()
 
@@ -68,6 +65,7 @@ class AsyncWorker(Worker):
             # Add a unique id to the task, so we can track the notifications
             # which are addressed to the ceratin task
             message = message.json()
+
             task_id = message['task_id']
             target = message['target']
             params = message['params']
