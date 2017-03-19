@@ -6,7 +6,7 @@ from black.db import sessions, models
 class Task(object):
     """ Base class for the task """
 
-    def __init__(self, task_id, task_type, target, params, project_name):
+    def __init__(self, task_id, task_type, target, params, project_uuid):
         # ID returned from the queue
         self.task_id = task_id
 
@@ -20,11 +20,13 @@ class Task(object):
         self.params = params
 
         # Project, on which the task has been launched
-        self.project_name = project_name
+        self.project_uuid = project_uuid
 
         # Point to the object of ORM
-        self.db_object = None
-        # self.create_db_record()
+        self.create_db_record()
+
+        # Task's status
+        self.status = None
 
         # Points the the asyncio.Process object 
         #   (if the task is launched via Popen)
@@ -45,8 +47,8 @@ class Task(object):
         self.status = new_status
 
         session = sessions.get_new_session()
-        self.db_object.status = new_status
-        session.add(self.db_object)
+        task_db_object = session.query(models.Task).filter_by(task_id=self.get_id()).first()
+        task_db_object.status = new_status
         session.commit()
         sessions.destroy_session(session)
 
@@ -71,14 +73,14 @@ class Task(object):
         """ Creates the record of the task in a special DB table """
         session = sessions.get_new_session()
 
-        self.db_object = models.Task(
-            task_id=self.task_id,
+        task_new_object = models.Task(
+            task_id=self.get_id(),
             task_type=self.task_type,
             target=str(self.target),
             params=str(self.params),
-            project_name=self.project_name)
+            project_uuid=self.project_uuid)
 
-        session.add(self.db_object)
+        session.add(task_new_object)
         session.commit()
         sessions.destroy_session(session)
 

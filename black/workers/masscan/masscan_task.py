@@ -14,8 +14,8 @@ from black.workers.masscan.db_save import save_raw_output
 class MasscanTask(AsyncTask):
     """ Major class for working with masscan """
 
-    def __init__(self, task_id, target, params, project_name):
-        AsyncTask.__init__(self, task_id, 'masscan', target, params, project_name)
+    def __init__(self, task_id, target, params, project_uuid):
+        AsyncTask.__init__(self, task_id, 'masscan', target, params, project_uuid)
         self.proc = None
 
         self.exit_code = None
@@ -145,4 +145,4 @@ class MasscanTask(AsyncTask):
         save_raw_output(
             self.task_id,
             self.stdout,
-            self.project_name)
+            self.project_uuid)

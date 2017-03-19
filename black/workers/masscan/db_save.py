@@ -5,7 +5,7 @@ from uuid import uuid4
 from black.db import sessions, Scan
 
 
-def save_raw_output(task_id, output, project_name):
+def save_raw_output(task_id, output, project_uuid):
 	try:
 		concated = "".join(map(lambda x: x.decode(), output))
 		parsed_dict = xmltodict.parse(concated)
@@ -29,7 +29,7 @@ def save_raw_output(task_id, output, project_name):
 					target=address,
 					port_number=port_number,
 					tasks_ids=str([task_id]),
-					project_name=project_name)
+					project_uuid=project_uuid)
 
 				session.add(new_scan)
 				session.commit()
