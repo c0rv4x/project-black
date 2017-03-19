@@ -1,5 +1,7 @@
 import pika
 import uuid
+import json
+import threading
 
 from black.black.db import sessions, Task
 
@@ -48,16 +50,18 @@ class ShadowTask(object):
             exchange="tasks.exchange",
             routing_key=self.task_type + "_notifications") 
 
-        self.channel.queue_declare(queue="tasks_statuses", durable=True)
 
+        self.channel.basic_publish(exchange='',
+                              routing_key=self.task_type + "_tasks",
+                              body=json.dumps({
+                                'task_id': self.task_id,
+                                'target': self.task_type,
+                                'params': {
+                                    'program': ['-p80-1000']
+                                },
+                                'project_uuid': self.project_uuid
+                             }))
 
-        self.channel.basic_consume(
-            consumer_callback=self.sample_function,
-            queue="tasks_statuses")        
-
-
-    def sample_function(self, abc):
-        print(abc)
 
     def set_status(self, new_status):
         self.status = new_status
@@ -80,6 +84,39 @@ class TaskManager(object):
         self.finished_tasks = list()
 
         self.update_from_db()
+
+        self.channel = None
+
+        # connect to the RabbitMQ broker
+        credentials = pika.PlainCredentials('guest', 'guest')
+        parameters = pika.ConnectionParameters('localhost', credentials=credentials)
+        connection = pika.BlockingConnection(parameters)
+
+        # Open a communications channel
+        self.channel = connection.channel()
+        self.channel.exchange_declare(
+            exchange="tasks.exchange",
+            exchange_type="direct",
+            durable=True)
+
+        self.channel.queue_declare(queue="tasks_statuses", durable=True)
+        self.channel.queue_bind(
+            queue="tasks_statuses",
+            exchange="tasks.exchange",
+            routing_key="tasks_statuses")
+
+        self.channel.basic_consume(
+            consumer_callback=self.sample_function,
+            queue="tasks_statuses")
+
+        t = threading.Thread(target=self.channel.start_consuming)
+        t.start()
+
+    def sample_function(self, ch, method, properties, abc):
+        print("*******")
+        print(abc)
+        print("*******")
+        ch.basic_ack(delivery_tag=method.delivery_tag)        
 
     def update_from_db(self):
         """ Extract all the tasks from the DB """
@@ -127,5 +164,10 @@ class TaskManager(object):
         return [active, finished]    
 
     def create_task(self, task_type, target, params, project_uuid):
-        task = ShadowTask(task_type, target, params, project_uuid)
+        task = ShadowTask(task_id=None,
+                          task_type=task_type,
+                          target=target,
+                          params=params,
+                          status=None,
+                          project_uuid=project_uuid)
         self.active_tasks.append(task)
