@@ -7,6 +7,13 @@ from black.black.db import sessions, Task
 class ShadowTask(object):
     """ A shadow of the real task """
     def __init__(self, task_type, target, params, project_uuid):
+        self.task_type = task_type
+        self.target = target
+        self.params = params
+        self.project_uuid = project_uuid
+
+        self.task_id = str(uuid.uuid4())
+
         self.channel = None
 
         """ Init variables """
@@ -21,23 +28,15 @@ class ShadowTask(object):
             exchange="tasks.exchange",
             exchange_type="direct",
             durable=True)
-        self.channel.queue_declare(queue=self.name + "_tasks", durable=True)
+        self.channel.queue_declare(queue=self.task_type + "_tasks", durable=True)
         self.channel.queue_bind(
-            queue=self.name + "_tasks",
+            queue=self.task_type + "_tasks",
             exchange="tasks.exchange",
-            routing_key=self.name + "_tasks") 
-                   
-        self.task_type = task_type
-        self.target = target
-        self.params = params
-        self.project_uuid = project_uuid
+            routing_key=self.task_type + "_tasks") 
 
-        self.task_id = str(uuid.uuid4())
 
-        self.status = 'New'
-        self.progress = 0
-
-        self.commit_to_db()
+        self.status = None
+        self.progress = None
 
     def set_status(self, new_status):
         self.status = new_status
