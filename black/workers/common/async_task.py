@@ -24,4 +24,4 @@ class AsyncTask(Task):
         self.response_queue = await channel.declare_queue(self.task_id, auto_delete=True)
 
         # Bind the queue to the exchange, so the queue will get messages published to the exchange
-        await self.response_queue.bind(exchange, routing_key=self.task_id)
+        await self.response_queue.bind(exchange, routing_key="tasks_statuses")

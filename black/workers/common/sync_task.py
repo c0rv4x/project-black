@@ -25,3 +25,5 @@ class SyncTask(Task):
             queue=self.task_id,
             exchange="tasks.exchange",
             routing_key=self.task_id)
+
+        # TODO: add backward communication. From task back to the ShadowTask
