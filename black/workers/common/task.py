@@ -44,13 +44,15 @@ class Task(object):
         """ Return the id of the current task """
         return self.task_id
 
-    def set_status(self, new_status):
+    def set_status(self, new_status, progress=0, text=""):
         """ Change the status of the current task """
         self.status = new_status
 
         session = sessions.get_new_session()
         task_db_object = session.query(models.Task).filter_by(task_id=self.get_id()).first()
         task_db_object.status = new_status
+        task_db_object.progress = progress
+        task_db_object.text = text
         session.commit()
         sessions.destroy_session(session)
 

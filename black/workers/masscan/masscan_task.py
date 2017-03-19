@@ -29,12 +29,12 @@ class MasscanTask(AsyncTask):
         try:
             self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
         except Exception as e:
-            self.set_status("Aborted")
+            self.set_status("Aborted", progress=-1, text=str(e))
             print(e)
 
             raise e
 
-        self.set_status("Working")
+        self.set_status("Working", progress=0)
 
         # Launch readers
         loop = asyncio.get_event_loop()
@@ -128,6 +128,8 @@ class MasscanTask(AsyncTask):
                             percent[0],
                             time_left[0],
                             found[0]))
+
+                        self.set_status("Working", progress=int(percent[0]))
                 except Exception as exc:
                     print(exc)
 
@@ -145,10 +147,9 @@ class MasscanTask(AsyncTask):
 
         if self.exit_code == 0:
             self.save()
-            self.set_status("Finished")
+            self.set_status("Finished", progrss=100)
         else:
-            print(self.stderr)
-            self.set_status("Aborted")
+            self.set_status("Aborted", progress=-1, text=self.stderr)
 
     def save(self):
         save_raw_output(

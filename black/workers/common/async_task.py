@@ -24,11 +24,13 @@ class AsyncTask(Task):
 
         self.set_status("New")
 
-    def set_status(self, new_status):
-        Task.set_status(self, new_status)
+    def set_status(self, new_status, progress=0, text=""):
+        Task.set_status(self, new_status, progress=progress, text=text)
 
         msg = asynqp.Message({
             'task_id': self.task_id,
-            'status': new_status
+            'status': new_status,
+            'progress': progress,
+            'text': text
         })
         self.exchange.publish(msg, 'tasks_statuses')

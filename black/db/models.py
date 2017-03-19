@@ -47,6 +47,9 @@ class Task(Base):
     # Progress in percents
     progress = Column(Integer)
 
+    # Special note. E.x. error
+    text = Column(String)
+
     # The name of the related project
     project_uuid = Column(String, ForeignKey('projects.project_uuid', ondelete='CASCADE'))
 
