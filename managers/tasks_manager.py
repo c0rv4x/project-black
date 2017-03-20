@@ -89,6 +89,8 @@ class ShadowTask(object):
             "target" : self.target,
             "params" : self.params,
             "status" : self.status,
+            "progress" : self.progress,
+            "text" : self.text,
             "project_uuid" : self.project_uuid
         }
 
