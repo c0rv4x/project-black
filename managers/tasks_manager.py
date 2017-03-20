@@ -19,20 +19,9 @@ class ShadowTask(object):
         else:
             self.task_id = str(uuid.uuid4())
 
-        if status:
-            self.status = status
-        else:
-            self.status = None
-
-        if progress:
-            self.progress = progress
-        else:
-            self.progress = None
-
-        if text:
-            self.text = text
-        else:
-            self.text = None
+        self.status = status
+        self.progress = progress
+        self.text = text
 
 
         self.channel = None
@@ -145,16 +134,17 @@ class TaskManager(object):
         """ Extract all the tasks from the DB """
         session = sessions.get_new_session()
         tasks_from_db = session.query(Task).all()
-        
+        print(tasks_from_db[0].progress)
+        print(tasks_from_db[1].progress)
         tasks = list(map(lambda x: 
-                ShadowTask(x.task_id,
-                           x.task_type,
-                           x.target,
-                           x.params,
-                           x.project_uuid,
-                           x.status,
-                           x.progress,
-                           x.text),
+                ShadowTask(task_id=x.task_id,
+                           task_type=x.task_type,
+                           target=x.target,
+                           params=x.params,
+                           project_uuid=x.project_uuid,
+                           status=x.status,
+                           progress=x.progress,
+                           text=x.text),
                      tasks_from_db))
         sessions.destroy_session(session)
 
