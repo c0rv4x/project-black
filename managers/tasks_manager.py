@@ -133,8 +133,6 @@ class TaskManager(object):
         """ Extract all the tasks from the DB """
         session = sessions.get_new_session()
         tasks_from_db = session.query(Task).all()
-        print(tasks_from_db[0].progress)
-        print(tasks_from_db[1].progress)
         tasks = list(map(lambda x: 
                 ShadowTask(task_id=x.task_id,
                            task_type=x.task_type,
