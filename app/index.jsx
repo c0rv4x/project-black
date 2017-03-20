@@ -19,13 +19,14 @@ import { createStore } from 'redux';
 import ProjectsSocketioEventsSubscriber from './common/projects/ProjectsSocketioEventsSubscriber';
 import ScopesSocketioEventsSubsriber from './common/scopes/ScopesSocketioEventsSubsriber';
 import TasksSocketioEventsSubsriber from './common/tasks/TasksSocketioEventsSubsriber';
-
+import ScansSocketioEventsSubsriber from './common/scans/ScansSocketioEventsSubscriber';
 
 
 let store = createStore(rdcs);
 const projectsSubscriber = new ProjectsSocketioEventsSubscriber(store);
 const scopesSubscriber = new ScopesSocketioEventsSubsriber(store);
 const tasksSubscriber = new TasksSocketioEventsSubsriber(store);
+const scansSubscriber = new ScansSocketioEventsSubsriber(store);
 
 
 class App extends React.Component {
