@@ -10,8 +10,8 @@ class EachTask extends React.Component {
 	render() {
 		return (
 			<tr>
-				<td>{this.props.task.task_id}</td>
 				<td>{this.props.task.task_type}</td>
+				<td>{this.props.task.status}</td>
 				<td>{this.props.task.progress}</td>
 			</tr>
 		)

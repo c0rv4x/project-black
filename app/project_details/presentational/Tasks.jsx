@@ -21,8 +21,8 @@ class Tasks extends React.Component {
 				<Table>
 					<thead>
 						<tr>
-							<td>Task ID</td>
 							<td>Task Type</td>
+							<td>Status</td>
 							<td>Progress</td>
 						</tr>
 					</thead>
