@@ -6,7 +6,7 @@ from werkzeug.routing import BaseConverter
 
 from flask_socketio import SocketIO
 
-from events_handling import projects_handlers_init, scopes_handlers_init, tasks_handlers_init
+from events_handling import projects_handlers_init, scopes_handlers_init, tasks_handlers_init, scans_handlers_init
 
 
 # Define Flask app and wrap it into SocketIO
