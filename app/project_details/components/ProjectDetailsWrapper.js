@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import ProjectDetails from './ProjectDetails.jsx';
+import { updateComment } from '../../common/projects/actions';
 
 
 function mapStateToProps(state, ownProps){
@@ -18,7 +19,7 @@ function mapStateToProps(state, ownProps){
 		project = {
 			"project_name": null,
 			"project_uuid": null,
-			"comment": null
+			"comment": ""
 		}
 	}
 
@@ -27,14 +28,25 @@ function mapStateToProps(state, ownProps){
         scopes: _.filter(state.scopes, (x) => {
         	return x.project_uuid == project['project_uuid']
         }),
-        comment: project["comment"],
         tasks: state.tasks.active
     }
 }
 
+const mapDispatchToProps = (dispatch) => {
+	return {
+		onCommentChange: (comment, project_uuid) => {
+			dispatch(updateComment({
+				'comment': comment, 
+				'project_uuid': project_uuid
+			}))
+		}
+	}
+}
+
 
 const ProjectsDetailsWrapper = connect(
-	mapStateToProps
+	mapStateToProps,
+	mapDispatchToProps
 )(ProjectDetails)
 
 export default ProjectsDetailsWrapper

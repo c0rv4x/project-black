@@ -4,6 +4,7 @@ import {
 	CREATE_PROJECT, 
 	DELETE_PROJECT, 
 	UPDATE_PROJECT, 
+	UPDATE_COMMENT, 
 	RENEW_PROJECTS 
 } from './actions.js'
 
@@ -84,6 +85,23 @@ function update_project(state = [], action) {
 	}		
 }
 
+function update_comment(state = [], action) {
+	const project_uuid = action.message['project_uuid'];
+	const new_comment = action.message['comment'];
+
+	var new_state = state.slice();
+	for (var project of new_state) {
+		if (project.project_uuid == project_uuid) {
+			project.comment = new_comment;
+		}
+		else continue
+	}
+
+	return new_state;
+}
+
+
+
 function project_reduce(state = [], action) {
 	switch (action.type) {
 		case CREATE_PROJECT:
@@ -94,6 +112,8 @@ function project_reduce(state = [], action) {
 			return renew_projects(state, action);
 		case UPDATE_PROJECT:
 			return update_project(state, action);
+		case UPDATE_COMMENT:
+			return update_comment(state, action);			
 		default:
 			return state;
 	}

@@ -42,22 +42,14 @@ class ProjectDetails extends React.Component {
 	}
 
 	onCommentInputChange(e) {
-		this.setState({ commentInput: e.target.value });
+		this.props.onCommentChange(e.target.value, this.props.project.project_uuid);
 	}
 
 	commentSubmitted() {
 		this.projectsEmitter.updateProject(
 			this.props.project.project_uuid,
 			null,
-			this.state.commentInput);
-	}
-
-	componentWillReceiveProps(newProps) {
-		if ((newProps.project) && (newProps.project.comment != null)) {
-			this.setState({
-				"commentInput": newProps.project.comment
-			});
-		}		
+			this.props.project.comment);
 	}
 
 	runMasscan() {
@@ -79,7 +71,8 @@ class ProjectDetails extends React.Component {
 							    deleteScope={this.deleteScope}
 							    scopes={this.props.scopes}
 
-								commentInput={this.state.commentInput}
+								// commentInput={this.state.commentInput}
+								commentInput={this.props.project.comment}
 								onCommentInputChange={this.onCommentInputChange}
 								commentSubmitted={this.commentSubmitted} 
 
