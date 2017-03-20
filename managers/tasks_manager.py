@@ -23,7 +23,6 @@ class ShadowTask(object):
         self.progress = progress
         self.text = text
 
-
         self.channel = None
 
         # connect to the RabbitMQ broker

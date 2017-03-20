@@ -25,7 +25,6 @@ class TasksSocketioEventsSubsriber {
             });
 
             this.basic_events_registration();
-
         }
 
         return instance;
