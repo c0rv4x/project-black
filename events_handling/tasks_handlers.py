@@ -7,7 +7,6 @@ thread = None
 
 def initialize(socketio):
     def infinite_sender_of_tasks(task_manager):
-        print("infitinite started")
         while True:
             socketio.sleep(0.7)
             send_tasks_back(task_manager)

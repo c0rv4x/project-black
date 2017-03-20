@@ -124,7 +124,13 @@ class TaskManager(object):
 
         for task in self.active_tasks:
             if task.task_id == task_id:
-                task.set_status(message['status'], message['progress'], message['text'])
+                new_status = message['status']
+                task.set_status(new_status, message['progress'], message['text'])
+
+                if new_status == 'Finished' or new_status == 'Aborted':
+                    self.active_tasks.remove(task)
+                    self.finished_tasks.append(task)
+
                 break
 
         ch.basic_ack(delivery_tag=method.delivery_tag)        
@@ -146,7 +152,8 @@ class TaskManager(object):
         sessions.destroy_session(session)
 
         for task in tasks:
-            if task.get_status() == 'Finished':
+            status = task.get_status()[0]
+            if status == 'Finished' or status == 'Aborted':
                 self.finished_tasks.append(task)
             else:
                 self.active_tasks.append(task)
