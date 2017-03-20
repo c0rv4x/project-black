@@ -9,7 +9,7 @@ def initialize(socketio):
     @socketio.on('scopes:all:get')
     def handle_custom_event():
         """ When received this message, send back all the scopes """
-        emit('scopes:all:get:back', {
+        socketio.emit('scopes:all:get:back', {
             'status' : 'success',
             'scopes' :scope_manager.get_scopes()
         }, broadcast=True)
@@ -52,7 +52,7 @@ def initialize(socketio):
                     error_text += new_err
 
         if error_found:     
-            emit('scopes:create', {
+            socketio.emit('scopes:create', {
                 'status': 'error',
                 'project_uuid': project_uuid,
                 'text': error_text
@@ -60,7 +60,7 @@ def initialize(socketio):
 
         else:
             # Send the scope back
-            emit('scopes:create', {
+            socketio.emit('scopes:create', {
                 'status': 'success',
                 'project_uuid': project_uuid,
                 'new_scopes': new_scopes
@@ -77,14 +77,14 @@ def initialize(socketio):
 
         if delete_result["status"] == "success":
             # Send the success result
-            emit('scopes:delete', {
+            socketio.emit('scopes:delete', {
                 'status': 'success',
                 'scope_id': scope_id
             }, broadcast=True)
 
         else:
             # Error occured
-            emit('scopes:delete', {
+            socketio.emit('scopes:delete', {
                 'status': 'error',
                 'text': delete_result["text"]
             }, broadcast=True)

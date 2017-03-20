@@ -27,7 +27,7 @@ def initialize(socketio):
 
         task = task_manager.create_task(task_type, target, params, project_uuid)
 
-        emit('tasks:new', {
+        socketio.emit('tasks:new', {
             'status': 'success',
             'new_task': task
         })

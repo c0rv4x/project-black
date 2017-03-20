@@ -9,7 +9,7 @@ def initialize(socketio):
     @socketio.on('projects:all:get')
     def handle_custom_event():
         """ When received this message, send back all the projects """
-        emit('projects:all:get:back', {
+        socketio.emit('projects:all:get:back', {
             'status': 'success',
             'projects': project_manager.get_projects()
         }, broadcast=True)
@@ -25,13 +25,13 @@ def initialize(socketio):
 
         if addition_result["status"] == "success":
             # Send the project back
-            emit('projects:create', {
+            socketio.emit('projects:create', {
                 'status': 'success',
                 'new_project': addition_result["new_project"]
             }, broadcast=True)
         else:
             # Error occured
-            emit('projects:create', {
+            socketio.emit('projects:create', {
                 'status': 'error',
                 'text': addition_result["text"]
             }, broadcast=True)
@@ -47,14 +47,14 @@ def initialize(socketio):
 
         if delete_result["status"] == "success":
             # Send the success result
-            emit('projects:delete', {
+            socketio.emit('projects:delete', {
                 'status': 'success',
                 'project_uuid': project_uuid
             }, broadcast=True)
 
         else:
             # Error occured
-            emit('projects:delete', {
+            socketio.emit('projects:delete', {
                 'status': 'error',
                 'text': delete_result["text"]
             }, broadcast=True)
@@ -72,7 +72,7 @@ def initialize(socketio):
 
         if updating_status["status"] == "success":
             # Send the project back
-            emit('projects:update', {
+            socketio.emit('projects:update', {
                 'status': 'success',
                 'new_project': {
                     'project_uuid': project_uuid,
@@ -83,7 +83,7 @@ def initialize(socketio):
 
         else:
             # Error occured
-            emit('projects:update', {
+            socketio.emit('projects:update', {
                 'status': 'error',
                 'text': updating_status["text"]
             }, broadcast=True)
