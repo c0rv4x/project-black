@@ -41,7 +41,6 @@ class ScopeEntryLine extends React.Component {
 		return (
 			<div>
 				<Panel header={header}>
-					{this.props.scope.scope_id}
 					{this.props.scope.hostname}
 					{this.props.scope.ip_address}
 				</Panel>
