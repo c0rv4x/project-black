@@ -163,7 +163,8 @@ class MasscanTask(AsyncTask):
             self.save()
             self.set_status("Finished", progress=100)
         else:
-            self.set_status("Aborted", progress=-1, text=self.stderr)
+            decoded_stderr = list(map(lambda x: x.decode('utf-8'), self.stderr))
+            self.set_status("Aborted", progress=-1, text="".join(decoded_stderr))
 
     def save(self):
         save_raw_output(
