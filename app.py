@@ -41,6 +41,7 @@ def send_js(path):
 projects_handlers_init(socketio)
 scopes_handlers_init(socketio)
 tasks_handlers_init(socketio)
+scans_handlers_init(socketio)
 
 if __name__ == '__main__':
     socketio.run(app)
