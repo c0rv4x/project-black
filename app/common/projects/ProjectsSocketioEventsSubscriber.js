@@ -9,7 +9,7 @@ import Connector from '../SocketConnector.jsx';
 import ProjectsSocketioEventsEmitter from './ProjectsSocketioEventsEmitter.js';
 
 
-class ProjectsEventsSubsriber {
+class ProjectsSocketioEventsSubscriber {
 	/* Class for managing events subscription for the projects */
 	constructor(store) {
         this.store = store;
@@ -47,4 +47,4 @@ class ProjectsEventsSubsriber {
 	}
 }
 
-export default ProjectsEventsSubsriber;
+export default ProjectsSocketioEventsSubscriber;
