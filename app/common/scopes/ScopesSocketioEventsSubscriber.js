@@ -10,7 +10,7 @@ import ScopesSocketioEventsEmitter from './ScopesSocketioEventsEmitter.js';
 
 let instance = null;
 
-class ScopesSocketioEventsSubsriber {
+class ScopesSocketioEventsSubscriber {
 	/* Singleton class for managing events subscription for the scopes */
 	constructor(store) {
         if(!instance){
@@ -59,4 +59,4 @@ class ScopesSocketioEventsSubsriber {
 	}
 }
 
-export default ScopesSocketioEventsSubsriber;
+export default ScopesSocketioEventsSubscriber;
