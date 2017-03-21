@@ -14,8 +14,6 @@ class ScopesSocketioEventsSubscriber {
         this.store = store;
         this.connector = new Connector();
 
-        this.registered_projects_uuids = [];
-
         this.connector.after_connected((x) => {
         	this.emitter = new ScopesSocketioEventsEmitter();
         	this.emitter.requestRenewScopes();
