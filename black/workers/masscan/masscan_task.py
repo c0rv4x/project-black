@@ -24,17 +24,18 @@ class MasscanTask(AsyncTask):
         self.stderr = []
 
         if type(self.target) == list:
-            targets = []
-            for target in self.target:
-                if re.match(r'^([a-zA-Z]{1}[a-zA-Z0-9\-]{0,255}\.){1,}[a-zA-Z]{2,15}$', target):
-                    try:
-                        targets.append(socket.gethostbyname(target))
-                    except Exception as e:
-                        pass
-                else:
-                    targets.append(target)
+            # targets = []
+            # for target in self.target:
+            #     if re.match(r'^([a-zA-Z]{1}[a-zA-Z0-9\-]{0,255}\.){1,}[a-zA-Z]{2,15}$', target):
+            #         try:
+            #             targets.append(socket.gethostbyname(target))
+            #         except Exception as e:
+            #             pass
+            #     else:
+            #         targets.append(target)
 
-            self.target = ",".join(targets)
+            self.target = ",".join(self.target)
+        print(self.target)
 
     async def start(self):
         """ Launch the task and readers of stdout, stderr """
@@ -145,7 +146,7 @@ class MasscanTask(AsyncTask):
 
                         self.set_status("Working", progress=int(percent[0].split('.')[0]))
                 except Exception as exc:
-                    print(exc)
+                    pass
 
             sleep(1)
         print(self.status)
@@ -160,8 +161,13 @@ class MasscanTask(AsyncTask):
         print("The process finished OK")
 
         if self.exit_code == 0:
-            self.save()
-            self.set_status("Finished", progress=100)
+            try:
+                self.save()
+            except Exception as e:
+                decoded_stderr = list(map(lambda x: x.decode('utf-8'), self.stderr))
+                self.set_status("Aborted", progress=-1, text="".join(decoded_stderr))
+            else:
+                self.set_status("Finished", progress=100)
         else:
             decoded_stderr = list(map(lambda x: x.decode('utf-8'), self.stderr))
             self.set_status("Aborted", progress=-1, text="".join(decoded_stderr))
