@@ -27,7 +27,6 @@ class ScopesSocketioEventsSubscriber {
             });
 
             this.basic_events_registration();
-
         }
 
         return instance;

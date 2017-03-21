@@ -29,18 +29,11 @@ function findScopeType(target) {
     }
 }
 
-let instance = null;
 
 class ScopesSocketioEventsEmitter {
 	/* Singleton class for managing events subscription for the scopes */
 	constructor() {
-        if(!instance){
-            instance = this;
-
-            this.connector = new Connector();
-        }
-
-        return instance;
+        this.connector = new Connector();
 	}
 
 	createScope(project_uuid, scopes) {
@@ -69,14 +62,6 @@ class ScopesSocketioEventsEmitter {
 			'project_uuid': project_uuid
 		});
 	}
-
-	// updateScopes(scope_uuid, scope_name, comment) {
-	// 	this.connector.emit('scopes:update', {
-	// 		'scope_uuid': scope_uuid,
-	// 		'scope_name': scope_name,
-	// 		'comment': comment
-	// 	});
-	// }
 
 	renewScopes() {
 		this.connector.emit('scopes:all:get');
