@@ -37,7 +37,8 @@ class ProjectDetailsPage extends React.Component {
 							  onNewScopeClick={this.props.onNewScopeClick} 
 
 							  deleteScope={this.props.deleteScope}
-							  scopes={this.props.scopes} />
+							  scopes={this.props.scopes} 
+							  scans={this.props.scans}/>
 			</div>
 		)
 	}

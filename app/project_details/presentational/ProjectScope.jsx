@@ -20,7 +20,9 @@ class ProjectScope extends React.Component {
 							handleNewScopeChange={this.props.handleNewScopeChange}
 							onNewScopeClick={this.props.onNewScopeClick} />
 				<ScopeTable scopes={this.props.scopes}
-							deleteScope={this.props.deleteScope}/>
+							deleteScope={this.props.deleteScope}
+
+							scans={this.props.scans}/>
 			</div>
 		)
 	}

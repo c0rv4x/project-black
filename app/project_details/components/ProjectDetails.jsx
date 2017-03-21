@@ -87,7 +87,9 @@ class ProjectDetails extends React.Component {
 
 								tasks={this.props.tasks}
 
-								resolveScopes={this.resolveScopes}/>
+								resolveScopes={this.resolveScopes}
+
+								scans={this.props.scans}/>
 		)
 	}
 }

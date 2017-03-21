@@ -38,11 +38,15 @@ class ScopeEntryLine extends React.Component {
 			</h3>
 		)
 
+		const ports = _.map(this.props.scans, (x) => {
+			return (
+				<div key={x.scan_id + '_' + x.port_number}>{x.port_number}</div>
+			)
+		})
 		return (
 			<div>
 				<Panel header={header}>
-					{this.props.scope.hostname}
-					{this.props.scope.ip_address}
+					{ports}
 				</Panel>
 			</div>			
 
