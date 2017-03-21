@@ -17,10 +17,10 @@ class Handlers(object):
         self.task_manager = TaskManager()
         self.scan_manager = ScanManager()
 
-        self.projectsHandlers = ProjectHandlers(self.socketio, self.project_manager)
-        self.scopesHandlers = ScopeHandlers(self.socketio, self.scope_manager)
+        self.projectHandlers = ProjectHandlers(self.socketio, self.project_manager)
+        self.scopeHandlers = ScopeHandlers(self.socketio, self.scope_manager)
         self.taskHandlers = TaskHandlers(self.socketio, self.task_manager)
-        self.scansHandlers = ScanHandlers(self.socketio, self.scan_manager)
+        self.scanHandlers = ScanHandlers(self.socketio, self.scan_manager)
 
         self.thread = socketio.start_background_task(target=self.sender_loop)
         # self.thread.start
@@ -29,4 +29,5 @@ class Handlers(object):
         while True:
             self.socketio.sleep(0.7)
             self.taskHandlers.send_tasks_back()
+            self.scanHandlers.send_scans_back()
 
