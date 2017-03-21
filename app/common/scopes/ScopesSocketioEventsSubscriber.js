@@ -8,28 +8,20 @@ import Connector from '../SocketConnector.jsx';
 import ScopesSocketioEventsEmitter from './ScopesSocketioEventsEmitter.js';
 
 
-let instance = null;
-
 class ScopesSocketioEventsSubscriber {
 	/* Singleton class for managing events subscription for the scopes */
 	constructor(store) {
-        if(!instance){
-            instance = this;
+        this.store = store;
+        this.connector = new Connector();
 
-            this.store = store;
-            this.connector = new Connector();
+        this.registered_projects_uuids = [];
 
-            this.registered_projects_uuids = [];
+        this.connector.after_connected((x) => {
+        	this.emitter = new ScopesSocketioEventsEmitter();
+        	this.emitter.requestRenewScopes();
+        });
 
-            this.connector.after_connected((x) => {
-            	this.emitter = new ScopesSocketioEventsEmitter();
-            	this.emitter.requestRenewScopes();
-            });
-
-            this.basic_events_registration();
-        }
-
-        return instance;
+        this.basic_events_registration();
 	}
 
 	basic_events_registration() {
