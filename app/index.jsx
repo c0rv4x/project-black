@@ -16,7 +16,7 @@ import ProjectsDetailsWrapper from './project_details/components/ProjectDetailsW
 import { createStore } from 'redux';
 
 import ProjectsSocketioEventsSubscriber from './common/projects/ProjectsSocketioEventsSubscriber';
-import ScopesSocketioEventsSubsriber from './common/scopes/ScopesSocketioEventsSubsriber';
+import ScopesSocketioEventsSubsriber from './common/scopes/ScopesSocketioEventsSubscriber';
 import TasksSocketioEventsSubsriber from './common/tasks/TasksSocketioEventsSubsriber';
 import ScansSocketioEventsSubsriber from './common/scans/ScansSocketioEventsSubscriber';
 

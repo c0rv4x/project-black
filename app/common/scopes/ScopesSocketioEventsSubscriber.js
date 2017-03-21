@@ -23,7 +23,7 @@ class ScopesSocketioEventsSubscriber {
 
             this.connector.after_connected((x) => {
             	this.emitter = new ScopesSocketioEventsEmitter();
-            	this.emitter.requestUenewScopes();
+            	this.emitter.requestRenewScopes();
             });
 
             this.basic_events_registration();
