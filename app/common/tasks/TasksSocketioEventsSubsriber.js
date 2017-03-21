@@ -13,21 +13,15 @@ let instance = null;
 class TasksSocketioEventsSubsriber {
 	/* Singleton class for managing events subscription for the tasks */
 	constructor(store) {
-        if(!instance){
-            instance = this;
+        this.store = store;
+        this.connector = new Connector();
 
-            this.store = store;
-            this.connector = new Connector();
+        this.connector.after_connected((x) => {
+        	this.emitter = new TasksSocketioEventsEmitter();
+        	this.emitter.requestRenewTasks();
+        });
 
-            this.connector.after_connected((x) => {
-            	this.emitter = new TasksSocketioEventsEmitter();
-            	this.emitter.requestRenewTasks();
-            });
-
-            this.basic_events_registration();
-        }
-
-        return instance;
+        this.basic_events_registration();
 	}
 
 	basic_events_registration() {
