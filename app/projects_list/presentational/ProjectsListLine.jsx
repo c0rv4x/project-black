@@ -21,7 +21,10 @@ class ProjectsListLine extends React.Component
                     <Link to={"/project/" + this.props.project.project_name}>
                         <Button bsStyle="default">Details</Button>
                     </Link>
-                    <Button bsStyle="danger" onClick={() => this.props.onDelete(this.props.project.project_uuid)}>Delete</Button>
+                    <Button bsStyle="danger" 
+                            onClick={() => this.props.onDelete(this.props.project.project_uuid)}>
+                        Delete
+                    </Button>
                     </td>
             </tr>
         )
