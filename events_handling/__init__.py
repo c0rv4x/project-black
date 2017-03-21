@@ -1,23 +1,32 @@
-from events_handling.projects_handlers import initialize as projects_handlers_init_w_manager
-from events_handling.scopes_handlers import initialize as scopes_handlers_init_w_manager
-from events_handling.tasks_handlers import initialize as tasks_handlers_init_w_manager
-from events_handling.scans_handlers import initialize as scans_handlers_init_w_manager
+# import threading
+
+from events_handling.projects_handlers import ProjectHandlers
+from events_handling.scopes_handlers import ScopeHandlers
+from events_handling.tasks_handlers import TaskHandlers
+from events_handling.scans_handlers import ScanHandlers
 
 from managers import ProjectManager, ScopeManager, TaskManager, ScanManager
 
 
 class Handlers(object):
-	def __init__(self, socketio):
-		self.socketio = socketio
+    def __init__(self, socketio):
+        self.socketio = socketio
 
-		self.project_manager = ProjectManager()
-		self.scope_manager = ScopeManager()
-		self.task_manager = TaskManager()
-		self.scan_manager = ScanManager()
+        self.project_manager = ProjectManager()
+        self.scope_manager = ScopeManager()
+        self.task_manager = TaskManager()
+        self.scan_manager = ScanManager()
 
-		projects_handlers_init_w_manager(self.socketio, self.project_manager)
-		scopes_handlers_init_w_manager(self.socketio, self.scope_manager)
-		tasks_handlers_init_w_manager(self.socketio, self.task_manager)
-		scans_handlers_init_w_manager(self.socketio, self.scan_manager)
+        self.projectsHandlers = ProjectHandlers(self.socketio, self.project_manager)
+        self.scopesHandlers = ScopeHandlers(self.socketio, self.scope_manager)
+        self.taskHandlers = TaskHandlers(self.socketio, self.task_manager)
+        self.scansHandlers = ScanHandlers(self.socketio, self.scan_manager)
 
-	# def send_tasks(self):
+        self.thread = socketio.start_background_task(target=self.sender_loop)
+        # self.thread.start
+
+    def sender_loop(self):
+        while True:
+            self.socketio.sleep(0.7)
+            self.taskHandlers.send_tasks_back()
+
