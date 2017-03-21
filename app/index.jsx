@@ -5,7 +5,6 @@ import {
     Route,
     Link
 } from 'react-router-dom';
-import classnames from 'classnames';
 
 import { Provider } from 'react-redux'
 
@@ -37,13 +36,15 @@ class App extends React.Component {
                     <br/>
                     <Router>
                         <div>
-                            <div className={classnames("header", "clearfix")}>
+                            <div>
                                 <Link to="/"><h1>Project Black</h1></Link>
                             </div>
                             <hr/>
                             <div>
-                                <Route exact path="/" component={ProjectsMainComponentWrapper} />
-                                <Route exact path="/project/:project_name" component={ProjectsDetailsWrapper} />
+                                <Route exact path="/"
+                                       component={ProjectsMainComponentWrapper}/>
+                                <Route exact path="/project/:project_name" 
+                                       component={ProjectsDetailsWrapper} />
                             </div>
                         </div>
                     </Router>            
