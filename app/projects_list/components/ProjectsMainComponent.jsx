@@ -27,11 +27,11 @@ class ProjectsMainComponent extends React.Component {
 	render() {
 		return (
 			<ProjectsMain projects={this.props.projects}
-						  onDelete={(project_uuid) => this.emitter.deleteProject(project_uuid)} 
+						  onDelete={(project_uuid) => this.emitter.requestDeleteProject(project_uuid)} 
 
 						  newProjectName={this.state.newProjectName}
 						  onProjectNameChange={this.changeNewProjectName}
-						  submitNewProject={() => this.emitter.createProject(this.state.newProjectName)}/>
+						  submitNewProject={() => this.emitter.requestCreateProject(this.state.newProjectName)}/>
 		)
 	}
 }

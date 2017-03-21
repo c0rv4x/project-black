@@ -51,7 +51,7 @@ class ProjectDetails extends React.Component {
 	}
 
 	commentSubmitted() {
-		this.projectsEmitter.updateProject(
+		this.projectsEmitter.requestUpdateProject(
 			this.props.project.project_uuid,
 			null,
 			this.props.project.comment);
