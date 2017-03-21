@@ -35,15 +35,15 @@ class ProjectDetails extends React.Component {
 	}
 
 	submitNewScope(scopes) {
-		this.scopesEmitter.createScope(this.props.project.project_uuid, scopes);
+		this.scopesEmitter.requestCreateScope(this.props.project.project_uuid, scopes);
 	}
 
 	deleteScope(scope_id) {
-		this.scopesEmitter.deleteScope(scope_id);
+		this.scopesEmitter.requestDeleteScope(scope_id);
 	}
 
 	resolveScopes(scopes_ids, project_uuid) {
-		this.scopesEmitter.resolveScopes(scopes_ids, project_uuid);
+		this.scopesEmitter.requestResolveScopes(scopes_ids, project_uuid);
 	}
 
 	onCommentInputChange(e) {
