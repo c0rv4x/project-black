@@ -4,6 +4,7 @@ import React from 'react';
 import TitleWithHandlers from './TitleWithHandlers.jsx'
 import ProjectCommentTracked from './ProjectCommentTracked.jsx'
 import ScopeTracked from './ScopeTracked.jsx'
+import Tasks from '../presentational/tasks/Tasks.jsx';
 
 
 class ProjectDetails extends React.Component {
@@ -13,8 +14,15 @@ class ProjectDetails extends React.Component {
 
 	render() {
 		return (
-			<TitleWithHandlers scopes={this.props.scopes}
-							   project={this.props.project} />
+			<div>
+				<TitleWithHandlers scopes={this.props.scopes}
+								   project={this.props.project} />
+
+				<hr/>
+				<Tasks tasks={this.props.tasks} />
+				<ProjectCommentTracked project={this.props.project}
+									   onCommentChange={this.props.onCommentChange} />
+			</div>
 		)
 	}
 }
