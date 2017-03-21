@@ -1,18 +1,10 @@
 import Connector from '../SocketConnector.jsx';
 
 
-let instance = null;
-
 class ProjectsSocketioEventsEmitter {
 	/* Singleton class for managing events subscription for the projects */
 	constructor() {
-        if(!instance){
-            instance = this;
-
-            this.connector = new Connector();
-        }
-
-        return instance;
+        this.connector = new Connector();
 	}
 
 	createProject(project_name) {
