@@ -2,18 +2,10 @@ import _ from 'lodash';
 import Connector from '../SocketConnector.jsx';
 
 
-let instance = null;
-
 class TasksSocketioEventsEmitter {
 	/* Singleton class for managing events subscription for the tasks */
 	constructor() {
-        if(!instance){
-            instance = this;
-
-            this.connector = new Connector();
-        }
-
-        return instance;
+        this.connector = new Connector();
 	}
 
 	createTask(task_type, target, params, project_uuid) {
