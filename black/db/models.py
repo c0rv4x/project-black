@@ -1,5 +1,6 @@
 """ Models for SQLAlchemy ORM """
-from sqlalchemy import Column, Integer, String, ForeignKey
+import datetime
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -14,6 +15,7 @@ class Project(Base):
     project_uuid = Column(String, primary_key=True)
     project_name = Column(String)
     comment = Column(String)
+    date_added = Column(DateTime, default=datetime.datetime.utcnow)
     scopes_relationship = relationship('Scope', cascade="all, delete-orphan")
     tasks_relationship = relationship('Task', cascade="all, delete-orphan")
     scans_relationship = relationship('Scan', cascade="all, delete-orphan")
@@ -50,6 +52,9 @@ class Task(Base):
     # Special note. E.x. error
     text = Column(String)
 
+    # Time of adding
+    date_added = Column(DateTime, default=datetime.datetime.utcnow)
+
     # The name of the related project
     project_uuid = Column(String, ForeignKey('projects.project_uuid', ondelete='CASCADE'))
 
@@ -77,6 +82,9 @@ class Scope(Base):
 
     # The name of the related project
     project_uuid = Column(String, ForeignKey('projects.project_uuid', ondelete="CASCADE"))
+
+    # Date of adding
+    date_added = Column(DateTime, default=datetime.datetime.utcnow)
 
     def __repr__(self):
        return """<Scope(scope_id='%s', hostname='%s',
@@ -116,6 +124,8 @@ class Scan(Base):
     # The name of the related project
     project_uuid = Column(String, ForeignKey('projects.project_uuid', ondelete='CASCADE'))
 
+    # Date of added
+    date_added = Column(DateTime, default=datetime.datetime.utcnow)
     # def __repr__(self):
     #    return "<Scan(project_uuid='%s'>" % (
     #                         self.project_uuid)
