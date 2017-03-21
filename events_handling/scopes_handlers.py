@@ -1,11 +1,7 @@
 from flask_socketio import emit
 
-from managers import ScopeManager
 
-
-def initialize(socketio):
-    scope_manager = ScopeManager()
-
+def initialize(socketio, scope_manager):
     @socketio.on('scopes:all:get')
     def handle_custom_event():
         """ When received this message, send back all the scopes """

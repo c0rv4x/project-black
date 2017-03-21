@@ -1,15 +1,13 @@
 from flask_socketio import emit
 
-from managers import TaskManager
 
+# thread = None
 
-thread = None
-
-def initialize(socketio):
-    def infinite_sender_of_tasks(task_manager):
-        while True:
-            socketio.sleep(0.7)
-            send_tasks_back(task_manager)
+def initialize(socketio, task_manager):
+    # def infinite_sender_of_tasks(task_manager):
+    #     while True:
+    #         socketio.sleep(0.7)
+    #         send_tasks_back(task_manager)
 
     def send_tasks_back(task_manager):
         socketio.emit('tasks:all:get:back', {
@@ -17,17 +15,17 @@ def initialize(socketio):
             "tasks": task_manager.get_tasks_native_objects()
         }, broadcast=True)        
 
-    task_manager = TaskManager()
+    # task_manager = TaskManager()
 
     @socketio.on('tasks:all:get')
     def handle_custom_event():
         """ When received this message, send back all the tasks """
-        global thread
+        # global thread
 
         send_tasks_back(task_manager)
 
-        if thread is None:
-            thread = socketio.start_background_task(target=infinite_sender_of_tasks, task_manager=task_manager)
+        # if thread is None:
+        #     thread = socketio.start_background_task(target=infinite_sender_of_tasks, task_manager=task_manager)
 
     @socketio.on('tasks:create')
     def handle_project_creation(msg):

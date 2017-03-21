@@ -1,11 +1,7 @@
 from flask_socketio import emit
 
-from managers import ProjectManager
 
-
-def initialize(socketio):
-    project_manager = ProjectManager()
-
+def initialize(socketio, project_manager):
     @socketio.on('projects:all:get')
     def handle_custom_event():
         """ When received this message, send back all the projects """

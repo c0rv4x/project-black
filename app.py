@@ -6,7 +6,7 @@ from werkzeug.routing import BaseConverter
 
 from flask_socketio import SocketIO
 
-from events_handling import projects_handlers_init, scopes_handlers_init, tasks_handlers_init, scans_handlers_init
+from events_handling import Handlers
 
 
 # Define Flask app and wrap it into SocketIO
@@ -38,10 +38,7 @@ def send_js(path):
     return send_from_directory('public', path)
 
 
-projects_handlers_init(socketio)
-scopes_handlers_init(socketio)
-tasks_handlers_init(socketio)
-scans_handlers_init(socketio)
+h = Handlers(socketio)
 
 if __name__ == '__main__':
     socketio.run(app)
