@@ -63,6 +63,13 @@ class ScopesSocketioEventsEmitter {
 		});
 	}
 
+	resolveScopes(scopes_ids, project_uuid) {
+		this.connector.emit('scopes:resolve', {
+			'scopes_ids': scopes_ids,
+			'project_uuid': project_uuid
+		});
+	}
+
 	// updateScopes(scope_uuid, scope_name, comment) {
 	// 	this.connector.emit('scopes:update', {
 	// 		'scope_uuid': scope_uuid,

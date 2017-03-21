@@ -22,6 +22,7 @@ class ProjectDetails extends React.Component {
 		this.handleNewScopeChange = this.handleNewScopeChange.bind(this);
 		this.submitNewScope = this.submitNewScope.bind(this);
 		this.deleteScope = this.deleteScope.bind(this);
+		this.resolveScopes = this.resolveScopes.bind(this);
 
 		this.onCommentInputChange = this.onCommentInputChange.bind(this);
 		this.commentSubmitted = this.commentSubmitted.bind(this);
@@ -39,6 +40,10 @@ class ProjectDetails extends React.Component {
 
 	deleteScope(scope_id) {
 		this.scopesEmitter.deleteScope(scope_id);
+	}
+
+	resolveScopes(scopes_ids, project_uuid) {
+		this.scopesEmitter.resolveScopes(scopes_ids, project_uuid);
 	}
 
 	onCommentInputChange(e) {
@@ -80,7 +85,9 @@ class ProjectDetails extends React.Component {
 
 								runMasscan={this.runMasscan}
 
-								tasks={this.props.tasks}/>
+								tasks={this.props.tasks}
+
+								resolveScopes={this.resolveScopes}/>
 		)
 	}
 }

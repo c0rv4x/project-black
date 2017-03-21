@@ -1,4 +1,6 @@
 import uuid
+import socket
+import dns.resolver
 
 from black.black.db import sessions, Scope
 
@@ -30,7 +32,6 @@ class ScopeManager(object):
     def find_scope(self, hostname=None, ip_address=None, project_uuid=None, scope_id=None):
         """ Serach for a scope with a specific name """
         filtered = self.scopes
-
         if hostname:
             filtered = list(filter(lambda x: x['hostname'] == hostname, filtered))
 
@@ -118,3 +119,43 @@ class ScopeManager(object):
                 "status": "error",
                 "text": 'No such scopes.'
             }
+
+    def resolve_single_scope(self, scope, resolver):
+        project_uuid = scope['project_uuid']
+        hostname = scope['hostname']
+
+        if hostname:
+            try:
+                answers = resolver.query(hostname, 'A').response.answer
+                for answer in answers:
+                    for address in answer:
+                        self.create_scope(hostname=hostname,
+                                          ip_address=str(address),
+                                          project_uuid=project_uuid)
+            except dns.resolver.NXDOMAIN as e:
+                pass
+
+
+    def resolve_scopes(self, project_uuid, scope_ids=None):
+        def try_connecection_to_ns(ns):
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            try:
+                s.connect((ns, 53))
+            except socket.error as e:
+                print('Error connecting to the NS')
+                pass
+            s.close()
+
+        resolver = dns.resolver.Resolver()
+        resolver.nameservers = ['8.8.8.8']
+        try_connecection_to_ns('8.8.8.8')
+
+        single_project_scopes = list(filter(lambda x: x['project_uuid'] == project_uuid, self.scopes))
+
+        if scope_ids is None:
+            to_resolve = single_project_scopes
+        else:
+            to_resolve = list(filter(lambda x: x['scope_id'] in scope_ids, single_project_scopes))
+
+        for scope in to_resolve:
+            self.resolve_single_scope(scope, resolver)
