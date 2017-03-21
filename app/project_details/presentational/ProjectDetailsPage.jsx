@@ -4,7 +4,7 @@ import ProjectComment from './ProjectComment.jsx';
 import ProjectScope from './ProjectScope.jsx';
 import Tasks from './Tasks.jsx';
 
-import { DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap';
+import { Button, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap';
 
 class ProjectDetailsPage extends React.Component {
 
@@ -20,6 +20,9 @@ class ProjectDetailsPage extends React.Component {
 						<MenuItem eventKey="1" onClick={this.props.runMasscan}>Masscan</MenuItem>
 					</DropdownButton>
 
+					<Button onClick={() => this.props.resolveScopes(null, this.props.project.project_uuid)}>
+						Resolve Scopes
+					</Button>
 				</h2>
 				<hr />
 				<Tasks tasks={this.props.tasks} />

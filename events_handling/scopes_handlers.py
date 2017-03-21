@@ -88,3 +88,15 @@ def initialize(socketio):
                 'status': 'error',
                 'text': delete_result["text"]
             }, broadcast=True)
+
+    @socketio.on('scopes:resolve')
+    def handle_scopes_resolver(msg):
+        """ On receive, resolve the needed scope """
+        scopes_ids = msg['scopes_ids']
+        project_uuid = msg['project_uuid']
+
+        scope_manager.resolve_scopes(project_uuid, scopes_ids)
+        socketio.emit('scopes:all:get:back', {
+            'status' : 'success',
+            'scopes' :scope_manager.get_scopes()
+        }, broadcast=True)
