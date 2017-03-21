@@ -21,7 +21,7 @@ class TasksSocketioEventsSubsriber {
 
             this.connector.after_connected((x) => {
             	this.emitter = new TasksSocketioEventsEmitter();
-            	this.emitter.renewTasks();
+            	this.emitter.requestRenewTasks();
             });
 
             this.basic_events_registration();

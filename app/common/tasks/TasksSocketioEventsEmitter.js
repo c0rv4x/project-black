@@ -8,7 +8,7 @@ class TasksSocketioEventsEmitter {
         this.connector = new Connector();
 	}
 
-	createTask(task_type, target, params, project_uuid) {
+	requestCreateTask(task_type, target, params, project_uuid) {
 		this.connector.emit('tasks:create', {
 			"task_type": task_type,
 			"target": target,
@@ -17,13 +17,13 @@ class TasksSocketioEventsEmitter {
 		});
 	}
 
-	changeStatusTask(task_id) {
+	requestChangeStatusTask(task_id) {
 		this.connector.emit('tasks:status_change:task_id', {
 			'task_id': task_id
 		});
 	}
 
-	renewTasks() {
+	requestRenewTasks() {
 		this.connector.emit('tasks:all:get');
 	}
 

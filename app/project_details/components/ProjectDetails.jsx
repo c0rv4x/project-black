@@ -62,7 +62,7 @@ class ProjectDetails extends React.Component {
 			return x.ip_address || x.hostname
 		});
 
-		this.tasksEmitter.createTask('masscan', targets, "", this.props.project.project_uuid)
+		this.tasksEmitter.requestCreateTask('masscan', targets, "", this.props.project.project_uuid)
 	}
 	render() {
 		return (
