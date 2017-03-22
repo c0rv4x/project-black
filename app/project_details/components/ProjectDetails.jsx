@@ -16,7 +16,8 @@ class ProjectDetails extends React.Component {
 		return (
 			<div>
 				<TitleWithHandlers scopes={this.props.scopes}
-								   project={this.props.project} />
+								   project={this.props.project} 
+								   scans={this.props.scans} />
 
 				<hr/>
 				<Tasks tasks={this.props.tasks} />

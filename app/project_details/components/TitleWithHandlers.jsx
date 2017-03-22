@@ -15,6 +15,8 @@ class TitleWithHandlers extends React.Component {
 		this.tasksEmitter = new TasksSocketioEventsEmitter();
 
 		this.runMasscan = this.runMasscan.bind(this);
+		this.runNmap = this.runNmap.bind(this);
+		this.runNmapOnlyOpen = this.runNmapOnlyOpen.bind(this);
 		this.resolveScopes = this.resolveScopes.bind(this);
 	}
 
@@ -26,6 +28,37 @@ class TitleWithHandlers extends React.Component {
 		this.tasksEmitter.requestCreateTask('masscan', targets, "", this.props.project.project_uuid)
 	}	
 
+	runNmap() {
+		var targets = _.map(this.props.scopes, (x) => {
+			return x.ip_address;
+		});
+
+		this.tasksEmitter.requestCreateTask('nmap', targets, "", this.props.project.project_uuid)
+	}	
+
+	runNmapOnlyOpen() {
+		var targets = _.map(this.props.scopes, (x) => {
+			return x.ip_address;
+		});
+
+		for (var target of targets) {
+			let filtered_scans = _.filter(this.props.scans, (x) => {
+				return x.target == target;
+			});
+
+			let ports = _.map(filtered_scans, (x) => {
+				return x.port_number;
+			});
+
+			let flags = "-p" + ports.join();
+
+			this.tasksEmitter.requestCreateTask('nmap', target, flags, this.props.project.project_uuid)
+		}
+
+
+
+	}	
+
 	resolveScopes(scopes_ids, project_uuid) {
 		this.scopesEmitter.requestResolveScopes(scopes_ids, project_uuid);
 	}
@@ -34,6 +67,8 @@ class TitleWithHandlers extends React.Component {
 		return (
 			<TitleButtonsTasks project={this.props.project}
 							   runMasscan={this.runMasscan}
+							   runNmap={this.runNmap}
+							   runNmapOnlyOpen={this.runNmapOnlyOpen}
 							   resolveScopes={this.resolveScopes}/>
 		)
 	}
