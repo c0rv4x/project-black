@@ -55,9 +55,7 @@ class ShadowTask(object):
                                    body=json.dumps({
                                       'task_id': self.task_id,
                                       'target': self.target,
-                                      'params': {
-                                         'program': ['-p80-1000']
-                                      },
+                                      'params': self.params,
                                       'project_uuid': self.project_uuid
                                    }))
 

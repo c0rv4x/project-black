@@ -25,15 +25,21 @@ class TitleWithHandlers extends React.Component {
 			return x.ip_address || x.hostname
 		});
 
-		this.tasksEmitter.requestCreateTask('masscan', targets, "", this.props.project.project_uuid)
-	}	
+		this.tasksEmitter.requestCreateTask('masscan', 
+											targets, 
+											{'program': ['-p80-1000']}, 
+											this.props.project.project_uuid)
+	}
 
 	runNmap() {
 		var targets = _.map(this.props.scopes, (x) => {
 			return x.ip_address;
 		});
 
-		this.tasksEmitter.requestCreateTask('nmap', targets, "", this.props.project.project_uuid)
+		this.tasksEmitter.requestCreateTask('nmap', 
+											targets, 
+											{'program': []}, 
+											this.props.project.project_uuid)
 	}	
 
 	runNmapOnlyOpen() {
@@ -52,7 +58,20 @@ class TitleWithHandlers extends React.Component {
 
 			let flags = "-p" + ports.join();
 
-			this.tasksEmitter.requestCreateTask('nmap', target, flags, this.props.project.project_uuid)
+			this.tasksEmitter.requestCreateTask('nmap', 
+												target, 
+												{
+													'program': [flags, '-sV'],
+													'saver': {
+														'scans_ids': _.map(filtered_scans, (x) => {
+															return {
+																'scan_id': x.scan_id,
+																'port_number': x.port_number
+															}
+														})
+													}
+												}, 
+												this.props.project.project_uuid)
 		}
 
 
