@@ -2,6 +2,7 @@
 to manager the launched instance of scan. """
 import re
 import signal
+import socket
 import threading
 from time import sleep
 
@@ -14,19 +15,41 @@ from black.workers.masscan.db_save import save_raw_output
 class MasscanTask(AsyncTask):
     """ Major class for working with masscan """
 
-    def __init__(self, task_id, target, params, project_name):
-        AsyncTask.__init__(self, task_id, 'masscan', target, params, project_name)
+    def __init__(self, task_id, target, params, project_uuid):
+        AsyncTask.__init__(self, task_id, 'masscan', target, params, project_uuid)
         self.proc = None
 
         self.exit_code = None
         self.stdout = []
         self.stderr = []
 
+        if type(self.target) == list:
+            # targets = []
+            # for target in self.target:
+            #     if re.match(r'^([a-zA-Z]{1}[a-zA-Z0-9\-]{0,255}\.){1,}[a-zA-Z]{2,15}$', target):
+            #         try:
+            #             targets.append(socket.gethostbyname(target))
+            #         except Exception as e:
+            #             pass
+            #     else:
+            #         targets.append(target)
+
+            self.target = ",".join(self.target)
+        print(self.target)
+
     async def start(self):
         """ Launch the task and readers of stdout, stderr """
         self.command = ['sudo', 'masscan'] + [self.target] + ['-oX', '-'] + self.params['program']
-        self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
-        self.set_status("Working")
+
+        try:
+            self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
+        except Exception as e:
+            self.set_status("Aborted", progress=-1, text=str(e))
+            print(e)
+
+            raise e
+
+        self.set_status("Working", progress=0)
 
         # Launch readers
         loop = asyncio.get_event_loop()
@@ -120,8 +143,10 @@ class MasscanTask(AsyncTask):
                             percent[0],
                             time_left[0],
                             found[0]))
+
+                        self.set_status("Working", progress=int(percent[0].split('.')[0]))
                 except Exception as exc:
-                    print(exc)
+                    pass
 
             sleep(1)
         print(self.status)
@@ -136,13 +161,19 @@ class MasscanTask(AsyncTask):
         print("The process finished OK")
 
         if self.exit_code == 0:
-            self.save()
-            self.set_status("Finished")
+            try:
+                self.save()
+            except Exception as e:
+                decoded_stderr = list(map(lambda x: x.decode('utf-8'), self.stderr))
+                self.set_status("Aborted", progress=-1, text="".join(decoded_stderr))
+            else:
+                self.set_status("Finished", progress=100)
         else:
-            self.set_status("Aborted")
+            decoded_stderr = list(map(lambda x: x.decode('utf-8'), self.stderr))
+            self.set_status("Aborted", progress=-1, text="".join(decoded_stderr))
 
     def save(self):
         save_raw_output(
             self.task_id,
             self.stdout,
-            self.project_name)
+            self.project_uuid)

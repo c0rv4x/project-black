@@ -3,16 +3,16 @@ to manager the launched instance of scan. """
 from selenium import webdriver
 from sqlalchemy import create_engine
 
-from black.workers.common.task import Task
+from black.workers.common.sync_task import SyncTask
 from .screenshot_maker import make_screenshot
 from .db_save import save_screenshot_data
 
 
-class ScreenshotterTask(Task):
+class ScreenshotterTask(SyncTask):
     """ Major class for working with selenium """
 
     def __init__(self, task_id, target, params, project_name):
-        Task.__init__(self, task_id, 'screenshot', target, params, project_name)
+        SyncTask.__init__(self, task_id, 'screenshot', target, params, project_name)
         self.result = None
         self.screenshot_path = "black/screenshots/" + self.task_id
 

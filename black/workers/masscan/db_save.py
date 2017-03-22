@@ -5,37 +5,43 @@ from uuid import uuid4
 from black.db import sessions, Scan
 
 
-def save_raw_output(task_id, output, project_name):
+def save_raw_output(task_id, output, project_uuid):
 	try:
 		concated = "".join(map(lambda x: x.decode(), output))
-		parsed_dict = xmltodict.parse(concated)
+		print(concated)
 
-		open_ports = dict()
-		session = sessions.get_new_session()
-		for each_host in parsed_dict['nmaprun']['host']:
-			address = each_host['address']['@addr']
+		if concated:
+			print('somedata in concated')
+			parsed_dict = xmltodict.parse(concated)
 
-			port_data = each_host['ports']['port']
+			open_ports = dict()
+			session = sessions.get_new_session()
+			for each_host in parsed_dict['nmaprun']['host']:
+				address = each_host['address']['@addr']
 
-			protocol = port_data['@protocol']
-			port_number = int(port_data['@portid'])
+				port_data = each_host['ports']['port']
 
-			port_state = port_data['state']
-			port_status = port_state['@state']
+				protocol = port_data['@protocol']
+				port_number = int(port_data['@portid'])
 
-			if port_state != 'closed':
-				new_scan = Scan(
-					scan_id=str(uuid4()),
-					target=address,
-					port_number=port_number,
-					tasks_ids=str([task_id]),
-					project_name=project_name)
+				port_state = port_data['state']
+				port_status = port_state['@state']
 
-				session.add(new_scan)
-				session.commit()
+				if port_state != 'closed':
+					new_scan = Scan(
+						scan_id=str(uuid4()),
+						target=address,
+						port_number=port_number,
+						tasks_ids=str([task_id]),
+						project_uuid=project_uuid)
 
-		sessions.destroy_session(session)
+					session.add(new_scan)
+					session.commit()
+
+			sessions.destroy_session(session)
 
 	except Exception as e:
 		# TODO: add logger here
+		print("save_raw_output")
 		print(e)
+		raise e
