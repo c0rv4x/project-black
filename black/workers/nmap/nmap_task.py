@@ -90,7 +90,6 @@ class NmapTask(AsyncTask):
             except Exception as _:
                 pass
             else:
-                print(3)
                 loop = asyncio.get_event_loop()
                 loop.create_task(self.read_stderr())
 
