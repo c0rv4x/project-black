@@ -89,6 +89,9 @@ class Scope(Base):
     #    is needed)
     ip_address = Column(String)
 
+    # Comment field, as requested by VI
+    comment = Column(String)
+
     # The name of the related project
     project_uuid = Column(String, ForeignKey('projects.project_uuid', ondelete="CASCADE"))
 
