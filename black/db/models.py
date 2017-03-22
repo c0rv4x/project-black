@@ -126,8 +126,8 @@ class Scan(Base):
     # Banner that was received from Nmap
     banner = Column(String)
 
-    # Path to the screenshot image
-    screenshot_path = Column(String)
+    # # Path to the screenshot image
+    # screenshot_path = Column(String)
 
     # ID of the related task (the task, which resulted in the current data)
     # TODO: should think about the following:
