@@ -1,4 +1,5 @@
 import uuid
+from operator import itemgetter
 
 from black.black.db import sessions, Scan
 
@@ -12,13 +13,16 @@ class ScanManager(object):
 
     def get_scans(self):
         """ Returns the list of scans """
+        self.update_from_db()
+
         return self.scans
 
     def update_from_db(self):
         """ Extract all the scans from the DB """
+        self.scans = []
         session = sessions.get_new_session()
         scans_db = session.query(Scan).all()
-        self.scans = list(map(lambda x: {
+        scans = list(map(lambda x: {
                 "scan_id": x.scan_id,
                 "target": x.target,
                 "port_number": x.port_number,
@@ -26,7 +30,18 @@ class ScanManager(object):
                 "banner": x.banner,
                 "screenshot_path": x.screenshot_path,
                 "tasks_ids": x.tasks_ids,
-                "project_uuid": x.project_uuid
+                "project_uuid": x.project_uuid,
+                "date_added": str(x.date_added)
             }, 
             scans_db))
+        scans.sort(key=itemgetter("date_added"), reverse=True)
+
+        unique_pairs = set()
+        for scan in scans:
+            pair = (scan["target"], scan["port_number"])
+
+            if pair not in unique_pairs:
+                unique_pairs.add(pair)
+                self.scans.append(scan)
+
         sessions.destroy_session(session)        
