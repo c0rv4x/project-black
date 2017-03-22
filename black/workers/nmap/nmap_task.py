@@ -129,29 +129,21 @@ class NmapTask(AsyncTask):
 
 
     def parse_results(self):
-        def create_new_scan(data, task_id):
+        def save_scan(data):
             session = get_new_session()
-            new_scan = Scan(**data)
-            old_tasks_ids = new_scan.tasks_ids
-            if old_tasks_ids is None:
-                new_tasks_ids = [task_id]
+
+            scans_ids = self.params["saver"].get('scans_ids', None)
+            if scans_ids:
+                target_scan = list(filter(lambda x: data["port_number"] == x["port_number"], scans_ids))[0]
+                target_scan_id = target_scan["scan_id"]
+                new_scan = session.query(Scan).filter_by(scan_id=target_scan_id).first()
+
+                new_scan.banner = data["banner"]
+                new_scan.protocol = data["protocol"]
             else:
-                new_tasks_ids = json.loads(new_scan.tasks_ids)
-                new_tasks_ids.append(task_id)
-            new_scan.tasks_ids = json.dumps(new_tasks_ids)
+                new_scan = Scan()
+                session.add(new_scan)
 
-            session.add(new_scan)
-            session.commit()
-            destroy_session(session)
-
-        def update_banner(given_scan_id, banner, task_id):
-            session = get_new_session()
-            existing_scans = session.query(Scan).filter_by(scan_id=given_scan_id).all()
-            existing_scan = existing_scans[0]
-            existing_scan.banner = banner
-            new_tasks_ids = json.loads(existing_scan.tasks_ids)
-            new_tasks_ids.append(task_id)
-            existing_scan.tasks_ids = json.dumps(new_tasks_ids)
             session.commit()
             destroy_session(session)
 
@@ -164,7 +156,7 @@ class NmapTask(AsyncTask):
         for scanned_host in nmap_report.hosts:
             for service_of_host in scanned_host.services:
                 if service_of_host.open():
-                    create_new_scan({
+                    save_scan({
                         'target': str(scanned_host.address),
                         'port_number': int(service_of_host.port),
                         'protocol': str(service_of_host.service),
