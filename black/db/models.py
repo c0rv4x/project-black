@@ -92,6 +92,10 @@ class Scope(Base):
     # The name of the related project
     project_uuid = Column(String, ForeignKey('projects.project_uuid', ondelete="CASCADE"))
 
+    # References the task that got this record
+    # Default is None, as scope can be given by the user manually.
+    task_id = Column(String, ForeignKey('tasks.task_id', ondelete='SET NULL'), default=None)
+
     # Date of adding
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
 
