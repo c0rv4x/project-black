@@ -44,7 +44,7 @@ class ScopeEntryLine extends React.Component {
 			return 0;
 		}), (x) => {
 			return (
-				<div key={x.scan_id + '_' + x.port_number}>{x.port_number}</div>
+				<div key={x.scan_id + '_' + x.port_number}>{x.port_number}|{x.banner}</div>
 			)
 		})
 		return (
