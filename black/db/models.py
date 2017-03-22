@@ -12,10 +12,19 @@ class Project(Base):
     in the system """
     __tablename__ = 'projects'
 
+    # ID of the project (uuid for now)
     project_uuid = Column(String, primary_key=True)
+
+    # Given name
     project_name = Column(String)
+
+    # Really crucial comment field
     comment = Column(String)
+
+    # Just Date
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
+
+    # Some relationships
     scopes_relationship = relationship('Scope', cascade="all, delete-orphan")
     tasks_relationship = relationship('Task', cascade="all, delete-orphan")
     scans_relationship = relationship('Scan', cascade="all, delete-orphan")
@@ -129,3 +138,20 @@ class Scan(Base):
     # def __repr__(self):
     #    return "<Scan(project_uuid='%s'>" % (
     #                         self.project_uuid)
+
+
+# class Screenshot(Base):
+#     """ Keeps the data on the screenshots. Referneces to Scope"""
+#     __tablename__ = 'screenshots'
+
+#     # Primary key
+#     screenshot_id = Column(String, primary_key=True)
+
+#     # Referneces the task that made this screenshot
+#     task_id = Columns(String, ForeignKey('tasks.task_id', ondelete='SET NULL'))
+
+#     # Refenreces the host data, using which, the screenshot was captured
+#     scope = Columns(String, ForeignKey('scopes.scope_id'), ondelete='CASCADE')
+
+#     # Date of added
+#     date_added = Column(DateTime, default=datetime.datetime.utcnow)
