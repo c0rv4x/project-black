@@ -1,3 +1,4 @@
+from netaddr import IPNetwork
 from flask_socketio import emit
 
 
@@ -24,18 +25,31 @@ class ScopeHandlers(object):
             error_text = ""
 
             for scope in scopes:
+                added = False
                 # Create new scope (and register it)
                 if scope['type'] == 'hostname':
                     create_result = scope_manager.create_scope(scope['target'], None, project_uuid)
                 elif scope['type'] == 'ip_address':
                     create_result = scope_manager.create_scope(None, scope['target'], project_uuid)
+                elif scope['type'] == 'network':
+                    ips = IPNetwork(scope['target'])
+
+                    for ip_address in ips:
+                        create_result = scope_manager.create_scope(None, str(ip_address), project_uuid)
+
+                        if create_result["status"] == "success":
+                            new_scope = create_result["new_scope"]
+
+                            if new_scope:
+                                added = True
+                                new_scopes.append(new_scope)
                 else:
                     create_result = {
                         "status": 'error',
-                        "text": "CIDR is not implemented yet"
+                        "text": "Something bad was sent upon creating scope"
                     }
 
-                if create_result["status"] == "success":
+                if not added and create_result["status"] == "success":
                     new_scope = create_result["new_scope"]
 
                     if new_scope:
