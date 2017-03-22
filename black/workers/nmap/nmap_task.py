@@ -108,23 +108,15 @@ class NmapTask(AsyncTask):
         self.exit_code = exit_code
         # The process have exited.
         # Save the data locally.
-        print("The process finished OK")
-        print(self.stdout)
         self.parse_results()
 
         if self.exit_code == 0:
-            self.status = "Finished"
-        else:
-            # The process have exited.
-            # Save the data locally.]
             print("The process finished OK")
-            print(self.stdout)
-            self.exit_code = await self.proc.wait()
-
-            if self.exit_code == 0:
-                self.set_status("Finished")
-            else:
-                self.set_status("Aborted")
+            self.set_status("Finished", 100, "")
+        else:
+            print("The process finished with error", self.task_id)
+            decoded_stderr = list(map(lambda x: x.decode('utf-8'), self.stderr))
+            self.set_status("Aborted", -1, "".join(decoded_stderr))
 
 
     def parse_results(self):
