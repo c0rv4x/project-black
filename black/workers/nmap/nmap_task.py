@@ -14,8 +14,8 @@ from black.workers.common.task import Task
 
 class NmapTask(AsyncTask):
     """ Major class for working with nmap """
-    def __init__(self, task_id, target, params, project_name):
-        AsyncTask.__init__(self, task_id, 'nmap', target, params, project_name)
+    def __init__(self, task_id, target, params, project_uuid):
+        AsyncTask.__init__(self, task_id, 'nmap', target, params, project_uuid)
         self.proc = None
         self.status = "New"
 
@@ -169,11 +169,8 @@ class NmapTask(AsyncTask):
                         'port_number': int(service_of_host.port),
                         'protocol': str(service_of_host.service),
                         'banner': str(service_of_host.banner),
-                        'project_name': self.project_name,
-                        'scan_id': str(uuid4())
-                    }, str(self.task_id))
-
-                    update_banner('209bde4a-de21-41a1-a8b6-ce5ae211633d', 'jopa', str(self.task_id))
+                        'project_uuid': self.project_uuid
+                    })
                        
 '''
         scans = session.query(Scan).filter_by(
