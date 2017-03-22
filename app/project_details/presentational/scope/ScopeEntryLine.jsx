@@ -38,7 +38,11 @@ class ScopeEntryLine extends React.Component {
 			</h3>
 		)
 
-		const ports = _.map(this.props.scans, (x) => {
+		const ports = _.map(this.props.scans.sort((a, b) => {
+			if (a["port_number"] > b["port_number"]) return 1;
+			if (a["port_number"] < b["port_number"]) return -1;
+			return 0;
+		}), (x) => {
 			return (
 				<div key={x.scan_id + '_' + x.port_number}>{x.port_number}</div>
 			)
