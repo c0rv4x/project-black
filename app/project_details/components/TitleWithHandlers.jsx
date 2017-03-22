@@ -43,8 +43,8 @@ class TitleWithHandlers extends React.Component {
 	}	
 
 	runNmapOnlyOpen() {
-		var targets = _.map(this.props.scopes, (x) => {
-			return x.ip_address;
+		var targets = _.map(this.props.scans, (x) => {
+			return x.target;
 		});
 
 		for (var target of targets) {
