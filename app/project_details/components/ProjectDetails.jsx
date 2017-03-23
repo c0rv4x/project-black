@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 
-import TitleWithHandlers from './TitleWithHandlers.jsx'
+import TitleButtonsWithHandlers from './TitleButtonsWithHandlers.jsx'
 import ProjectCommentTracked from './ProjectCommentTracked.jsx'
 import ScopeTracked from './ScopeTracked.jsx'
 import Tasks from '../presentational/tasks/Tasks.jsx';
@@ -15,7 +15,7 @@ class ProjectDetails extends React.Component {
 	render() {
 		return (
 			<div>
-				<TitleWithHandlers scopes={this.props.scopes}
+				<TitleButtonsWithHandlers scopes={this.props.scopes}
 								   project={this.props.project} 
 								   scans={this.props.scans} />
 

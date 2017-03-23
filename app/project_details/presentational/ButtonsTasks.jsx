@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap';
 
 
-class TitleButtonsTasks extends React.Component {
+class ButtonsTasks extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -10,7 +10,7 @@ class TitleButtonsTasks extends React.Component {
 
 	render() {
 		return (
-			<h2>Project project_name<span>  </span>
+			<div>
 				<DropdownButton bsStyle="default" title="Start Task" id="dropdown-basic">
 					<MenuItem eventKey="1" onClick={this.props.runMasscan}>Masscan</MenuItem>
 					<MenuItem eventKey="2" onClick={this.props.runNmap}>Nmap</MenuItem>
@@ -20,10 +20,10 @@ class TitleButtonsTasks extends React.Component {
 				<Button onClick={() => this.props.resolveScopes(null, this.props.project.project_uuid)}>
 					Resolve Scopes
 				</Button>
-			</h2>
+			</div>
 		)
 	}
 
 }
 
-export default TitleButtonsTasks;
+export default ButtonsTasks;

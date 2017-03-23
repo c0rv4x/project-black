@@ -3,10 +3,10 @@ import { Button, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap';
 
 import TasksSocketioEventsEmitter from '../../common/tasks/TasksSocketioEventsEmitter.js';
 import ScopesSocketioEventsEmitter from '../../common/scopes/ScopesSocketioEventsEmitter.js';
-import TitleButtonsTasks from '../presentational/TitleButtonsTasks.jsx';
+import ButtonsTasks from '../presentational/ButtonsTasks.jsx';
 
 
-class TitleWithHandlers extends React.Component {
+class TitleButtonsWithHandlers extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -82,7 +82,7 @@ class TitleWithHandlers extends React.Component {
 
 	render() {
 		return (
-			<TitleButtonsTasks project={this.props.project}
+			<ButtonsTasks project={this.props.project}
 							   runMasscan={this.runMasscan}
 							   runNmap={this.runNmap}
 							   runNmapOnlyOpen={this.runNmapOnlyOpen}
@@ -93,4 +93,4 @@ class TitleWithHandlers extends React.Component {
 }
 
 
-export default TitleWithHandlers;
+export default TitleButtonsWithHandlers;
