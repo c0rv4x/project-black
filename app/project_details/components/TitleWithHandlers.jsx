@@ -27,7 +27,7 @@ class TitleWithHandlers extends React.Component {
 
 		this.tasksEmitter.requestCreateTask('masscan', 
 											targets, 
-											{'program': ['-p80-1000']}, 
+											{'program': ['-p80']}, 
 											this.props.project.project_uuid)
 	}
 
