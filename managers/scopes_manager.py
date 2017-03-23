@@ -129,11 +129,18 @@ class ScopeManager(object):
                 answers = resolver.query(hostname, 'A').response.answer
                 for answer in answers:
                     for address in answer:
-                        self.create_scope(hostname=hostname,
-                                          ip_address=str(address),
-                                          project_uuid=project_uuid)
+                        result = self.create_scope(hostname=hostname,
+                                                   ip_address=str(address),
+                                                   project_uuid=project_uuid)
+
+                        if result["status"] == 'success':
+                            self.delete_scope(hostname=hostname, ip_address=None)
+
             except dns.resolver.NXDOMAIN as e:
-                pass
+                return {
+                    "status": "error",
+                    "text": "No such domain"               
+                }
 
 
     def resolve_scopes(self, project_uuid, scope_ids=None):
