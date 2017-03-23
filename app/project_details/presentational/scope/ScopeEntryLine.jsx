@@ -1,5 +1,11 @@
 import React from 'react';
-import { Button, Panel, Glyphicon } from 'react-bootstrap';
+import { 
+	Button, 
+	Panel, 
+	Glyphicon,
+	ListGroup,
+	ListGroupItem
+} from 'react-bootstrap';
 
 
 class ScopeEntryLine extends React.Component {
@@ -12,14 +18,14 @@ class ScopeEntryLine extends React.Component {
 		var rendered_ip_address = null;
 		if (this.props.scope.ip_address) {
 			rendered_ip_address = (
-				<span>{this.props.scope.ip_address}</span>
+				<span>{this.props.scope.ip_address}
+				<Glyphicon glyph="remove-circle" onClick={this.props.deleteScope} /></span>
 			)
 		}
 
 		const header = ( 
 			<h3>
 				{rendered_ip_address}
-				<Glyphicon glyph="remove-circle" onClick={this.props.deleteScope} />
 			</h3>
 		)
 
@@ -29,16 +35,17 @@ class ScopeEntryLine extends React.Component {
 			return 0;
 		}), (x) => {
 			return (
-				<div key={x.scan_id + '_' + x.port_number}>{x.port_number} <span>{x.banner}</span></div>
+				<ListGroupItem key={x.scan_id + '_' + x.port_number}>
+					{x.port_number} <span>{x.banner}</span>
+				</ListGroupItem>
 			)
 		})
 		return (
-			<div>
-				<Panel header={header}>
-					{ports}
-				</Panel>
-			</div>			
-
+			<Panel collapsible defaultExpanded header={header}>
+				<ListGroup fill>
+						{ports}
+				</ListGroup>		
+			</Panel>
 		)
 	}
 }
