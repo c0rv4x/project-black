@@ -2,7 +2,8 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import ProjectDetails from './ProjectDetails.jsx';
-import { updateComment } from '../../common/projects/actions';
+import { updateComment as updateProjectComment } from '../../common/projects/actions';
+import { updateComment as updateScopeComment } from '../../common/scopes/actions';
 
 
 function mapStateToProps(state, ownProps){
@@ -40,10 +41,16 @@ function mapStateToProps(state, ownProps){
 const mapDispatchToProps = (dispatch) => {
 	return {
 		onProjectCommentChange: (comment, project_uuid) => {
-			dispatch(updateComment({
+			dispatch(updateProjectComment({
 				'comment': comment, 
 				'project_uuid': project_uuid
 			}))
+		},
+		onScopeCommentChange: (comment, scope_id) => {
+			dispatch(updateScopeComment({
+				'comment': comment, 
+				'scope_id': scope_id
+			}))			
 		}
 	}
 }

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { 
 	CREATE_SCOPE, 
 	DELETE_SCOPE, 
-	UPDATE_SCOPE, 
+	UPDATE_COMMENT, 
 	RENEW_SCOPES 
 } from './actions.js'
 
@@ -57,6 +57,21 @@ function renew_scopes(state = [], action) {
 	}		
 }
 
+function update_comment(state = [], action) {
+	const scope_id = action.message['scope_id'];
+	const new_comment = action.message['comment'];
+
+	var new_state = state.slice();
+	for (var scope of new_state) {
+		if (scope.scope_id == scope_id) {
+			scope.comment = new_comment;
+		}
+		else continue
+	}
+
+	return new_state;
+}
+
 function scope_reduce(state = [], action) {
 	switch (action.type) {
 		case CREATE_SCOPE:
@@ -65,6 +80,8 @@ function scope_reduce(state = [], action) {
 			return delete_scope(state, action);
 		case RENEW_SCOPES:
 			return renew_scopes(state, action);
+		case UPDATE_COMMENT:
+			return update_comment(state, action);
 		default:
 			return state;
 	}

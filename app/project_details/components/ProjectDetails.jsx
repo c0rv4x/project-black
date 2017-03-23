@@ -25,6 +25,8 @@ class ProjectDetails extends React.Component {
 									   onCommentChange={this.props.onProjectCommentChange} />
 				<ScopeTracked project={this.props.project}
 							  scopes={this.props.scopes}
+							  onCommentChange={this.props.onScopeCommentChange}
+
 							  scans={this.props.scans} />
 			</div>
 		)

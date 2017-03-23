@@ -43,9 +43,10 @@ class ScopeTracked extends React.Component {
 			   			    } />
 
 				<ScopeTable scopes={this.props.scopes}
+							onCommentChange={this.props.onCommentChange}
 							deleteScope={this.deleteScope}
 
-							scans={this.props.scans}/>
+							scans={this.props.scans} />
 			</div>
 		)
 	}
