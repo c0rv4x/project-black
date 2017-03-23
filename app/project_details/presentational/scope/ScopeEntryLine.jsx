@@ -16,25 +16,10 @@ class ScopeEntryLine extends React.Component {
 			)
 		}
 
-		var rendered_hostname = null;
-		if (this.props.scope.hostname) {
-			if (this.props.scope.ip_address) {
-				rendered_hostname = (
-					<span>{"  -  " + this.props.scope.hostname}</span>
-				)
-			}
-			else {
-				rendered_hostname = (
-					<span>{this.props.scope.hostname}</span>
-				)					
-			}
-		}
-
 		const header = ( 
 			<h3>
 				{rendered_ip_address}
-				{rendered_hostname}
-				<Button onClick={this.props.deleteScope}><Glyphicon glyph="remove"/></Button>
+				<Glyphicon glyph="remove-circle" onClick={this.props.deleteScope} />
 			</h3>
 		)
 
@@ -44,7 +29,7 @@ class ScopeEntryLine extends React.Component {
 			return 0;
 		}), (x) => {
 			return (
-				<div key={x.scan_id + '_' + x.port_number}>{x.port_number}|{x.banner}</div>
+				<div key={x.scan_id + '_' + x.port_number}>{x.port_number} <span>{x.banner}</span></div>
 			)
 		})
 		return (

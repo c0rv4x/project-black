@@ -1,8 +1,9 @@
 import React from 'react'
 
 import ScopesSocketioEventsEmitter from '../../common/scopes/ScopesSocketioEventsEmitter.js';
-import ProjectScope from '../presentational/scope/ProjectScope.jsx';
 
+import ScopeAdder from '../presentational/scope/ScopeAdder.jsx'
+import ScopeTable from '../presentational/scope/ScopeTable.jsx'
 
 class ScopeTracked extends React.Component {
 
@@ -34,16 +35,18 @@ class ScopeTracked extends React.Component {
 
 	render() {
 		return (
-			<ProjectScope newScopeInput={this.state.newScopeInput}
-						  handleNewScopeChange={this.handleNewScopeChange}
-						  onNewScopeClick={
-					    	(scopes) => 
-					    		this.submitNewScope(scopes)
-		   			      } 
+			<div>
+				<ScopeAdder newScopeInput={this.state.newScopeInput}
+							handleNewScopeChange={this.handleNewScopeChange}
+							onNewScopeClick={
+						      (scopes) => this.submitNewScope(scopes)
+			   			    } />
 
-						  deleteScope={this.deleteScope}
-						  scopes={this.props.scopes} 
-						  scans={this.props.scans}/>
+				<ScopeTable scopes={this.props.scopes}
+							deleteScope={this.deleteScope}
+
+							scans={this.props.scans}/>
+			</div>
 		)
 	}
 
