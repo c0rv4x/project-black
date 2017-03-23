@@ -28,7 +28,7 @@ class ScopeEntryLine extends React.Component {
 
 		const header = ( 
 			<h3>
-				{rendered_ip_address}
+				{rendered_ip_address || this.props.scope.hostname}
 			</h3>
 		)
 
