@@ -74,8 +74,6 @@ class TitleWithHandlers extends React.Component {
 												this.props.project.project_uuid)
 		}
 
-
-
 	}	
 
 	resolveScopes(scopes_ids, project_uuid) {

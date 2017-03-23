@@ -29,19 +29,19 @@ class ScopeManager(object):
             scopes_from_db))
         sessions.destroy_session(session)  
 
-    def find_scope(self, hostname=None, ip_address=None, project_uuid=None, scope_id=None):
+    def find_scope(self, hostname="N/A", ip_address="N/A", project_uuid="N/A", scope_id="N/A"):
         """ Serach for a scope with a specific name """
         filtered = self.scopes
-        if hostname:
+        if hostname != "N/A":
             filtered = list(filter(lambda x: x['hostname'] == hostname, filtered))
 
-        if ip_address:
+        if ip_address != "N/A":
             filtered = list(filter(lambda x: x['ip_address'] == ip_address, filtered))
 
-        if project_uuid:
+        if project_uuid != "N/A":
             filtered = list(filter(lambda x: x['project_uuid'] == project_uuid, filtered))
 
-        if scope_id:
+        if scope_id != "N/A":
             filtered = list(filter(lambda x: x['scope_id'] == scope_id, filtered))
 
         return filtered
@@ -89,7 +89,7 @@ class ScopeManager(object):
                 "new_scope": None
             }
 
-    def delete_scope(self, hostname=None, ip_address=None, project_uuid=None, scope_id=None):
+    def delete_scope(self, hostname="N/A", ip_address="N/A", project_uuid="N/A", scope_id="N/A"):
         """ Deletes a new scope """
         filtered_scopes = self.find_scope(hostname, ip_address, project_uuid, scope_id)
 
