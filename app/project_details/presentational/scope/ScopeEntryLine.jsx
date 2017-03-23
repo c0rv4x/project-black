@@ -40,7 +40,9 @@ class ScopeEntryLine extends React.Component {
 			return (
 				<ListGroupItem key={x.scan_id + '_' + x.port_number}>
 					<Row>
-						<Col md={1}>{x.port_number}</Col><Col md={11}>{x.banner}</Col>
+						<Col md={1}>{x.port_number}</Col>
+						<Col md={1}>{x.protocol}</Col>
+						<Col md={10}>{x.banner}</Col>
 					</Row>
 				</ListGroupItem>
 			)
