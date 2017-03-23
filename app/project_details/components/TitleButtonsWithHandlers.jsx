@@ -27,7 +27,7 @@ class TitleButtonsWithHandlers extends React.Component {
 
 		this.tasksEmitter.requestCreateTask('masscan', 
 											targets, 
-											{'program': ['-p80']}, 
+											{'program': ['-p80,443']}, 
 											this.props.project.project_uuid)
 	}
 
