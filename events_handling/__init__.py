@@ -31,17 +31,13 @@ class Handlers(object):
     def sender_loop(self):
         while True:
             self.socketio.sleep(0.7)
-            print("sending tasks back")
             self.taskHandlers.send_tasks_back()
 
             try:
                 updated = self.data_updated_queue.get_nowait()
 
                 if updated == "scan":
-                    print("smooth sending scans back")
                     self.scanHandlers.send_scans_back()
                     self.data_updated_queue.task_done()
             except queue.Empty as e:
-                print("no data")
-
                 continue
