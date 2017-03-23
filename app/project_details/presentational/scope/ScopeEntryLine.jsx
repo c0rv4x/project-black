@@ -7,6 +7,7 @@ import {
 	ListGroupItem
 } from 'react-bootstrap';
 
+import ScopeComment from './ScopeComment.jsx';
 
 class ScopeEntryLine extends React.Component {
 
@@ -43,7 +44,10 @@ class ScopeEntryLine extends React.Component {
 		return (
 			<Panel collapsible defaultExpanded header={header}>
 				<ListGroup fill>
-						{ports}
+					<ListGroupItem>
+					<ScopeComment />
+					</ListGroupItem>
+					{ports}
 				</ListGroup>		
 			</Panel>
 		)
