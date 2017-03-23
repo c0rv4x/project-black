@@ -39,7 +39,7 @@ function mapStateToProps(state, ownProps){
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		onCommentChange: (comment, project_uuid) => {
+		onProjectCommentChange: (comment, project_uuid) => {
 			dispatch(updateComment({
 				'comment': comment, 
 				'project_uuid': project_uuid

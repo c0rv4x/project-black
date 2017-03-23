@@ -22,7 +22,7 @@ class ProjectDetails extends React.Component {
 				<hr/>
 				<Tasks tasks={this.props.tasks} />
 				<ProjectCommentTracked project={this.props.project}
-									   onCommentChange={this.props.onCommentChange} />
+									   onCommentChange={this.props.onProjectCommentChange} />
 				<ScopeTracked project={this.props.project}
 							  scopes={this.props.scopes}
 							  scans={this.props.scans} />
