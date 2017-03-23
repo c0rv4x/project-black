@@ -1,4 +1,4 @@
-# import threading
+import queue
 
 from events_handling.projects_handlers import ProjectHandlers
 from events_handling.scopes_handlers import ScopeHandlers
@@ -12,9 +12,12 @@ class Handlers(object):
     def __init__(self, socketio):
         self.socketio = socketio
 
+        # This queue keeps messages that indicate, that scope should be updated
+        self.data_updated_queue = queue.Queue()
+
         self.project_manager = ProjectManager()
         self.scope_manager = ScopeManager()
-        self.task_manager = TaskManager()
+        self.task_manager = TaskManager(self.data_updated_queue)
         self.scan_manager = ScanManager()
 
         self.projectHandlers = ProjectHandlers(self.socketio, self.project_manager)
@@ -28,6 +31,17 @@ class Handlers(object):
     def sender_loop(self):
         while True:
             self.socketio.sleep(0.7)
+            print("sending tasks back")
             self.taskHandlers.send_tasks_back()
-            self.scanHandlers.send_scans_back()
 
+            try:
+                updated = self.data_updated_queue.get_nowait()
+
+                if updated == "scan":
+                    print("smooth sending scans back")
+                    self.scanHandlers.send_scans_back()
+                    self.data_updated_queue.task_done()
+            except queue.Empty as e:
+                print("no data")
+
+                continue

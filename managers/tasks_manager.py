@@ -83,7 +83,9 @@ class ShadowTask(object):
 class TaskManager(object):
     """ TaskManager keeps track of all tasks in the system,
     exposing some interfaces for public use. """
-    def __init__(self):
+    def __init__(self, data_updated_queue):
+        self.data_updated_queue = data_updated_queue
+
         self.active_tasks = list()
         self.finished_tasks = list()
 
@@ -128,6 +130,7 @@ class TaskManager(object):
                 if new_status == 'Finished' or new_status == 'Aborted':
                     self.active_tasks.remove(task)
                     self.finished_tasks.append(task)
+                    self.data_updated_queue.put("scan")
 
                 break
 
