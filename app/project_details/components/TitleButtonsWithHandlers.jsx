@@ -83,10 +83,10 @@ class TitleButtonsWithHandlers extends React.Component {
 	render() {
 		return (
 			<ButtonsTasks project={this.props.project}
-							   runMasscan={this.runMasscan}
-							   runNmap={this.runNmap}
-							   runNmapOnlyOpen={this.runNmapOnlyOpen}
-							   resolveScopes={this.resolveScopes}/>
+						  runMasscan={this.runMasscan}
+						  runNmap={this.runNmap}
+						  runNmapOnlyOpen={this.runNmapOnlyOpen}
+						  resolveScopes={this.resolveScopes}/>
 		)
 	}
 
