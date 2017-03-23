@@ -21,7 +21,8 @@ function create_scope(state = [], action) {
 				"project_uuid": message["project_uuid"],
 				"scope_id": x["scope_id"],
 				"hostname": x["hostname"],
-				"ip_address": x["ip_address"]
+				"ip_address": x["ip_address"],
+				"comment": x["comment"]
 			}
 		}));
 	} else {

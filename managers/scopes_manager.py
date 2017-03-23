@@ -46,7 +46,7 @@ class ScopeManager(object):
 
         return filtered
 
-    def create_scope(self, hostname, ip_address, project_uuid, scope_id=None):
+    def create_scope(self, hostname, ip_address, project_uuid, scope_id=None, comment="test"):
         """ Creates a new scope """
         found_scopes = self.find_scope(hostname=hostname, ip_address=ip_address, project_uuid=project_uuid)
 
@@ -58,7 +58,8 @@ class ScopeManager(object):
                 new_scope = Scope(scope_id=ready_scope_id,
                                   hostname=hostname,
                                   ip_address=ip_address,
-                                  project_uuid=project_uuid)
+                                  project_uuid=project_uuid,
+                                  comment=comment)
                 session.add(new_scope)
                 session.commit()
                 sessions.destroy_session(session)
@@ -72,7 +73,8 @@ class ScopeManager(object):
                 "hostname": hostname,
                 "ip_address": ip_address,
                 "scope_id": ready_scope_id,
-                "project_uuid": project_uuid
+                "project_uuid": project_uuid,
+                "comment": comment
             }
 
             # Append the new scope to existing

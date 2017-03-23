@@ -21,7 +21,8 @@ class ScopeComment extends React.Component {
 
 					<FormControl placeholder="Test"
 				                 type="text" 
-				                 componentClass="textarea"/>	
+				                 componentClass="textarea"
+				                 value={this.props.commentValue} />	
 				</FormGroup>
 			    <Button bsSize="small">Save comment</Button>			
 			</div>

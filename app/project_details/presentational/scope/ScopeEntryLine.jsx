@@ -46,12 +46,13 @@ class ScopeEntryLine extends React.Component {
 					</Row>
 				</ListGroupItem>
 			)
-		})
+		});
+
 		return (
 			<Panel collapsible defaultExpanded header={header}>
 				<ListGroup fill>
 					<ListGroupItem>
-					<ScopeComment />
+					<ScopeComment commentValue={this.props.scope.comment}/>
 					</ListGroupItem>
 					{ports}
 				</ListGroup>		
