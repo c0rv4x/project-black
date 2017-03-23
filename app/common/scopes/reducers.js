@@ -4,7 +4,8 @@ import {
 	CREATE_SCOPE, 
 	DELETE_SCOPE, 
 	UPDATE_COMMENT, 
-	RENEW_SCOPES 
+	RENEW_SCOPES,
+	UPDATE_SCOPES
 } from './actions.js'
 
 
@@ -72,6 +73,30 @@ function update_comment(state = [], action) {
 	return new_state;
 }
 
+function update_scopes(state = [], action) {
+	const message = action.message;
+
+	if (message["status"] == "success") {
+		var new_state = state.slice();
+		var updated_scopes = message["updated_scopes"];
+		var ids_to_update = Object.keys(updated_scopes);
+
+		for (var scope of state) {
+			if (ids_to_update.indexOf(scope["scope_id"]) !== -1) {
+				var target_id = scope["scope_id"];
+
+				scope.comment = updated_scopes[target_id]["comment"];
+			}
+		}
+
+		return state
+
+	} else {
+		/* TODO: add error handling */
+	}
+
+}
+
 function scope_reduce(state = [], action) {
 	switch (action.type) {
 		case CREATE_SCOPE:
@@ -82,6 +107,8 @@ function scope_reduce(state = [], action) {
 			return renew_scopes(state, action);
 		case UPDATE_COMMENT:
 			return update_comment(state, action);
+		case UPDATE_SCOPES:
+			return update_scopes(state, action);
 		default:
 			return state;
 	}

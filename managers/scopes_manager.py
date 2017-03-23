@@ -21,10 +21,11 @@ class ScopeManager(object):
         session = sessions.get_new_session()
         scopes_from_db = session.query(Scope).all()
         self.scopes = list(map(lambda x: {
-            'hostname': x.hostname, 
-            'ip_address': x.ip_address,
-            'project_uuid': x.project_uuid,
-            'scope_id': x.scope_id
+                'hostname': x.hostname, 
+                'ip_address': x.ip_address,
+                'project_uuid': x.project_uuid,
+                'scope_id': x.scope_id,
+                'comment': x.comment
             }, 
             scopes_from_db))
         sessions.destroy_session(session)  
@@ -168,3 +169,46 @@ class ScopeManager(object):
 
         for scope in to_resolve:
             self.resolve_single_scope(scope, resolver)
+
+    def update_scope(self, scope_id, comment):
+        """ For now, it updated only comment.
+        Attention: we will update all the similar scopes with 
+        that same comment. """
+        try:
+            session = sessions.get_new_session()
+            scope_from_db = session.query(Scope).filter_by(scope_id=scope_id).first()
+
+            hostname = scope_from_db.hostname
+            ip_address = scope_from_db.ip_address
+
+            similar_scopes_from_db = session.query(Scope).filter_by(
+                hostname=hostname, 
+                ip_address=ip_address).all()
+
+            to_update_ids_local = list()
+            for scope in similar_scopes_from_db:
+                to_update_ids_local.append(scope.scope_id)
+                scope.comment = comment
+
+            session.commit()
+            sessions.destroy_session(session)
+
+
+            updated = dict()
+            to_update_locally = list(filter(lambda x: x["scope_id"] in to_update_ids_local , self.get_scopes()))
+
+            for local_scope in to_update_locally:
+                local_scope["comment"] = comment
+                updated[local_scope["scope_id"]] = local_scope
+
+        except Exception as e:
+            return {
+                "status": "error",
+                "text": str(e)
+            }
+        else:
+            return {
+                "status": "success",
+                "updated_scopes": updated
+
+            }

@@ -25,7 +25,7 @@ class ScopeComment extends React.Component {
 				                 value={this.props.commentValue} 
 				                 onChange={this.props.onCommentChange}/>	
 				</FormGroup>
-			    <Button bsSize="small">Save comment</Button>			
+			    <Button bsSize="small" onClick={this.props.onCommentSubmit}>Save comment</Button>			
 			</div>
 		)
 	}

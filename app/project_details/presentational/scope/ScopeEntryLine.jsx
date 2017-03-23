@@ -53,7 +53,8 @@ class ScopeEntryLine extends React.Component {
 				<ListGroup fill>
 					<ListGroupItem>
 						<ScopeComment commentValue={this.props.scope.comment}
-									  onCommentChange={this.props.onCommentChange}/>
+									  onCommentChange={this.props.onCommentChange}
+									  onCommentSubmit={this.props.onCommentSubmit}/>
 					</ListGroupItem>
 					{ports}
 				</ListGroup>		

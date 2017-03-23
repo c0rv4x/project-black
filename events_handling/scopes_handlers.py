@@ -111,3 +111,20 @@ class ScopeHandlers(object):
                 'status' : 'success',
                 'scopes' :scope_manager.get_scopes()
             }, broadcast=True)
+
+        @socketio.on('scopes:update')
+        def handle_scope_update(msg): 
+            """ Update the scope (now only used for comment). """
+            scope_id = msg['scope_id']
+            comment = msg['comment']
+
+            result = scope_manager.update_scope(scope_id=scope_id, comment=comment)
+            if result["status"] == "success":
+                updated_scopes = result["updated_scopes"]
+
+                socketio.emit('scopes:update:back', {
+                    "status": "success",
+                    "updated_scopes": updated_scopes
+                })
+            else :
+                socketio.emit('scopes:update:back', result)

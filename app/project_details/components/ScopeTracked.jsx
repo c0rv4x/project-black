@@ -3,7 +3,7 @@ import React from 'react'
 import ScopesSocketioEventsEmitter from '../../common/scopes/ScopesSocketioEventsEmitter.js';
 
 import ScopeAdder from '../presentational/scope/ScopeAdder.jsx'
-import ScopeTable from '../presentational/scope/ScopeTable.jsx'
+import ScopeTable from './ScopeTable.jsx'
 
 class ScopeTracked extends React.Component {
 

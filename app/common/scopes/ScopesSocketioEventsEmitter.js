@@ -67,6 +67,13 @@ class ScopesSocketioEventsEmitter {
 		this.connector.emit('scopes:all:get');
 	}
 
+	requestUpdateScope(comment, scope_id) {
+		this.connector.emit('scopes:update', {
+			'scope_id': scope_id,
+			'comment': comment
+		});
+	}
+
 }
 
 export default ScopesSocketioEventsEmitter;
