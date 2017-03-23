@@ -24,16 +24,6 @@ class MasscanTask(AsyncTask):
         self.stderr = []
 
         if type(self.target) == list:
-            # targets = []
-            # for target in self.target:
-            #     if re.match(r'^([a-zA-Z]{1}[a-zA-Z0-9\-]{0,255}\.){1,}[a-zA-Z]{2,15}$', target):
-            #         try:
-            #             targets.append(socket.gethostbyname(target))
-            #         except Exception as e:
-            #             pass
-            #     else:
-            #         targets.append(target)
-
             self.target = ",".join(self.target)
         print(self.target)
 
