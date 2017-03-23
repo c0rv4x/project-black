@@ -28,7 +28,7 @@ class NmapTask(AsyncTask):
         self.command = ['nmap', '-oX', '-'] + self.params['program'] + [self.target]
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
-        self.set_status("Working")
+        self.set_status("Working", 0, "")
         loop = asyncio.get_event_loop()
         loop.create_task(self.read_stdout())
         loop.create_task(self.read_stderr())
