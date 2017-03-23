@@ -4,7 +4,9 @@ import {
 	Panel, 
 	Glyphicon,
 	ListGroup,
-	ListGroupItem
+	ListGroupItem,
+	Row,
+	Col
 } from 'react-bootstrap';
 
 import ScopeComment from './ScopeComment.jsx';
@@ -37,7 +39,9 @@ class ScopeEntryLine extends React.Component {
 		}), (x) => {
 			return (
 				<ListGroupItem key={x.scan_id + '_' + x.port_number}>
-					{x.port_number} <span>{x.banner}</span>
+					<Row>
+						<Col md={1}>{x.port_number}</Col><Col md={11}>{x.banner}</Col>
+					</Row>
 				</ListGroupItem>
 			)
 		})
