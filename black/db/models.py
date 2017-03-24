@@ -25,7 +25,7 @@ class Project(Base):
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
 
     # Some relationships
-    scopes_relationship = relationship('Scope', cascade="all, delete-orphan")
+    scopes_relationship = relationship('IP_addr', cascade="all, delete-orphan")
     tasks_relationship = relationship('Task', cascade="all, delete-orphan")
     scans_relationship = relationship('Scan', cascade="all, delete-orphan")
 
@@ -72,18 +72,15 @@ class Task(Base):
     #                         self.project_uuid)
 
 
-class Scope(Base):
+class IP_addr(Base):
     """ Kepps the data on scope:
     * Hostnames
     * IPs
     * Related data (like, 'scope_id' and the project name)  """
-    __tablename__ = 'scopes'
+    __tablename__ = 'ips'
 
     # Primary key (probably uuid4)
     scope_id = Column(String, primary_key=True)
-
-    # The hostname can be either string or None
-    hostname = Column(String)
 
     # IP address is a string (probably None, but not sure if 
     #    is needed)
@@ -103,7 +100,7 @@ class Scope(Base):
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
 
     def __repr__(self):
-       return """<Scope(scope_id='%s', hostname='%s',
+       return """<IP_addr(scope_id='%s', hostname='%s',
                         ip_address='%s', project_uuid='%s')>""" % (
                         self.scope_id, self.hostname,
                         self.ip_address, self.project_uuid)
@@ -148,7 +145,7 @@ class Scan(Base):
 
 
 # class Screenshot(Base):
-#     """ Keeps the data on the screenshots. Referneces to Scope"""
+#     """ Keeps the data on the screenshots. Referneces to IP"""
 #     __tablename__ = 'screenshots'
 
 #     # Primary key
