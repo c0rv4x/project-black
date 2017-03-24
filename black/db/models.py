@@ -25,7 +25,8 @@ class Project(Base):
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
 
     # Some relationships
-    scopes_relationship = relationship('IP_addr', cascade="all, delete-orphan")
+    ips_relationship = relationship('IP_addr', cascade="all, delete-orphan")
+    hosts_relationship = relationship('Host', cascade="all, delete-orphan")
     tasks_relationship = relationship('Task', cascade="all, delete-orphan")
     scans_relationship = relationship('Scan', cascade="all, delete-orphan")
 
@@ -80,7 +81,7 @@ class IP_addr(Base):
     __tablename__ = 'ips'
 
     # Primary key (probably uuid4)
-    scope_id = Column(String, primary_key=True)
+    ip_id = Column(String, primary_key=True)
 
     # IP address is a string (probably None, but not sure if 
     #    is needed)
@@ -100,9 +101,9 @@ class IP_addr(Base):
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
 
     def __repr__(self):
-       return """<IP_addr(scope_id='%s', hostname='%s',
+       return """<IP_addr(ip_id='%s', hostname='%s',
                         ip_address='%s', project_uuid='%s')>""" % (
-                        self.scope_id, self.hostname,
+                        self.ip_id, self.hostname,
                         self.ip_address, self.project_uuid)
 
 
@@ -130,9 +131,7 @@ class Scan(Base):
     # screenshot_path = Column(String)
 
     # ID of the related task (the task, which resulted in the current data)
-    # TODO: should think about the following:
-    #    many scans can update one record, should we store all the ids?
-    tasks_ids = Column(String) # TODO: add on_delete
+    task_id = Column(String, ForeignKey('tasks.task_id'))
 
     # The name of the related project
     project_uuid = Column(String, ForeignKey('projects.project_uuid', ondelete='CASCADE'))
@@ -142,6 +141,33 @@ class Scan(Base):
     # def __repr__(self):
     #    return "<Scan(project_uuid='%s'>" % (
     #                         self.project_uuid)
+
+
+class Host(Base):
+    """ Keeps hosts that point to relative IPs """
+    __tablename__ = 'hosts'
+
+    # Primary key (probably uuid4)
+    host_id = Column(String, primary_key=True)
+
+    # Hostname (dns record-like)
+    hostname = Column(String)
+
+    # IP address of that host
+    ip_address = Column(String, ForeignKey('ips.ip_id'))
+
+    # ID of the related task (the task, which resulted in the current data)
+    task_id = Column(String, ForeignKey('tasks.task_id'))
+
+    # The name of the related project
+    project_uuid = Column(String, ForeignKey('projects.project_uuid', ondelete='CASCADE'))
+
+    # Date of added
+    date_added = Column(DateTime, default=datetime.datetime.utcnow)
+    # def __repr__(self):
+    #    return "<Scan(project_uuid='%s'>" % (
+    #                         self.project_uuid)
+
 
 
 # class Screenshot(Base):
