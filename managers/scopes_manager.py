@@ -2,7 +2,7 @@ import uuid
 import socket
 import dns.resolver
 
-from black.black.db import sessions, Scope
+from black.black.db import sessions, IP_addr, Host
 
 
 class ScopeManager(object):
@@ -19,15 +19,15 @@ class ScopeManager(object):
     def update_from_db(self):
         """ Extract all the scopes from the DB """
         session = sessions.get_new_session()
-        scopes_from_db = session.query(Scope).all()
+        scopes_from_db = session.query(IP_addr).all()
         self.scopes = list(map(lambda x: {
-                'hostname': x.hostname, 
                 'ip_address': x.ip_address,
                 'project_uuid': x.project_uuid,
                 'scope_id': x.scope_id,
                 'comment': x.comment
             }, 
             scopes_from_db))
+
         sessions.destroy_session(session)  
 
     def find_scope(self, hostname="N/A", ip_address="N/A", project_uuid="N/A", scope_id="N/A"):
@@ -56,7 +56,7 @@ class ScopeManager(object):
 
             try: 
                 session = sessions.get_new_session()
-                new_scope = Scope(scope_id=ready_scope_id,
+                new_scope = IP_addr(scope_id=ready_scope_id,
                                   hostname=hostname,
                                   ip_address=ip_address,
                                   project_uuid=project_uuid,
@@ -101,7 +101,7 @@ class ScopeManager(object):
                 # Remove the scope from everywhere
                 try: 
                     session = sessions.get_new_session()
-                    db_obj = session.query(Scope).filter_by(scope_id=to_delete['scope_id']).first()
+                    db_obj = session.query(IP_addr).filter_by(scope_id=to_delete['scope_id']).first()
                     session.delete(db_obj)
                     session.commit()
                     sessions.destroy_session(session)
@@ -176,12 +176,12 @@ class ScopeManager(object):
         that same comment. """
         try:
             session = sessions.get_new_session()
-            scope_from_db = session.query(Scope).filter_by(scope_id=scope_id).first()
+            scope_from_db = session.query(IP_addr).filter_by(scope_id=scope_id).first()
 
             hostname = scope_from_db.hostname
             ip_address = scope_from_db.ip_address
 
-            similar_scopes_from_db = session.query(Scope).filter_by(
+            similar_scopes_from_db = session.query(IP_addr).filter_by(
                 hostname=hostname, 
                 ip_address=ip_address).all()
 
