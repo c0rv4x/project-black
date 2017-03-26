@@ -100,11 +100,39 @@ class IP_addr(Base):
     # Date of adding
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
 
+    hostnames_raltionship = relationship("Host", back_populates="ip_address_raltionship")
+
     def __repr__(self):
        return """<IP_addr(ip_id='%s', hostname='%s',
                         ip_address='%s', project_uuid='%s')>""" % (
                         self.ip_id, self.hostname,
                         self.ip_address, self.project_uuid)
+
+class Host(Base):
+    """ Keeps hosts that point to relative IPs """
+    __tablename__ = 'hosts'
+
+    # Primary key (probably uuid4)
+    host_id = Column(String, primary_key=True)
+
+    # Hostname (dns record-like)
+    hostname = Column(String)
+
+    # IP address of that host
+    ip_address = Column(String, ForeignKey('ips.ip_id'))
+    ip_address_raltionship = relationship("IP_addr", back_populates="hostnames_raltionship")
+
+    # ID of the related task (the task, which resulted in the current data)
+    task_id = Column(String, ForeignKey('tasks.task_id'))
+
+    # The name of the related project
+    project_uuid = Column(String, ForeignKey('projects.project_uuid', ondelete='CASCADE'))
+
+    # Date of added
+    date_added = Column(DateTime, default=datetime.datetime.utcnow)
+    # def __repr__(self):
+    #    return "<Scan(project_uuid='%s'>" % (
+    #                         self.project_uuid)
 
 
 class Scan(Base):
@@ -141,33 +169,6 @@ class Scan(Base):
     # def __repr__(self):
     #    return "<Scan(project_uuid='%s'>" % (
     #                         self.project_uuid)
-
-
-class Host(Base):
-    """ Keeps hosts that point to relative IPs """
-    __tablename__ = 'hosts'
-
-    # Primary key (probably uuid4)
-    host_id = Column(String, primary_key=True)
-
-    # Hostname (dns record-like)
-    hostname = Column(String)
-
-    # IP address of that host
-    ip_address = Column(String, ForeignKey('ips.ip_id'))
-
-    # ID of the related task (the task, which resulted in the current data)
-    task_id = Column(String, ForeignKey('tasks.task_id'))
-
-    # The name of the related project
-    project_uuid = Column(String, ForeignKey('projects.project_uuid', ondelete='CASCADE'))
-
-    # Date of added
-    date_added = Column(DateTime, default=datetime.datetime.utcnow)
-    # def __repr__(self):
-    #    return "<Scan(project_uuid='%s'>" % (
-    #                         self.project_uuid)
-
 
 
 # class Screenshot(Base):
