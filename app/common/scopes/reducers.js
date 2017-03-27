@@ -10,25 +10,43 @@ import {
 
 
 const initialState = {
-	scopes: {
-		"ips": [],
-		"hosts": []
-	}
+	"ips": [],
+	"hosts": []
 }
 
 function create_scope(state = initialState, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
-		return state.concat(_.map(message["new_scopes"], (x) => {
+		var new_state = Object.assign({}, state, null);
+
+		var new_ips = _.filter(message["new_scopes"], (x) => {
+			return x['type'] == 'ip';
+		})
+		new_state['ips'] = new_state['ips'].concat(_.map(new_ips, (x) => {
 			return {
-				"project_uuid": message["project_uuid"],
 				"_id": x["_id"],
-				"hostname": x["hostname"],
 				"ip_address": x["ip_address"],
-				"comment": x["comment"]
+				"hostnames": x["hostnames"],
+				"comment": x["comment"],
+				"project_uuid": message["project_uuid"]
 			}
 		}));
+
+
+		var new_hosts = _.filter(message["new_scopes"], (x) => {
+			return x['type'] == 'host';
+		})
+		new_state['hosts'] = new_state['hosts'].concat(_.map(new_hosts, (x) => {
+			return {
+				"_id": x["_id"],
+				"hostname": x["hostname"],
+				"comment": x["comment"],
+				"project_uuid": message["project_uuid"]
+			}
+		}))
+
+		return new_state;
 	} else {
 		/* TODO: add error handling */
 	}
