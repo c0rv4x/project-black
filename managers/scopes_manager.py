@@ -5,210 +5,117 @@ import dns.resolver
 from black.black.db import sessions, IP_addr, Host
 
 
+class IP(object):
+    def __init__(self, _id, ip_address, hostnames, comment, project_uuid):
+        self._id = _id
+        self.ip_address = ip_address
+        self.hostnames = hostnames
+        self.comment = comment
+        self.project_uuid = project_uuid
+
+    def get_id(self):
+        return self._id
+
+    def get_ip_address(self):
+        return self.ip_address
+
+    def get_hostnames(self):
+        return self.hostnames
+
+    def get_comment(self):
+        return self.comment
+
+    def get_project_uuid(self):
+        return self.project_uuid
+
+    def toJSON(self):
+        return {
+            '_id': self.get_id(),
+            'ip_address': self.get_ip_address(),
+            'hostnames': self.get_hostnames(),
+            'comment': self.get_comment(),
+            'project_uuid': self.get_project_uuid()
+        }
+
+    def save(self):
+        try:
+            session = sessions.get_new_session()
+            db_object = IP_addr(ip_id=self._id, 
+                                ip_address=self.ip_address, 
+                                comment=self.comment, 
+                                project_uuid=self.project_uuid)
+            session.add(db_object)
+            session.commit()
+            sessions.destroy_session(session)        
+        except Exception as e:
+            return {
+                'status': 'error',
+                'text': str(e)
+            }
+
+        else:
+            return {
+                'status': 'success'
+            }
+
 class ScopeManager(object):
-    """ ScopeManager keeps track of all scopes in the system,
+    """ ScopeManager keeps track of all ips in the system,
     exposing some interfaces for public use. """
     def __init__(self):
-        self.scopes = []
+        self.ips = []
         self.update_from_db()
 
+    def get_ips(self):
+        """ Returns the list of ips """
+        return self.ips
+
+    def get_ips(self):
+        return list(map(lambda x: x.toJSON(), self.ips))
+
     def get_scopes(self):
-        """ Returns the list of scopes """
-        return self.scopes
+        return self.get_ips()
 
     def update_from_db(self):
-        """ Extract all the scopes from the DB """
+        """ Extract all the ips from the DB """
         session = sessions.get_new_session()
-        scopes_from_db = session.query(IP_addr).all()
-        self.scopes = list(map(lambda x: {
-                'ip_address': x.ip_address,
-                'project_uuid': x.project_uuid,
-                'scope_id': x.scope_id,
-                'comment': x.comment
-            }, 
-            scopes_from_db))
+        ips_from_db = session.query(IP_addr).all()
+        self.ips = list(map(lambda x: IP(x.ip_id,
+                                               x.ip_address,
+                                               x.hostnames,
+                                               x.comment,
+                                               x.project_uuid),
+                               ips_from_db))
+
+        # hosts_from_db = session.query(Host).all()
+        # pending_hosts = list(filter(lambda x: x.ip_address == None, hosts_from_db))
+        # self.pending_hosts = list(map(lambda x: Scope(x.host_id,
+        #                                               None, # ip_address
+        #                                               [x.hostname], # a list of hostnames
+        #                                               x.comment,
+        #                                               x.project_uuid),
+        #                               pending_hosts))
 
         sessions.destroy_session(session)  
 
-    def find_scope(self, hostname="N/A", ip_address="N/A", project_uuid="N/A", scope_id="N/A"):
-        """ Serach for a scope with a specific name """
-        filtered = self.scopes
-        if hostname != "N/A":
-            filtered = list(filter(lambda x: x['hostname'] == hostname, filtered))
+    def create_scope(self, ip_address, hostname, project_uuid):
+        if ip_address:
+            new_scope = IP(str(uuid.uuid4()), ip_address, [], "", project_uuid)
+            result = new_scope.save()
 
-        if ip_address != "N/A":
-            filtered = list(filter(lambda x: x['ip_address'] == ip_address, filtered))
+            if result['status'] == 'success':
+                self.ips.append(new_scope)
 
-        if project_uuid != "N/A":
-            filtered = list(filter(lambda x: x['project_uuid'] == project_uuid, filtered))
-
-        if scope_id != "N/A":
-            filtered = list(filter(lambda x: x['scope_id'] == scope_id, filtered))
-
-        return filtered
-
-    def create_scope(self, hostname, ip_address, project_uuid, scope_id=None, comment="test"):
-        """ Creates a new scope """
-        found_scopes = self.find_scope(hostname=hostname, ip_address=ip_address, project_uuid=project_uuid)
-
-        if len(found_scopes) == 0:
-            ready_scope_id = scope_id or str(uuid.uuid4())
-
-            try: 
-                session = sessions.get_new_session()
-                new_scope = IP_addr(scope_id=ready_scope_id,
-                                  hostname=hostname,
-                                  ip_address=ip_address,
-                                  project_uuid=project_uuid,
-                                  comment=comment)
-                session.add(new_scope)
-                session.commit()
-                sessions.destroy_session(session)
-            except Exception as e:
                 return {
-                    "status": "error",
-                    "text": str(e)
-                }    
-
-            scope = {
-                "hostname": hostname,
-                "ip_address": ip_address,
-                "scope_id": ready_scope_id,
-                "project_uuid": project_uuid,
-                "comment": comment
-            }
-
-            # Append the new scope to existing
-            self.scopes.append(scope)
-
-            return {
-                "status": "success",
-                "new_scope": scope
-            }
-        else: 
-            return {
-                "status": "duplicate",
-                "text": 'That specific scope already exists.',
-                "new_scope": None
-            }
-
-    def delete_scope(self, hostname="N/A", ip_address="N/A", project_uuid="N/A", scope_id="N/A"):
-        """ Deletes a new scope """
-        filtered_scopes = self.find_scope(hostname, ip_address, project_uuid, scope_id)
-
-        if len(filtered_scopes) != 0:
-            for to_delete in filtered_scopes:
-                # Remove the scope from everywhere
-                try: 
-                    session = sessions.get_new_session()
-                    db_obj = session.query(IP_addr).filter_by(scope_id=to_delete['scope_id']).first()
-                    session.delete(db_obj)
-                    session.commit()
-                    sessions.destroy_session(session)
-
-                    self.scopes.remove(to_delete)
-                except Exception as e:
-                    return {
-                        "status": "error",
-                        "text": str(e)
-                    }  
-
-
-            return {
-                "status": "success"
-            }
-        else: 
-            return {
-                "status": "error",
-                "text": 'No such scopes.'
-            }
-
-    def resolve_single_scope(self, scope, resolver):
-        project_uuid = scope['project_uuid']
-        hostname = scope['hostname']
-
-        if hostname:
-            try:
-                answers = resolver.query(hostname, 'A').response.answer
-                for answer in answers:
-                    for address in answer:
-                        result = self.create_scope(hostname=hostname,
-                                                   ip_address=str(address),
-                                                   project_uuid=project_uuid)
-
-                        if result["status"] == 'success':
-                            self.delete_scope(hostname=hostname, ip_address=None)
-
-            except dns.resolver.NXDOMAIN as e:
-                return {
-                    "status": "error",
-                    "text": "No such domain"               
+                    'status': 'success',
+                    'new_scope': new_scope.toJSON()
                 }
+            else:
+                print(result)
+                return result
 
-
-    def resolve_scopes(self, project_uuid, scope_ids=None):
-        def try_connecection_to_ns(ns):
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            try:
-                s.connect((ns, 53))
-            except socket.error as e:
-                print('Error connecting to the NS')
-                pass
-            s.close()
-
-        resolver = dns.resolver.Resolver()
-        resolver.nameservers = ['8.8.8.8']
-        try_connecection_to_ns('8.8.8.8')
-
-        single_project_scopes = list(filter(lambda x: x['project_uuid'] == project_uuid, self.scopes))
-
-        if scope_ids is None:
-            to_resolve = single_project_scopes
+        elif hostname:
+            raise Exception("Not implemented yet")
+            pass
         else:
-            to_resolve = list(filter(lambda x: x['scope_id'] in scope_ids, single_project_scopes))
+            raise Exception("Somehitng really bad happened")
 
-        for scope in to_resolve:
-            self.resolve_single_scope(scope, resolver)
-
-    def update_scope(self, scope_id, comment):
-        """ For now, it updated only comment.
-        Attention: we will update all the similar scopes with 
-        that same comment. """
-        try:
-            session = sessions.get_new_session()
-            scope_from_db = session.query(IP_addr).filter_by(scope_id=scope_id).first()
-
-            hostname = scope_from_db.hostname
-            ip_address = scope_from_db.ip_address
-
-            similar_scopes_from_db = session.query(IP_addr).filter_by(
-                hostname=hostname, 
-                ip_address=ip_address).all()
-
-            to_update_ids_local = list()
-            for scope in similar_scopes_from_db:
-                to_update_ids_local.append(scope.scope_id)
-                scope.comment = comment
-
-            session.commit()
-            sessions.destroy_session(session)
-
-
-            updated = dict()
-            to_update_locally = list(filter(lambda x: x["scope_id"] in to_update_ids_local , self.get_scopes()))
-
-            for local_scope in to_update_locally:
-                local_scope["comment"] = comment
-                updated[local_scope["scope_id"]] = local_scope
-
-        except Exception as e:
-            return {
-                "status": "error",
-                "text": str(e)
-            }
-        else:
-            return {
-                "status": "success",
-                "updated_scopes": updated
-
-            }

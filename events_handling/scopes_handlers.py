@@ -28,9 +28,9 @@ class ScopeHandlers(object):
                 added = False
                 # Create new scope (and register it)
                 if scope['type'] == 'hostname':
-                    create_result = scope_manager.create_scope(scope['target'], None, project_uuid)
-                elif scope['type'] == 'ip_address':
                     create_result = scope_manager.create_scope(None, scope['target'], project_uuid)
+                elif scope['type'] == 'ip_address':
+                    create_result = scope_manager.create_scope(scope['target'], None, project_uuid)
                 elif scope['type'] == 'network':
                     ips = IPNetwork(scope['target'])
 
