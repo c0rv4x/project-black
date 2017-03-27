@@ -26,6 +26,7 @@ class IP(object):
 
     def toJSON(self):
         return {
+            'type': 'ip',
             '_id': self.get_id(),
             'ip_address': self.get_ip_address(),
             'hostnames': self.get_hostnames(),

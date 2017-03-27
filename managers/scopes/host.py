@@ -23,6 +23,7 @@ class Host(object):
 
     def toJSON(self):
         return {
+            'type': 'host',
             '_id': self.get_id(),
             'hostname': self.get_hostname(),
             'comment': self.get_comment(),
