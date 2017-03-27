@@ -1,7 +1,10 @@
 import React from 'react'
 
+import { Table } from 'react-bootstrap'
 import ScopeAdderTracked from '../../project_details/components/ScopeAdderTracked.jsx'
 
+import IPTable from '../presentational/IPTable.jsx'
+import HostTable from '../presentational/HostTable.jsx'
 
 class ScopeSetup extends React.Component {
 	constructor(props) {
@@ -13,6 +16,13 @@ class ScopeSetup extends React.Component {
 			<div>
 				<h4>Here you can add, delete, modify and work with initial scope of the project.</h4>
 				<ScopeAdderTracked />
+				<hr />
+
+				<IPTable />
+				<hr />
+
+				<HostTable />
+				<hr />
 			</div>
 		)
 	}
