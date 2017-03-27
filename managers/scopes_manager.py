@@ -13,6 +13,7 @@ class ScopeManager(object):
     exposing some interfaces for public use. """
     def __init__(self):
         self.ips = []
+        self.pending_hosts = []
         self.update_from_db()
 
     def get_ips(self):
@@ -63,8 +64,19 @@ class ScopeManager(object):
                 return result
 
         elif hostname:
-            raise Exception("Not implemented yet")
-            pass
+            new_scope = Host(str(uuid.uuid4()), hostname, "", project_uuid)
+            result = new_scope.save()
+
+            if result['status'] == 'success':
+                self.pending_hosts.append(new_scope)
+
+                return {
+                    'status': 'success',
+                    'new_scope': new_scope.toJSON()
+                }
+            else:
+                print(result)
+                return result            
         else:
             raise Exception("Somehitng really bad happened")
 
