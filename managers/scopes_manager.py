@@ -53,7 +53,7 @@ class ScopeManager(object):
         return len(filtered) > 0
 
     def find_host(self, hostname, project_uuid):
-        filtered = self.hosts()
+        filtered = self.hosts
         filtered = list(filter(lambda x: x.get_project_uuid() == project_uuid, filtered))
         filtered = list(filter(lambda x: x.get_hostname() == hostname, filtered))
 
