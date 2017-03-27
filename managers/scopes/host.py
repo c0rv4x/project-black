@@ -54,7 +54,7 @@ class Host(object):
     def delete(self):
         try:
             session = sessions.get_new_session()
-            db_object = session.query(HostDB).filter_by(ip_id=self._id).first()
+            db_object = session.query(HostDB).filter_by(host_id=self._id).first()
             session.delete(db_object)
             session.commit()
             sessions.destroy_session(session)        
