@@ -21,7 +21,7 @@ class ScopeSetup extends React.Component {
 				<IPTable ips={this.props.scopes.ips}/>
 				<hr />
 
-				<HostTable />
+				<HostTable hosts={this.props.scopes.hosts}/>
 				<hr />
 			</div>
 		)

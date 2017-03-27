@@ -9,6 +9,16 @@ class HostTable extends React.Component {
 	}
 
 	render() {
+		const hosts_rendered = _.map(this.props.hosts, (x) => {
+			return (
+				<tr key={x._id}> 
+					<td>{x.hostname}</td>
+					<td>{x.ip_address}</td>
+					<td>Some buttons</td>
+				</tr>
+			)
+		});
+
 		return (
 			<Table bordered>
 				<thead>
@@ -18,6 +28,9 @@ class HostTable extends React.Component {
 						<td>Control</td>
 					</tr>
 				</thead>
+				<tbody>
+					{hosts_rendered}
+				</tbody>
 			</Table>
 		)
 	}
