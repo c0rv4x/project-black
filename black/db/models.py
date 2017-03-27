@@ -100,7 +100,7 @@ class IP_addr(Base):
     # Date of adding
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
 
-    hostnames_raltionship = relationship("Host", back_populates="ip_address_raltionship")
+    hostnames = relationship("Host", back_populates="ip_address_raltionship")
 
     def __repr__(self):
        return """<IP_addr(ip_id='%s', hostname='%s',
@@ -120,7 +120,7 @@ class Host(Base):
 
     # IP address of that host
     ip_address = Column(String, ForeignKey('ips.ip_id'))
-    ip_address_raltionship = relationship("IP_addr", back_populates="hostnames_raltionship")
+    ip_address_raltionship = relationship("IP_addr", back_populates="hostnames")
 
     # ID of the related task (the task, which resulted in the current data)
     task_id = Column(String, ForeignKey('tasks.task_id'))
