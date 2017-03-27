@@ -121,11 +121,11 @@ class ScopeHandlers(object):
 
             result = scope_manager.update_scope(scope_id=scope_id, comment=comment)
             if result["status"] == "success":
-                updated_scopes = result["updated_scopes"]
+                updated_scope = result["updated_scope"]
 
                 socketio.emit('scopes:update:back', {
                     "status": "success",
-                    "updated_scopes": updated_scopes
-                })
+                    "updated_scope": updated_scope
+                }, broadcast=True)
             else :
-                socketio.emit('scopes:update:back', result)
+                socketio.emit('scopes:update:back', result, broadcast=True)

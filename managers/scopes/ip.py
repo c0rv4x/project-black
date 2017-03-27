@@ -72,3 +72,23 @@ class IP(object):
             return {
                 'status': 'success'
             }
+
+    def update_comment(self, comment):
+        try:
+            session = sessions.get_new_session()
+            db_object = session.query(IP_addr).filter_by(ip_id=self._id).first()
+            db_object.comment = comment
+            session.commit()
+            sessions.destroy_session(session)        
+        except Exception as e:
+            return {
+                'status': 'error',
+                'text': str(e)
+            }
+
+        else:
+            self.comment = comment
+
+            return {
+                'status': 'success'
+            }

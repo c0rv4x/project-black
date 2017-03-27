@@ -118,3 +118,20 @@ class ScopeManager(object):
                 del_result = host.delete()
 
                 return del_result
+
+    def update_scope(self, scope_id, comment):
+        for ip_addr in self.ips:
+            if ip_addr.get_id() == scope_id:
+                update_result = ip_addr.update_comment(comment)
+                update_result['updated_scope'] = ip_addr.toJSON()
+                update_result['type'] = 'ip'
+
+                return update_result
+
+        for host in self.hosts:
+            if host.get_id() == scope_id:
+                update_result = host.update_comment(comment)
+                update_result['updated_scope'] = ip_addr.toJSON()
+                update_result['type'] = 'host'
+
+                return update_result

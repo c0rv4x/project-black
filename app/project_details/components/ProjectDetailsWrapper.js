@@ -55,7 +55,7 @@ const mapDispatchToProps = (dispatch) => {
 		onScopeCommentChange: (comment, scope_id) => {
 			dispatch(updateScopeComment({
 				'comment': comment, 
-				'scope_id': scope_id
+				'_id': scope_id
 			}))			
 		}
 	}

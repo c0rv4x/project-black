@@ -3,9 +3,9 @@ import _ from 'lodash';
 import { 
 	CREATE_SCOPE, 
 	DELETE_SCOPE, 
-	UPDATE_COMMENT, 
 	RENEW_SCOPES,
-	UPDATE_SCOPES
+	UPDATE_COMMENT,
+	UPDATE_SCOPE
 } from './actions.js'
 
 
@@ -93,36 +93,52 @@ function update_comment(state = initialState, action) {
 	const _id = action.message['_id'];
 	const new_comment = action.message['comment'];
 
-	var new_state = state.slice();
-	for (var scope of new_state) {
+	var new_state = Object.assign({}, state, null);
+	for (var scope of new_state['ips']) {
 		if (scope._id == _id) {
 			scope.comment = new_comment;
+
+			return new_state;
 		}
-		else continue
+	}
+	for (var scope of new_state['hosts']) {
+		if (scope._id == _id) {
+			scope.comment = new_comment;
+
+			return new_state;
+		}
 	}
 
-	return new_state;
+	return state;
 }
 
-function update_scopes(state = initialState, action) {
+function update_scope(state = initialState, action) {
 	const message = action.message;
 
 	if (message["status"] == "success") {
-		var new_state = state.slice();
-		var updated_scopes = message["updated_scopes"];
-		var ids_to_update = Object.keys(updated_scopes);
+		var new_state = Object.assign({}, state, null);
+		var updated_scope = message["updated_scope"];
 
-		for (var scope of state) {
-			if (ids_to_update.indexOf(scope["_id"]) !== -1) {
-				var target_id = scope["_id"];
-
-				scope.comment = updated_scopes[target_id]["comment"];
+		if (updated_scope["type"] == "ip") {
+			for (var ip_addr of state["ips"]) {
+				if (ip_addr["_id"] == updated_scope["_id"]) {
+					ip_addr["comment"] = updated_scope["comment"]
+					break;
+				}
+			}
+		}
+		else if (updated_scope["type"] == "host") {
+			for (var host of state["hosts"]) {
+				if (host["_id"] == updated_scope["_id"]) {
+					host["comment"] = updated_scope["comment"]
+					break;
+				}
 			}
 		}
 
-		return state
-
+		return new_state;
 	} else {
+		console.error(message);
 		/* TODO: add error handling */
 	}
 
@@ -138,8 +154,8 @@ function scope_reduce(state = initialState, action) {
 			return renew_scopes(state, action);
 		case UPDATE_COMMENT:
 			return update_comment(state, action);
-		case UPDATE_SCOPES:
-			return update_scopes(state, action);
+		case UPDATE_SCOPE:
+			return update_scope(state, action);
 		default:
 			return state;
 	}

@@ -2,7 +2,7 @@ import {
 	createScope, 
 	deleteScope,
 	renewScopes,
-	updateScopes
+	updateScope
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
@@ -27,7 +27,7 @@ class ScopesSocketioEventsSubscriber {
 		/* Register handlers on basic events */
 		// Received all scopes in one message
 		this.register_socketio_handler('scopes:all:get:back', renewScopes);
-		this.register_socketio_handler('scopes:update:back', updateScopes);
+		this.register_socketio_handler('scopes:update:back', updateScope);
 		this.register_project_new_scope();
 		this.register_project_delete_scope();
 	}
