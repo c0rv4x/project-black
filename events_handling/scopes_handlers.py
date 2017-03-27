@@ -91,7 +91,7 @@ class ScopeHandlers(object):
                 # Send the success result
                 socketio.emit('scopes:delete', {
                     'status': 'success',
-                    'scope_id': scope_id
+                    '_id': scope_id
                 }, broadcast=True)
 
             else:

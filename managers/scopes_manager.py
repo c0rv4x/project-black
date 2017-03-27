@@ -104,3 +104,17 @@ class ScopeManager(object):
         else:
             raise Exception("Somehitng really bad happened")
 
+    def delete_scope(self, scope_id):
+        for ip_addr in self.ips:
+            if ip_addr.get_id() == scope_id:
+                self.ips.remove(ip_addr)
+                del_result = ip_addr.delete()
+
+                return del_result
+
+        for host in self.hosts:
+            if host.get_id() == scope_id:
+                self.hosts.remove(host)
+                del_result = host.delete()
+
+                return del_result

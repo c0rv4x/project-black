@@ -56,12 +56,19 @@ function delete_scope(state = initialState, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
-		var state_new = state.slice();
+		var state_new = Object.assign(state, {}, null);
 
-		var scopes_filtered = _.filter(state_new, (x) => {
+		var ips_filtered = _.filter(state_new['ips'], (x) => {
 			return x["_id"] != message["_id"];
 		});
-		state_new = scopes_filtered;
+		var hosts_filtered = _.filter(state_new['hosts'], (x) => {
+			return x["_id"] != message["_id"];
+		});
+
+		state_new = {
+			'ips': ips_filtered,
+			'hosts': hosts_filtered
+		}
 
 		return state_new;
 	} else {

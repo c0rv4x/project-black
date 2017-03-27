@@ -50,3 +50,21 @@ class Host(object):
             return {
                 'status': 'success'
             }
+
+    def delete(self):
+        try:
+            session = sessions.get_new_session()
+            db_object = session.query(HostDB).filter_by(ip_id=self._id).first()
+            session.delete(db_object)
+            session.commit()
+            sessions.destroy_session(session)        
+        except Exception as e:
+            return {
+                'status': 'error',
+                'text': str(e)
+            }
+
+        else:
+            return {
+                'status': 'success'
+            }
