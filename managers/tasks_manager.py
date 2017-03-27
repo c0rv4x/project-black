@@ -1,7 +1,8 @@
-import pika
+""" This module contains functionality, that is responsible for managing tasks """
 import uuid
 import json
 import threading
+import pika
 
 from black.black.db import sessions, Task
 
@@ -40,35 +41,39 @@ class ShadowTask(object):
         self.channel.queue_bind(
             queue=self.task_type + "_tasks",
             exchange="tasks.exchange",
-            routing_key=self.task_type + "_tasks") 
+            routing_key=self.task_type + "_tasks")
 
         self.channel.queue_declare(queue=self.task_type + "_notifications", durable=True)
         self.channel.queue_bind(
             queue=self.task_type + "_notifications",
             exchange="tasks.exchange",
-            routing_key=self.task_type + "_notifications") 
+            routing_key=self.task_type + "_notifications")
 
 
     def send_start_task(self):
+        """ Put a message to the queue, which says "start my task, please """
         self.channel.basic_publish(exchange='',
                                    routing_key=self.task_type + "_tasks",
                                    body=json.dumps({
-                                      'task_id': self.task_id,
-                                      'target': self.target,
-                                      'params': self.params,
-                                      'project_uuid': self.project_uuid
+                                       'task_id': self.task_id,
+                                       'target': self.target,
+                                       'params': self.params,
+                                       'project_uuid': self.project_uuid
                                    }))
 
 
     def set_status(self, new_status, progress, text):
+        """ Change status, progress and text of the task """
         self.status = new_status
         self.progress = progress
         self.text = text
 
     def get_status(self):
+        """ Returns a tuple of status, progress and text of the task"""
         return (self.status, self.progress, self.text)
 
     def get_as_native_object(self):
+        """ "Serialize" the task to python native dict """
         return {
             "task_id" : self.task_id,
             "task_type" : self.task_type,
@@ -115,10 +120,13 @@ class TaskManager(object):
             consumer_callback=self.parse_new_status,
             queue="tasks_statuses")
 
-        t = threading.Thread(target=self.channel.start_consuming)
-        t.start()
+        thread = threading.Thread(target=self.channel.start_consuming)
+        thread.start()
 
-    def parse_new_status(self, ch, method, properties, message):
+    def parse_new_status(self, channel, method, properties, message):
+        """ Parse the message from the queue, which contains task status,
+        updates the relevant ShadowTask and, we notify the upper module that
+        it must update the scan results. """
         message = json.loads(message)
         task_id = message['task_id']
 
@@ -134,22 +142,22 @@ class TaskManager(object):
 
                 break
 
-        ch.basic_ack(delivery_tag=method.delivery_tag)        
+        channel.basic_ack(delivery_tag=method.delivery_tag)
 
     def update_from_db(self):
         """ Extract all the tasks from the DB """
         session = sessions.get_new_session()
         tasks_from_db = session.query(Task).all()
-        tasks = list(map(lambda x: 
-                ShadowTask(task_id=x.task_id,
-                           task_type=x.task_type,
-                           target=x.target,
-                           params=x.params,
-                           project_uuid=x.project_uuid,
-                           status=x.status,
-                           progress=x.progress,
-                           text=x.text),
-                     tasks_from_db))
+        tasks = list(map(lambda x:
+                         ShadowTask(task_id=x.task_id,
+                                    task_type=x.task_type,
+                                    target=x.target,
+                                    params=x.params,
+                                    project_uuid=x.project_uuid,
+                                    status=x.status,
+                                    progress=x.progress,
+                                    text=x.text),
+                         tasks_from_db))
         sessions.destroy_session(session)
 
         for task in tasks:
@@ -160,15 +168,18 @@ class TaskManager(object):
                 self.active_tasks.append(task)
 
     def get_tasks(self):
+        """ Returns a list of active tasks and a list of finished tasks """
         return [self.active_tasks, self.finished_tasks]
 
     def get_tasks_native_objects(self):
+        """ "Serializes" tasks to native python dicts """
         active = list(map(lambda x: x.get_as_native_object(), self.active_tasks))
         finished = list(map(lambda x: x.get_as_native_object(), self.finished_tasks))
 
-        return [active, finished]    
+        return [active, finished]
 
     def create_task(self, task_type, target, params, project_uuid):
+        """ Register the task and send a command to start it """
         task = ShadowTask(task_id=None,
                           task_type=task_type,
                           target=target,
