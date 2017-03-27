@@ -18,7 +18,7 @@ class ScopeSetup extends React.Component {
 				<ScopeAdderTracked />
 				<hr />
 
-				<IPTable />
+				<IPTable ips={this.props.scopes.ips}/>
 				<hr />
 
 				<HostTable />
