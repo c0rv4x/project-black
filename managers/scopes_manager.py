@@ -3,7 +3,9 @@ import socket
 import dns.resolver
 
 from black.black.db import sessions, IP_addr, Host
+from black.black.db import Host as HostDB
 from managers.scopes.ip import IP
+from managers.scopes.host import Host
 
 
 class ScopeManager(object):
@@ -32,16 +34,16 @@ class ScopeManager(object):
                                                x.hostnames,
                                                x.comment,
                                                x.project_uuid),
-                               ips_from_db))
+                            ips_from_db))
 
-        # hosts_from_db = session.query(Host).all()
-        # pending_hosts = list(filter(lambda x: x.ip_address == None, hosts_from_db))
-        # self.pending_hosts = list(map(lambda x: Scope(x.host_id,
-        #                                               None, # ip_address
-        #                                               [x.hostname], # a list of hostnames
-        #                                               x.comment,
-        #                                               x.project_uuid),
-        #                               pending_hosts))
+        hosts_from_db = session.query(HostDB).all()
+        pending_hosts = list(filter(lambda x: x.ip_address == None, hosts_from_db))
+        self.pending_hosts = list(map(lambda x: Host(x.host_id,
+                                                     None, # ip_address
+                                                     [x.hostname], # a list of hostnames
+                                                     x.comment,
+                                                     x.project_uuid),
+                                      pending_hosts))
 
         sessions.destroy_session(session)  
 
