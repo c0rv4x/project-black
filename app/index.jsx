@@ -12,7 +12,7 @@ import rdcs from './common/reducers.js';
 
 import ProjectsMainComponentWrapper from './projects_list/components/ProjectsMainComponentWrapper.js';
 import ProjectsDetailsWrapper from './project_details/components/ProjectDetailsWrapper.js';
-import ScopeSetup from './scope_setup/components/ScopeSetup.jsx';
+import ScopeSetupWrapper from './scope_setup/components/ScopeSetupWrapper.js';
 
 
 import { createStore } from 'redux';
@@ -46,7 +46,7 @@ class App extends React.Component {
                                 <Route exact path="/"
                                        component={ProjectsMainComponentWrapper}/>
                                 <Route exact path="/project/:project_name" 
-                                       component={ScopeSetup} />
+                                       component={ScopeSetupWrapper} />
                             </div>
                         </div>
                     </Router>            
