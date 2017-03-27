@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Table } from 'react-bootstrap'
+import { Table, Button } from 'react-bootstrap'
 
 
 class HostTable extends React.Component {
@@ -14,7 +14,7 @@ class HostTable extends React.Component {
 				<tr key={x._id}> 
 					<td>{x.hostname}</td>
 					<td>{x.ip_address}</td>
-					<td>Some buttons</td>
+					<td><Button onClick={() => this.props.delete(x._id)}>Delete</Button></td>
 				</tr>
 			)
 		});

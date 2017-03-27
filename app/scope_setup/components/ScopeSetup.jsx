@@ -31,7 +31,8 @@ class ScopeSetup extends React.Component {
 						 delete={this.deleteScope} />
 				<hr />
 
-				<HostTable hosts={this.props.scopes.hosts}/>
+				<HostTable hosts={this.props.scopes.hosts}
+						   delete={this.deleteScope} />
 				<hr />
 			</div>
 		)
