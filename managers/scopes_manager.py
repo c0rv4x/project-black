@@ -52,6 +52,13 @@ class ScopeManager(object):
 
         return len(filtered) > 0
 
+    def find_host(self, hostname, project_uuid):
+        filtered = self.hosts()
+        filtered = list(filter(lambda x: x.get_project_uuid() == project_uuid, filtered))
+        filtered = list(filter(lambda x: x.get_hostname() == hostname, filtered))
+
+        return len(filtered) > 0
+
     def create_scope(self, ip_address, hostname, project_uuid):
         if ip_address:
             if not self.find_ip(ip_address, project_uuid):
@@ -75,20 +82,25 @@ class ScopeManager(object):
                 }
 
         elif hostname:
-            new_scope = Host(str(uuid.uuid4()), hostname, "", project_uuid)
-            result = new_scope.save()
+            if not self.find_host(hostname, project_uuid):
+                new_scope = Host(str(uuid.uuid4()), hostname, "", project_uuid)
+                result = new_scope.save()
 
-            if result['status'] == 'success':
-                self.hosts.append(new_scope)
+                if result['status'] == 'success':
+                    self.hosts.append(new_scope)
 
-                return {
-                    'status': 'success',
-                    'type': 'hostname',
-                    'new_scope': new_scope.toJSON()
-                }
+                    return {
+                        'status': 'success',
+                        'type': 'hostname',
+                        'new_scope': new_scope.toJSON()
+                    }
+                else:
+                    print(result)
+                    return result            
             else:
-                print(result)
-                return result            
+                return {
+                    'status': 'duplicate'
+                }
         else:
             raise Exception("Somehitng really bad happened")
 
