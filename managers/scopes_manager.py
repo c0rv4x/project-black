@@ -13,15 +13,14 @@ class ScopeManager(object):
     exposing some interfaces for public use. """
     def __init__(self):
         self.ips = []
-        self.pending_hosts = []
+        self.hosts = []
         self.update_from_db()
 
     def get_ips(self):
-        """ Returns the list of ips """
-        return self.ips
-
-    def get_ips(self):
         return list(map(lambda x: x.toJSON(), self.ips))
+
+    def get_hosts(self):
+        return list(map(lambda x: x.toJSON(), self.hosts))
 
     def get_scopes(self):
         return self.get_ips()
@@ -38,12 +37,11 @@ class ScopeManager(object):
                             ips_from_db))
 
         hosts_from_db = session.query(HostDB).all()
-        pending_hosts = list(filter(lambda x: x.ip_address == None, hosts_from_db))
-        self.pending_hosts = list(map(lambda x: Host(x.host_id,
-                                                     x.hostname,
-                                                     x.comment,
-                                                     x.project_uuid),
-                                      pending_hosts))
+        self.hosts = list(map(lambda x: Host(x.host_id,
+                                             x.hostname,
+                                             x.comment,
+                                             x.project_uuid),
+                                      hosts_from_db))
 
         sessions.destroy_session(session)  
 
@@ -68,7 +66,7 @@ class ScopeManager(object):
             result = new_scope.save()
 
             if result['status'] == 'success':
-                self.pending_hosts.append(new_scope)
+                self.hosts.append(new_scope)
 
                 return {
                     'status': 'success',

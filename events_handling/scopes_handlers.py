@@ -9,7 +9,8 @@ class ScopeHandlers(object):
             """ When received this message, send back all the scopes """
             socketio.emit('scopes:all:get:back', {
                 'status' : 'success',
-                'scopes' :scope_manager.get_scopes()
+                'ips' : scope_manager.get_scopes(),
+                'hosts': scope_manager.get_hosts()
             }, broadcast=True)
 
 
