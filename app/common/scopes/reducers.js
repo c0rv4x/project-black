@@ -20,7 +20,7 @@ function create_scope(state = [], action) {
 		return state.concat(_.map(message["new_scopes"], (x) => {
 			return {
 				"project_uuid": message["project_uuid"],
-				"scope_id": x["scope_id"],
+				"_id": x["_id"],
 				"hostname": x["hostname"],
 				"ip_address": x["ip_address"],
 				"comment": x["comment"]
@@ -38,7 +38,7 @@ function delete_scope(state = [], action) {
 		var state_new = state.slice();
 
 		var scopes_filtered = _.filter(state_new, (x) => {
-			return x["scope_id"] != message["scope_id"];
+			return x["_id"] != message["_id"];
 		});
 		state_new = scopes_filtered;
 
@@ -59,12 +59,12 @@ function renew_scopes(state = [], action) {
 }
 
 function update_comment(state = [], action) {
-	const scope_id = action.message['scope_id'];
+	const _id = action.message['_id'];
 	const new_comment = action.message['comment'];
 
 	var new_state = state.slice();
 	for (var scope of new_state) {
-		if (scope.scope_id == scope_id) {
+		if (scope._id == _id) {
 			scope.comment = new_comment;
 		}
 		else continue
@@ -82,8 +82,8 @@ function update_scopes(state = [], action) {
 		var ids_to_update = Object.keys(updated_scopes);
 
 		for (var scope of state) {
-			if (ids_to_update.indexOf(scope["scope_id"]) !== -1) {
-				var target_id = scope["scope_id"];
+			if (ids_to_update.indexOf(scope["_id"]) !== -1) {
+				var target_id = scope["_id"];
 
 				scope.comment = updated_scopes[target_id]["comment"];
 			}

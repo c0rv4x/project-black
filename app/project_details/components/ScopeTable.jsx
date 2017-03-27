@@ -10,23 +10,22 @@ class ScopeTable extends React.Component {
 
 	constructor(props) {
 		super(props);
-
 		this.scopesEmitter = new ScopesSocketioEventsEmitter();
 
 		this.commentSubmitted = this.commentSubmitted.bind(this);
 	}
 
-	commentSubmitted(comment, scope_id) {
-		this.scopesEmitter.requestUpdateScope(comment, scope_id);
+	commentSubmitted(comment, _id) {
+		this.scopesEmitter.requestUpdateScope(comment, _id);
 	}
 
 	render() {
 		const scopes = _.map(this.props.scopes, (x) => {
-			return <ScopeEntryLine key={x.scope_id} 
+			return <ScopeEntryLine key={x._id} 
 								   scope={x} 
-								   onCommentChange={(e) => this.props.onCommentChange(e.target.value, x.scope_id)}
-								   onCommentSubmit={() => this.commentSubmitted(x.comment, x.scope_id)}
-								   deleteScope={() => this.props.deleteScope(x.scope_id)}
+								   onCommentChange={(e) => this.props.onCommentChange(e.target.value, x._id)}
+								   onCommentSubmit={() => this.commentSubmitted(x.comment, x._id)}
+								   deleteScope={() => this.props.deleteScope(x._id)}
 
 								   scans={_.filter(this.props.scans, (y) => {
 								   	return y.target == x.ip_address;

@@ -28,7 +28,7 @@ class ScanManager(object):
                 "port_number": x.port_number,
                 "protocol": x.protocol,
                 "banner": x.banner,
-                "tasks_ids": x.tasks_ids,
+                "task_id": x.task_id,
                 "project_uuid": x.project_uuid,
                 "date_added": str(x.date_added)
             }, 
