@@ -42,7 +42,7 @@ class ScopeTracked extends React.Component {
 						      (scopes) => this.submitNewScope(scopes)
 			   			    } />
 
-				<ScopeTable scopes={this.props.scopes}
+				<ScopeTable scopes={this.props.scopes.ips}
 							onCommentChange={this.props.onCommentChange}
 							deleteScope={this.deleteScope}
 

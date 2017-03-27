@@ -10,10 +10,13 @@ import {
 
 
 const initialState = {
-	scopes: []
+	scopes: {
+		"ips": [],
+		"hosts": []
+	}
 }
 
-function create_scope(state = [], action) {
+function create_scope(state = initialState, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
@@ -31,7 +34,7 @@ function create_scope(state = [], action) {
 	}
 }
 
-function delete_scope(state = [], action) {
+function delete_scope(state = initialState, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
@@ -48,17 +51,20 @@ function delete_scope(state = [], action) {
 	}
 }
 
-function renew_scopes(state = [], action) {
+function renew_scopes(state = initialState, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
-		return message['scopes'];
+		return {
+			'ips': message['ips'],
+			'hosts': message['hosts']
+		}
 	} else {
 		/* TODO: add error handling */
 	}		
 }
 
-function update_comment(state = [], action) {
+function update_comment(state = initialState, action) {
 	const _id = action.message['_id'];
 	const new_comment = action.message['comment'];
 
@@ -73,7 +79,7 @@ function update_comment(state = [], action) {
 	return new_state;
 }
 
-function update_scopes(state = [], action) {
+function update_scopes(state = initialState, action) {
 	const message = action.message;
 
 	if (message["status"] == "success") {
@@ -97,7 +103,7 @@ function update_scopes(state = [], action) {
 
 }
 
-function scope_reduce(state = [], action) {
+function scope_reduce(state = initialState, action) {
 	switch (action.type) {
 		case CREATE_SCOPE:
 			return create_scope(state, action);
