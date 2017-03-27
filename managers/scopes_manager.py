@@ -45,22 +45,34 @@ class ScopeManager(object):
 
         sessions.destroy_session(session)  
 
+    def find_ip(self, ip_address, project_uuid):
+        filtered = self.ips
+        filtered = list(filter(lambda x: x.get_project_uuid() == project_uuid, filtered))
+        filtered = list(filter(lambda x: x.get_ip_address() == ip_address, filtered))
+
+        return len(filtered) > 0
+
     def create_scope(self, ip_address, hostname, project_uuid):
         if ip_address:
-            new_scope = IP(str(uuid.uuid4()), ip_address, [], "", project_uuid)
-            result = new_scope.save()
+            if not self.find_ip(ip_address, project_uuid):
+                new_scope = IP(str(uuid.uuid4()), ip_address, [], "", project_uuid)
+                result = new_scope.save()
 
-            if result['status'] == 'success':
-                self.ips.append(new_scope)
+                if result['status'] == 'success':
+                    self.ips.append(new_scope)
 
-                return {
-                    'status': 'success',
-                    'type': 'ip_address',
-                    'new_scope': new_scope.toJSON()
-                }
+                    return {
+                        'status': 'success',
+                        'type': 'ip_address',
+                        'new_scope': new_scope.toJSON()
+                    }
+                else:
+                    print(result)
+                    return result
             else:
-                print(result)
-                return result
+                return {
+                    'status': 'duplicate'
+                }
 
         elif hostname:
             new_scope = Host(str(uuid.uuid4()), hostname, "", project_uuid)
