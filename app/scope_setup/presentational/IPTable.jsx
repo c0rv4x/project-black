@@ -17,7 +17,8 @@ class IPTable extends React.Component {
 					<td>Some buttons</td>
 				</tr>
 			)
-		})
+		});
+
 		return (
 			<Table bordered>
 				<thead>
