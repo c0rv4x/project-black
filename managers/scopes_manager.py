@@ -55,6 +55,7 @@ class ScopeManager(object):
 
                 return {
                     'status': 'success',
+                    'type': 'ip_address',
                     'new_scope': new_scope.toJSON()
                 }
             else:
@@ -70,6 +71,7 @@ class ScopeManager(object):
 
                 return {
                     'status': 'success',
+                    'type': 'hostname',
                     'new_scope': new_scope.toJSON()
                 }
             else:
