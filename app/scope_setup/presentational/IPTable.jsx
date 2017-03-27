@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 
-import { Table } from 'react-bootstrap'
+import { Table, Button } from 'react-bootstrap'
 
 
 class IPTable extends React.Component {
@@ -14,7 +14,7 @@ class IPTable extends React.Component {
 			return (
 				<tr key={x._id}> 
 					<td>{x.ip_address}</td>
-					<td>Some buttons</td>
+					<td><Button onClick={() => this.props.delete(x._id)}>Delete</Button></td>
 				</tr>
 			)
 		});

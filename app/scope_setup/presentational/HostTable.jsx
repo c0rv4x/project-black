@@ -5,7 +5,7 @@ import { Table } from 'react-bootstrap'
 
 class HostTable extends React.Component {
 	constructor(props) {
-		super(props)
+		super(props);
 	}
 
 	render() {

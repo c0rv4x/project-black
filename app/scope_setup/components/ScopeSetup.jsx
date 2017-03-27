@@ -2,6 +2,7 @@ import React from 'react'
 
 import { Table } from 'react-bootstrap'
 import ScopeAdderTracked from '../../project_details/components/ScopeAdderTracked.jsx'
+import ScopesSocketioEventsEmitter from '../../common/scopes/ScopesSocketioEventsEmitter.js';
 
 import IPTable from '../presentational/IPTable.jsx'
 import HostTable from '../presentational/HostTable.jsx'
@@ -9,6 +10,14 @@ import HostTable from '../presentational/HostTable.jsx'
 class ScopeSetup extends React.Component {
 	constructor(props) {
 		super(props);
+
+		this.scopesEmitter = new ScopesSocketioEventsEmitter();		
+
+		this.deleteScope = this.deleteScope.bind(this);
+	}
+
+	deleteScope(scope_id) {
+		this.scopesEmitter.requestDeleteScope(scope_id);
 	}
 
 	render() {
@@ -18,7 +27,8 @@ class ScopeSetup extends React.Component {
 				<ScopeAdderTracked project={this.props.project}/>
 				<hr />
 
-				<IPTable ips={this.props.scopes.ips}/>
+				<IPTable ips={this.props.scopes.ips}
+						 delete={this.deleteScope} />
 				<hr />
 
 				<HostTable hosts={this.props.scopes.hosts}/>
