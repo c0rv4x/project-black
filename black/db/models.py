@@ -122,6 +122,9 @@ class Host(Base):
     ip_address = Column(String, ForeignKey('ips.ip_id'))
     ip_address_raltionship = relationship("IP_addr", back_populates="hostnames")
 
+    # Some text comment
+    comment = Column(String)
+
     # ID of the related task (the task, which resulted in the current data)
     task_id = Column(String, ForeignKey('tasks.task_id'))
 
