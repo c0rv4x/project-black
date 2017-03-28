@@ -1,6 +1,6 @@
 """ Models for SQLAlchemy ORM """
 import datetime
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -72,6 +72,10 @@ class Task(Base):
     #    return "<Task(task_id='%s', task_type='%s',)>" % (
     #                         self.project_uuid)
 
+association_table = Table('association', Base.metadata,
+    Column('ip_id', String, ForeignKey('ips.ip_id')),
+    Column('host_id', String, ForeignKey('hosts.host_id'))
+)
 
 class IP_addr(Base):
     """ Kepps the data on scope:
@@ -87,6 +91,9 @@ class IP_addr(Base):
     #    is needed)
     ip_address = Column(String)
 
+    # The hostnames that point to this IP
+    hostnames = relationship("Host", secondary=association_table, back_populates="ip_addresses")
+
     # Comment field, as requested by VI
     comment = Column(String)
 
@@ -100,7 +107,6 @@ class IP_addr(Base):
     # Date of adding
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
 
-    hostnames = relationship("Host", back_populates="ip_address_raltionship")
 
     def __repr__(self):
        return """<IP_addr(ip_id='%s', hostname='%s',
@@ -118,9 +124,8 @@ class Host(Base):
     # Hostname (dns record-like)
     hostname = Column(String)
 
-    # IP address of that host
-    ip_address = Column(String, ForeignKey('ips.ip_id'))
-    ip_address_raltionship = relationship("IP_addr", back_populates="hostnames")
+    # IP addresses of that host
+    ip_addresses = relationship("IP_addr", secondary=association_table, back_populates="hostnames")
 
     # Some text comment
     comment = Column(String)
