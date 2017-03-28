@@ -41,6 +41,7 @@ function create_scope(state = initialState, action) {
 			return {
 				"_id": x["_id"],
 				"hostname": x["hostname"],
+				"ip_addresses": [],
 				"comment": x["comment"],
 				"project_uuid": message["project_uuid"]
 			}
