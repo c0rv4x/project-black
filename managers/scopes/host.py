@@ -25,12 +25,15 @@ class Host(object):
     def get_project_uuid(self):
         return self.project_uuid
 
+    def set_ip_addresses(self, new_ip_addresses):
+        self.ip_addresses = new_ip_addresses
+
     def toJSON(self):
         return {
             'type': 'host',
             '_id': self.get_id(),
             'hostname': self.get_hostname(),
-            'ip_addresses': self.get_ip_addresses(),
+            'ip_addresses': list(map(lambda x: x.get_ip_address(), self.get_ip_addresses())),
             'comment': self.get_comment(),
             'project_uuid': self.get_project_uuid()
         }
@@ -95,7 +98,7 @@ class Host(object):
             }
 
     def append_ip(self, ip_object):
-        self.ip_addresses.append(ip_object.get_ip_address())
+        self.ip_addresses.append(ip_object)
         session = sessions.get_new_session()
         host_from_db = session.query(HostDB).filter_by(host_id=self.get_id()).first()
         ip_from_db = session.query(IP_addr).filter_by(ip_id=ip_object.get_id()).first()

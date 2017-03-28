@@ -52,6 +52,14 @@ class ScopeManager(object):
                                                      x.project_uuid),
                               hosts_from_db))
 
+        for each_ip in self.ips:
+            nice_hostnames = list(filter(lambda y: y.get_hostname() in each_ip.get_hostnames(), self.hosts))
+            each_ip.set_hostnames(nice_hostnames)
+
+        for each_host in self.hosts:
+            nice_ips = list(filter(lambda y: y.get_ip_address() in each_host.get_ip_addresses(), self.ips))
+            each_host.set_ip_addresses(nice_ips)
+
         sessions.destroy_session(session)
 
     def find_ip(self, ip_address, project_uuid):
@@ -102,7 +110,6 @@ class ScopeManager(object):
                 result = new_scope_host.save()
 
                 if result['status'] == 'success':
-                    print(new_scope_host)
                     self.hosts.append(new_scope_host)
 
                     return {
@@ -135,6 +142,15 @@ class ScopeManager(object):
             if ip_addr.get_id() == scope_id:
                 self.ips.remove(ip_addr)
                 del_result = ip_addr.delete()
+
+                # Remove references to the removed object from
+                # the hosts list
+                for each_host in self.hosts:
+                    ips = each_host.get_ip_addresses()
+                    each_host.set_ip_addresses(
+                        list(filter(lambda x: x.get_ip_address() != ip_addr.get_ip_address(), 
+                            each_host.get_ip_addresses()))
+                    )
 
                 return del_result
 

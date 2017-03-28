@@ -24,12 +24,15 @@ class IP(object):
     def get_project_uuid(self):
         return self.project_uuid
 
-    def toJSON(self):
+    def set_hostnames(self, new_hostnames):
+        self.hostnames = new_hostnames
+
+    def toJSON(self, recursive=True):
         return {
             'type': 'ip',
             '_id': self.get_id(),
             'ip_address': self.get_ip_address(),
-            'hostnames': self.get_hostnames(),
+            'hostnames': list(map(lambda x: x.get_hostname(), self.get_hostnames())),
             'comment': self.get_comment(),
             'project_uuid': self.get_project_uuid()
         }

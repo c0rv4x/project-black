@@ -94,6 +94,11 @@ class ScopeHandlers(object):
                     '_id': scope_id
                 }, broadcast=True)
 
+                socketio.emit('scopes:all:get:back', {
+                    'status' : 'success',
+                    'ips' : scope_manager.get_ips(),
+                    'hosts': scope_manager.get_hosts()
+                }, broadcast=True)
             else:
                 # Error occured
                 socketio.emit('scopes:delete', {
