@@ -36,7 +36,7 @@ class ScopeHandlers(object):
                     ips = IPNetwork(scope['target'])
 
                     for ip_address in ips:
-                        create_result = scope_manager.create_scope(None, str(ip_address), project_uuid)
+                        create_result = scope_manager.create_scope(str(ip_address), None, project_uuid)
 
                         if create_result["status"] == "success":
                             new_scope = create_result["new_scope"]

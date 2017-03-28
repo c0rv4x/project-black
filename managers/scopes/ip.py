@@ -45,6 +45,7 @@ class IP(object):
             session.commit()
             sessions.destroy_session(session)        
         except Exception as e:
+            print("error during savin ip")
             return {
                 'status': 'error',
                 'text': str(e)
