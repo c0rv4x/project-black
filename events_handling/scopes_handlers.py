@@ -55,7 +55,7 @@ class ScopeHandlers(object):
 
                     if new_scope:
                         new_scopes.append(new_scope)
-                    
+
                 elif create_result["status"] == "error":
                     error_found = True
                     new_err = create_result["text"]
@@ -63,7 +63,7 @@ class ScopeHandlers(object):
                     if new_err not in error_text:
                         error_text += new_err
 
-            if error_found:     
+            if error_found:
                 socketio.emit('scopes:create', {
                     'status': 'error',
                     'project_uuid': project_uuid,
@@ -80,7 +80,7 @@ class ScopeHandlers(object):
 
 
         @socketio.on('scopes:delete:scope_id')
-        def handle_scope_deletiong(msg):
+        def handle_scope_deletioning(msg):
             """ When received this message, delete the scope """
             scope_id = msg['scope_id']
 
@@ -127,5 +127,5 @@ class ScopeHandlers(object):
                     "status": "success",
                     "updated_scope": updated_scope
                 }, broadcast=True)
-            else :
+            else:
                 socketio.emit('scopes:update:back', result, broadcast=True)
