@@ -196,12 +196,11 @@ class ScopeManager(object):
         resolver.nameservers = ['8.8.8.8']
         try_connecection_to_ns('8.8.8.8')
 
-        for host in self.hosts:
-            if host.get_project_uuid() == project_uuid:
-                if scopes_ids is None:
-                    to_resolve = self.hosts
-                else:
-                    to_resolve = list(filter(lambda x: x.get_id() in scopes_ids, self.hosts))
+        filtered_hosts = list(filter(lambda x: x.get_project_uuid() == project_uuid, self.hosts))
+        if scopes_ids is None:
+            to_resolve = filtered_hosts
+        else:
+            to_resolve = list(filter(lambda x: x.get_id() in scopes_ids, filtered_hosts))
 
         for host in to_resolve:
             self.resolve_single_host(host, project_uuid, resolver)
