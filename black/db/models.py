@@ -87,7 +87,7 @@ class IP_addr(Base):
     # Primary key (probably uuid4)
     ip_id = Column(String, primary_key=True)
 
-    # IP address is a string (probably None, but not sure if 
+    # IP address is a string (probably None, but not sure if
     #    is needed)
     ip_address = Column(String)
 
@@ -111,7 +111,7 @@ class IP_addr(Base):
     def __repr__(self):
        return """<IP_addr(ip_id='%s', hostname='%s',
                         ip_address='%s', project_uuid='%s')>""" % (
-                        self.ip_id, self.hostname,
+                        self.ip_id, self.hostnames,
                         self.ip_address, self.project_uuid)
 
 class Host(Base):
