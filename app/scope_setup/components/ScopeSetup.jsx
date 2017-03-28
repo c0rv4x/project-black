@@ -1,11 +1,12 @@
 import React from 'react'
-
 import { Table } from 'react-bootstrap'
+
 import ScopeAdderTracked from '../../project_details/components/ScopeAdderTracked.jsx'
 import ScopesSocketioEventsEmitter from '../../common/scopes/ScopesSocketioEventsEmitter.js';
 
 import IPTable from '../presentational/IPTable.jsx'
 import HostTable from '../presentational/HostTable.jsx'
+
 
 class ScopeSetup extends React.Component {
 	constructor(props) {

@@ -5,7 +5,7 @@ import TitleButtonsWithHandlers from './TitleButtonsWithHandlers.jsx'
 import ProjectCommentTracked from './ProjectCommentTracked.jsx'
 import ScopeAdderTracked from './ScopeAdderTracked.jsx'
 import ScopeTableTracked from './ScopeTableTracked.jsx'
-import Tasks from '../presentational/tasks/Tasks.jsx';
+import Tasks from '../presentational/tasks/Tasks.jsx'
 
 
 class ProjectDetails extends React.Component {
