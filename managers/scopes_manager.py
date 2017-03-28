@@ -4,6 +4,8 @@ Hostname can have ip_address as a parameter (ForeignKey in the DB).
 Ip_address can contain hostname (if they are known), which is in fact
 a one->many relationship in the SQLalchemy. """
 import uuid
+import socket
+import dns.resolver
 
 from black.black.db import sessions, IP_addr
 from black.black.db import Host as HostDB
@@ -37,7 +39,7 @@ class ScopeManager(object):
         ips_from_db = session.query(IP_addr).all()
         self.ips = list(map(lambda x: IP(x.ip_id,
                                          x.ip_address,
-                                         x.hostnames,
+                                         list(map(lambda x: x.hostname, x.hostnames)),
                                          x.comment,
                                          x.project_uuid),
                             ips_from_db))
@@ -45,6 +47,7 @@ class ScopeManager(object):
         hosts_from_db = session.query(HostDB).all()
         self.hosts = list(map(lambda x: HostInstance(x.host_id,
                                                      x.hostname,
+                                                     list(map(lambda x: x.ip_address, x.ip_addresses)),
                                                      x.comment,
                                                      x.project_uuid),
                               hosts_from_db))
@@ -67,7 +70,7 @@ class ScopeManager(object):
 
         return len(filtered) > 0
 
-    def create_scope(self, ip_address, hostname, project_uuid):
+    def create_scope_internal(self, ip_address, hostname, project_uuid):
         """ Creates a scope for a certain project.
         Either ip_address or hostname MUST be None.
         If ip_address is specified, the funciton creates IP object,
@@ -83,7 +86,7 @@ class ScopeManager(object):
                     return {
                         'status': 'success',
                         'type': 'ip_address',
-                        'new_scope': new_scope_ip.toJSON()
+                        'new_scope': new_scope_ip
                     }
                 else:
                     print(result)
@@ -95,16 +98,17 @@ class ScopeManager(object):
 
         elif hostname:
             if not self.find_host(hostname, project_uuid):
-                new_scope_host = HostInstance(str(uuid.uuid4()), hostname, "", project_uuid)
+                new_scope_host = HostInstance(str(uuid.uuid4()), hostname, None, "", project_uuid)
                 result = new_scope_host.save()
 
                 if result['status'] == 'success':
+                    print(new_scope_host)
                     self.hosts.append(new_scope_host)
 
                     return {
                         'status': 'success',
                         'type': 'hostname',
-                        'new_scope': new_scope_host.toJSON()
+                        'new_scope': new_scope_host
                     }
                 else:
                     print(result)
@@ -115,6 +119,15 @@ class ScopeManager(object):
                 }
         else:
             raise Exception("Somehitng really bad happened")
+
+    def create_scope(self, ip_address, hostname, project_uuid):
+        """ This function creates a scope AND serializes it to json """
+        result = self.create_scope_internal(ip_address, hostname, project_uuid)
+
+        if result["status"] == "success":
+            result['new_scope'] = result['new_scope'].toJSON()
+
+        return result
 
     def delete_scope(self, scope_id):
         """ Delete a scope with a certain scope_id"""
@@ -154,4 +167,61 @@ class ScopeManager(object):
     def resolve_scopes(self, scopes_ids, project_uuid):
         """ Using all the ids of scopes, resolve the hosts, now we
         resolve ALL the scopes, that are related to the project_uuid """
-        
+        def try_connecection_to_ns(nameserver):
+            """ Check if ns is reachable """
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            try:
+                sock.connect((nameserver, 53))
+            except socket.error as e:
+                print('Error connecting to the NS')
+            sock.close()
+
+        resolver = dns.resolver.Resolver()
+        resolver.nameservers = ['8.8.8.8']
+        try_connecection_to_ns('8.8.8.8')
+
+        for host in self.hosts:
+            if host.get_project_uuid() == project_uuid:
+                if scopes_ids is None:
+                    to_resolve = self.hosts
+                else:
+                    to_resolve = list(filter(lambda x: x.get_id() in scopes_ids, self.hosts))
+
+        for host in to_resolve:
+            self.resolve_single_host(host, project_uuid, resolver)
+
+
+    def resolve_single_host(self, host, project_uuid, resolver):
+        project_uuid = host.get_project_uuid()
+        hostname = host.get_hostname()
+
+        if hostname:
+            try:
+                answers = resolver.query(hostname, 'A').response.answer
+
+                # Iterate over answers from nses
+                for answer in answers:
+                    # Iterate over ips in the answer
+                    for address in answer:
+                        # Lets find if the new IP already exists in the DB
+                        new_ip = str(address)
+                        found_ips = list(filter(lambda x: x.get_ip_address() == new_ip and 
+                                                       x.get_project_uuid() == project_uuid,
+                                         self.ips))
+                        if len(found_ips) == 0:
+                            # Lets crete such ip
+                            create_result = self.create_scope_internal(new_ip, None, project_uuid)
+
+                            if create_result['status'] == 'success':
+                                newly_created_ip = create_result['new_scope']
+                                host.append_ip(newly_created_ip)
+                        else:
+                            # Such ip already exists
+                            existing_ip = found_ips[0]
+                            host.append_ip(existing_ip)
+
+            except dns.resolver.NXDOMAIN as e:
+                return {
+                    "status": "error",
+                    "text": "No such domain"
+                }

@@ -5,7 +5,7 @@ class IP(object):
     def __init__(self, _id, ip_address, hostnames, comment, project_uuid):
         self._id = _id
         self.ip_address = ip_address
-        self.hostnames = hostnames
+        self.hostnames = hostnames or list()
         self.comment = comment
         self.project_uuid = project_uuid
 
