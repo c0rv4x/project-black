@@ -107,10 +107,10 @@ class ScopeHandlers(object):
             scopes_ids = msg['scopes_ids']
             project_uuid = msg['project_uuid']
 
-            scope_manager.resolve_scopes(project_uuid, scopes_ids)
+            scope_manager.resolve_scopes(scopes_ids, project_uuid)
             socketio.emit('scopes:all:get:back', {
                 'status' : 'success',
-                'scopes' :scope_manager.get_scopes()
+                'scopes' : scope_manager.get_scopes()
             }, broadcast=True)
 
         @socketio.on('scopes:update')

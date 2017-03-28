@@ -150,3 +150,8 @@ class ScopeManager(object):
                 update_result['type'] = 'host'
 
                 return update_result
+
+    def resolve_scopes(self, scopes_ids, project_uuid):
+        """ Using all the ids of scopes, resolve the hosts, now we
+        resolve ALL the scopes, that are related to the project_uuid """
+        
