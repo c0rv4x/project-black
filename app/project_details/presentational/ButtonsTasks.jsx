@@ -16,10 +16,6 @@ class ButtonsTasks extends React.Component {
 					<MenuItem eventKey="2" onClick={this.props.runNmap}>Nmap</MenuItem>
 					<MenuItem eventKey="3" onClick={this.props.runNmapOnlyOpen}>Nmap banner edition</MenuItem>
 				</DropdownButton>
-
-				<Button onClick={() => this.props.resolveScopes(null, this.props.project.project_uuid)}>
-					Resolve Scopes
-				</Button>
 			</div>
 		)
 	}

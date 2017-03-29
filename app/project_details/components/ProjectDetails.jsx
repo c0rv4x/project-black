@@ -16,6 +16,7 @@ class ProjectDetails extends React.Component {
 	render() {
 		return (
 			<div>
+				<h4>Working with ips (usually, network level utilities are run here)</h4>
 				<TitleButtonsWithHandlers scopes={this.props.scopes}
 								   project={this.props.project} 
 								   scans={this.props.scans} />

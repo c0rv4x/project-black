@@ -2,7 +2,6 @@ import React from 'react'
 import { Button, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap';
 
 import TasksSocketioEventsEmitter from '../../common/tasks/TasksSocketioEventsEmitter.js';
-import ScopesSocketioEventsEmitter from '../../common/scopes/ScopesSocketioEventsEmitter.js';
 import ButtonsTasks from '../presentational/ButtonsTasks.jsx';
 
 
@@ -11,13 +10,11 @@ class TitleButtonsWithHandlers extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.scopesEmitter = new ScopesSocketioEventsEmitter();
 		this.tasksEmitter = new TasksSocketioEventsEmitter();
 
 		this.runMasscan = this.runMasscan.bind(this);
 		this.runNmap = this.runNmap.bind(this);
 		this.runNmapOnlyOpen = this.runNmapOnlyOpen.bind(this);
-		this.resolveScopes = this.resolveScopes.bind(this);
 	}
 
 	runMasscan() {
@@ -76,17 +73,12 @@ class TitleButtonsWithHandlers extends React.Component {
 
 	}	
 
-	resolveScopes(scopes_ids, project_uuid) {
-		this.scopesEmitter.requestResolveScopes(scopes_ids, project_uuid);
-	}
-
 	render() {
 		return (
 			<ButtonsTasks project={this.props.project}
 						  runMasscan={this.runMasscan}
 						  runNmap={this.runNmap}
-						  runNmapOnlyOpen={this.runNmapOnlyOpen}
-						  resolveScopes={this.resolveScopes}/>
+						  runNmapOnlyOpen={this.runNmapOnlyOpen} />
 		)
 	}
 
