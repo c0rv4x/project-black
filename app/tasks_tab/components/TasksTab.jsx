@@ -1,6 +1,7 @@
 import React from 'react'
 
 import TasksTabHead from '../presentational/TasksTabHead.jsx'
+import TasksList from '../presentational/TasksList.jsx'
 
 
 class TasksTab extends React.Component {
@@ -10,7 +11,10 @@ class TasksTab extends React.Component {
 
 	render() {
 		return (
-			<TasksTabHead />
+			<div>
+				<TasksTabHead />
+				<TasksList tasks={this.props.tasks}/>
+			</div>
 		)
 	}
 }

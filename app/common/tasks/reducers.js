@@ -40,9 +40,37 @@ function renew_tasks(state = {'active': [], 'finished': []}, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
+		const active_tasks = message['tasks']['active'];
+		var parsed_active_tasks = _.map(active_tasks, (x) => {
+			return {
+				"task_id": x["task_id"],
+				"task_type": x["task_type"],
+				"params": x["params"],
+				"target": x["target"],
+				"status": x["status"],
+				"progress": x["progress"],
+				"project_uuid": x["project_uuid"],
+				"text": x["text"]
+			}
+		});
+
+		const finished_tasks = message['tasks']['finished'];
+		var parsed_finished_tasks = _.map(finished_tasks, (x) => {
+			return {
+				"task_id": x["task_id"],
+				"task_type": x["task_type"],
+				"params": x["params"],
+				"target": x["target"],
+				"status": x["status"],
+				"progress": x["progress"],
+				"project_uuid": x["project_uuid"],
+				"text": x["text"]
+			}
+		});
+
 		return { 
-			'active': message['tasks'][0],
-			'finished': message['tasks'][1]
+			'active': parsed_active_tasks,
+			'finished': parsed_finished_tasks
 		};
 	} else {
 		/* TODO: add error handling */

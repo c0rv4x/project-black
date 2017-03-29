@@ -176,7 +176,10 @@ class TaskManager(object):
         active = list(map(lambda x: x.get_as_native_object(), self.active_tasks))
         finished = list(map(lambda x: x.get_as_native_object(), self.finished_tasks))
 
-        return [active, finished]
+        return {
+            'active': active, 
+            'finished': finished
+        }
 
     def create_task(self, task_type, target, params, project_uuid):
         """ Register the task and send a command to start it """
