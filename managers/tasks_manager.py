@@ -151,8 +151,8 @@ class TaskManager(object):
         tasks = list(map(lambda x:
                          ShadowTask(task_id=x.task_id,
                                     task_type=x.task_type,
-                                    target=x.target,
-                                    params=x.params,
+                                    target=json.loads(x.target),
+                                    params=json.loads(x.params),
                                     project_uuid=x.project_uuid,
                                     status=x.status,
                                     progress=x.progress,
