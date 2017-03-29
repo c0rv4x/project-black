@@ -1,5 +1,6 @@
 """ Basic class for Task (the isntance of a running scan
 against 1 target) """
+import json
 from black.db import sessions, models
 
 
@@ -80,8 +81,8 @@ class Task(object):
         task_new_object = models.Task(
             task_id=self.get_id(),
             task_type=self.task_type,
-            target=str(self.target),
-            params=str(self.params),
+            target=json.dumps(self.target),
+            params=json.dumps(self.params),
             project_uuid=self.project_uuid)
 
         session.add(task_new_object)
