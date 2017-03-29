@@ -9,6 +9,7 @@ import {
 
 import ScopeSetupWrapper from '../scope_setup/components/ScopeSetupWrapper.js'
 import ProjectDetailsWrapper from '../project_details/components/ProjectDetailsWrapper.js'
+import HostsList from '../hosts_list/components/HostsList.jsx'
 
 class NavigationTabs extends React.Component {
 	constructor(props) {
@@ -26,7 +27,9 @@ class NavigationTabs extends React.Component {
 				<Tab eventKey={2} title="IPs">
 					<ProjectDetailsWrapper project_name={this.project_name} />
 				</Tab>
-				<Tab eventKey={3} title="Hostname">Tab 3 content</Tab>
+				<Tab eventKey={3} title="Hostnames">
+					<HostsList />
+				</Tab>
 			</Tabs>
 		);
 	}
