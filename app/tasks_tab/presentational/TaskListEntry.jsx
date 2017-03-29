@@ -26,6 +26,7 @@ class TasksListEntry extends React.Component {
 
 	render() {
 		var targets = [];
+
 		for (var target_number in this.props.task.target) {
 			if (target_number > 1) {
 				targets.push(<div key="some_key">...</div>);
@@ -48,7 +49,8 @@ class TasksListEntry extends React.Component {
 				<td>{params}</td>
 				<td>{this.props.task.status}</td>
 				<TaskDetails showModal={this.state.showModal}
-							 close={this.close} />
+							 close={this.close}
+							 task={this.props.task} />
 			</tr>
 		)
 	}

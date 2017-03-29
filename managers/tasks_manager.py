@@ -2,6 +2,7 @@
 import uuid
 import json
 import threading
+import datetime
 import pika
 
 from black.black.db import sessions, Task
@@ -9,7 +10,7 @@ from black.black.db import sessions, Task
 
 class ShadowTask(object):
     """ A shadow of the real task """
-    def __init__(self, task_id, task_type, target, params, project_uuid, status=None, progress=None, text=None):
+    def __init__(self, task_id, task_type, target, params, project_uuid, status=None, progress=None, text=None, date_added=datetime.datetime.utcnow()):
         self.task_type = task_type
         self.target = target
         self.params = params
@@ -23,6 +24,7 @@ class ShadowTask(object):
         self.status = status
         self.progress = progress
         self.text = text
+        self.date_added = date_added
 
         self.channel = None
 
@@ -82,7 +84,8 @@ class ShadowTask(object):
             "status" : self.status,
             "progress" : self.progress,
             "text" : self.text,
-            "project_uuid" : self.project_uuid
+            "project_uuid" : self.project_uuid,
+            "date_added": str(self.date_added)
         }
 
 class TaskManager(object):
@@ -156,7 +159,8 @@ class TaskManager(object):
                                     project_uuid=x.project_uuid,
                                     status=x.status,
                                     progress=x.progress,
-                                    text=x.text),
+                                    text=x.text,
+                                    date_added=x.date_added),
                          tasks_from_db))
         sessions.destroy_session(session)
 
@@ -190,7 +194,8 @@ class TaskManager(object):
                           project_uuid=project_uuid,
                           status=None,
                           progress=None,
-                          text=None)
+                          text=None,
+                          date_added=None)
         task.send_start_task()
         self.active_tasks.append(task)
 

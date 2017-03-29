@@ -50,7 +50,8 @@ function renew_tasks(state = {'active': [], 'finished': []}, action) {
 				"status": x["status"],
 				"progress": x["progress"],
 				"project_uuid": x["project_uuid"],
-				"text": x["text"]
+				"text": x["text"],
+				"date_added": x["date_added"]
 			}
 		});
 
@@ -64,7 +65,8 @@ function renew_tasks(state = {'active': [], 'finished': []}, action) {
 				"status": x["status"],
 				"progress": x["progress"],
 				"project_uuid": x["project_uuid"],
-				"text": x["text"]
+				"text": x["text"],
+				"date_added": x["date_added"]
 			}
 		});
 
