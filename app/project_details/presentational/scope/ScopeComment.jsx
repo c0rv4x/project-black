@@ -19,13 +19,13 @@ class ScopeComment extends React.Component {
 				<FormGroup controlId="formBasicText">
 					<ControlLabel>Comment</ControlLabel>
 
-					<FormControl placeholder="Test"
+					<FormControl placeholder="Enter anything, that would help you in future. After moving focus out, the data will be saved."
 				                 type="text" 
 				                 componentClass="textarea"
 				                 value={this.props.commentValue} 
-				                 onChange={this.props.onCommentChange}/>	
+				                 onChange={this.props.onCommentChange}
+				                 onBlur={this.props.onCommentSubmit}/>	
 				</FormGroup>
-			    <Button bsSize="small" onClick={this.props.onCommentSubmit}>Save comment</Button>			
 			</div>
 		)
 	}
