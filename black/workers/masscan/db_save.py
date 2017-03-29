@@ -30,7 +30,7 @@ def save_raw_output(task_id, output, project_uuid):
 						scan_id=str(uuid4()),
 						target=address,
 						port_number=port_number,
-						tasks_ids=str([task_id]),
+						task_id=task_id,
 						project_uuid=project_uuid)
 
 					session.add(new_scan)
