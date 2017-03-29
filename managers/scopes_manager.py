@@ -148,7 +148,7 @@ class ScopeManager(object):
                 for each_host in self.hosts:
                     ips = each_host.get_ip_addresses()
                     each_host.set_ip_addresses(
-                        list(filter(lambda x: x.get_ip_address() != ip_addr.get_ip_address(), 
+                        list(filter(lambda x: x.get_id() != scope_id,
                             each_host.get_ip_addresses()))
                     )
 
