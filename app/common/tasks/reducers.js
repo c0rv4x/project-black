@@ -51,11 +51,14 @@ function renew_tasks(state = {'active': [], 'finished': []}, action) {
 				"progress": x["progress"],
 				"project_uuid": x["project_uuid"],
 				"text": x["text"],
+				"stdout": x["stdout"],
+				"stderr": x["stderr"],
 				"date_added": x["date_added"]
 			}
 		});
 
 		const finished_tasks = message['tasks']['finished'];
+		console.log(finished_tasks);
 		var parsed_finished_tasks = _.map(finished_tasks, (x) => {
 			return {
 				"task_id": x["task_id"],
@@ -66,6 +69,8 @@ function renew_tasks(state = {'active': [], 'finished': []}, action) {
 				"progress": x["progress"],
 				"project_uuid": x["project_uuid"],
 				"text": x["text"],
+				"stdout": x["stdout"],
+				"stderr": x["stderr"],
 				"date_added": x["date_added"]
 			}
 		});

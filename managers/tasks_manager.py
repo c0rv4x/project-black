@@ -10,7 +10,7 @@ from black.black.db import sessions, Task
 
 class ShadowTask(object):
     """ A shadow of the real task """
-    def __init__(self, task_id, task_type, target, params, project_uuid, status=None, progress=None, text=None, date_added=datetime.datetime.utcnow()):
+    def __init__(self, task_id, task_type, target, params, project_uuid, status=None, progress=None, text=None, date_added=datetime.datetime.utcnow(), stdout="", stderr=""):
         self.task_type = task_type
         self.target = target
         self.params = params
@@ -25,6 +25,8 @@ class ShadowTask(object):
         self.progress = progress
         self.text = text
         self.date_added = date_added
+        self.stdout = stdout
+        self.stderr = stderr
 
         self.channel = None
 
@@ -64,11 +66,13 @@ class ShadowTask(object):
                                    }))
 
 
-    def set_status(self, new_status, progress, text):
+    def set_status(self, new_status, progress, text, new_stdout, new_stderr):
         """ Change status, progress and text of the task """
         self.status = new_status
         self.progress = progress
         self.text = text
+        self.stdout += new_stdout
+        self.stderr += new_stderr
 
     def get_status(self):
         """ Returns a tuple of status, progress and text of the task"""
@@ -85,6 +89,8 @@ class ShadowTask(object):
             "progress" : self.progress,
             "text" : self.text,
             "project_uuid" : self.project_uuid,
+            "stdout" : self.stdout,
+            "stderr" : self.stderr,
             "date_added": str(self.date_added)
         }
 
@@ -136,7 +142,8 @@ class TaskManager(object):
         for task in self.active_tasks:
             if task.task_id == task_id:
                 new_status = message['status']
-                task.set_status(new_status, message['progress'], message['text'])
+                task.set_status(new_status, message['progress'], message['text'], message['new_stdout'],
+                    message['new_stderr'])
 
                 if new_status == 'Finished' or new_status == 'Aborted':
                     self.active_tasks.remove(task)
@@ -160,7 +167,9 @@ class TaskManager(object):
                                     status=x.status,
                                     progress=x.progress,
                                     text=x.text,
-                                    date_added=x.date_added),
+                                    date_added=x.date_added,
+                                    stdout=x.stdout,
+                                    stderr=x.stderr),
                          tasks_from_db))
         sessions.destroy_session(session)
 
@@ -191,11 +200,7 @@ class TaskManager(object):
                           task_type=task_type,
                           target=target,
                           params=params,
-                          project_uuid=project_uuid,
-                          status=None,
-                          progress=None,
-                          text=None,
-                          date_added=None)
+                          project_uuid=project_uuid)
         task.send_start_task()
         self.active_tasks.append(task)
 
