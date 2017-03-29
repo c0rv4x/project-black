@@ -31,6 +31,36 @@ class AsyncTask(Task):
             'task_id': self.task_id,
             'status': new_status,
             'progress': progress,
-            'text': text
+            'text': text,
+            'new_stdout': "",
+            'new_stderr': ""
+        })
+        self.exchange.publish(msg, 'tasks_statuses')
+
+    def append_stdout(self, new_stdout):
+        new_stdout = new_stdout
+        Task.append_stdout(self, new_stdout)
+
+        msg = asynqp.Message({
+            'task_id': self.task_id,
+            'status': self.status,
+            'progress': self.progress,
+            'text': self.text,
+            'new_stdout': new_stdout,
+            'new_stderr': ""
+        })
+        self.exchange.publish(msg, 'tasks_statuses')
+
+    def append_stderr(self, new_stderr):
+        new_stderr = new_stderr
+        Task.append_stderr(self, new_stderr)
+
+        msg = asynqp.Message({
+            'task_id': self.task_id,
+            'status': self.status,
+            'progress': self.progress,
+            'text': self.text,
+            'new_stdout': "",
+            'new_stderr': new_stderr
         })
         self.exchange.publish(msg, 'tasks_statuses')

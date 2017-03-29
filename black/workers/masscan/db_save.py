@@ -7,7 +7,7 @@ from black.db import sessions, Scan
 
 def save_raw_output(task_id, output, project_uuid):
 	try:
-		concated = "".join(map(lambda x: x.decode(), output))
+		concated = "".join(output)
 
 		if concated:
 			parsed_dict = xmltodict.parse(concated)

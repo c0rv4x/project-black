@@ -62,6 +62,12 @@ class Task(Base):
     # Special note. E.x. error
     text = Column(String)
 
+    # Stdout
+    stdout = Column(String)
+
+    # Stderr
+    stderr = Column(String)
+
     # Time of adding
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
 
