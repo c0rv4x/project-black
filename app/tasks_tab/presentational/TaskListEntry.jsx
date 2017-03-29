@@ -1,12 +1,27 @@
 import _ from 'lodash'
 import React from 'react'
-
 import { Table } from 'react-bootstrap'
 
+import TaskDetails from './TaskDetails.jsx'
 
 class TasksListEntry extends React.Component {
 	constructor(props) {
 		super(props);
+
+		this.state = {
+			"showModal": false
+		}
+
+		this.close = this.close.bind(this);
+		this.open = this.open.bind(this);
+	}
+    
+	close() {
+		this.setState({ showModal: false });
+	}
+
+	open() {
+		this.setState({ showModal: true });
 	}
 
 	render() {
@@ -27,11 +42,13 @@ class TasksListEntry extends React.Component {
 		});
 
 		return (
-			<tr>
+			<tr onClick={this.open}>
 				<td>{this.props.task.task_type}</td>
 				<td>{targets}</td>
 				<td>{params}</td>
 				<td>{this.props.task.status}</td>
+				<TaskDetails showModal={this.state.showModal}
+							 close={this.close} />
 			</tr>
 		)
 	}
