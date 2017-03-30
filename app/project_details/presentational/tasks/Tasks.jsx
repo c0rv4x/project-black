@@ -15,23 +15,30 @@ class Tasks extends React.Component {
 			return <EachTask key={x.task_id} task={x}/>
 		});
 
-		return (
-			<div>
-				<h3>Active tasks</h3>
-				<Table>
-					<thead>
-						<tr>
-							<td>Task Type</td>
-							<td>Status</td>
-							<td>Progress</td>
-						</tr>
-					</thead>
-					<tbody>
-						{tasks}
-					</tbody>
-				</Table>
-			</div>
-		)
+		if (_.get(this.props.tasks, 'length', 0)) {
+			return (
+				<div>
+					<h3>Active tasks</h3>
+					<Table>
+						<thead>
+							<tr>
+								<td>Task Type</td>
+								<td>Status</td>
+								<td>Progress</td>
+							</tr>
+						</thead>
+						<tbody>
+							{tasks}
+						</tbody>
+					</Table>
+				</div>
+			)			
+		}
+		else {
+			return (
+				<div></div>
+			)
+		}
 	}
 
 }
