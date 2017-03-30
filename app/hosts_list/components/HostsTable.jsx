@@ -28,7 +28,7 @@ class HostsTable extends React.Component {
 								   deleteScope={() => this.props.deleteScope(x._id)}
 
 								   scans={_.filter(this.props.scans, (y) => {
-								   	return y.target in x.ip_addresses;
+								   	return x.ip_addresses.indexOf(y.target) !== -1;
 								   })}/>
 		});
 
