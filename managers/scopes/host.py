@@ -98,11 +98,12 @@ class Host(object):
             }
 
     def append_ip(self, ip_object):
-        self.ip_addresses.append(ip_object)
-        session = sessions.get_new_session()
-        host_from_db = session.query(HostDB).filter_by(host_id=self.get_id()).first()
-        ip_from_db = session.query(IP_addr).filter_by(ip_id=ip_object.get_id()).first()
-        host_from_db.ip_addresses.append(ip_from_db)
+        if ip_object not in self.ip_addresses:
+            self.ip_addresses.append(ip_object)
+            session = sessions.get_new_session()
+            host_from_db = session.query(HostDB).filter_by(host_id=self.get_id()).first()
+            ip_from_db = session.query(IP_addr).filter_by(ip_id=ip_object.get_id()).first()
+            host_from_db.ip_addresses.append(ip_from_db)
 
-        session.commit()
-        sessions.destroy_session(session)
+            session.commit()
+            sessions.destroy_session(session)
