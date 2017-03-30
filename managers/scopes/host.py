@@ -80,7 +80,7 @@ class Host(object):
     def update_comment(self, comment):
         try:
             session = sessions.get_new_session()
-            db_object = session.query(HostDB).filter_by(ip_id=self._id).first()
+            db_object = session.query(HostDB).filter_by(host_id=self._id).first()
             db_object.comment = comment
             session.commit()
             sessions.destroy_session(session)
