@@ -9,7 +9,7 @@ import {
 
 import ScopeSetupWrapper from '../scope_setup/components/ScopeSetupWrapper.js'
 import ProjectDetailsWrapper from '../project_details/components/ProjectDetailsWrapper.js'
-import HostsList from '../hosts_list/components/HostsList.jsx'
+import HostsListWrapper from '../hosts_list/components/HostsListWrapper.js'
 import TasksTabWrapper from '../tasks_tab/components/TasksTabWrapper.js'
 
 class NavigationTabs extends React.Component {
@@ -29,7 +29,7 @@ class NavigationTabs extends React.Component {
 					<ProjectDetailsWrapper project_name={this.project_name} />
 				</Tab>
 				<Tab eventKey={3} title="Hostnames">
-					<HostsList />
+					<HostsListWrapper project_name={this.project_name} />
 				</Tab>
 				<Tab eventKey={4} title="All Tasks">
 					<TasksTabWrapper project_name={this.project_name} />
