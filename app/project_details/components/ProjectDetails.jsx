@@ -22,6 +22,8 @@ class ProjectDetails extends React.Component {
 								   scans={this.props.scans} />
 
 				<hr/>
+
+				<h3>{this.props.project.project_name}</h3>
 				<Tasks tasks={this.props.tasks} />
 				<ProjectCommentTracked project={this.props.project}
 									   onCommentChange={this.props.onProjectCommentChange} />
@@ -29,7 +31,7 @@ class ProjectDetails extends React.Component {
 				<ScopeTableTracked scopes={this.props.scopes}
 								   onCommentChange={this.props.onScopeCommentChange}
 
-								   scans={this.props.scans} />							  
+								   scans={this.props.scans} />
 			</div>
 		)
 	}
