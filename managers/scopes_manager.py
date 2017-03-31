@@ -53,11 +53,13 @@ class ScopeManager(object):
                               hosts_from_db))
 
         for each_ip in self.ips:
-            nice_hostnames = list(filter(lambda y: y.get_hostname() in each_ip.get_hostnames(), self.hosts))
+            nice_hostnames = list(filter(lambda y: y.get_hostname() in each_ip.get_hostnames()
+                and y.get_project_uuid() == each_ip.get_project_uuid(), self.hosts))
             each_ip.set_hostnames(nice_hostnames)
 
         for each_host in self.hosts:
-            nice_ips = list(filter(lambda y: y.get_ip_address() in each_host.get_ip_addresses(), self.ips))
+            nice_ips = list(filter(lambda y: y.get_ip_address() in each_host.get_ip_addresses()
+                and y.get_project_uuid() == each_ip.get_project_uuid(), self.ips))
             each_host.set_ip_addresses(nice_ips)
 
         sessions.destroy_session(session)
