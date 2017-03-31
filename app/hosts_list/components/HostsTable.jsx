@@ -21,7 +21,8 @@ class HostsTable extends React.Component {
 
 	render() {
 		const scopes = _.map(this.props.scopes, (x) => {
-			return <HostsEntryLine key={x._id} 
+			return <HostsEntryLine key={x._id}
+								   project={this.props.project}
 								   scope={x} 
 								   onCommentChange={(e) => this.props.onCommentChange(e.target.value, x._id)}
 								   onCommentSubmit={() => this.commentSubmitted(x.comment, x._id)}

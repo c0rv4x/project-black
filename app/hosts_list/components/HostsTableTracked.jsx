@@ -20,7 +20,8 @@ class HostsTableTracked extends React.Component {
 
 	render() {
 		return (
-				<HostsTable scopes={this.props.scopes.hosts}
+				<HostsTable project={this.props.project}
+							scopes={this.props.scopes.hosts}
 							onCommentChange={this.props.onCommentChange}
 							deleteScope={this.deleteScope}
 

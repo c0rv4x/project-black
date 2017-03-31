@@ -18,7 +18,8 @@ class HostsList extends React.Component {
 
 				<hr />
 
-				<HostsTableTracked scopes={this.props.scopes}
+				<HostsTableTracked project={this.props.project}
+								   scopes={this.props.scopes}
 								   onCommentChange={this.props.onScopeCommentChange}
 
 								   scans={this.props.scans} />
