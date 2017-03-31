@@ -59,7 +59,7 @@ class ScopeManager(object):
 
         for each_host in self.hosts:
             nice_ips = list(filter(lambda y: y.get_ip_address() in each_host.get_ip_addresses()
-                and y.get_project_uuid() == each_ip.get_project_uuid(), self.ips))
+                and y.get_project_uuid() == each_host.get_project_uuid(), self.ips))
             each_host.set_ip_addresses(nice_ips)
 
         sessions.destroy_session(session)
