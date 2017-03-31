@@ -70,7 +70,7 @@ class ScopeManager(object):
         filtered = list(filter(lambda x: x.get_project_uuid() == project_uuid, filtered))
         filtered = list(filter(lambda x: x.get_ip_address() == ip_address, filtered))
 
-        return len(filtered) > 0
+        return filtered
 
     def find_host(self, hostname, project_uuid):
         """ Checks whether host object for a certain project already exitst """
@@ -78,7 +78,7 @@ class ScopeManager(object):
         filtered = list(filter(lambda x: x.get_project_uuid() == project_uuid, filtered))
         filtered = list(filter(lambda x: x.get_hostname() == hostname, filtered))
 
-        return len(filtered) > 0
+        return filtered
 
     def create_scope_internal(self, ip_address, hostname, project_uuid):
         """ Creates a scope for a certain project.
@@ -86,7 +86,7 @@ class ScopeManager(object):
         If ip_address is specified, the funciton creates IP object,
         If hostname is specified, the function creates Host object """
         if ip_address:
-            if not self.find_ip(ip_address, project_uuid):
+            if len(self.find_ip(ip_address, project_uuid)) == 0:
                 new_scope_ip = IP(str(uuid.uuid4()), ip_address, [], "", project_uuid)
                 result = new_scope_ip.save()
 
@@ -222,9 +222,8 @@ class ScopeManager(object):
                     for address in answer:
                         # Lets find if the new IP already exists in the DB
                         new_ip = str(address)
-                        found_ips = list(filter(lambda x: x.get_ip_address() == new_ip and 
-                                                       x.get_project_uuid() == project_uuid,
-                                         self.ips))
+                        found_ips = self.find_ip(new_ip, project_uuid)
+
                         if len(found_ips) == 0:
                             # Lets crete such ip
                             create_result = self.create_scope_internal(new_ip, None, project_uuid)
