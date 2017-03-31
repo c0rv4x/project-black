@@ -52,7 +52,8 @@ class HostsEntryLinePorts extends React.Component {
 						</Row>
 				)
 			});
-			ports.push(<ListGroupItem key={this.props.scope._id + "_" + ip_address}>
+			ports.push(
+				<ListGroupItem key={this.props.scope._id + "_" + ip_address}>
 					<h5>{ip_address}</h5>{ports_nice}
 				</ListGroupItem>);
 		}
