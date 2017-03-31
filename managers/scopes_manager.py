@@ -205,10 +205,10 @@ class ScopeManager(object):
             to_resolve = list(filter(lambda x: x.get_id() in scopes_ids, filtered_hosts))
 
         for host in to_resolve:
-            self.resolve_single_host(host, project_uuid, resolver)
+            self.resolve_single_host(host, resolver)
 
 
-    def resolve_single_host(self, host, project_uuid, resolver):
+    def resolve_single_host(self, host, resolver):
         project_uuid = host.get_project_uuid()
         hostname = host.get_hostname()
 
