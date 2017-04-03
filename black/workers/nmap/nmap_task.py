@@ -48,50 +48,59 @@ class NmapTask(AsyncTask):
         # If we know, that there will be some data, we read it
         if self.status == 'New' or self.status == 'Working':
             stdout_chunk = await self.proc.stdout.read(1024)
-            self.stdout.append(stdout_chunk)
+            stdout_chunk_decoded = stdout_chunk.decode('utf-8')
 
-            # Create the task on reading the leftover
+            if stdout_chunk_decoded:
+                self.append_stdout(stdout_chunk_decoded)
+
+            # Create the task on reading the next chunk of data
             loop = asyncio.get_event_loop()
             loop.create_task(self.read_stdout())
 
         # If the task has finished, drain stdout
         elif self.status == 'Aborted' or self.status == 'Finished':
             try:
+                # Try to read from stdout for quite some time
                 stdout_chunk = await asyncio.wait_for(self.proc.stdout.read(), 0.5)
+                stdout_chunk_decoded = stdout_chunk
+
+                # Wierd thing: while reading from the stdout of finished process,
+                # b'' is read in a while loop, so we need to check.
                 if len(stdout_chunk) == 0:
                     raise Exception("No data left")
                 else:
-                    self.stdout.append(stdout_chunk)
+                    self.append_stdout(stdout_chunk_decoded)
             except TimeoutError as _:
                 pass
             except Exception as _:
                 pass
-            else:
-                loop = asyncio.get_event_loop()
-                loop.create_task(self.read_stdout())
 
     async def read_stderr(self):
         """ Similar to read_stdout """
         if self.status == 'New' or self.status == 'Working':
             stderr_chunk = await self.proc.stderr.read(1024)
-            self.stderr.append(stderr_chunk)
+            stderr_chunk_decoded = stderr_chunk.decode('utf-8')
 
+            if stderr_chunk_decoded:
+                self.append_stderr(stderr_chunk_decoded)
+
+            # Create the task on reading the next chunk of data
             loop = asyncio.get_event_loop()
             loop.create_task(self.read_stderr())
+
+        # If the task has finished, drain stderr
         elif self.status == 'Aborted' or self.status == 'Finished':
             try:
                 stderr_chunk = await asyncio.wait_for(self.proc.stderr.read(), 0.5)
+                stderr_chunk_decoded = stderr_chunk
                 if len(stderr_chunk) == 0:
                     raise Exception("No data left")
                 else:
-                    self.stderr.append(stderr_chunk)
+                    self.append_stderr(stderr_chunk_decoded)
             except TimeoutError as _:
                 pass
             except Exception as _:
                 pass
-            else:
-                loop = asyncio.get_event_loop()
-                loop.create_task(self.read_stderr())
 
     def spawn_status_poller(self):
         thread = threading.Thread(target=self.progress_poller)
@@ -103,20 +112,21 @@ class NmapTask(AsyncTask):
     async def wait_for_exit(self):
         """ Check if the process exited. If so,
         save stdout, stderr, exit_code and update the status. """
-        print("Waiting for exit")
+        print("Task started")
         exit_code = await self.proc.wait()
         self.exit_code = exit_code
-        # The process have exited.
-        # Save the data locally.
-        self.parse_results()
+        # The process has exited.
+        print("The process finished OK")
 
         if self.exit_code == 0:
-            print("The process finished OK")
-            self.set_status("Finished", 100, "")
+            try:
+                self.save()
+            except Exception as e:
+                self.set_status("Aborted", progress=-1, text="".join(self.stderr))
+            else:
+                self.set_status("Finished", progress=100)
         else:
-            print("The process finished with error", self.task_id)
-            decoded_stderr = list(map(lambda x: x.decode('utf-8'), self.stderr))
-            self.set_status("Aborted", -1, "".join(decoded_stderr))
+            self.set_status("Aborted", progress=-1, text="".join(self.stderr))
 
 
     def parse_results(self):
