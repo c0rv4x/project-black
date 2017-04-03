@@ -56,7 +56,7 @@ class TitleButtonsWithHandlers extends React.Component {
 			let flags = "-p" + ports.join();
 
 			this.tasksEmitter.requestCreateTask('nmap', 
-												target, 
+												[target], 
 												{
 													'program': [flags, '-sV'],
 													'saver': {

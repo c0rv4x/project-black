@@ -25,28 +25,26 @@ class TasksListEntry extends React.Component {
 	}
 
 	render() {
-		var targets = [];
+		var targets = null;
+		var extracted_target = this.props.task.target;
 
-		for (var target_number in this.props.task.target) {
+		targets = [];
+		for (var target_number in extracted_target) {
 			if (target_number > 1) {
 				targets.push(<div key="some_key">...</div>);
 				break;
 			}
 			else {
-				const target = this.props.task.target[target_number];
+				const target = extracted_target[target_number];
 				targets.push(<div key={target}>{target}</div>);				
 			}
 		}
-
-		const params = _.map(this.props.task.params, (x) => {
-			return <div key={x}>{x}</div>
-		});
 
 		return (
 			<tr onClick={this.open}>
 				<td>{this.props.task.task_type}</td>
 				<td>{targets}</td>
-				<td>{params}</td>
+				<td>{this.props.task.params["program"].join()}</td>
 				<td>{this.props.task.status}</td>
 				<TaskDetails showModal={this.state.showModal}
 							 close={this.close}

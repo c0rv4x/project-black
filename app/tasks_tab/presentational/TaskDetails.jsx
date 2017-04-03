@@ -18,10 +18,14 @@ class TaskDetails extends React.Component {
 
 				<Modal.Body>
 					<h4>Targets</h4>
-					{_.map(this.props.task.target, (x) => {return <div key={x}>{x}</div>})}
+					{_.map(this.props.task.target, (x) => {
+						return <div key={this.props.task.task_id + "_" + x}>{x}</div>})
+					}
 
 					<h4>Params</h4>
-					{_.map(this.props.task.params, (x) => {return <div key={x}>{x}</div>})}
+					{_.map(this.props.task.params['program'], (x) => {
+						return <div key={this.props.task.task_id + "_" + x}>{x}</div>})
+					}
 
 					<h4>Stdout</h4>
 					<div><code>{this.props.task.stdout}</code></div>
