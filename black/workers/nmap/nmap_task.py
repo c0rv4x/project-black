@@ -25,7 +25,7 @@ class NmapTask(AsyncTask):
 
     async def start(self):
         """ Launch the task """
-        self.command = ['nmap', '-oX', '-'] + self.params['program'] + [self.target]
+        self.command = ['nmap', '-oX', '-'] + self.params['program'] + self.target
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
         self.set_status("Working", 0, "")
