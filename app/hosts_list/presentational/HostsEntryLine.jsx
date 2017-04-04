@@ -22,19 +22,18 @@ class HostsEntryLine extends React.Component {
 		var rendered_hostname = null;
 		if (this.props.scope.hostname) {
 			rendered_hostname = (
-				<span>{this.props.scope.hostname}
-				<Glyphicon glyph="remove-circle" onClick={this.props.deleteScope} /></span>
+				<div>
+					<b>{this.props.scope.hostname}</b>
+					<Button bsStyle="danger" bsSize="small" onClick={this.props.deleteScope}>
+						Remove
+					</Button>
+				</div>
 			)
 		}
 
-		const header = ( 
-			<h3>
-				{rendered_hostname}
-			</h3>
-		)
 
 		return (
-			<Panel collapsible defaultExpanded header={header} bsStyle="primary">
+			<Panel collapsible defaultExpanded header={rendered_hostname} bsStyle="primary">
 				<ListGroup fill>
 					<ListGroupItem key={this.props.project.project_uuid + "_" +this.props.scope.hostname}>
 						<ScopeComment commentValue={this.props.scope.comment}
