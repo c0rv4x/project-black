@@ -16,7 +16,7 @@ class Main extends React.Component {
 				<hr />
 				<ScopeComment commentValue={this.props.host.comment} />
 
-				<PortsTabs port={this.props.ports} />
+				<PortsTabs ports={this.props.ports} />
 			</div>
 		)
 	}
