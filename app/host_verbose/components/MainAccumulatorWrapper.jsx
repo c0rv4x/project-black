@@ -52,13 +52,28 @@ function mapStateToProps(state, ownProps){
     	ip = filtered_ips[0];
     }
 
+    // Ports filter
+    let ports_filtered = _.filter(state.scans, (x) => {
+    	return ((x.project_uuid == project['project_uuid']) && (ip.ip_address == x.target))
+    });
+
+    let ports_sorted = ports_filtered.sort((a, b) => {
+    	if (a['port_number'] < b['port_number']) {
+    		return -1;
+    	}
+    	if (a['port_number'] > b['port_number']) {
+    		return 1;
+    	}
+    	if (a['port_number'] == b['port_number']) {
+    		return 0;
+    	}    	
+    });
+
     return {
     	project: project,
     	host: host,
     	ip: ip,
-        ports: _.filter(state.scans, (x) => {
-        	return ((x.project_uuid == project['project_uuid']) && (ip.ip_address == x.target))
-        })
+        ports: ports_sorted
     }
 }
 
