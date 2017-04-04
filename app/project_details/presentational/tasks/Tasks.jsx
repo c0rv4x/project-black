@@ -1,8 +1,8 @@
-import _ from 'lodash';
-import React from 'react';
-import { Table, Button } from 'react-bootstrap';
+import _ from 'lodash'
+import React from 'react'
+import { Table, Button } from 'react-bootstrap'
 
-import EachTask from './EachTask.jsx';
+import EachTask from './EachTask.jsx'
 
 class Tasks extends React.Component {
 

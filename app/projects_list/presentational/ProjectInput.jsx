@@ -1,6 +1,6 @@
-import _  from 'lodash';
-import React from 'react';
-import { Button, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
+import _  from 'lodash'
+import React from 'react'
+import { Button, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 
 import ProjectsList from "./ProjectsList.jsx";
 

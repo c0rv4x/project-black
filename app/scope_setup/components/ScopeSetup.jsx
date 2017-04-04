@@ -3,7 +3,7 @@ import { Table } from 'react-bootstrap'
 
 import ScopeAdderTracked from '../../project_details/components/ScopeAdderTracked.jsx'
 import HeadButtonsTracked from './HeadButtonsTracked.jsx'
-import ScopesSocketioEventsEmitter from '../../common/scopes/ScopesSocketioEventsEmitter.js'
+import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
 
 import IPTable from '../presentational/IPTable.jsx'
 import HostTable from '../presentational/HostTable.jsx'

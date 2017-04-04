@@ -1,5 +1,5 @@
-import _ from 'lodash';
-import React from 'react';
+import _ from 'lodash'
+import React from 'react'
 
 import TitleButtonsWithHandlers from './TitleButtonsWithHandlers.jsx'
 import ProjectCommentTracked from './ProjectCommentTracked.jsx'

@@ -1,7 +1,7 @@
-import _ from 'lodash';
-import { connect } from 'react-redux';
+import _ from 'lodash'
+import { connect } from 'react-redux'
 
-import ScopeSetup from './ScopeSetup.jsx';
+import ScopeSetup from './ScopeSetup.jsx'
 
 
 function mapStateToProps(state, ownProps){

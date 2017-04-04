@@ -1,6 +1,6 @@
 import React from 'react'
 
-import ScopesSocketioEventsEmitter from '../../common/scopes/ScopesSocketioEventsEmitter.js';
+import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
 
 import HostsTable from './HostsTable.jsx'
 

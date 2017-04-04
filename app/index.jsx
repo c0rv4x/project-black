@@ -1,17 +1,17 @@
-import React from 'react';
-import {render} from 'react-dom';
+import React from 'react'
+import {render} from 'react-dom'
 
 import { Provider } from 'react-redux'
 
-import rdcs from './common/reducers.js';
-import { createStore } from 'redux';
+import { createStore } from 'redux'
 
-import ProjectsSocketioEventsSubscriber from './common/projects/ProjectsSocketioEventsSubscriber';
-import ScopesSocketioEventsSubsriber from './common/scopes/ScopesSocketioEventsSubscriber';
-import TasksSocketioEventsSubsriber from './common/tasks/TasksSocketioEventsSubsriber';
-import ScansSocketioEventsSubsriber from './common/scans/ScansSocketioEventsSubscriber';
+import rdcs from './redux/reducers.js'
+import ProjectsSocketioEventsSubscriber from './redux/projects/ProjectsSocketioEventsSubscriber'
+import ScopesSocketioEventsSubsriber from './redux/scopes/ScopesSocketioEventsSubscriber'
+import TasksSocketioEventsSubsriber from './redux/tasks/TasksSocketioEventsSubsriber'
+import ScansSocketioEventsSubsriber from './redux/scans/ScansSocketioEventsSubscriber'
 
-import Routing from './Routing.jsx';
+import Routing from './common/main_page/Routing.jsx'
 
 class App extends React.Component {
     constructor(props) {

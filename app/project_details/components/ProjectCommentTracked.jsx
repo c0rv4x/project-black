@@ -1,8 +1,8 @@
 import React from 'react'
 
-import ProjectsSocketioEventsEmitter from '../../common/projects/ProjectsSocketioEventsEmitter.js';
-import ScopesSocketioEventsEmitter from '../../common/scopes/ScopesSocketioEventsEmitter.js';
-import ProjectComment from '../presentational/ProjectComment.jsx';
+import ProjectsSocketioEventsEmitter from '../../redux/projects/ProjectsSocketioEventsEmitter.js'
+import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
+import ProjectComment from '../presentational/ProjectComment.jsx'
 
 
 class ProjectCommentTracked extends React.Component {

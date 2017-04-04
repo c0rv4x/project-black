@@ -4,12 +4,11 @@ import {
     Route
 } from 'react-router-dom'
 
-import ProjectsMainComponentWrapper from './projects_list/components/ProjectsMainComponentWrapper.js'
-import ProjectsDetailsWrapper from './project_details/components/ProjectDetailsWrapper.js'
-import ScopeSetupWrapper from './scope_setup/components/ScopeSetupWrapper.js'
+import ProjectsMainComponentWrapper from '../../projects_list/components/ProjectsMainComponentWrapper.js'
+import ProjectsDetailsWrapper from '../../project_details/components/ProjectDetailsWrapper.js'
 
-import NavigationTabs from './common/NavigationTabs.jsx'
-import HostPage from './host_verbose/components/MainAccumulatorWrapper.jsx'
+import NavigationTabs from './NavigationTabs.jsx'
+import HostPage from '../../host_verbose/components/MainAccumulatorWrapper.jsx'
 
 class Routing extends React.Component {
     constructor(props) {
