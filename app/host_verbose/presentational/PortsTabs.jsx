@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import { Tab, Col, Row, Nav, NavItem } from 'react-bootstrap'
 
@@ -8,27 +9,37 @@ class PortsTabs extends React.Component {
 	}
 
 	render() {
+		var i = 0;
+		const navItems = _.map(this.props.ports, (x) => {
+			i++;
+			return (
+				<NavItem eventKey={i} key={i}>
+					{x.port_number}
+				</NavItem>
+			);
+		});
+
+		i = 0;
+		const tabPanes = _.map(this.props.ports, (x) => {
+			i++;
+			return (
+				<Tab.Pane eventKey={i} key={i}>
+					{x.scan_id}
+				</Tab.Pane>
+			)
+		});
+
 		return (
 			<Tab.Container id="ports_tab_container" defaultActiveKey={1}>
 				<Row className="clearfix">
 					<Col md={2} sm={2}>
 						<Nav bsStyle="pills" stacked>
-						<NavItem eventKey={1}>
-							Tab 1
-						</NavItem>
-						<NavItem eventKey={2}>
-							Tab 2
-						</NavItem>
+							{navItems}
 						</Nav>
 					</Col>
 					<Col md={10} sm={10}>
 						<Tab.Content animation>
-							<Tab.Pane eventKey={1}>
-								Tab 1 content
-							</Tab.Pane>
-							<Tab.Pane eventKey={2}>
-								Tab 2 content
-							</Tab.Pane>
+							{tabPanes}
 						</Tab.Content>
 					</Col>
 				</Row>
