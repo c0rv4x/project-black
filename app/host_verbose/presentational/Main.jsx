@@ -1,15 +1,25 @@
 import React from 'react'
-import { Button } from 'react-bootstrap'
 
+import ScopeComment from '../../project_details/presentational/scope/ScopeComment.jsx'
+import PortsTabs from './PortsTabs.jsx'
 
 class Main extends React.Component {
-	cosntructor(props) {
+	constructor(props) {
 		super(props);
 	}
 
 	render() {
+		console.log(this.props.ports);
 		return (
-			<div></div>
+			<div>
+				<h2>{this.props.host.hostname}</h2>
+				<hr />
+				<ScopeComment commentValue={this.props.host.comment} />
+
+				<PortsTabs port={this.props.ports} />
+			</div>
 		)
 	}
 }
+
+export default Main;
