@@ -120,12 +120,16 @@ class NmapTask(AsyncTask):
 
         if self.exit_code == 0:
             try:
-                self.save()
+                self.parse_results()
             except Exception as e:
+                print("Set to aborted", "".join(self.stderr))
+                print(str(e))
                 self.set_status("Aborted", progress=-1, text="".join(self.stderr))
             else:
                 self.set_status("Finished", progress=100)
         else:
+            print("Not null exit code")
+            print("".join(self.stderr))
             self.set_status("Aborted", progress=-1, text="".join(self.stderr))
 
 
@@ -148,7 +152,7 @@ class NmapTask(AsyncTask):
             session.commit()
             destroy_session(session)
 
-        stdout = "".join(map(lambda x: x.decode(), self.stdout))
+        stdout = "".join(self.stdout)
 
         try:
             nmap_report = NmapParser.parse(stdout)
