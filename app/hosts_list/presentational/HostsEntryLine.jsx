@@ -25,7 +25,7 @@ class HostsEntryLine extends React.Component {
 				<div>
 					<b>{this.props.scope.hostname}</b>
 					<Button bsStyle="danger" bsSize="small" onClick={this.props.deleteScope}>
-						Remove
+						<Glyphicon glyph="remove"/>
 					</Button>
 				</div>
 			)
