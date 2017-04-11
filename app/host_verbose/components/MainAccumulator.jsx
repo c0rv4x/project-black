@@ -1,6 +1,9 @@
 import React from 'react'
+import ScopeComment from '../../project_details/presentational/scope/ScopeComment.jsx'
 
 import Main from '../presentational/Main.jsx'
+import PortsTabs from '../presentational/PortsTabs.jsx'
+import TasksButtons from '../presentational/TasksButtons.jsx'
 
 
 class MainAccumulator extends React.Component {
@@ -11,8 +14,13 @@ class MainAccumulator extends React.Component {
 
 	render() {
 		return (
-			<Main host={this.props.host}
-				  ports={this.props.ports} />
+			<div>
+				<h2>{this.props.host.hostname} <TasksButtons /></h2>
+				<hr />
+				<ScopeComment commentValue={this.props.host.comment} />
+
+				<PortsTabs ports={this.props.ports} />
+			</div>				  
 		)
 	}
 }
