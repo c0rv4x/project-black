@@ -1,8 +1,8 @@
 import React from 'react'
-import { Button, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap';
+import { Button, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap'
 
-import TasksSocketioEventsEmitter from '../../common/tasks/TasksSocketioEventsEmitter.js';
-import ButtonsTasks from '../presentational/ButtonsTasks.jsx';
+import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
+import ButtonsTasks from '../presentational/ButtonsTasks.jsx'
 
 
 class TitleButtonsWithHandlers extends React.Component {

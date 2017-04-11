@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { 
 	Button, 
 	Panel, 
@@ -7,10 +7,10 @@ import {
 	ListGroupItem,
 	Row,
 	Col
-} from 'react-bootstrap';
+} from 'react-bootstrap'
 
-import ScopeComment from '../../project_details/presentational/scope/ScopeComment.jsx';
-import HostsEntryLinePorts from './HostsEntryLinePorts.jsx';
+import ScopeComment from '../../project_details/presentational/scope/ScopeComment.jsx'
+import HostsEntryLinePorts from './HostsEntryLinePorts.jsx'
 
 class HostsEntryLine extends React.Component {
 
@@ -25,7 +25,7 @@ class HostsEntryLine extends React.Component {
 				<div>
 					<b>{this.props.scope.hostname}</b>
 					<Button bsStyle="danger" bsSize="small" onClick={this.props.deleteScope}>
-						Remove
+						<Glyphicon glyph="remove"/>
 					</Button>
 				</div>
 			)

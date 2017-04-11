@@ -1,6 +1,6 @@
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 
-import ProjectsMainComponent from './ProjectsMainComponent.jsx';
+import ProjectsMainComponent from './ProjectsMainComponent.jsx'
 
 
 function mapStateToProps(state){

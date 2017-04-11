@@ -1,9 +1,9 @@
-import _ from 'lodash';
-import React from 'react';
-import { Table, Button } from 'react-bootstrap';
+import _ from 'lodash'
+import React from 'react'
+import { Table, Button } from 'react-bootstrap'
 
-import ScopesSocketioEventsEmitter from '../../common/scopes/ScopesSocketioEventsEmitter.js';
-import ScopeEntryLine from '../presentational/scope/ScopeEntryLine.jsx';
+import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
+import ScopeEntryLine from '../presentational/scope/ScopeEntryLine.jsx'
 
 
 class ScopeTable extends React.Component {

@@ -1,8 +1,8 @@
-import _  from 'lodash';
-import React from 'react';
-import { Table } from 'react-bootstrap';
+import _  from 'lodash'
+import React from 'react'
+import { Table } from 'react-bootstrap'
 
-import ProjectsListLine from "./ProjectsListLine.jsx";
+import ProjectsListLine from "./ProjectsListLine.jsx"
 
 
 class ProjectsList extends React.Component

@@ -1,7 +1,7 @@
-import _ from 'lodash';
-import { connect } from 'react-redux';
+import _ from 'lodash'
+import { connect } from 'react-redux'
 
-import ScopeSetup from './ScopeSetup.jsx';
+import ScopeSetup from './ScopeSetup.jsx'
 
 
 function mapStateToProps(state, ownProps){
@@ -31,13 +31,7 @@ function mapStateToProps(state, ownProps){
         	'hosts': _.filter(state.scopes.hosts, (x) => {
 	        	return x.project_uuid == project['project_uuid']
 	        }),	        
-        },
-        tasks: _.filter(state.tasks.active, (x) => {
-        	return x.project_uuid == project['project_uuid']
-        }),
-        scans: _.filter(state.scans, (x) => {
-        	return x.project_uuid == project['project_uuid']
-        })
+        }
     }
 }
 

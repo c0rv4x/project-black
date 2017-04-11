@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { 
 	Button, 
 	Panel, 
@@ -7,7 +7,7 @@ import {
 	ListGroupItem,
 	Row,
 	Col
-} from 'react-bootstrap';
+} from 'react-bootstrap'
 
 
 class HostsEntryLinePorts extends React.Component {

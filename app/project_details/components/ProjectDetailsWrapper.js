@@ -1,9 +1,9 @@
-import _ from 'lodash';
-import { connect } from 'react-redux';
+import _ from 'lodash'
+import { connect } from 'react-redux'
 
-import ProjectDetails from './ProjectDetails.jsx';
-import { updateComment as updateProjectComment } from '../../common/projects/actions';
-import { updateComment as updateScopeComment } from '../../common/scopes/actions';
+import ProjectDetails from './ProjectDetails.jsx'
+import { updateComment as updateProjectComment } from '../../redux/projects/actions'
+import { updateComment as updateScopeComment } from '../../redux/scopes/actions'
 
 
 function mapStateToProps(state, ownProps){

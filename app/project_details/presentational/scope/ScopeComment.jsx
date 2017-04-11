@@ -1,10 +1,10 @@
-import React from 'react';
+import React from 'react'
 import { 
 	Button, 
 	FormControl,
 	FormGroup,
 	ControlLabel
-} from 'react-bootstrap';
+} from 'react-bootstrap'
 
 
 class ScopeComment extends React.Component {

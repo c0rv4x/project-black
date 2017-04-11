@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap';
+import { Button, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap'
 
 
 class ButtonsTasks extends React.Component {
