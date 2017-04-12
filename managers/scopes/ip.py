@@ -1,4 +1,5 @@
 from black.black.db import sessions, IP_addr
+from black.black.db import Host as HostDB
 
 
 class IP(object):
@@ -96,3 +97,15 @@ class IP(object):
             return {
                 'status': 'success'
             }
+
+
+    def append_host(self, host_object):
+        if host_object not in self.hostnames:
+            self.hostnames.append(host_object)
+            session = sessions.get_new_session()
+            ip_from_db = session.query(IP_addr).filter_by(ip_id=self.get_id()).first()
+            host_from_db = session.query(HostDB).filter_by(host_id=host_object.get_id()).first()
+            ip_from_db.hostnames.append(host_from_db)
+
+            session.commit()
+            sessions.destroy_session(session)

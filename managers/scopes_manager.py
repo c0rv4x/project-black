@@ -231,10 +231,12 @@ class ScopeManager(object):
                             if create_result['status'] == 'success':
                                 newly_created_ip = create_result['new_scope']
                                 host.append_ip(newly_created_ip)
+                                newly_created_ip.append_host(host)
                         else:
                             # Such ip already exists
                             existing_ip = found_ips[0]
                             host.append_ip(existing_ip)
+                            existing_ip.append_host(host)
 
             except dns.resolver.NXDOMAIN as e:
                 return {
