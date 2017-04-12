@@ -40,9 +40,11 @@ class TitleButtonsWithHandlers extends React.Component {
 	}	
 
 	runNmapOnlyOpen() {
-		var targets = _.map(this.props.scans, (x) => {
+		var nonuniqueTargets = _.map(this.props.scans, (x) => {
 			return x.target;
 		});
+
+		var targets = _.uniq(nonuniqueTargets);
 
 		for (var target of targets) {
 			let filtered_scans = _.filter(this.props.scans, (x) => {
