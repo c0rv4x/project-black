@@ -1,8 +1,11 @@
+import uuid
 import aiohttp
 import asyncio
 import async_timeout
+from urllib.parse import urlparse
 
 from black.workers.common.async_task import AsyncTask
+from black.db.models import FoundFile
 
 
 class DirsearchTask(AsyncTask):
@@ -38,12 +41,32 @@ class DirsearchTask(AsyncTask):
         if not future.exception():
             url = future.url
             result = future.result()
-            status_code = result[0]
-            content_length = result[1]
-            print("*"*20)
-            print(url)
-            print(status_code)
-            print(content_length)
+
+            if status_code != 404:
+                status_code = result[0]
+                content_length = result[1]
+
+                parsed_url = urlparse(url)
+                target = parsed_url.netloc
+
+                if scheme == 'https':
+                    port_number = 443
+                else:
+                    port_number = 80
+
+                file_name = parsed_url.path
+
+                { "file_id": str(uuid.uuid4()),
+                "file_name": file_name,
+                "target": target,
+                "port_number": port_number,
+                "file_path": url,
+                "status_code": status_code,
+                "content_length": content_length,
+                "special_note": None,
+                "task_id": self.task_id,
+                "project_uuid": self.project_uuid }
+
 
     async def start(self):
         """ Launch the task and readers of stdout, stderr """
