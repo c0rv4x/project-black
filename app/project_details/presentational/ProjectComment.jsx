@@ -25,11 +25,10 @@ class ProjectComment extends React.Component {
 									 placeholder="
 						Enter some data to help yourself in further." 
 									 value={this.props.commentInput}
-								     onChange={this.props.onCommentInputChange}/>
+								     onChange={this.props.onCommentInputChange}
+								     onBlur={this.props.commentSubmitted} />
 					</FormGroup>
 				</FormGroup>
-
-				<Button bsStyle="default" onClick={this.props.commentSubmitted}>Submit comment</Button>
 			</form>
 		)
 	}
