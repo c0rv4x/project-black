@@ -1,7 +1,7 @@
 import React from 'react'
 
 import HostsListHead from '../presentational/HostsListHead.jsx'
-import Tasks from '../../project_details/presentational/tasks/Tasks.jsx'
+import Tasks from '../../ips_list/presentational/tasks/Tasks.jsx'
 import HostsTableTracked from './HostsTableTracked.jsx'
 
 

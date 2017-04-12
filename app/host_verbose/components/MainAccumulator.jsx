@@ -1,5 +1,5 @@
 import React from 'react'
-import ScopeComment from '../../project_details/presentational/scope/ScopeComment.jsx'
+import ScopeComment from '../../ips_list/presentational/scope/ScopeComment.jsx'
 
 import PortsTabs from '../presentational/PortsTabs.jsx'
 import TasksButtons from '../presentational/TasksButtons.jsx'

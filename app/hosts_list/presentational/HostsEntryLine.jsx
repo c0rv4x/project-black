@@ -9,7 +9,7 @@ import {
 	Col
 } from 'react-bootstrap'
 
-import ScopeComment from '../../project_details/presentational/scope/ScopeComment.jsx'
+import ScopeComment from '../../ips_list/presentational/scope/ScopeComment.jsx'
 import HostsEntryLinePorts from './HostsEntryLinePorts.jsx'
 
 class HostsEntryLine extends React.Component {

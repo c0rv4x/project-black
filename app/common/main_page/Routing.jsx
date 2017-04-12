@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom'
 
 import ProjectsMainComponentWrapper from '../../projects_list/components/ProjectsMainComponentWrapper.js'
-import ProjectsDetailsWrapper from '../../project_details/components/ProjectDetailsWrapper.js'
+import ProjectsDetailsWrapper from '../../ips_list/components/ProjectDetailsWrapper.js'
 
 import NavigationTabs from './NavigationTabs.jsx'
 import HostPage from '../../host_verbose/components/MainAccumulatorWrapper.jsx'
