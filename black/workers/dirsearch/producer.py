@@ -1,7 +1,7 @@
-import asyncio
-import asynqp
-
 from uuid import uuid4
+import asynqp
+import asyncio
+
 
 
 def main():

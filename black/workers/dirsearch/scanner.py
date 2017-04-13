@@ -3,11 +3,12 @@ import uuid
 import asyncio
 from urllib.parse import urlparse
 
-from .requester import Requester
 from black.db import FoundFile, sessions
+from .requester import Requester
 
 
 class Scanner(object):
+    """ Class that works with requester in order to fully scan the website """
     def __init__(self, base_url, task_id, project_uuid, cookies=None, headers=None):
         self.task_id = task_id
         self.project_uuid = project_uuid
@@ -17,15 +18,13 @@ class Scanner(object):
         self.fill_queue(base_url)
 
     def save_callback(self, future):
+        """ Future's callback for saving to the DB """
         if not future.exception():
             url = future.url
             result = future.result()
             status_code = result[0]
-            print(url,status_code)
 
             if status_code != 404:
-                print("Found file")
-                print(url)
                 content_length = result[1]
 
                 parsed_url = urlparse(url)
@@ -49,7 +48,7 @@ class Scanner(object):
                                      content_length=content_length,
                                      special_note=None,
                                      task_id=self.task_id,
-                                     project_uuid=self.project_uuid)         
+                                     project_uuid=self.project_uuid)
                 session.add(new_file)
                 session.commit()
 
@@ -57,6 +56,7 @@ class Scanner(object):
 
 
     def fill_queue(self, url):
+        """ Getting the dictionary, create a queue of the requests """
         list_of_files = ["search", "2", "3"]
 
         for each_file in list_of_files:
@@ -64,6 +64,7 @@ class Scanner(object):
 
 
     async def scan(self):
+        """ Launch the scanner """
         finished = False
 
         while not finished:
