@@ -1,7 +1,7 @@
-from uuid import uuid4
-import asynqp
 import asyncio
+import asynqp
 
+from uuid import uuid4
 
 
 def main():
@@ -27,7 +27,7 @@ def main():
 
         msg = asynqp.Message({
             'task_id': random_id,
-            'target': 'https://yandex.ru/',
+            'target': 'http://anatoly.tech/',
             'params': {
                 'program': [{}]
             },

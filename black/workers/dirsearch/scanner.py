@@ -14,29 +14,23 @@ class Scanner(object):
         self.project_uuid = project_uuid
         self.urls_queue = asyncio.Queue()
 
-        self.requester = Requester(cookies=cookies, headers=headers)
+        self.requester = Requester(base_url, cookies=cookies, headers=headers)
         self.fill_queue(base_url)
 
     def save_callback(self, future):
         """ Future's callback for saving to the DB """
         if not future.exception():
-            url = future.url
+            file_name = future.file_name
             result = future.result()
             status_code = result[0]
 
+            print(file_name, result)
+
             if status_code != 404:
                 content_length = result[1]
-
-                parsed_url = urlparse(url)
-                scheme = parsed_url.scheme
-                target = parsed_url.netloc
-
-                if scheme == 'https':
-                    port_number = 443
-                else:
-                    port_number = 80
-
-                file_name = parsed_url.path
+                url = result[2]
+                target = result[3]
+                port_number = result[4]
 
                 session = sessions.get_new_session()
                 new_file = FoundFile(file_id=str(uuid.uuid4()),
@@ -55,12 +49,12 @@ class Scanner(object):
                 sessions.destroy_session(session)
 
 
-    def fill_queue(self, url):
+    def fill_queue(self):
         """ Getting the dictionary, create a queue of the requests """
-        list_of_files = ["search", "2", "3"]
+        list_of_files = ["1.html", "2", "1.svg"]
 
         for each_file in list_of_files:
-            self.urls_queue.put_nowait(url + each_file)
+            self.urls_queue.put_nowait(each_file)
 
 
     async def scan(self):
@@ -72,9 +66,9 @@ class Scanner(object):
 
             # This is done for possible recursive work
             while not self.urls_queue.empty():
-                url = await self.urls_queue.get()
-                request = asyncio.ensure_future(self.requester.perform_request(url))
-                request.url = url
+                file_name = await self.urls_queue.get()
+                request = asyncio.ensure_future(self.requester.perform_request(file_name))
+                request.file_name = file_name
                 request.add_done_callback(self.save_callback)
 
                 futures.append(request)

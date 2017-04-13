@@ -1,8 +1,6 @@
-import uuid
-import async_timeout
-
+""" DirsearchTask, that's it """
 from black.workers.common.async_task import AsyncTask
-from .scanner import Scanner
+from black.workers.dirsearch.scanner import Scanner
 
 
 class DirsearchTask(AsyncTask):
@@ -14,7 +12,12 @@ class DirsearchTask(AsyncTask):
         cookies = params['program'][0].get('cookies', None)
         headers = params['program'][0].get('headers', None)
 
-        self.scanner = Scanner(target, self.task_id, self.project_uuid, cookies=cookies, headers=headers)
+        self.scanner = Scanner(
+            target,
+            self.task_id,
+            self.project_uuid,
+            cookies=cookies,
+            headers=headers)
 
 
     async def start(self):
