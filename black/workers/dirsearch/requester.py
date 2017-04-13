@@ -3,7 +3,7 @@ import aiohttp
 
 
 class Requester(object):
-    """ Really stupid class that makes requests to the target 
+    """ Really stupid class that makes requests to the target
     and returns the answer """
     def __init__(self, cookies=None, headers=None):
         self.cookies = cookies
@@ -12,6 +12,7 @@ class Requester(object):
                                              headers=self.headers)
 
     async def perform_request(self, url):
+        """ Plain request to the url """
         resp = await self.session.get(url)
         print(url, resp)
         status_code = resp.status
@@ -21,4 +22,5 @@ class Requester(object):
         return (status_code, length)
 
     def destructor(self):
+        """ Wrapper for killing aiohttp session"""
         self.session.close()
