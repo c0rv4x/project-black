@@ -26,7 +26,7 @@ from .Scanner import *
 
 class Fuzzer(object):
     def __init__(self, requester, dictionary, testFailPath=None, threads=1, matchCallbacks=[], notFoundCallbacks=[],
-                 errorCallbacks=[]):
+                 errorCallbacks=[], set_status_function=None):
 
         self.requester = requester
         self.dictionary = dictionary
@@ -40,8 +40,10 @@ class Fuzzer(object):
         self.matchCallbacks = matchCallbacks
         self.notFoundCallbacks = notFoundCallbacks
         self.errorCallbacks = errorCallbacks
+        self.set_status_function = set_status_function
         self.matches = []
         self.errors = []
+        self.counter = 0
 
     def wait(self, timeout=None):
         for thread in self.threads:
@@ -130,6 +132,9 @@ class Fuzzer(object):
         try:
             path = next(self.dictionary)
             while path is not None:
+                if self.counter % 50 == 0 and self.counter / 50 > 0:
+                    self.set_status_function('Working', progress=int(float(self.counter) / float(len(self.dictionary)) * 100))
+
                 try:
                     status, response = self.scan(path)
                     result = Path(path=path, status=status, response=response)
@@ -143,10 +148,12 @@ class Fuzzer(object):
                     del status
                     del response
                 except RequestException as e:
+                    self.counter += 1
                     for callback in self.errorCallbacks:
                         callback(path, e.args[0]['message'])
                     continue
                 finally:
+                    self.counter += 1
                     if not self.playEvent.isSet():
                         self.pausedSemaphore.release()
                         self.playEvent.wait()

@@ -35,8 +35,9 @@ class SkipTargetInterrupt(Exception):
 
 
 class Controller(object):
-    def __init__(self, script_path, arguments, output, saver):
+    def __init__(self, script_path, arguments, output, saver, set_status_function):
         self.saver = saver
+        self.set_status_function = set_status_function
         self.script_path = script_path
         self.exit = False
         self.arguments = arguments
@@ -97,7 +98,8 @@ class Controller(object):
                 errorCallbacks = [self.errorCallback, self.appendErrorLog]
                 self.fuzzer = Fuzzer(self.requester, self.dictionary, testFailPath=self.arguments.test_fail_path,
                                      threads=self.arguments.threads_count, matchCallbacks=matchCallbacks,
-                                     notFoundCallbacks=notFoundCallbacks, errorCallbacks=errorCallbacks)
+                                     notFoundCallbacks=notFoundCallbacks, errorCallbacks=errorCallbacks,
+                                     set_status_function=self.set_status_function)
                 self.wait()
             except SkipTargetInterrupt:
                 pass
@@ -248,6 +250,9 @@ class Controller(object):
             self.output.basePath = self.basePath + self.currentDirectory
             self.fuzzer.start()
             self.processPaths()
+
+        self.set_status_function('Finished', progress=100)
+
         return
 
     def addDirectory(self, path):
