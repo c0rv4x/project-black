@@ -27,11 +27,11 @@ def main():
 
         msg = asynqp.Message({
             'task_id': random_id,
-            'target': 'https://ya.ru/',
+            'target': 'http://anatoly.tech/',
             'params': {
                 'program': [{}]
             },
-            'project_uuid': '0099752c-b141-4fc2-89cf-e07b341d744e'
+            'project_uuid': 'e67c91f1-26bc-41a3-b4a2-995e8214fa3f'
         })
         exchange.publish(msg, 'dirsearch_tasks')
         print("Sent task")

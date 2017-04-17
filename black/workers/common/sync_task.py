@@ -1,4 +1,6 @@
 """ Sync class for Task"""
+import pika
+import json
 from black.db import sessions, models
 from black.workers.common.task import Task
 
@@ -20,8 +22,22 @@ class SyncTask(Task):
             exchange="tasks.exchange",
             exchange_type="direct",
             durable=True)
-        self.channel.queue_declare(queue="tasks_statuses", durable=True, auto_delete=True)
+        self.channel.queue_declare(queue="tasks_statuses", durable=True)
         self.channel.queue_bind(
             queue="tasks_statuses",
             exchange="tasks.exchange",
             routing_key="tasks_statuses")
+
+    def set_status(self, new_status, progress=0, text=""):
+        print("progress {}%".format(progress))
+        Task.set_status(self, new_status, progress=progress, text=text)
+
+        self.channel.basic_publish(
+            exchange='',
+            routing_key='tasks_statuse',
+            body=json.dumps({
+                'task_id': self.task_id,
+                'status': new_status,
+                'progress': progress,
+                'text': text            
+            }))
