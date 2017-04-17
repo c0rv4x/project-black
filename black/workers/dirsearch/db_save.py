@@ -3,7 +3,7 @@ import uuid
 from black.db import sessions, FoundFile
 
 
-def save_file(url, status_code, content_length):
+def save_file(url, status_code, content_length, task_id, project_uuid):
     parsed_url = urlparse(url)
     target = parsed_url.netloc
     scheme = parsed_url.scheme

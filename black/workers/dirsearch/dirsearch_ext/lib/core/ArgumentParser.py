@@ -18,14 +18,14 @@
 
 from optparse import OptionParser, OptionGroup
 
-from lib.utils.FileUtils import File
-from lib.utils.FileUtils import FileUtils
-from lib.utils.DefaultConfigParser import DefaultConfigParser
-from thirdparty.oset import oset
+from ...lib.utils.FileUtils import File
+from ...lib.utils.FileUtils import FileUtils
+from ...lib.utils.DefaultConfigParser import DefaultConfigParser
+from ...thirdparty.oset import oset
 
 
 class ArgumentParser(object):
-    def __init__(self, url, wordlist="./db/dicc.txt", extensions=None, http_proxy=None, headers=None, user_agent=None, 
+    def __init__(self, url, wordlist="./black/workers/dirsearch/dirsearch_ext/db/dicc.txt", extensions=None, http_proxy=None, headers=None, user_agent=None, 
         user_random_agents=None, cookie=None, threads_count=10, exclude_status_codes=None,
         force_extensions=False, delay=0, timeout=30, ip_address=None, recursive=False, redirect=False):
 

@@ -23,10 +23,10 @@ import sys
 import gc
 from threading import Lock
 
-from lib.connection import Requester, RequestException
-from lib.core import Dictionary, Fuzzer, ReportManager
-from lib.reports import JSONReport
-from lib.utils import FileUtils
+from ...lib.connection import Requester, RequestException
+from ...lib.core import Dictionary, Fuzzer, ReportManager, Saver
+from ...lib.reports import JSONReport
+from ...lib.utils import FileUtils
 
 
 class SkipTargetInterrupt(Exception):
@@ -34,7 +34,8 @@ class SkipTargetInterrupt(Exception):
 
 
 class Controller(object):
-    def __init__(self, script_path, arguments, output):
+    def __init__(self, script_path, arguments, output, saver):
+        self.saver = saver
         self.script_path = script_path
         self.exit = False
         self.arguments = arguments
@@ -50,7 +51,6 @@ class Controller(object):
 
         self.dictionary = Dictionary(self.arguments.wordlist, self.arguments.extensions,
                                      self.arguments.lowercase, self.arguments.force_extensions)
-        self.printConfig()
         self.errorLog = None
         self.errorLogPath = None
         self.errorLogLock = Lock()
@@ -112,20 +112,14 @@ class Controller(object):
                 self.errorLog.close()
             self.reportManager.close()
 
-        self.output.warning('\nTask Completed')
-
-    def printConfig(self):
-        self.output.config(', '.join(self.arguments.extensions), str(self.arguments.threads_count),
-                                str(len(self.dictionary)))
+        self.output.warning('\nFinished')
 
     def getSavePath(self):
         basePath = None
         dirPath = None
         basePath = os.path.expanduser('~')
-        if os.name == 'nt':
-            dirPath = "dirsearch"
-        else:
-            dirPath = ".dirsearch"
+        dirPath = ".dirsearch"
+
         return FileUtils.buildPath(basePath, dirPath)
 
     def getBlacklists(self):
@@ -173,12 +167,15 @@ class Controller(object):
     def matchCallback(self, path):
         self.index += 1
         if path.status is not None:
-            if path.status not in self.exclude_status_codes and (
-                            self.blacklists.get(path.status) is None or path.path not in self.blacklists.get(
-                        path.status)):
+            to_continue = path.status not in self.exclude_status_codes and self.blacklists.get(path.status) is None
+            to_continue = to_continue or (self.blacklists.get(path.status) is not None and path.path not in self.blacklists.get(path.status))
+            if  to_continue:
                 self.output.statusReport(path.path, path.response)
                 self.addDirectory(path.path)
                 self.reportManager.addPath(self.currentDirectory + path.path, path.status, path.response)
+
+                self.saver.save(path.path, path.status, path.response)
+
                 self.reportManager.save()
                 del path
 

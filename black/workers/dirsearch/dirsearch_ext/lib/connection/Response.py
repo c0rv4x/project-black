@@ -25,7 +25,7 @@ class Response(object):
         self.body = body
 
     def __str__(self):
-        return self.body
+        return self.body.decode('utf-8')
 
     def __int__(self):
         return self.status

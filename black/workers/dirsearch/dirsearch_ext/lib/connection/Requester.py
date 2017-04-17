@@ -25,7 +25,7 @@ import urllib.parse
 import urllib.error
 import time
 
-import thirdparty.requests as requests
+from ...thirdparty.requests import *
 from .Response import *
 from .RequestException import *
 
@@ -127,21 +127,21 @@ class Requester(object):
                 if (self.protocol == "https" and self.port != 443) or (self.protocol == "http" and self.port != 80):
                     headers["Host"]+=":{0}".format(self.port)
 
-                response = requests.get(url, proxies=proxy, verify=False, allow_redirects=self.redirect, \
+                response = get(url, proxies=proxy, verify=False, allow_redirects=self.redirect, \
                                         headers=headers, timeout=self.timeout)
                 result = Response(response.status_code, response.reason, response.headers, response.content)
                 time.sleep(self.delay)
                 del headers
                 break
-            except requests.exceptions.TooManyRedirects as e:
+            except exceptions.TooManyRedirects as e:
                 raise RequestException({'message': 'Too many redirects: {0}'.format(e)})
             except ConnectionResetError as e:
                 raise RequestException({'message': 'ConnectionResetError: {0}'.format(e)})
-            except requests.exceptions.ConnectionError as e:
+            except exceptions.ConnectionError as e:
                 if self.proxy is not None:
                     raise RequestException({'message': 'Error with the proxy: {0}'.format(e)})
                 continue
-            except (requests.exceptions.ReadTimeout, requests.exceptions.Timeout, http.client.IncompleteRead, \
+            except (exceptions.ReadTimeout, exceptions.Timeout, http.client.IncompleteRead, \
                     socket.timeout):
                 continue
             finally:

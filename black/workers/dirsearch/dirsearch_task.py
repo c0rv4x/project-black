@@ -1,23 +1,22 @@
 """ DirsearchTask, that's it """
-from black.workers.common.async_task import AsyncTask
-from black.workers.dirsearch.scanner import Scanner
+from black.workers.common.sync_task import SyncTask
 
 
-class DirsearchTask(AsyncTask):
+class DirsearchTask(SyncTask):
     """ Instance of running dirsearch """
 
     def __init__(self, task_id, target, params, project_uuid):
-        AsyncTask.__init__(self, task_id, 'dirsearch', target, params, project_uuid)
+        SyncTask.__init__(self, task_id, 'dirsearch', target, params, project_uuid)
 
         cookies = params['program'][0].get('cookies', None)
         headers = params['program'][0].get('headers', None)
 
-        self.scanner = Scanner(
-            target,
-            self.task_id,
-            self.project_uuid,
-            cookies=cookies,
-            headers=headers)
+        # self.scanner = Scanner(
+        #     target,
+        #     self.task_id,
+        #     self.project_uuid,
+        #     cookies=cookies,
+        #     headers=headers)
 
 
     async def start(self):

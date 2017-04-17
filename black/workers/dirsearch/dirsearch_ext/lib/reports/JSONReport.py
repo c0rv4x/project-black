@@ -18,7 +18,7 @@
 
 import json
 
-from lib.reports import *
+from ...lib.reports import *
 
 
 class JSONReport(BaseReport):

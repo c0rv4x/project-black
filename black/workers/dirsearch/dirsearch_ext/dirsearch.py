@@ -17,14 +17,17 @@
 #
 #  Author: Mauro Soria
 
-from lib.core import ArgumentParser
-from lib.controller import Controller
-from lib.output import CLIOutput
+from .lib.core import ArgumentParser, Saver
+from .lib.controller import Controller
+from .lib.output import CLIOutput
 
 class Program(object):
-    def __init__(self, url):
+    def __init__(self, url, task_id, project_uuid):
         self.arguments = ArgumentParser(url, extensions="php,txt,conf,log,bak")
-        self.output = CLIOutput()        
-        self.controller = Controller("./", self.arguments, self.output)
+        self.output = CLIOutput()
+        self.saver = Saver(task_id, project_uuid)
+        self.controller = Controller("./black/workers/dirsearch/dirsearch_ext/", self.arguments, self.output, self.saver)
 
-a = Program('http://anatoly.tech')
+
+import uuid
+a = Program('http://anatoly.tech', str(uuid.uuid4()), "e67c91f1-26bc-41a3-b4a2-995e8214fa3f")

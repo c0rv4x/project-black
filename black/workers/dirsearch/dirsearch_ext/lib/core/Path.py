@@ -23,4 +23,4 @@ class Path(object):
         self.response = response
 
     def __str__(self):
-        return self.path
+        return str(self.path)

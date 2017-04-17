@@ -19,7 +19,7 @@
 from queue import Queue
 import threading
 
-from lib.connection.RequestException import RequestException
+from ...lib.connection.RequestException import RequestException
 from .Path import *
 from .Scanner import *
 

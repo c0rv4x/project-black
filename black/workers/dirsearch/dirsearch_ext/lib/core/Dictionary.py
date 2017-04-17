@@ -18,8 +18,8 @@
 
 import threading
 import urllib.request, urllib.parse, urllib.error
-from lib.utils.FileUtils import File
-from thirdparty.oset import *
+from ...lib.utils.FileUtils import File
+from ...thirdparty.oset import *
 
 
 class Dictionary(object):

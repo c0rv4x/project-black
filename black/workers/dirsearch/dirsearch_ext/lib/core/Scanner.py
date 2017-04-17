@@ -19,8 +19,8 @@
 import re
 from difflib import SequenceMatcher
 
-from lib.utils import RandomUtils
-from thirdparty.sqlmap import DynamicContentParser
+from ...lib.utils import RandomUtils
+from ...thirdparty.sqlmap import DynamicContentParser
 
 
 class ScannerException(Exception):
