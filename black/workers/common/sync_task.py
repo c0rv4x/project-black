@@ -1,4 +1,5 @@
 """ Sync class for Task"""
+import pika
 from black.db import sessions, models
 from black.workers.common.task import Task
 
@@ -20,7 +21,7 @@ class SyncTask(Task):
             exchange="tasks.exchange",
             exchange_type="direct",
             durable=True)
-        self.channel.queue_declare(queue="tasks_statuses", durable=True, auto_delete=True)
+        self.channel.queue_declare(queue="tasks_statuses", durable=True)
         self.channel.queue_bind(
             queue="tasks_statuses",
             exchange="tasks.exchange",

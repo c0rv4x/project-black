@@ -27,7 +27,3 @@ class Program(object):
         self.output = CLIOutput()
         self.saver = Saver(task_id, project_uuid)
         self.controller = Controller("./black/workers/dirsearch/dirsearch_ext/", self.arguments, self.output, self.saver)
-
-
-import uuid
-a = Program('http://anatoly.tech', str(uuid.uuid4()), "e67c91f1-26bc-41a3-b4a2-995e8214fa3f")

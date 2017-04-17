@@ -21,6 +21,7 @@ from queue import Queue
 import time
 import sys
 import gc
+import urllib
 from threading import Lock
 
 from ...lib.connection import Requester, RequestException
@@ -61,47 +62,47 @@ class Controller(object):
         if self.arguments.use_random_agents:
             self.randomAgents = FileUtils.getLines(FileUtils.buildPath(script_path, "db", "user-agents.txt"))
         try:
-            for url in self.arguments.url_list:
+            url = self.arguments.url
+            try:
+                gc.collect()
+                self.reportManager = ReportManager()
+                self.currentUrl = url
+                self.output.target(self.currentUrl)
                 try:
-                    gc.collect()
-                    self.reportManager = ReportManager()
-                    self.currentUrl = url
-                    self.output.target(self.currentUrl)
-                    try:
-                        self.requester = Requester(url, cookie=self.arguments.cookie,
-                                               user_agent=self.arguments.user_agent, maxPool=self.arguments.threads_count,
-                                               max_retries=self.arguments.max_retries, delay=self.arguments.delay, timeout=self.arguments.timeout,
-                                               ip=self.arguments.ip_address, proxy=self.arguments.proxy,
-                                               redirect=self.arguments.redirect, 
-                                               request_by_name=self.arguments.request_by_name)
-                        self.requester.request("/")
+                    self.requester = Requester(url, cookie=self.arguments.cookie,
+                                           user_agent=self.arguments.user_agent, maxPool=self.arguments.threads_count,
+                                           max_retries=self.arguments.max_retries, delay=self.arguments.delay, timeout=self.arguments.timeout,
+                                           ip=self.arguments.ip_address, proxy=self.arguments.proxy,
+                                           redirect=self.arguments.redirect, 
+                                           request_by_name=self.arguments.request_by_name)
+                    self.requester.request("/")
 
-                    except RequestException as e:
-                        self.output.error(e.args[0]['message'])
-                        raise SkipTargetInterrupt
-                    if self.arguments.use_random_agents:
-                        self.requester.setRandomAgents(self.randomAgents)
-                    for key, value in arguments.headers.items():
-                        self.requester.setHeader(key, value)
-                    # Initialize directories Queue with start Path
-                    self.basePath = self.requester.basePath
-                    if self.arguments.scan_subdirs is not None:
-                        for subdir in self.arguments.scan_subdirs:
-                            self.directories.put(subdir)
-                    else:
-                        self.directories.put('')
-                    self.setupReports(self.requester)
-                    matchCallbacks = [self.matchCallback]
-                    notFoundCallbacks = [self.notFoundCallback]
-                    errorCallbacks = [self.errorCallback, self.appendErrorLog]
-                    self.fuzzer = Fuzzer(self.requester, self.dictionary, testFailPath=self.arguments.test_fail_path,
-                                         threads=self.arguments.threads_count, matchCallbacks=matchCallbacks,
-                                         notFoundCallbacks=notFoundCallbacks, errorCallbacks=errorCallbacks)
-                    self.wait()
-                except SkipTargetInterrupt:
-                    continue
-                finally:
-                    self.reportManager.save()
+                except RequestException as e:
+                    self.output.error(e.args[0]['message'])
+                    raise SkipTargetInterrupt
+                if self.arguments.use_random_agents:
+                    self.requester.setRandomAgents(self.randomAgents)
+                for key, value in arguments.headers.items():
+                    self.requester.setHeader(key, value)
+                # Initialize directories Queue with start Path
+                self.basePath = self.requester.basePath
+                if self.arguments.scan_subdirs is not None:
+                    for subdir in self.arguments.scan_subdirs:
+                        self.directories.put(subdir)
+                else:
+                    self.directories.put('')
+                self.setupReports(self.requester)
+                matchCallbacks = [self.matchCallback]
+                notFoundCallbacks = [self.notFoundCallback]
+                errorCallbacks = [self.errorCallback, self.appendErrorLog]
+                self.fuzzer = Fuzzer(self.requester, self.dictionary, testFailPath=self.arguments.test_fail_path,
+                                     threads=self.arguments.threads_count, matchCallbacks=matchCallbacks,
+                                     notFoundCallbacks=notFoundCallbacks, errorCallbacks=errorCallbacks)
+                self.wait()
+            except SkipTargetInterrupt:
+                pass
+            finally:
+                self.reportManager.save()
 
                 
         except KeyboardInterrupt:
@@ -174,7 +175,9 @@ class Controller(object):
                 self.addDirectory(path.path)
                 self.reportManager.addPath(self.currentDirectory + path.path, path.status, path.response)
 
-                self.saver.save(path.path, path.status, path.response)
+                self.saver.save(urllib.parse.urljoin(self.arguments.url, self.currentDirectory + path.path), 
+                    path.status,
+                    path.response)
 
                 self.reportManager.save()
                 del path

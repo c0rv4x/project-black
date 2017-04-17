@@ -31,7 +31,7 @@ class ArgumentParser(object):
 
         self.script_path = None
 
-        self.url_list = [url]
+        self.url = url
         if extensions is None:
             print('No extension specified. You must specify at least one extension')
             exit(0)

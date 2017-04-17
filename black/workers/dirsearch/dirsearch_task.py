@@ -1,5 +1,6 @@
 """ DirsearchTask, that's it """
 from black.workers.common.sync_task import SyncTask
+from .dirsearch_ext.dirsearch import Program
 
 
 class DirsearchTask(SyncTask):
@@ -11,17 +12,10 @@ class DirsearchTask(SyncTask):
         cookies = params['program'][0].get('cookies', None)
         headers = params['program'][0].get('headers', None)
 
-        # self.scanner = Scanner(
-        #     target,
-        #     self.task_id,
-        #     self.project_uuid,
-        #     cookies=cookies,
-        #     headers=headers)
 
-
-    async def start(self):
+    def start(self):
         """ Launch the task and readers of stdout, stderr """
-        await self.scanner.scan()
+        a = Program('http://anatoly.tech', self.task_id, self.project_uuid)
 
 
     def send_notification(self, command):
@@ -33,6 +27,6 @@ class DirsearchTask(SyncTask):
         # elif command == 'unpause':
         #     self.proc.send_signal(signal.SIGCONT.value)  # SIGCONT
 
-    async def wait_for_exit(self):
+    def wait_for_exit(self):
         """ Check if the process exited. If so,
         save stdout, stderr, exit_code and update the status. """

@@ -7,9 +7,9 @@ class Saver(object):
         self.task_id = task_id
         self.project_uuid = project_uuid
 
-    def save(self, path, status, response):
-        print(self.task_id, self.project_uuid)
+    def save(self, url, status, response):
+        special_info = None
         if status in [301, 302, 307] and 'location' in [h.lower() for h in response.headers]:
-            print("Redirect to", response.headers['location'])
+            special_info = response.headers['location']
 
-        save_file(path, status, len(response), self.task_id, self.project_uuid)
+        save_file(url, status, len(response), self.task_id, self.project_uuid, special_info=special_info)

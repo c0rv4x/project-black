@@ -8,8 +8,6 @@ class DirsearchWorker(SyncWorker):
     def __init__(self):
         SyncWorker.__init__(self, 'dirsearch', DirsearchTask)
 
-    async def start(self):
+    def start(self):
         """ Start all the necessary consumers """
-        await self.initialize()
-        await self.start_tasks_consumer()
-        # await self.start_notifications_consumer()
+        self.start_consuming()
