@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap'
 
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
-import ButtonsTasks from '../presentational/ButtonsTasks.jsx'
+import ButtonsTasks from '../../common/ButtonsTasks.jsx'
 
 
 class TitleButtonsWithHandlers extends React.Component {
@@ -78,9 +78,24 @@ class TitleButtonsWithHandlers extends React.Component {
 	render() {
 		return (
 			<ButtonsTasks project={this.props.project}
-						  runMasscan={this.runMasscan}
-						  runNmap={this.runNmap}
-						  runNmapOnlyOpen={this.runNmapOnlyOpen} />
+						  tasks={
+						  	[
+						  		{
+						  			'name': 'Masscan',
+						  			'handler': this.runMasscan
+						  		},
+						  		{
+						  			'name': 'Nmap',
+						  			'handler': this.runNmap
+						  		},
+						  		{
+						  			'name': 'Nmap Banner Edition',
+						  			'handler': this.runNmapOnlyOpen
+						  		},
+						  								  		
+
+						  	]
+						  } />
 		)
 	}
 

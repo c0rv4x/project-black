@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import { Button, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap'
 
@@ -9,12 +10,16 @@ class ButtonsTasks extends React.Component {
 	}
 
 	render() {
+		var i = 0;
+		const menu_items = _.map(this.props.tasks, (x) => {
+			i++;
+			return <MenuItem key={i} eventKey={i} onClick={x.handler}>{x.name}</MenuItem>
+		});
+
 		return (
 			<div>
 				<DropdownButton bsStyle="default" title="Start Task" id="dropdown-basic">
-					<MenuItem eventKey="1" onClick={this.props.runMasscan}>Masscan</MenuItem>
-					<MenuItem eventKey="2" onClick={this.props.runNmap}>Nmap</MenuItem>
-					<MenuItem eventKey="3" onClick={this.props.runNmapOnlyOpen}>Nmap banner edition</MenuItem>
+					{menu_items}
 				</DropdownButton>
 			</div>
 		)
