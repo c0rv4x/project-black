@@ -29,15 +29,16 @@ class SyncTask(Task):
             routing_key="tasks_statuses")
 
     def set_status(self, new_status, progress=0, text=""):
-        print("progress {}%".format(progress))
         Task.set_status(self, new_status, progress=progress, text=text)
 
         self.channel.basic_publish(
             exchange='',
-            routing_key='tasks_statuse',
+            routing_key='tasks_statuses',
             body=json.dumps({
                 'task_id': self.task_id,
                 'status': new_status,
                 'progress': progress,
-                'text': text            
+                'text': text,
+                'new_stdout': "",
+                'new_stderr': ""                         
             }))
