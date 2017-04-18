@@ -11,7 +11,8 @@ class MainAccumulator extends React.Component {
 
 		this.state = {
 			'activeTabNumber': null
-		}
+		}				
+
 
 		this.tabChange = this.tabChange.bind(this);
 	}
