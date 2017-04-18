@@ -91,9 +91,7 @@ class TitleButtonsWithHandlers extends React.Component {
 						  		{
 						  			'name': 'Nmap Banner Edition',
 						  			'handler': this.runNmapOnlyOpen
-						  		},
-						  								  		
-
+						  		}
 						  	]
 						  } />
 		)

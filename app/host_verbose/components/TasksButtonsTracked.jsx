@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TasksButtons from '../presentational/TasksButtons.jsx'
+import ButtonsTasks from '../../common/ButtonsTasks.jsx'
 
 
 class TasksButtonsTracked extends React.Component {
@@ -8,13 +8,13 @@ class TasksButtonsTracked extends React.Component {
 		super(props);
 	}
 
-	 dirbusterStart() {
-	 	
-	 }
+	dirbusterStart() {
+
+	}
 
 	render() {
 		return (
-			<TasksButtons />
+			<ButtonsTasks />
 		)
 	}
 }
