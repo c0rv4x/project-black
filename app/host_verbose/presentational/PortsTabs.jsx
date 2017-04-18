@@ -13,7 +13,7 @@ class PortsTabs extends React.Component {
 		const navItems = _.map(this.props.ports, (x) => {
 			i++;
 			return (
-				<NavItem eventKey={i} key={i}>
+				<NavItem eventKey={x.port_number} key={x.port_number}>
 					{x.port_number}
 				</NavItem>
 			);
@@ -23,14 +23,16 @@ class PortsTabs extends React.Component {
 		const tabPanes = _.map(this.props.ports, (x) => {
 			i++;
 			return (
-				<Tab.Pane eventKey={i} key={i}>
+				<Tab.Pane eventKey={x.port_number} key={x.port_number}>
 					{x.scan_id}
 				</Tab.Pane>
 			)
 		});
 
 		return (
-			<Tab.Container id="ports_tab_container" defaultActiveKey={1}>
+			<Tab.Container id="ports_tab_container"
+						   activeKey={this.props.activeTabNumber}
+						   onSelect={this.props.tabChange} >
 				<Row className="clearfix">
 					<Col md={2} sm={2}>
 						<Nav bsStyle="pills" stacked>
