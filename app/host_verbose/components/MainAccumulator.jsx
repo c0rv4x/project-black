@@ -26,12 +26,11 @@ class MainAccumulator extends React.Component {
 	render() {
 		return (
 			<div>
-				<h2>{this.props.host.hostname} 
-					<TasksButtonsTracked project={this.props.project}
-										 host={this.props.host}
-										 ports={this.props.ports}
-										 activeTabNumber={this.state.activeTabNumber} />
-				</h2>
+				<h2>{this.props.host.hostname}</h2>
+				<TasksButtonsTracked project={this.props.project}
+									 host={this.props.host}
+									 ports={this.props.ports}
+									 activeTabNumber={this.state.activeTabNumber} />				
 				<Tasks tasks={this.props.tasks} />
 				<hr />
 				<ScopeComment commentValue={this.props.host.comment} />
