@@ -99,7 +99,6 @@ class ScopeManager(object):
                         'new_scope': new_scope_ip
                     }
                 else:
-                    print(result)
                     return result
             else:
                 return {
@@ -120,7 +119,6 @@ class ScopeManager(object):
                         'new_scope': new_scope_host
                     }
                 else:
-                    print(result)
                     return result
             else:
                 return {
