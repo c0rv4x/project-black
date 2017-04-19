@@ -73,7 +73,10 @@ function mapStateToProps(state, ownProps){
     	project: project,
     	host: host,
     	ip: ip,
-        ports: ports_sorted
+        ports: ports_sorted,
+        tasks: _.filter(state.tasks.active, (x) => {
+        	return x.project_uuid == project['project_uuid']
+        })
     }
 }
 
