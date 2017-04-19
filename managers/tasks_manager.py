@@ -148,7 +148,10 @@ class TaskManager(object):
                 if new_status == 'Finished' or new_status == 'Aborted':
                     self.active_tasks.remove(task)
                     self.finished_tasks.append(task)
+
+                    # TODO: make more granular update request
                     self.data_updated_queue.put("scan")
+                    self.data_updated_queue.put("file")
 
                 break
 

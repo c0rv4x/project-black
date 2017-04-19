@@ -4,8 +4,9 @@ from events_handling.projects_handlers import ProjectHandlers
 from events_handling.scopes_handlers import ScopeHandlers
 from events_handling.tasks_handlers import TaskHandlers
 from events_handling.scans_handlers import ScanHandlers
+from events_handling.files_handlers import FileHandlers
 
-from managers import ProjectManager, ScopeManager, TaskManager, ScanManager
+from managers import ProjectManager, ScopeManager, TaskManager, ScanManager, FileManager
 
 
 class Handlers(object):
@@ -19,11 +20,13 @@ class Handlers(object):
         self.scope_manager = ScopeManager()
         self.task_manager = TaskManager(self.data_updated_queue)
         self.scan_manager = ScanManager()
+        self.file_manager = FileManager()
 
         self.projectHandlers = ProjectHandlers(self.socketio, self.project_manager)
         self.scopeHandlers = ScopeHandlers(self.socketio, self.scope_manager)
         self.taskHandlers = TaskHandlers(self.socketio, self.task_manager)
         self.scanHandlers = ScanHandlers(self.socketio, self.scan_manager)
+        self.fileHandlers = FileHandlers(self.socketio, self.file_manager)
 
         self.thread = socketio.start_background_task(target=self.sender_loop)
         # self.thread.start
@@ -39,5 +42,8 @@ class Handlers(object):
                 if updated == "scan":
                     self.scanHandlers.send_scans_back()
                     self.data_updated_queue.task_done()
+                if updated == "file":
+                    self.fileHandlers.send_files_back()
+                    self.data_updated_queue.task_done()                    
             except queue.Empty as e:
                 continue

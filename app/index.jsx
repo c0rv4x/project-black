@@ -10,6 +10,7 @@ import ProjectsSocketioEventsSubscriber from './redux/projects/ProjectsSocketioE
 import ScopesSocketioEventsSubsriber from './redux/scopes/ScopesSocketioEventsSubscriber'
 import TasksSocketioEventsSubsriber from './redux/tasks/TasksSocketioEventsSubsriber'
 import ScansSocketioEventsSubsriber from './redux/scans/ScansSocketioEventsSubscriber'
+import FilesSocketioEventsSubsriber from './redux/files/FilesSocketioEventsSubscriber'
 
 import Routing from './common/main_page/Routing.jsx'
 
@@ -22,6 +23,7 @@ class App extends React.Component {
         const scopesSubscriber = new ScopesSocketioEventsSubsriber(this.store);
         const tasksSubscriber = new TasksSocketioEventsSubsriber(this.store);
         const scansSubscriber = new ScansSocketioEventsSubsriber(this.store);
+        const filesSubscriber = new FilesSocketioEventsSubsriber(this.store);
     }
 
     render () {
