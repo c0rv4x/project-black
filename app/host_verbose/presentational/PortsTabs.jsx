@@ -8,12 +8,16 @@ class PortsTabs extends React.Component {
 		super(props);
 	}
 
+	componentWillMount() {
+		this.props.tabChange(1);
+	}
+
 	render() {
 		var i = 0;
 		const navItems = _.map(this.props.ports, (x) => {
 			i++;
 			return (
-				<NavItem eventKey={x.port_number} key={x.port_number}>
+				<NavItem eventKey={i} key={x.port_number}>
 					{x.port_number}
 				</NavItem>
 			);
@@ -33,7 +37,7 @@ class PortsTabs extends React.Component {
 
 			i++;
 			return (
-				<Tab.Pane eventKey={x.port_number} key={x.port_number}>
+				<Tab.Pane eventKey={i} key={x.port_number}>
 					{
 						_.map(filtered_files, (x) => {
 							var result = Math.floor(x.status_code / 100)
