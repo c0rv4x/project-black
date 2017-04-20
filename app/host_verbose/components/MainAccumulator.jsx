@@ -37,7 +37,8 @@ class MainAccumulator extends React.Component {
 
 				<PortsTabs ports={this.props.ports}
 					   	   activeTabNumber={this.state.activeTabNumber}
-					   	   tabChange={this.tabChange} />
+					   	   tabChange={this.tabChange}
+					   	   files={this.props.files} />
 			</div>				  
 		)
 	}

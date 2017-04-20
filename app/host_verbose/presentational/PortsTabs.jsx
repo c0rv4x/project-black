@@ -21,10 +21,30 @@ class PortsTabs extends React.Component {
 
 		i = 0;
 		const tabPanes = _.map(this.props.ports, (x) => {
+			var filtered_files = _.filter(this.props.files, (y) => {
+				return x.port_number == y.port_number;
+			});
+
+			filtered_files = filtered_files.sort((a, b) => {
+				if (a.file_name > b.file_name) return 1;
+				if (a.file_name < b.file_name) return -1;
+				return 0;
+			});
+
 			i++;
 			return (
 				<Tab.Pane eventKey={x.port_number} key={x.port_number}>
-					{x.scan_id}
+					{
+						_.map(filtered_files, (x) => {
+							var result = Math.floor(x.status_code / 100)
+							if (result == 2) {
+								return <div style={{'color': '#5c915c'}} key={x.file_id}>{x.status_code} {x.file_name}</div>
+							}
+							else {
+								return <div key={x.file_id}>{x.status_code}  {x.file_name}</div>
+							}
+						})
+					}
 				</Tab.Pane>
 			)
 		});
