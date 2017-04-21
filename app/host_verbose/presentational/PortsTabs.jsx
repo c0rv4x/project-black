@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import { Tab, Col, Row, Nav, NavItem } from 'react-bootstrap'
+import { Tab, Col, Row, Nav, NavItem, Table } from 'react-bootstrap'
 
 
 class PortsTabs extends React.Component {
@@ -9,15 +9,14 @@ class PortsTabs extends React.Component {
 	}
 
 	componentWillMount() {
-		this.props.tabChange(1);
+		this.props.tabChange(0);
 	}
 
 	render() {
 		var i = 0;
 		const navItems = _.map(this.props.ports, (x) => {
-			i++;
 			return (
-				<NavItem eventKey={i} key={x.port_number}>
+				<NavItem eventKey={i++} key={x.port_number}>
 					{x.port_number}
 				</NavItem>
 			);
@@ -30,24 +29,39 @@ class PortsTabs extends React.Component {
 			});
 
 			filtered_files = filtered_files.sort((a, b) => {
-				if (a.file_name > b.file_name) return 1;
-				if (a.file_name < b.file_name) return -1;
+				if (a.status_code > b.status_code) return 1;
+				if (a.status_code < b.status_code) return -1;
 				return 0;
 			});
 
-			i++;
 			return (
-				<Tab.Pane eventKey={i} key={x.port_number}>
+				<Tab.Pane eventKey={i++} key={x.port_number}>
 					{
-						_.map(filtered_files, (x) => {
-							var result = Math.floor(x.status_code / 100)
-							if (result == 2) {
-								return <div style={{'color': '#5c915c'}} key={x.file_id}>{x.status_code} {x.file_name}</div>
-							}
-							else {
-								return <div key={x.file_id}>{x.status_code}  {x.file_name}</div>
-							}
-						})
+						<Table bordered condensed hover>
+							<tbody>
+								{
+									_.map(filtered_files, (x) => {
+										var result = Math.floor(x.status_code / 100)
+										if (result == 2) {
+											return <tr key={x.file_id}>
+														<td style={{'color': '#5cb16c'}}>{x.status_code}</td>
+														<td>{x.content_length}</td>
+														<td><a href={x.file_path} target="_blank">{x.file_name}</a></td>
+														<td></td>
+												   </tr>
+										}
+										else {
+											return <tr key={x.file_id}>
+														<td>{x.status_code}</td>
+														<td>{x.content_length}</td>
+														<td><a href={x.file_path} target="_blank">{x.file_name}</a></td>
+														<td>{x.special_note &&x.special_note}</td>
+												   </tr>
+										}
+									})
+								}
+							</tbody>
+						</Table>
 					}
 				</Tab.Pane>
 			)
