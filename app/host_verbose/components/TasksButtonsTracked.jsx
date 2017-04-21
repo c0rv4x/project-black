@@ -14,10 +14,10 @@ class TasksButtonsTracked extends React.Component {
 	}
 
 	dirbusterStart() {
-		var scheme = this.props.activeTabNumber == 443 ? 'https' : 'http';
+		var scheme = this.props.activePortNumber === 443 ? 'https' : 'http';
 		var target = this.props.host.hostname;
 		this.tasksEmitter.requestCreateTask('dirsearch', 
-											scheme + "://" + target, 
+											[scheme + "://" + target], 
 											{'program': [{}]}, 
 											this.props.project.project_uuid)
 	}

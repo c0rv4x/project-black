@@ -11,15 +11,17 @@ class MainAccumulator extends React.Component {
 		super(props);
 
 		this.state = {
-			'activeTabNumber': null
+			'activeTabNumber': null,
+			'activePortNumber': null
 		}				
 
 		this.tabChange = this.tabChange.bind(this);
 	}
 
-	tabChange(newNumber) {
+	tabChange(newNumber, portNumber) {
 		this.setState({
-			activeTabNumber: newNumber
+			activeTabNumber: newNumber,
+			activePortNumber: portNumber
 		});
 	}
 
@@ -30,7 +32,7 @@ class MainAccumulator extends React.Component {
 				<TasksButtonsTracked project={this.props.project}
 									 host={this.props.host}
 									 ports={this.props.ports}
-									 activeTabNumber={this.state.activeTabNumber} />				
+									 activePortNumber={this.state.activePortNumber} />				
 				<Tasks tasks={this.props.tasks} />
 				<hr />
 				<ScopeComment commentValue={this.props.host.comment} />

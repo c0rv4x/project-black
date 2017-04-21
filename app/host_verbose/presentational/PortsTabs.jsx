@@ -56,7 +56,10 @@ class PortsTabs extends React.Component {
 		return (
 			<Tab.Container id="ports_tab_container"
 						   activeKey={this.props.activeTabNumber}
-						   onSelect={this.props.tabChange} >
+						   onSelect={(newTabNumber) => {
+							   	this.props.tabChange(newTabNumber, this.props.ports[newTabNumber].port_number);
+							 }
+						   } >
 				<Row className="clearfix">
 					<Col md={2} sm={2}>
 						<Nav bsStyle="pills" stacked>
