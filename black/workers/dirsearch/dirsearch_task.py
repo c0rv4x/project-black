@@ -15,7 +15,7 @@ class DirsearchTask(SyncTask):
 
     def start(self):
         """ Launch the task and readers of stdout, stderr """
-        Program('http://anatoly.tech', self.task_id, self.project_uuid, self.set_status)
+        Program(self.target[0], self.task_id, self.project_uuid, self.set_status)
 
 
     def send_notification(self, command):
