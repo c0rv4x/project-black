@@ -89,8 +89,8 @@ class ShadowTask(object):
             "progress" : self.progress,
             "text" : self.text,
             "project_uuid" : self.project_uuid,
-            "stdout" : self.stdout,
-            "stderr" : self.stderr,
+            # "stdout" : self.stdout,
+            # "stderr" : self.stderr,
             "date_added": str(self.date_added)
         }
 

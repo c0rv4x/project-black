@@ -32,6 +32,7 @@ class Handlers(object):
         # self.thread.start
 
     def sender_loop(self):
+        self.socketio.sleep(5)
         while True:
             self.socketio.sleep(0.7)
             self.taskHandlers.send_tasks_back()
