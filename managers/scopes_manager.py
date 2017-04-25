@@ -3,6 +3,7 @@ Scope can be represented with ip_address, or hostname.
 Hostname can have ip_address as a parameter (ForeignKey in the DB).
 Ip_address can contain hostname (if they are known), which is in fact
 a one->many relationship in the SQLalchemy. """
+import re
 import uuid
 import socket
 import dns.resolver
@@ -220,6 +221,8 @@ class ScopeManager(object):
                     for address in answer:
                         # Lets find if the new IP already exists in the DB
                         new_ip = str(address)
+                        if not re.match(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', new_ip):
+                            continue
                         found_ips = self.find_ip(new_ip, project_uuid)
 
                         if len(found_ips) == 0:
