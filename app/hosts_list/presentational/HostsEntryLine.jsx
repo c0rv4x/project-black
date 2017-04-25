@@ -26,7 +26,8 @@ class HostsEntryLine extends React.Component {
 				<div>
 					<b>{this.props.scope.hostname}</b>
 					<div className="pull-right">
-	                    <Link to={'/project/' + this.props.project.project_name + '/host/' + this.props.scope.hostname}>
+	                    <Link to={'/project/' + this.props.project.project_name + '/host/' + this.props.scope.hostname}
+	                          target="_blank">
 							<Button bsStyle="default" bsSize="small">
 								<Glyphicon glyph="zoom-in"/>
 							</Button>					
