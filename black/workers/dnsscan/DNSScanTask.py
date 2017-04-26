@@ -1,64 +1,109 @@
 import asyncio
 import aiodns
 import time
+import itertools
 # from pycares.errno import errorcode
 
 domain_to_brute = 'iamiad.com'
 
 
+class DNSScanTask(object):
+    def __init__(self, target):
+        self.target = target
+        self.request_queue = asyncio.Queue()
+        self.resolver = aiodns.DNSResolver()
 
+    async def resolve(self, domain, record_type):
+        records = list()
+        name = await self.resolver.query(domain, record_type)
+        for n in name:
+            records.append(n.host)
+        return records
 
-async def resolve(domain, record_type):
-    records = list()
-    resolver = aiodns.DNSResolver()
-    name = await resolver.query(domain, record_type)
-    for n in name:
-        records.append(n.host)
-    return records
+    async def resolve_item_from_queue(self):
+        records = list()
+        while not self.request_queue.empty():
+            dns_record = self.request_queue.get_nowait()
+            domain_name = dns_record['value']
+            record_type = dns_record['type']
+            name = self.resolver.query(domain_name, record_type)
+            name.add_done_callback(self.error_checker_callback)
+            name.data = domain_name
+            records.append(name)
+        await asyncio.wait(records)
+        return records
 
+    def error_checker_callback(self,future):
+        if future.exception():
+            exc = future.exception()
+            errno = exc.args[0]
+            if errno != 4:
+                print("#{}, {}".format(errno, exc.args[1])) 
+                #self.request_queue.put_nowait(future.data)
+        else:
+            result = list(map(lambda x: (future.data, x.host), future._result))
+            print(result)
 
-def error_checker_callback(future):
-    if future.exception():
-        exc = future.exception()
-        errno = exc.args[0]
-        if errno != 4:
-            print("#{}, {}".format(errno, exc.args[1]))
-            sleep(1)
-    else:
-        result = list(map(lambda x: (future.data, x.host), future._result))
-        print(result)
+    def start_dnscan(self):
 
-# print(errorcode)
+        loop = asyncio.get_event_loop()
+        tasks = list()
+        tasks.append(loop.create_task(self.resolve(self.target, 'NS')))
+        tasks.append(loop.create_task(self.resolve(self.target, 'MX')))
+        result = loop.run_until_complete(asyncio.wait(tasks))
+        futures = list()
 
-#async def dns_resolver():
+        for t in tasks:
+            for domain_name in t.result():
+                name = self.resolver.query(domain_name, 'A')
+                name.add_done_callback(self.error_checker_callback)
+                name.data = domain_name
+            futures.append(name)
 
+        result = loop.run_until_complete(asyncio.wait(futures))
+        with open('test-dict.txt', 'r') as wordlist_file:
+            subdomains = map(lambda x: x.strip()+'.'+self.target, wordlist_file.readlines())
 
-def start_dnscan(domain):
-    resolver = aiodns.DNSResolver()
-    loop = asyncio.get_event_loop()
-    tasks = list()
-    tasks.append(loop.create_task(resolve(domain_to_brute, 'NS')))
-    tasks.append(loop.create_task(resolve(domain_to_brute, 'MX')))
-    loop.run_until_complete(asyncio.wait(tasks))
+        it = [iter(subdomains)] * 10
+        splitted_subdomains = zip(*it)
 
-    futures = list()
+        for part in list(splitted_subdomains):
+            for item in part:
+                loop.run_until_complete(self.request_queue.put(
+                    {
+                        'type': 'A',
+                        'value': item
+                    }))
+            result = loop.run_until_complete(self.resolve_item_from_queue())
 
-    for t in tasks:
-        for domain_name in t.result():
-            name = resolver.query(domain_name, 'A')
+        '''
+        futures = list()
+
+        for t in tasks:
+            for domain_name in t.result():
+                name = resolver.query(domain_name, 'A')
+                name.add_done_callback(self.error_checker_callback)
+                name.data = domain_name
+            futures.append(name)
+
+        result = loop.run_until_complete(asyncio.wait(futures))
+
+        futures = list()
+
+        for domain_name in subdomains:
+            name = resolver.query(domain_name + '.' + domain, 'A')
             name.add_done_callback(error_checker_callback)
             name.data = domain_name
-        futures.append(name)
+            print(domain_name)
+            futures.append(name)
 
-    result = loop.run_until_complete(asyncio.wait(futures))
-
-'''
-    with open('test-dict.txt', 'r') as wordlist_file:
-        subdomains = map(lambda x: x.strip(), wordlist_file.readlines())
-
+            if len(futures) >= 10:
+                result = loop.run_until_complete(asyncio.wait(futures))
+                futures = list()
+        '''
 
 
-'''
 time_start = time.time()
-start_dnscan(domain_to_brute)
+scaner=DNSScanTask(domain_to_brute)
+scaner.start_dnscan()
 print(time.time() - time_start)
