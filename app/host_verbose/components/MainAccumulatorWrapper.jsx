@@ -78,7 +78,8 @@ function mapStateToProps(state, ownProps){
         	return x.project_uuid == project['project_uuid']
         }),
         files: _.filter(state.files, (x) => {
-        	return x.project_uuid == project['project_uuid']
+        	return ((x.project_uuid == project['project_uuid']) && (
+        		x['target'] == host['hostname']));
         })        
     }
 }
