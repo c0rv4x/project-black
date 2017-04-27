@@ -4,7 +4,7 @@ import time
 import itertools
 # from pycares.errno import errorcode
 
-domain_to_brute = 'iamiad.com'
+domain_to_brute = '***REMOVED***'
 
 
 class DNSScanTask(object):
@@ -24,7 +24,10 @@ class DNSScanTask(object):
         records = list()
         while not self.request_queue.empty():
             dns_record = self.request_queue.get_nowait()
-            domain_name = dns_record['value']
+            if dns_record['value'] != None:
+                domain_name = dns_record['value']
+            else:
+                break
             record_type = dns_record['type']
             name = self.resolver.query(domain_name, record_type)
             name.add_done_callback(self.error_checker_callback)
@@ -65,9 +68,13 @@ class DNSScanTask(object):
             subdomains = map(lambda x: x.strip()+'.'+self.target, wordlist_file.readlines())
 
         it = [iter(subdomains)] * 10
-        splitted_subdomains = zip(*it)
-
+        splitted_subdomains = itertools.zip_longest(*it)
+        #i = 0
+        #j = len(list(splitted_subdomains))
+        #print(list(splitted_subdomains)[-1])
         for part in list(splitted_subdomains):
+            #i = i + 1
+            #print("{}/{}".format(i,j))
             for item in part:
                 loop.run_until_complete(self.request_queue.put(
                     {
