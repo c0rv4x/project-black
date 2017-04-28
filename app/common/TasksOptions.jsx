@@ -31,15 +31,15 @@ class TasksOptions extends React.Component {
 
 	render() {
 		const startButtons = _.map(this.props.task.preformed_options, (x) => {
-		const options = _.map(x.options, (x) => {
-			return <div key={x.name}><strong>{x.name}:</strong> {x.value}</div>
-		});
-		const popover = (
-			<Popover id="popover-trigger-hover-focus" title="Options">
-				{options}
-			</Popover>
-		);
+			const options = _.map(x.options, (x) => {
+				return <div key={x.name}><strong>{x.name}:</strong> {x.value}</div>
+			});
 
+			const popover = (
+				<Popover id="popover-trigger-hover-focus" title="Options">
+					{options}
+				</Popover>
+			);
 
 			return (
 			    <OverlayTrigger key={x.name} trigger={['hover', 'focus']} placement="bottom" overlay={popover}>
