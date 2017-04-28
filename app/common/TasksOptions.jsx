@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import { Button, Modal, MenuItem } from 'react-bootstrap'
+import { Button, Modal, MenuItem, OverlayTrigger, Popover } from 'react-bootstrap'
 
 
 class TasksOptions extends React.Component {
@@ -31,7 +31,21 @@ class TasksOptions extends React.Component {
 
 	render() {
 		const startButtons = _.map(this.props.task.preformed_options, (x) => {
-			return <Button key={x.name} onClick={() => this.startTask(x.options)}>{x.name}</Button>
+		const options = _.map(x.options, (x) => {
+			return <div key={x.name}><strong>{x.name}:</strong> {x.value}</div>
+		});
+		const popover = (
+			<Popover id="popover-trigger-hover-focus" title="Options">
+				{options}
+			</Popover>
+		);
+
+
+			return (
+			    <OverlayTrigger key={x.name} trigger={['hover', 'focus']} placement="bottom" overlay={popover}>
+					<Button onClick={() => this.startTask(x.options)}>{x.name}</Button>
+			    </OverlayTrigger>
+			)
 		});
 
 		return ( 
@@ -46,7 +60,6 @@ class TasksOptions extends React.Component {
 					<Modal.Body>
 						<h4>Choose one of the prepared options or create your own</h4>
 						{startButtons}
-						<hr />
 					</Modal.Body>
 					<Modal.Footer>
 						<Button onClick={this.close}>Close</Button>
