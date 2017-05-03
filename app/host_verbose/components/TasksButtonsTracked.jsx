@@ -1,7 +1,7 @@
 import React from 'react'
 
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
-import ButtonsTasks from '../../common/ButtonsTasks.jsx'
+import ButtonsTasks from './ButtonsTasks.jsx'
 
 
 class TasksButtonsTracked extends React.Component {
@@ -32,21 +32,15 @@ class TasksButtonsTracked extends React.Component {
 						"preformed_options": [
 							{
 								"name": "PHP",
-								"options": [
-									{
-										"name": "Extensions",
-										"value": "php,txt,conf,log,bak"
-									}
-								]
+								"options": {
+									"extensions": "php,txt,conf,log,bak"
+								}
 							},
 							{
 								"name": "ASP",
-								"options": [
-									{
-										"name": "Extensions",
-										"value": "asp,txt,conf,log,bak"
-									}
-								]
+								"options": {
+									"extensions": "asp"
+								}
 							}							
 						]
 					}

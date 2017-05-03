@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap'
 
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
-import ButtonsTasks from '../../common/ButtonsTasks.jsx'
+import ButtonsTasks from './ButtonsTasks.jsx'
 
 
 class TitleButtonsWithHandlers extends React.Component {
@@ -82,15 +82,57 @@ class TitleButtonsWithHandlers extends React.Component {
 						  	[
 						  		{
 						  			'name': 'Masscan',
-						  			'handler': this.runMasscan
+						  			'handler': this.runMasscan,
+									"preformed_options": [
+										{
+											"name": "All Ports",
+											"options": {
+												"-p": "1-65535"
+											}
+										},
+										{
+											"name": "Top 1000 ports",
+											"options": {
+												"-p": "80,443"
+											}
+										}							
+									]						  			
 						  		},
 						  		{
 						  			'name': 'Nmap',
-						  			'handler': this.runNmap
+						  			'handler': this.runNmap,
+									"preformed_options": [
+										{
+											"name": "All Ports",
+											"options": {
+												"-p": "1-65535"
+											}
+										},
+										{
+											"name": "Top 1000 ports",
+											"options": {
+												"-p": "80,443"
+											}
+										}							
+									]
 						  		},
 						  		{
 						  			'name': 'Nmap Banner Edition',
-						  			'handler': this.runNmapOnlyOpen
+						  			'handler': this.runNmapOnlyOpen,
+									"preformed_options": [
+										{
+											"name": "All Ports",
+											"options": {
+												"-p": "1-65535"
+											}
+										},
+										{
+											"name": "Top 1000 ports",
+											"options": {
+												"-p": "80,443"
+											}
+										}							
+									]
 						  		}
 						  	]
 						  } />
