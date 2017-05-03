@@ -44,7 +44,7 @@ class TasksListEntry extends React.Component {
 			<tr onClick={this.open}>
 				<td>{this.props.task.task_type}</td>
 				<td>{targets}</td>
-				<td>{this.props.task.params["program"].join()}</td>
+				<td>{JSON.stringify(this.props.task.params["program"])}</td>
 				<td>{this.props.task.status}</td>
 				<TaskDetails showModal={this.state.showModal}
 							 close={this.close}
