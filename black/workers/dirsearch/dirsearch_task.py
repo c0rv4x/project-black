@@ -9,13 +9,13 @@ class DirsearchTask(SyncTask):
     def __init__(self, task_id, target, params, project_uuid):
         SyncTask.__init__(self, task_id, 'dirsearch', target, params, project_uuid)
 
-        cookies = params['program'][0].get('cookies', None)
-        headers = params['program'][0].get('headers', None)
+        program_params = params['program']
+        self.params_object = program_params
 
 
     def start(self):
         """ Launch the task and readers of stdout, stderr """
-        Program(self.target[0], self.task_id, self.project_uuid, self.set_status)
+        Program(self.target[0], self.task_id, self.project_uuid, self.set_status, self.params_object)
 
 
     def send_notification(self, command):
