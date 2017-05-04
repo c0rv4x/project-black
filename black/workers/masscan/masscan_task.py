@@ -29,7 +29,13 @@ class MasscanTask(AsyncTask):
 
     async def start(self):
         """ Launch the task and readers of stdout, stderr """
-        self.command = ['sudo', 'masscan'] + [self.target] + ['-oX', '-'] + self.params['program']
+        parsed_params = list()
+
+        for key in self.params['program']:
+            parsed_params.append(key)
+            parsed_params.append(self.params['program'][key])
+
+        self.command = ['sudo', 'masscan'] + [self.target] + ['-oX', '-'] + parsed_params
 
         try:
             self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
