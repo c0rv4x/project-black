@@ -2,6 +2,8 @@ import _ from 'lodash'
 import React from 'react'
 import { Button, Modal, MenuItem, OverlayTrigger, Popover } from 'react-bootstrap'
 
+import CustomOptions from './CustomOptions.jsx'
+
 
 class TasksOptions extends React.Component {
 	constructor(props) {
@@ -62,6 +64,8 @@ class TasksOptions extends React.Component {
 					<Modal.Body>
 						<h4>Choose one of the prepared options or create your own</h4>
 						{startButtons}
+						<hr />
+						<CustomOptions available_options={this.props.task.available_options} />
 					</Modal.Body>
 					<Modal.Footer>
 						<Button onClick={this.close}>Close</Button>

@@ -96,8 +96,22 @@ class TitleButtonsWithHandlers extends React.Component {
 											"options": {
 												"-p": "80,443"
 											}
-										}							
-									]						  			
+										}
+									],
+									'available_options': [
+										{
+											"name": "-p",
+											"display_name": "Ports",
+											"type": "text",
+											"default_value": "80,443"
+										},
+										{
+											"name": "--kek",
+											"display_name": "Kek",
+											"type": "text",
+											"default_value": "Yek"
+										},										
+									]
 						  		},
 						  		{
 						  			'name': 'Nmap',
@@ -114,7 +128,15 @@ class TitleButtonsWithHandlers extends React.Component {
 											"options": {
 												"-p": "80,443"
 											}
-										}							
+										}
+									],
+									'available_options': [
+										{
+											"name": "-p",
+											"display_name": "Ports",
+											"type": "text",
+											"default_value": "80,443"
+										}
 									]
 						  		},
 						  		{
@@ -132,7 +154,15 @@ class TitleButtonsWithHandlers extends React.Component {
 											"options": {
 												"-p": "80,443"
 											}
-										}							
+										}
+									],
+									'available_options': [
+										{
+											"name": "-p",
+											"display_name": "Ports",
+											"type": "text",
+											"default_value": "80,443"
+										}
 									]
 						  		}
 						  	]
