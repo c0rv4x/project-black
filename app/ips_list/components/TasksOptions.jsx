@@ -31,9 +31,11 @@ class TasksOptions extends React.Component {
 
 	render() {
 		const startButtons = _.map(this.props.task.preformed_options, (x) => {
-			const options = _.forOwn(x.options, (value, key) => {
-				return <div key={key}><strong>{key}:</strong> {value}</div>
+			var options = [];
+			_.forOwn(x.options, (value, key) => {
+				options.push(<div key={key}><strong>{key}:</strong> {value}</div>);
 			});
+
 
 			const popover = (
 				<Popover id="popover-trigger-hover-focus" title="Options">
@@ -53,7 +55,18 @@ class TasksOptions extends React.Component {
 					  eventKey={this.props.number}
 					  onClick={this.open} >
 				{this.props.task.name}
-
+				<Modal show={this.state.showModal} onHide={this.close} >
+					<Modal.Header closeButton>
+						<Modal.Title>Prepared settings</Modal.Title>
+					</Modal.Header>
+					<Modal.Body>
+						<h4>Choose one of the prepared options or create your own</h4>
+						{startButtons}
+					</Modal.Body>
+					<Modal.Footer>
+						<Button onClick={this.close}>Close</Button>
+					</Modal.Footer>
+				</Modal>
 			</MenuItem>
 		)
 	}

@@ -31,7 +31,7 @@ class TasksOptions extends React.Component {
 
 	render() {
 		const startButtons = _.map(this.props.task.preformed_options, (x) => {
-			const options = [];
+			var options = [];
 			_.forOwn(x.options, (value, key) => {
 				options.push(<div key={key}><strong>{key}:</strong> {value}</div>);
 			});

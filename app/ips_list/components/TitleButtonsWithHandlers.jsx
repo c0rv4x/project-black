@@ -17,29 +17,30 @@ class TitleButtonsWithHandlers extends React.Component {
 		this.runNmapOnlyOpen = this.runNmapOnlyOpen.bind(this);
 	}
 
-	runMasscan() {
+	runMasscan(params) {
+		console.log('starting masscan with',params);
 		var targets = _.map(this.props.scopes.ips, (x) => {
 			return x.ip_address || x.hostname
 		});
 
 		this.tasksEmitter.requestCreateTask('masscan', 
 											targets, 
-											{'program': ['-p80,443']}, 
+											{'program': params}, 
 											this.props.project.project_uuid)
 	}
 
-	runNmap() {
+	runNmap(params) {
 		var targets = _.map(this.props.scopes.ips, (x) => {
 			return x.ip_address;
 		});
 
 		this.tasksEmitter.requestCreateTask('nmap', 
 											targets, 
-											{'program': []}, 
+											{'program': params}, 
 											this.props.project.project_uuid)
 	}	
 
-	runNmapOnlyOpen() {
+	runNmapOnlyOpen(params) {
 		var nonuniqueTargets = _.map(this.props.scans, (x) => {
 			return x.target;
 		});
