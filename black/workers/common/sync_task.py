@@ -30,18 +30,16 @@ class SyncTask(Task):
 
     def set_status(self, new_status, progress=0, text=""):
         print("progress {}%".format(progress))
+        Task.set_status(self, new_status, progress=progress, text=text)
 
-        try:
-            Task.set_status(self, new_status, progress=progress, text=text)
-
-            self.channel.basic_publish(
-                exchange='',
-                routing_key='tasks_statuses',
-                body=json.dumps({
-                    'task_id': self.task_id,
-                    'status': new_status,
-                    'progress': progress,
-                    'text': text            
-                }))
-        except Exception as e:
-            print("SSSSSS", str(e))
+        self.channel.basic_publish(
+            exchange='',
+            routing_key='tasks_statuses',
+            body=json.dumps({
+                'task_id': self.task_id,
+                'status': new_status,
+                'progress': progress,
+                'text': text,
+                'new_stdout': "",
+                'new_stderr': ""
+            }))
