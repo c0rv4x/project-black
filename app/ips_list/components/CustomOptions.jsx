@@ -16,21 +16,17 @@ class CustomOptions extends React.Component {
 	}
 
 	render() {
-		var nice_options = _.map(this.props.available_options, (x) => {
-			return (
-				<div key={x.display_name}>
-					<Form inline>
-						<FormGroup controlId="formInlineName">
-							<ControlLabel>{x.display_name}</ControlLabel>
-							{' '}
-							<FormControl type="text" placeholder="Jane Doe" />
-						</FormGroup>
-					</Form>
-				</div>
-			)
-		});
-
-		return <div>{nice_options}</div>
+		return (
+			<div>
+				<FormGroup controlId="formInlineName">
+					<FormControl type="text"
+								 placeholder="Flags and parameters"
+								 value={this.props.inputValue} 
+								 onChange={(x) => this.props.onOptionsInputChange(x.target.value)} />
+				</FormGroup>
+				<Button bsStyle="primary" onClick={this.props.startTaskHandler}>Start Task</Button>
+			</div>
+		)
 	}
 }
 

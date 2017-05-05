@@ -18,7 +18,6 @@ class TitleButtonsWithHandlers extends React.Component {
 	}
 
 	runMasscan(params) {
-		console.log('starting masscan with',params);
 		var targets = _.map(this.props.scopes.ips, (x) => {
 			return x.ip_address || x.hostname
 		});
@@ -87,30 +86,16 @@ class TitleButtonsWithHandlers extends React.Component {
 									"preformed_options": [
 										{
 											"name": "All Ports",
-											"options": {
-												"-p": "1-65535"
-											}
+											"options": [
+												"-p1-65535"
+											]
 										},
 										{
 											"name": "Top 1000 ports",
-											"options": {
-												"-p": "80,443"
-											}
+											"options": [
+												"-p80,443"
+											]
 										}
-									],
-									'available_options': [
-										{
-											"name": "-p",
-											"display_name": "Ports",
-											"type": "text",
-											"default_value": "80,443"
-										},
-										{
-											"name": "--kek",
-											"display_name": "Kek",
-											"type": "text",
-											"default_value": "Yek"
-										},										
 									]
 						  		},
 						  		{
@@ -119,23 +104,15 @@ class TitleButtonsWithHandlers extends React.Component {
 									"preformed_options": [
 										{
 											"name": "All Ports",
-											"options": {
-												"-p": "1-65535"
-											}
+											"options": [
+												"-p1-65535"
+											]
 										},
 										{
 											"name": "Top 1000 ports",
-											"options": {
-												"-p": "80,443"
-											}
-										}
-									],
-									'available_options': [
-										{
-											"name": "-p",
-											"display_name": "Ports",
-											"type": "text",
-											"default_value": "80,443"
+											"options": [
+												"-p80,443"
+											]
 										}
 									]
 						  		},
@@ -145,23 +122,15 @@ class TitleButtonsWithHandlers extends React.Component {
 									"preformed_options": [
 										{
 											"name": "All Ports",
-											"options": {
-												"-p": "1-65535"
-											}
+											"options": [
+												"-p1-65535"
+											]
 										},
 										{
 											"name": "Top 1000 ports",
-											"options": {
-												"-p": "80,443"
-											}
-										}
-									],
-									'available_options': [
-										{
-											"name": "-p",
-											"display_name": "Ports",
-											"type": "text",
-											"default_value": "80,443"
+											"options": [
+												"-p80,443"
+											]
 										}
 									]
 						  		}
