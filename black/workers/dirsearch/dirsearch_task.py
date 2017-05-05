@@ -9,10 +9,6 @@ class DirsearchTask(SyncTask):
     def __init__(self, task_id, target, params, project_uuid):
         SyncTask.__init__(self, task_id, 'dirsearch', target, params, project_uuid)
 
-        cookies = params['program'][0].get('cookies', None)
-        headers = params['program'][0].get('headers', None)
-
-
     def start(self):
         """ Launch the task and readers of stdout, stderr """
         Program('http://anatoly.tech', self.task_id, self.project_uuid, self.set_status)
