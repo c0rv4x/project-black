@@ -41,7 +41,19 @@ class TasksButtonsTracked extends React.Component {
 								"options": {
 									"extensions": "asp"
 								}
-							}							
+							}
+						],
+						"available_options": [
+							{
+								"name": "extensions",
+								"type": "text",
+								"default_value": "txt,conf,log,bak"
+							},
+							{
+								"name": "recursive",
+								"type": "checkbox",
+								"default_value": true
+							}
 						]
 					}
 				]
