@@ -2,6 +2,8 @@ import _ from 'lodash'
 import React from 'react'
 import { Button, DropdownButton, MenuItem } from 'react-bootstrap'
 
+import TasksOptions from './TasksOptions.jsx'
+
 
 class ButtonsTasks extends React.Component {
 
@@ -13,7 +15,7 @@ class ButtonsTasks extends React.Component {
 		var i = 0;
 		const menu_items = _.map(this.props.tasks, (x) => {
 			i++;
-			return <MenuItem key={i} eventKey={i} onClick={x.handler}>{x.name}</MenuItem>
+			return <TasksOptions key={i} number={i} task={x} />
 		});
 
 		return (

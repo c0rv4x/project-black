@@ -1,7 +1,7 @@
 import React from 'react'
 
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
-import ButtonsTasks from '../../common/ButtonsTasks.jsx'
+import ButtonsTasks from './ButtonsTasks.jsx'
 
 
 class TasksButtonsTracked extends React.Component {
@@ -13,12 +13,12 @@ class TasksButtonsTracked extends React.Component {
 		this.dirbusterStart = this.dirbusterStart.bind(this);
 	}
 
-	dirbusterStart() {
+	dirbusterStart(options) {
 		var scheme = this.props.activePortNumber === 443 ? 'https' : 'http';
 		var target = this.props.host.hostname;
 		this.tasksEmitter.requestCreateTask('dirsearch', 
 											[scheme + "://" + target], 
-											{'program': [{}]}, 
+											{'program': options}, 
 											this.props.project.project_uuid)
 	}
 
@@ -28,7 +28,33 @@ class TasksButtonsTracked extends React.Component {
 				[
 					{
 						"name": "Dirbuter",
-						"handler": this.dirbusterStart
+						"handler": this.dirbusterStart,
+						"preformed_options": [
+							{
+								"name": "PHP",
+								"options": {
+									"extensions": "php,txt,conf,log,bak"
+								}
+							},
+							{
+								"name": "ASP",
+								"options": {
+									"extensions": "asp"
+								}
+							}
+						],
+						"available_options": [
+							{
+								"name": "extensions",
+								"type": "text",
+								"default_value": "txt,conf,log,bak"
+							},
+							{
+								"name": "recursive",
+								"type": "checkbox",
+								"default_value": true
+							}
+						]
 					}
 				]
 			} />

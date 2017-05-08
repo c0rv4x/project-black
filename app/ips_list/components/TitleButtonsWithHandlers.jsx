@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap'
 
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
-import ButtonsTasks from '../../common/ButtonsTasks.jsx'
+import ButtonsTasks from './ButtonsTasks.jsx'
 
 
 class TitleButtonsWithHandlers extends React.Component {
@@ -17,29 +17,29 @@ class TitleButtonsWithHandlers extends React.Component {
 		this.runNmapOnlyOpen = this.runNmapOnlyOpen.bind(this);
 	}
 
-	runMasscan() {
+	runMasscan(params) {
 		var targets = _.map(this.props.scopes.ips, (x) => {
 			return x.ip_address || x.hostname
 		});
 
 		this.tasksEmitter.requestCreateTask('masscan', 
 											targets, 
-											{'program': ['-p80,443']}, 
+											{'program': params}, 
 											this.props.project.project_uuid)
 	}
 
-	runNmap() {
+	runNmap(params) {
 		var targets = _.map(this.props.scopes.ips, (x) => {
 			return x.ip_address;
 		});
 
 		this.tasksEmitter.requestCreateTask('nmap', 
 											targets, 
-											{'program': []}, 
+											{'program': params}, 
 											this.props.project.project_uuid)
 	}	
 
-	runNmapOnlyOpen() {
+	runNmapOnlyOpen(params) {
 		var nonuniqueTargets = _.map(this.props.scans, (x) => {
 			return x.target;
 		});
@@ -82,15 +82,57 @@ class TitleButtonsWithHandlers extends React.Component {
 						  	[
 						  		{
 						  			'name': 'Masscan',
-						  			'handler': this.runMasscan
+						  			'handler': this.runMasscan,
+									"preformed_options": [
+										{
+											"name": "All Ports",
+											"options": [
+												"-p1-65535"
+											]
+										},
+										{
+											"name": "Top 1000 ports",
+											"options": [
+												"-p80,443"
+											]
+										}
+									]
 						  		},
 						  		{
 						  			'name': 'Nmap',
-						  			'handler': this.runNmap
+						  			'handler': this.runNmap,
+									"preformed_options": [
+										{
+											"name": "All Ports",
+											"options": [
+												"-p1-65535"
+											]
+										},
+										{
+											"name": "Top 1000 ports",
+											"options": [
+												"-p80,443"
+											]
+										}
+									]
 						  		},
 						  		{
 						  			'name': 'Nmap Banner Edition',
-						  			'handler': this.runNmapOnlyOpen
+						  			'handler': this.runNmapOnlyOpen,
+									"preformed_options": [
+										{
+											"name": "All Ports",
+											"options": [
+												"-p1-65535"
+											]
+										},
+										{
+											"name": "Top 1000 ports",
+											"options": [
+												"-p80,443"
+											]
+										}
+									]
 						  		}
 						  	]
 						  } />
