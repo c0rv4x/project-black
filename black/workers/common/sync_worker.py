@@ -49,7 +49,7 @@ class SyncWorker(Worker):
         """ Quick funcitons for submitting a task sample """
         from uuid import uuid4
         task_id = self.name + "_task_" + str(uuid4())
-        msg = {"task_id": task_id, "command": "hey"}
+        msg = {"task_id": task_id, "target": "hey", "parameters": ["some params"], "project_uuid": "test_project"}
         self.channel.basic_publish(exchange='tasks.exchange',
                                    routing_key=self.name + '_tasks',
                                    body=json.dumps(msg),
@@ -79,10 +79,12 @@ class SyncWorker(Worker):
         # which are addressed to the ceratin task
         message = json.loads(message)
         task_id = message['task_id']
-        command = message['command']
+        target = message['target']
+        params = message['params']
+        project_uuid = message['project_uuid']
 
         # Spawn the process
-        proc = self.task_class(task_id, command)
+        proc = self.task_class(task_id, target, params, project_uuid)
 
         # Store the object that points to the process
         self.active_processes.append(proc)

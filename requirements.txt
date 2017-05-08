@@ -1,4 +1,7 @@
-Django
 psycopg2
 python-libnmap
 pika
+selenium
+sqlalchemy
+asynqp
+xmltodict

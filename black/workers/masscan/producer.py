@@ -25,13 +25,13 @@ def main():
         await tasks_queue.bind(exchange, routing_key='masscan_tasks')
         await notifications_queue.bind(exchange, routing_key='masscan_notifications')
 
-        print("-"*20)
-        print("Sending task")
-
-
         msg = asynqp.Message({
-            'task_id': 'masscan_task_' + random_id,
-            'command': ['sudo', 'masscan', '-oX', '-', '-p80-1000', '213.180.204.3']
+            'task_id': random_id,
+            'target': '213.180.193.0/28',
+            'params': {
+                'program': ['-p80-1000']
+            },
+            'project_name': 'test_project'
         })
         exchange.publish(msg, 'masscan_tasks')
         print("Sent task")

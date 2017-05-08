@@ -1,12 +1,12 @@
 """ Module that will accumulate all the tasks described """
 from black.workers.nmap import NmapTask
-from black.workers.common.worker import Worker
+from black.workers.common.async_worker import AsyncWorker
 
 
-class NmapWorker(Worker):
+class NmapWorker(AsyncWorker):
     """ Name says for itself """
     def __init__(self):
-        Worker.__init__(self, 'nmap', NmapTask)
+        AsyncWorker.__init__(self, 'nmap', NmapTask)
 
     async def start(self):
         """ Start all the necessary consumers """

@@ -2,31 +2,44 @@
 to manager the launched instance of scan. """
 import re
 import signal
+import socket
 import threading
 from time import sleep
 
 import asyncio
 from asyncio.subprocess import PIPE
 
-from black.workers.common.task import Task
+from black.workers.common.async_task import AsyncTask
+from black.workers.masscan.db_save import save_raw_output
 
-
-class MasscanTask(Task):
+class MasscanTask(AsyncTask):
     """ Major class for working with masscan """
 
-    def __init__(self, task_id, command):
-        Task.__init__(self, task_id, command)
+    def __init__(self, task_id, target, params, project_uuid):
+        AsyncTask.__init__(self, task_id, 'masscan', target, params, project_uuid)
         self.proc = None
-        self.status = "New"
 
         self.exit_code = None
         self.stdout = []
         self.stderr = []
 
+        if type(self.target) == list:
+            self.target = ",".join(self.target)
+        print(self.target)
+
     async def start(self):
         """ Launch the task and readers of stdout, stderr """
-        self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
-        self.status = "Working"
+        self.command = ['sudo', 'masscan'] + [self.target] + ['-oX', '-'] + self.params['program']
+
+        try:
+            self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
+        except Exception as e:
+            self.set_status("Aborted", progress=-1, text=str(e))
+            print(e)
+
+            raise e
+
+        self.set_status("Working", progress=0)
 
         # Launch readers
         loop = asyncio.get_event_loop()
@@ -50,7 +63,10 @@ class MasscanTask(Task):
         # If we know, that there will be some data, we read it
         if self.status == 'New' or self.status == 'Working':
             stdout_chunk = await self.proc.stdout.read(1024)
-            self.stdout.append(stdout_chunk)
+            stdout_chunk_decoded = stdout_chunk.decode('utf-8')
+
+            if stdout_chunk_decoded:
+                self.append_stdout(stdout_chunk_decoded)
 
             # Create the task on reading the next chunk of data
             loop = asyncio.get_event_loop()
@@ -61,13 +77,14 @@ class MasscanTask(Task):
             try:
                 # Try to read from stdout for quite some time
                 stdout_chunk = await asyncio.wait_for(self.proc.stdout.read(), 0.5)
+                stdout_chunk_decoded = stdout_chunk
 
                 # Wierd thing: while reading from the stdout of finished process,
                 # b'' is read in a while loop, so we need to check.
                 if len(stdout_chunk) == 0:
                     raise Exception("No data left")
                 else:
-                    self.stdout.append(stdout_chunk)
+                    self.append_stdout(stdout_chunk_decoded)
             except TimeoutError as _:
                 pass
             except Exception as _:
@@ -77,7 +94,10 @@ class MasscanTask(Task):
         """ Similar to read_stdout """
         if self.status == 'New' or self.status == 'Working':
             stderr_chunk = await self.proc.stderr.read(1024)
-            self.stderr.append(stderr_chunk)
+            stderr_chunk_decoded = stderr_chunk.decode('utf-8')
+
+            if stderr_chunk_decoded:
+                self.append_stderr(stderr_chunk_decoded)
 
             # Create the task on reading the next chunk of data
             loop = asyncio.get_event_loop()
@@ -87,10 +107,11 @@ class MasscanTask(Task):
         elif self.status == 'Aborted' or self.status == 'Finished':
             try:
                 stderr_chunk = await asyncio.wait_for(self.proc.stderr.read(), 0.5)
+                stderr_chunk_decoded = stderr_chunk
                 if len(stderr_chunk) == 0:
                     raise Exception("No data left")
                 else:
-                    self.stderr.append(stderr_chunk)
+                    self.append_stderr(stderr_chunk_decoded)
             except TimeoutError as _:
                 pass
             except Exception as _:
@@ -103,8 +124,7 @@ class MasscanTask(Task):
 
     def progress_poller(self):
         """ Gets the current progress and prints it
-        Should be:
-            * This thing should run in another thread (done)
+        TODO:
             * Should put result back to the queue (not yet and not rdy for this) """
         while self.status != "Finished" and self.status != "Aborted":
             if self.status == "New":
@@ -114,17 +134,20 @@ class MasscanTask(Task):
                     data = str(self.stderr[-1])
                     if data:
                         percent = re.findall(r"([0-9]{1,3}\.[0-9]{1,3})%", data)
-                        time_left = re.findall(r"([0-9]{1,4}:[0-9]{1,2}:[0-9]{1,2})", data)
+                        # time_left = re.findall(r"([0-9]{1,4}:[0-9]{1,2}:[0-9]{1,2})", data)
                         found = re.findall(r"found=([0-9]{0,5000})", data)
 
-                        print("[-] Working {}%, {} left, {} found".format(
+                        print("[-] Working {}%, {} found".format(
                             percent[0],
-                            time_left[0],
+                            # time_left[0],
                             found[0]))
+
+                        self.set_status("Working", progress=int(percent[0].split('.')[0]))
                 except Exception as exc:
                     print(exc)
+                    pass
 
-            sleep(0.5)
+            sleep(1)
         print(self.status)
 
     async def wait_for_exit(self):
@@ -135,9 +158,19 @@ class MasscanTask(Task):
         self.exit_code = exit_code
         # The process has exited.
         print("The process finished OK")
-        print(self.stdout)
 
         if self.exit_code == 0:
-            self.status = "Finished"
+            try:
+                self.save()
+            except Exception as e:
+                self.set_status("Aborted", progress=-1, text="".join(self.stderr))
+            else:
+                self.set_status("Finished", progress=100)
         else:
-            self.status = "Aborted"
+            self.set_status("Aborted", progress=-1, text="".join(self.stderr))
+
+    def save(self):
+        save_raw_output(
+            self.task_id,
+            self.stdout,
+            self.project_uuid)
