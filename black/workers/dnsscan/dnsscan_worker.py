@@ -1,12 +1,12 @@
 """ Module that will accumulate all the tasks described """
 from black.workers.dnsscan import DNSScanTask
-from black.workers.common.worker import Worker
+from black.workers.common.async_worker import AsyncWorker
 
 
-class DNSScanWorker(Worker):
+class DNSScanWorker(AsyncWorker):
     """ Main class that monitors and manager instances of running dnsscan. """
     def __init__(self):
-        Worker.__init__(self, 'dnsscan', DNSScanTask)
+        AsyncWorker.__init__(self, 'dnsscan', DNSScanTask)
 
     async def start(self):
         """ Start all the necessary consumers """
