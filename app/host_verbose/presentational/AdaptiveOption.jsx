@@ -15,28 +15,24 @@ class AdaptiveOption extends React.Component {
 		super(props);
 
 		this.changeInput = this.changeInput.bind(this);
+		this.triggerBool = this.triggerBool.bind(this);
 	}
 
 	changeInput(e) {
 		this.props.onInputChange(this.props.objectKey, e.target.value);
 	}
 
+	triggerBool(newValue) {
+		this.props.onInputChange(this.props.objectKey, newValue.target.checked);
+	}
+
 	render() {
 		if (this.props.value.type === 'checkbox') {
-			if (this.props.value.value === true) {
-				return (
-					<Checkbox defaultChecked>
-						{_.capitalize(this.props.objectKey)}
-					</Checkbox>
-				)				
-			}
-			else {
-				return (
-					<Checkbox>
-						{_.capitalize(this.props.objectKey)}
-					</Checkbox>
-				)				
-			}
+			return (
+				<Checkbox checked={this.props.value.value} onChange={this.triggerBool}>
+					{_.capitalize(this.props.objectKey)}
+				</Checkbox>
+			)				
 		}
 		else {
 			return (
