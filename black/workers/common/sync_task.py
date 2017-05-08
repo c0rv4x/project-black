@@ -29,7 +29,6 @@ class SyncTask(Task):
             routing_key="tasks_statuses")
 
     def set_status(self, new_status, progress=0, text=""):
-        print("progress {}%".format(progress))
         Task.set_status(self, new_status, progress=progress, text=text)
 
         self.channel.basic_publish(

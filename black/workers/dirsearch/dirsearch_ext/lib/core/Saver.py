@@ -8,8 +8,8 @@ class Saver(object):
         self.project_uuid = project_uuid
 
     def save(self, url, status, response):
-        special_info = None
+        special_note = None
         if status in [301, 302, 307] and 'location' in [h.lower() for h in response.headers]:
-            special_info = response.headers['location']
+            special_note = response.headers['location']
 
-        save_file(url, status, len(response), self.task_id, self.project_uuid, special_info=special_info)
+        save_file(url, status, len(response), self.task_id, self.project_uuid, special_note=special_note)
