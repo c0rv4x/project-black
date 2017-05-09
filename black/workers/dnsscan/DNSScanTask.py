@@ -2,6 +2,7 @@ import asyncio
 import aiodns
 import time
 import itertools
+from collections import defaultdict
 # from pycares.errno import errorcode
 
 domain_to_brute = 'anatoly.tech'
@@ -36,16 +37,16 @@ class DNSScanTask(object):
                 break
 
             record_type = dns_record['type']
-            name = self.resolver.query(domain_name, record_type)
-            name.add_done_callback(self.error_checker_callback)
-            name.domain_name = domain_name
-            records.append(name)
+            resolved = self.resolver.query(domain_name, record_type)
+            resolved.add_done_callback(self.resolve_callback)
+            resolved.domain_name = domain_name
+            records.append(resolved)
 
         await asyncio.wait(records)
 
         return records
 
-    def error_checker_callback(self,future):
+    def resolve_callback(self, future):
         if future.exception():
             exc = future.exception()
             errno = exc.args[0]
@@ -54,7 +55,10 @@ class DNSScanTask(object):
                 print("#{}, {}".format(errno, exc.args[1])) 
                 #self.request_queue.put_nowait(future.domain_name)
         else:
-            result = list(map(lambda x: (future.domain_name, x.host), future._result))
+            result = defaultdict(list)
+            for res in future._result:
+                result[future.domain_name].append(res.host)
+
             print(result)
 
     def start_dnscan(self):
@@ -67,10 +71,10 @@ class DNSScanTask(object):
 
         for task in tasks:
             for domain_name in task.result():
-                name = self.resolver.query(domain_name, 'A')
-                name.add_done_callback(self.error_checker_callback)
-                name.domain_name = domain_name
-            futures.append(name)
+                resolved = self.resolver.query(domain_name, 'A')
+                # resolved.add_done_callback(self.resolve_callback)
+                resolved.domain_name = domain_name
+            futures.append(resolved)
 
         result = loop.run_until_complete(asyncio.wait(futures))
 
