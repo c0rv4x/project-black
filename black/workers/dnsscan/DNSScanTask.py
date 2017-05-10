@@ -3,18 +3,40 @@ import aiodns
 import time
 import itertools
 from collections import defaultdict
-# from pycares.errno import errorcode
+
+from black.workers.common.async_task import AsyncTask
+from .save import save
 
 domain_to_brute = 'anatoly.tech'
 
 
-class DNSScanTask(object):
-    def __init__(self, target):
-        self.target = target
+class DNSScanTask(AsyncTask):
+    """ Major class for working with dnsscan """
+
+    def __init__(self, task_id, target, params, project_uuid):
+        print(1)
+
+        AsyncTask.__init__(self, task_id, 'dnsscan', target, params, project_uuid)
+        # program_params = params['program']
+        # self.params_object = program_params
+
         self.request_queue = asyncio.Queue()
         self.resolver = aiodns.DNSResolver()
 
-        self.pool_size = 10
+        self.pool_size = 10        
+
+    def send_notification(self, command):
+        """ Sends 'command' notification to the current process. """
+        # if command == 'pause':
+        #     self.proc.send_signal(signal.SIGSTOP.value)  # SIGSTOP
+        # elif command == 'stop':
+        #     self.proc.terminate()  # SIGTERM
+        # elif command == 'unpause':
+        #     self.proc.send_signal(signal.SIGCONT.value)  # SIGCONT
+
+    async def wait_for_exit(self):
+        """ Check if the process exited. If so,
+        save stdout, stderr, exit_code and update the status. """
 
     async def resolve(self, domain, record_type):
         records = list()
@@ -31,7 +53,7 @@ class DNSScanTask(object):
         while not self.request_queue.empty():
             dns_record = self.request_queue.get_nowait()
 
-            if dns_record['value'] != None:
+            if dns_record['value'] is not None:
                 domain_name = dns_record['value']
             else:
                 break
@@ -47,6 +69,7 @@ class DNSScanTask(object):
         return records
 
     def resolve_callback(self, future):
+        print("resolve callback")
         if future.exception():
             exc = future.exception()
             errno = exc.args[0]
@@ -58,43 +81,45 @@ class DNSScanTask(object):
             result = defaultdict(list)
             for res in future._result:
                 result[future.domain_name].append(res.host)
-
+                # save(future.domain_name, res.host, self.task_id, self.project_uuid)
             print(result)
 
-    def start_dnscan(self):
+    async def start(self):
         loop = asyncio.get_event_loop()
-        tasks = list()
-        tasks.append(loop.create_task(self.resolve(self.target, 'NS')))
-        tasks.append(loop.create_task(self.resolve(self.target, 'MX')))
-        result = loop.run_until_complete(asyncio.wait(tasks))
-        futures = list()
+        # tasks = list()
+        # tasks.append(loop.create_task(self.resolve(self.target, 'NS')))
+        # tasks.append(loop.create_task(self.resolve(self.target, 'MX')))
+        # # result = loop.run_until_complete(asyncio.wait(tasks))
+        # result = await asyncio.wait(tasks)
 
-        for task in tasks:
-            for domain_name in task.result():
-                resolved = self.resolver.query(domain_name, 'A')
-                # resolved.add_done_callback(self.resolve_callback)
-                resolved.domain_name = domain_name
-            futures.append(resolved)
+        # futures = list()
 
-        result = loop.run_until_complete(asyncio.wait(futures))
+        # for task in tasks:
+        #     print(task)
+        #     for domain_name in task.result():
+        #         resolved = self.resolver.query(domain_name, 'A')
+        #         resolved.add_done_callback(self.resolve_callback)
+        #         resolved.domain_name = domain_name
+        #     futures.append(resolved)
+
+        # # result = loop.run_until_complete(asyncio.wait(futures))
+        # result = await asyncio.wait(futures)
 
         with open('test-dict.txt', 'r') as wordlist_file:
             subdomains = map(lambda x: x.strip() + '.' + self.target, wordlist_file.readlines())
 
         iterator = [iter(subdomains)] * self.pool_size
         splitted_subdomains = itertools.zip_longest(*iterator)
-        #i = 0
-        #j = len(list(splitted_subdomains))
-        #print(list(splitted_subdomains)[-1])
+
         for part in list(splitted_subdomains):
-            #i = i + 1
-            #print("{}/{}".format(i,j))
             for item in part:
-                loop.run_until_complete(self.request_queue.put({
+                # loop.run_until_complete(self.request_queue.put({
+                await self.request_queue.put({
                     'type': 'A',
                     'value': item
-                }))
-            result = loop.run_until_complete(self.resolve_item_from_queue())
+                })
+            # result = loop.run_until_complete(self.resolve_item_from_queue())
+            result = await self.resolve_item_from_queue()
 
         '''
         futures = list()
@@ -123,7 +148,7 @@ class DNSScanTask(object):
         '''
 
 
-time_start = time.time()
-scaner=DNSScanTask(domain_to_brute)
-scaner.start_dnscan()
-print(time.time() - time_start)
+# time_start = time.time()
+# scaner = DNSScanTask(domain_to_brute)
+# scaner.start_dnscan()
+# print(time.time() - time_start)

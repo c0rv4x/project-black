@@ -74,6 +74,7 @@ class AsyncWorker(Worker):
 
             # Spawn the process
             proc = self.task_class(task_id, target, params, project_uuid)
+
             await proc.initialize()
             await proc.start()
 
