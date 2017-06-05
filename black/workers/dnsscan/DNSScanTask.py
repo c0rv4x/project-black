@@ -15,8 +15,6 @@ class DNSScanTask(AsyncTask):
     """ Major class for working with dnsscan """
 
     def __init__(self, task_id, target, params, project_uuid):
-        print(1)
-
         AsyncTask.__init__(self, task_id, 'dnsscan', target, params, project_uuid)
         # program_params = params['program']
         # self.params_object = program_params
@@ -73,7 +71,6 @@ class DNSScanTask(AsyncTask):
         return records
 
     def resolve_callback(self, future):
-        print("resolve callback")
         if future.exception():
             exc = future.exception()
             errno = exc.args[0]
@@ -82,9 +79,7 @@ class DNSScanTask(AsyncTask):
                 print("#{}, {}".format(errno, exc.args[1])) 
                 #self.request_queue.put_nowait(future.domain_name)
         else:
-            result = defaultdict(list)
             for res in future._result:
-                result[future.domain_name].append(res.host)
                 result = save(future.domain_name, res.host, self.task_id, self.project_uuid)
 
                 self.new_ips_ids.append(result["ip_id"])
