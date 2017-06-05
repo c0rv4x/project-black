@@ -25,10 +25,8 @@ class HeadButtonsTracked extends React.Component {
 		console.log(this.props);
 
 		for (var host of this.props.hosts) {
-
-			console.log(host);
 			this.tasksEmitter.requestCreateTask('dnsscan', 
-												host.hostname,
+												[host.hostname],
 												{'program': options}, 
 												this.props.project.project_uuid)				
 		}
