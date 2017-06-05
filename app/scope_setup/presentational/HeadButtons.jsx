@@ -10,14 +10,10 @@ class HeadButtons extends React.Component {
 
 	render() {
 		return (
-			<div>
-				<Button onClick={() => this.props.resolveScopes(null, this.props.project.project_uuid)}
-						bsStyle="primary">
-					Resolve Scopes
-				</Button>
-				<br/>
-				<br/>
-			</div>
+			<Button onClick={() => this.props.resolveScopes(null, this.props.project.project_uuid)}
+					bsStyle="primary">
+				Resolve Scopes
+			</Button>
 		)
 	}
 }

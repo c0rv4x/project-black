@@ -132,6 +132,20 @@ class TaskManager(object):
         thread = threading.Thread(target=self.channel.start_consuming)
         thread.start()
 
+    def check_finished_task_necessities(self, task):
+        """ After the task finishes, we need to check, whether we should push 
+        some new changes to the front end """
+        if task.task_type == "dirsearch": 
+            self.data_updated_queue.put("file")
+        elif task.task_type == "masscan" or task.task_type == "nmap":
+            self.data_updated_queue.put("scan")
+        elif task.task_type == "dnsscan":
+            if self.text:
+                print(123123123)
+                print(json.loads(self.text))
+
+                self.data_updated_queue.put("host")
+
     def parse_new_status(self, channel, method, properties, message):
         """ Parse the message from the queue, which contains task status,
         updates the relevant ShadowTask and, we notify the upper module that
@@ -150,8 +164,7 @@ class TaskManager(object):
                     self.finished_tasks.append(task)
 
                     # TODO: make more granular update request
-                    self.data_updated_queue.put("scan")
-                    self.data_updated_queue.put("file")
+                    self.check_finished_task_necessities(task)
 
                 break
 
