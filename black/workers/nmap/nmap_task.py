@@ -17,7 +17,7 @@ class NmapTask(AsyncTask):
     def __init__(self, task_id, target, params, project_uuid):
         AsyncTask.__init__(self, task_id, 'nmap', target, params, project_uuid)
         self.proc = None
-        self.status = "New"
+        self.set_status("New", 0, "")
 
         self.exit_code = None
         self.stdout = []
