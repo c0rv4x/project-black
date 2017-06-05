@@ -1,6 +1,7 @@
 import asyncio
 import aiodns
 import time
+import json
 import itertools
 from collections import defaultdict
 
@@ -23,7 +24,10 @@ class DNSScanTask(AsyncTask):
         self.request_queue = asyncio.Queue()
         self.resolver = aiodns.DNSResolver()
 
-        self.pool_size = 10        
+        self.pool_size = 10
+
+        self.new_ips_ids = list()
+        self.new_hosts_ids = list()
 
     def send_notification(self, command):
         """ Sends 'command' notification to the current process. """
@@ -81,11 +85,16 @@ class DNSScanTask(AsyncTask):
             result = defaultdict(list)
             for res in future._result:
                 result[future.domain_name].append(res.host)
-                # save(future.domain_name, res.host, self.task_id, self.project_uuid)
+                result = save(future.domain_name, res.host, self.task_id, self.project_uuid)
+
+                self.new_ips_ids.append(result["ip_id"])
+                self.new_hosts_ids.append(result["host_id"])
+
             print(result)
 
     async def start(self):
         loop = asyncio.get_event_loop()
+        self.set_status("Working")
         # tasks = list()
         # tasks.append(loop.create_task(self.resolve(self.target, 'NS')))
         # tasks.append(loop.create_task(self.resolve(self.target, 'MX')))
@@ -120,6 +129,11 @@ class DNSScanTask(AsyncTask):
                 })
             # result = loop.run_until_complete(self.resolve_item_from_queue())
             result = await self.resolve_item_from_queue()
+
+        self.set_status("Finished", progress=100, text=json.dumps({
+            "new_ips_ids": self.new_ips_ids,
+            "new_hosts_ids": self.new_hosts_ids
+        }))
 
         '''
         futures = list()

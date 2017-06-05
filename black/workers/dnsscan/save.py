@@ -1,4 +1,4 @@
-from uuid import uuid4
+import uuid
 
 from black.db import sessions, Host, IP_addr
 
@@ -42,7 +42,7 @@ def add_hostname(session, hostname, task_id, project_uuid):
     if len(filtered) == 0:
         host_id = str(uuid.uuid4())
 
-        db_object = IP_addr(
+        db_object = Host(
             host_id=host_id,
             hostname=hostname,
             ip_addresses=[],
@@ -59,6 +59,15 @@ def add_hostname(session, hostname, task_id, project_uuid):
 
     return host_id  
 
+def double_append(session, host_id, ip_id):
+    ip_from_db = session.query(IP_addr).filter_by(ip_id=ip_id).first()
+    host_from_db = session.query(Host).filter_by(host_id=host_id).first()
+
+    ip_from_db.hostnames.append(host_from_db)
+    host_from_db.ip_addresses.append(ip_from_db)
+
+    session.commit()
+
 
 def save(hostname, ip_address, task_id, project_uuid):
     session = sessions.get_new_session()
@@ -66,21 +75,10 @@ def save(hostname, ip_address, task_id, project_uuid):
     ip_id = add_ip_address(session, ip_address, task_id, project_uuid)
     host_id = add_hostname(session, hostname, task_id, project_uuid)
 
-    print("Ok", ip_id, host_id)
+    double_append(session, host_id, ip_id)
+    sessions.destroy_session(session)
 
-    # session = sessions.get_new_session()
-    # db_object = HostDB(host_id=str(uuid4()),
-    #                    hostname=self.get_hostname(),
-    #                    comment=self.get_comment(),
-    #                    project_uuid=self.get_project_uuid())
-    # session.add(db_object)
-    # session.commit()
-    # sessions.destroy_session(session)
-
-    # host_id = str(uuid4())
-    # hostname = hostname
-    # ip_addresses = relationship("IP_addr", secondary=association_table, back_populates="hostnames")
-    # comment = Column(String)
-    # task_id = Column(String, ForeignKey('tasks.task_id'))
-    # project_uuid = Column(String, ForeignKey('projects.project_uuid', ondelete='CASCADE'))
-    # date_added = Column(DateTime, default=datetime.datetime.utcnow)
+    return {
+        "host_id": host_id,
+        "ip_id": ip_id
+    }
