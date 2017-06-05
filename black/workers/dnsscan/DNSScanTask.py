@@ -110,7 +110,8 @@ class DNSScanTask(AsyncTask):
         # result = await asyncio.wait(futures)
 
         with open('test-dict.txt', 'r') as wordlist_file:
-            subdomains = map(lambda x: x.strip() + '.' + self.target[0], wordlist_file.readlines())
+            for target in self.target:
+                subdomains = map(lambda x: x.strip() + '.' + target, wordlist_file.readlines())
 
         iterator = [iter(subdomains)] * self.pool_size
         splitted_subdomains = itertools.zip_longest(*iterator)
