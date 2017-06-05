@@ -117,19 +117,13 @@ class TitleButtonsWithHandlers extends React.Component {
 									]
 						  		},
 						  		{
-						  			'name': 'Nmap Banner Edition',
+						  			'name': 'Nmap Only Open Ports',
 						  			'handler': this.runNmapOnlyOpen,
 									"preformed_options": [
 										{
-											"name": "All Ports",
+											"name": "Banner",
 											"options": [
-												"-p1-65535"
-											]
-										},
-										{
-											"name": "Top 1000 ports",
-											"options": [
-												"-p80,443"
+												"-sV"
 											]
 										}
 									]
