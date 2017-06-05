@@ -140,11 +140,7 @@ class TaskManager(object):
         elif task.task_type == "masscan" or task.task_type == "nmap":
             self.data_updated_queue.put("scan")
         elif task.task_type == "dnsscan":
-            if self.text:
-                print(123123123)
-                print(json.loads(self.text))
-
-                self.data_updated_queue.put("host")
+            self.data_updated_queue.put("scope")
 
     def parse_new_status(self, channel, method, properties, message):
         """ Parse the message from the queue, which contains task status,

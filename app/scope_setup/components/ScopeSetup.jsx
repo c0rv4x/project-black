@@ -26,7 +26,8 @@ class ScopeSetup extends React.Component {
 		return (
 			<div>
 				<h4>Here you can add, delete, modify and work with initial scope of the project.</h4>
-				<HeadButtonsTracked project={this.props.project} />
+				<HeadButtonsTracked project={this.props.project}
+									hosts={this.props.scopes.hosts} />
 				<ScopeAdderTracked project={this.props.project} />
 				<hr />
 

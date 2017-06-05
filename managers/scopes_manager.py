@@ -22,12 +22,16 @@ class ScopeManager(object):
         self.hosts = []
         self.update_from_db()
 
-    def get_ips(self):
+    def get_ips(self, force_update=False):
         """ Returns all existing ips objects, serialized """
+        if force_update:
+            self.update_from_db()
         return list(map(lambda x: x.toJSON(), self.ips))
 
-    def get_hosts(self):
+    def get_hosts(self, force_update=False):
         """ Returns all existing hosts objects, serialized """
+        if force_update:
+            self.update_from_db()        
         return list(map(lambda x: x.toJSON(), self.hosts))
 
     def get_scopes(self):

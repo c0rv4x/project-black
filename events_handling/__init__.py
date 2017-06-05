@@ -45,6 +45,9 @@ class Handlers(object):
                     self.data_updated_queue.task_done()
                 if updated == "file":
                     self.fileHandlers.send_files_back()
-                    self.data_updated_queue.task_done()                    
+                    self.data_updated_queue.task_done() 
+                if updated == "scope":
+                    self.scopeHandlers.send_scopes_back()
+                    self.data_updated_queue.task_done()                                        
             except queue.Empty as e:
                 continue

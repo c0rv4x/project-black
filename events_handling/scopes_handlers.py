@@ -2,16 +2,16 @@ from netaddr import IPNetwork
 from flask_socketio import emit
 
 
+
 class ScopeHandlers(object):
     def __init__(self, socketio, scope_manager):
+        self.socketio = socketio
+        self.scope_manager = scope_manager
+
         @socketio.on('scopes:all:get')
         def handle_custom_event():
             """ When received this message, send back all the scopes """
-            socketio.emit('scopes:all:get:back', {
-                'status' : 'success',
-                'ips' : scope_manager.get_ips(),
-                'hosts': scope_manager.get_hosts()
-            }, broadcast=True)
+            self.send_scopes_back()
 
 
         @socketio.on('scopes:create')
@@ -29,14 +29,14 @@ class ScopeHandlers(object):
                 added = False
                 # Create new scope (and register it)
                 if scope['type'] == 'hostname':
-                    create_result = scope_manager.create_scope(None, scope['target'], project_uuid)
+                    create_result = self.scope_manager.create_scope(None, scope['target'], project_uuid)
                 elif scope['type'] == 'ip_address':
-                    create_result = scope_manager.create_scope(scope['target'], None, project_uuid)
+                    create_result = self.scope_manager.create_scope(scope['target'], None, project_uuid)
                 elif scope['type'] == 'network':
                     ips = IPNetwork(scope['target'])
 
                     for ip_address in ips:
-                        create_result = scope_manager.create_scope(str(ip_address), None, project_uuid)
+                        create_result = self.scope_manager.create_scope(str(ip_address), None, project_uuid)
 
                         if create_result["status"] == "success":
                             new_scope = create_result["new_scope"]
@@ -64,7 +64,7 @@ class ScopeHandlers(object):
                         error_text += new_err
 
             if error_found:
-                socketio.emit('scopes:create', {
+                self.socketio.emit('scopes:create', {
                     'status': 'error',
                     'project_uuid': project_uuid,
                     'text': error_text
@@ -72,7 +72,7 @@ class ScopeHandlers(object):
 
             else:
                 # Send the scope back
-                socketio.emit('scopes:create', {
+                self.socketio.emit('scopes:create', {
                     'status': 'success',
                     'project_uuid': project_uuid,
                     'new_scopes': new_scopes
@@ -85,23 +85,23 @@ class ScopeHandlers(object):
             scope_id = msg['scope_id']
 
             # Delete new scope (and register it)
-            delete_result = scope_manager.delete_scope(scope_id=scope_id)
+            delete_result = self.scope_manager.delete_scope(scope_id=scope_id)
 
             if delete_result["status"] == "success":
                 # Send the success result
-                socketio.emit('scopes:delete', {
+                self.socketio.emit('scopes:delete', {
                     'status': 'success',
                     '_id': scope_id
                 }, broadcast=True)
 
-                socketio.emit('scopes:all:get:back', {
+                self.socketio.emit('scopes:all:get:back', {
                     'status' : 'success',
-                    'ips' : scope_manager.get_ips(),
-                    'hosts': scope_manager.get_hosts()
+                    'ips' : self.scope_manager.get_ips(),
+                    'hosts': self.scope_manager.get_hosts()
                 }, broadcast=True)
             else:
                 # Error occured
-                socketio.emit('scopes:delete', {
+                self.socketio.emit('scopes:delete', {
                     'status': 'error',
                     'text': delete_result["text"]
                 }, broadcast=True)
@@ -112,11 +112,11 @@ class ScopeHandlers(object):
             scopes_ids = msg['scopes_ids']
             project_uuid = msg['project_uuid']
 
-            scope_manager.resolve_scopes(scopes_ids, project_uuid)
-            socketio.emit('scopes:all:get:back', {
+            self.scope_manager.resolve_scopes(scopes_ids, project_uuid)
+            self.socketio.emit('scopes:all:get:back', {
                 'status' : 'success',
-                'ips' : scope_manager.get_ips(),
-                'hosts': scope_manager.get_hosts()
+                'ips' : self.scope_manager.get_ips(),
+                'hosts': self.scope_manager.get_hosts()
             }, broadcast=True)
 
         @socketio.on('scopes:update')
@@ -125,13 +125,20 @@ class ScopeHandlers(object):
             scope_id = msg['scope_id']
             comment = msg['comment']
 
-            result = scope_manager.update_scope(scope_id=scope_id, comment=comment)
+            result = self.scope_manager.update_scope(scope_id=scope_id, comment=comment)
             if result["status"] == "success":
                 updated_scope = result["updated_scope"]
 
-                socketio.emit('scopes:update:back', {
+                self.socketio.emit('scopes:update:back', {
                     "status": "success",
                     "updated_scope": updated_scope
                 }, broadcast=True)
             else:
-                socketio.emit('scopes:update:back', result, broadcast=True)
+                self.socketio.emit('scopes:update:back', result, broadcast=True)
+
+    def send_scopes_back(self):
+        self.socketio.emit('scopes:all:get:back', {
+            'status' : 'success',
+            'ips' : self.scope_manager.get_ips(force_update=True),
+            'hosts': self.scope_manager.get_hosts()
+        }, broadcast=True)
