@@ -3,7 +3,7 @@ import ScopeComment from '../../ips_list/presentational/scope/ScopeComment.jsx'
 
 import PortsTabs from '../presentational/PortsTabs.jsx'
 import TasksButtonsTracked from './TasksButtonsTracked.jsx'
-import Tasks from '../../ips_list/presentational/tasks/Tasks.jsx'
+import Tasks from '../../common/tasks/Tasks.jsx'
 
 
 class MainAccumulator extends React.Component {

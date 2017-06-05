@@ -31,7 +31,10 @@ function mapStateToProps(state, ownProps){
         	'hosts': _.filter(state.scopes.hosts, (x) => {
 	        	return x.project_uuid == project['project_uuid']
 	        }),	        
-        }
+        },
+        tasks: _.filter(state.tasks.active, (x) => {
+        	return x.project_uuid == project['project_uuid']
+        })
     }
 }
 

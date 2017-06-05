@@ -5,6 +5,7 @@ import ScopeAdderTracked from '../../ips_list/components/ScopeAdderTracked.jsx'
 import HeadButtonsTracked from './HeadButtonsTracked.jsx'
 import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
 
+import Tasks from '../../common/tasks/Tasks.jsx'
 import IPTable from '../presentational/IPTable.jsx'
 import HostTable from '../presentational/HostTable.jsx'
 
@@ -28,6 +29,8 @@ class ScopeSetup extends React.Component {
 				<h4>Here you can add, delete, modify and work with initial scope of the project.</h4>
 				<HeadButtonsTracked project={this.props.project}
 									hosts={this.props.scopes.hosts} />
+				<Tasks tasks={this.props.tasks} />
+
 				<ScopeAdderTracked project={this.props.project} />
 				<hr />
 

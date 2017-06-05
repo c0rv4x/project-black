@@ -4,7 +4,7 @@ import React from 'react'
 import TitleButtonsWithHandlers from './TitleButtonsWithHandlers.jsx'
 import ProjectCommentTracked from './ProjectCommentTracked.jsx'
 import ScopeTableTracked from './ScopeTableTracked.jsx'
-import Tasks from '../presentational/tasks/Tasks.jsx'
+import Tasks from '../../common/tasks/Tasks.jsx'
 
 
 class ProjectDetails extends React.Component {
