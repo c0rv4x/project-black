@@ -51,7 +51,6 @@ class AsyncWorker(Worker):
 
     def schedule_task(self, message):
         """ Wrapper of execute_task that puts the task to the event loop """
-        print(message)
         loop = asyncio.get_event_loop()
         loop.create_task(self.execute_task(message))
 
@@ -74,7 +73,6 @@ class AsyncWorker(Worker):
 
             # Spawn the process
             proc = self.task_class(task_id, target, params, project_uuid)
-
             await proc.initialize()
             await proc.start()
 
