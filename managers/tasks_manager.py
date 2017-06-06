@@ -28,34 +28,12 @@ class ShadowTask(object):
         self.stdout = stdout
         self.stderr = stderr
 
-        self.channel = None
-
-        # connect to the RabbitMQ broker
-        credentials = pika.PlainCredentials('guest', 'guest')
-        parameters = pika.ConnectionParameters('localhost', credentials=credentials)
-        connection = pika.BlockingConnection(parameters)
-
-        # Open a communications channel
-        self.channel = connection.channel()
-        self.channel.exchange_declare(
-            exchange="tasks.exchange",
-            exchange_type="direct",
-            durable=True)
-        self.channel.queue_declare(queue=self.task_type + "_tasks", durable=True)
-        self.channel.queue_bind(
-            queue=self.task_type + "_tasks",
-            exchange="tasks.exchange",
-            routing_key=self.task_type + "_tasks")
-
-        self.channel.queue_declare(queue=self.task_type + "_notifications", durable=True)
-        self.channel.queue_bind(
-            queue=self.task_type + "_notifications",
-            exchange="tasks.exchange",
-            routing_key=self.task_type + "_notifications")
+        self.channel = channel
 
 
     def send_start_task(self):
         """ Put a message to the queue, which says "start my task, please """
+        print("[-] Sending start task # {}".format(self.task_id))
         self.channel.basic_publish(exchange='',
                                    routing_key=self.task_type + "_tasks",
                                    body=json.dumps({
@@ -64,6 +42,7 @@ class ShadowTask(object):
                                        'params': self.params,
                                        'project_uuid': self.project_uuid
                                    }))
+        print("[+] Finished sending start task # {}".format(self.task_id))
 
 
     def set_status(self, new_status, progress, text, new_stdout, new_stderr):
@@ -103,10 +82,6 @@ class TaskManager(object):
         self.active_tasks = list()
         self.finished_tasks = list()
 
-        self.update_from_db()
-
-        self.channel = None
-
         # connect to the RabbitMQ broker
         credentials = pika.PlainCredentials('guest', 'guest')
         parameters = pika.ConnectionParameters('localhost', credentials=credentials)
@@ -129,8 +104,31 @@ class TaskManager(object):
             consumer_callback=self.parse_new_status,
             queue="tasks_statuses")
 
+        self.spawn_all_channels_with_queues()
+
+        self.update_from_db()
+
+
         thread = threading.Thread(target=self.channel.start_consuming)
         thread.start()
+
+    def spawn_all_channels_with_queues(self):
+        for task_type in ['nmap','dnsscan','dirseach', 'dnsscan']:
+            self.channel.exchange_declare(
+                exchange="tasks.exchange",
+                exchange_type="direct",
+                durable=True)
+            self.channel.queue_declare(queue=task_type + "_tasks", durable=True)
+            self.channel.queue_bind(
+                queue=task_type + "_tasks",
+                exchange="tasks.exchange",
+                routing_key=task_type + "_tasks")
+
+            self.channel.queue_declare(queue=task_type + "_notifications", durable=True)
+            self.channel.queue_bind(
+                queue=task_type + "_notifications",
+                exchange="tasks.exchange",
+                routing_key=task_type + "_notifications")
 
     def check_finished_task_necessities(self, task):
         """ After the task finishes, we need to check, whether we should push 
@@ -181,7 +179,8 @@ class TaskManager(object):
                                     text=x.text,
                                     date_added=x.date_added,
                                     stdout=x.stdout,
-                                    stderr=x.stderr),
+                                    stderr=x.stderr,
+                                    channel=self.channel),
                          tasks_from_db))
         sessions.destroy_session(session)
 
@@ -212,7 +211,8 @@ class TaskManager(object):
                           task_type=task_type,
                           target=target,
                           params=params,
-                          project_uuid=project_uuid)
+                          project_uuid=project_uuid,
+                          channel=self.channel)
         task.send_start_task()
         self.active_tasks.append(task)
 
