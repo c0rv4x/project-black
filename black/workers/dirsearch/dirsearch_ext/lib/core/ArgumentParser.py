@@ -26,8 +26,8 @@ from ...thirdparty.oset import oset
 
 class ArgumentParser(object):
     def __init__(self, url, wordlist="./black/workers/dirsearch/dirsearch_ext/db/dicc.txt", extensions=None, http_proxy=None, headers=None, user_agent=None, 
-        user_random_agents=None, cookie=None, threads_count=10, exclude_status_codes=None,
-        force_extensions=False, delay=0, timeout=30, ip_address=None, recursive=False, redirect=False):
+        user_random_agents=None, cookie=None, threads_count=10, exclude_status_codes=None, path="/",
+        force_extensions=False, delay=0, timeout=2, ip_address=None, recursive=False, redirect=False):
 
         self.script_path = None
 
@@ -90,7 +90,7 @@ class ArgumentParser(object):
 
         # Well, here we have constants that were used in the original dirsearch,
         # BUT i am too lazy to remove them totally. Moreover, we will probably need them in future
-        self.max_retries = 5
+        self.max_retries = 3
 
         self.json_output_file = "./output"
 
