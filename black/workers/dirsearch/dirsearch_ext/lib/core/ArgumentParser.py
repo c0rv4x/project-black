@@ -97,7 +97,7 @@ class ArgumentParser(object):
         self.exclude_subdirs = None
 
         self.redirect = redirect
-        self.request_by_name = False
+        self.request_by_name = True
 
         self.lowercase = False
 
