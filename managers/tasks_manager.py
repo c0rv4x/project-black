@@ -10,7 +10,7 @@ from black.black.db import sessions, Task
 
 class ShadowTask(object):
     """ A shadow of the real task """
-    def __init__(self, task_id, task_type, target, params, project_uuid, status=None, progress=None, text=None, date_added=datetime.datetime.utcnow(), stdout="", stderr=""):
+    def __init__(self, task_id, task_type, target, params, project_uuid, status="New", progress=None, text=None, date_added=datetime.datetime.utcnow(), stdout="", stderr=""):
         self.task_type = task_type
         self.target = target
         self.params = params
