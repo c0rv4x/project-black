@@ -11,8 +11,37 @@ class Tasks extends React.Component {
 	}
 
 	render() {
-		const tasks = _.map(this.props.tasks, (x) => {
-			return <EachTask key={x.task_id} task={x}/>
+		var known_task_types = ['dnsscan', 'nmap', 'dirbuster', 'masscan'];
+		var tasks_object = {};
+
+		for (var task_type of known_task_types) {
+			tasks_object[task_type] = {
+				"status": "None",
+				// "progress": 0,
+				"progress_sum": 0,
+				"amount": 0
+			};
+		}
+
+		for (var each_task of this.props.tasks) {
+			const task_type = each_task["task_type"];
+			const status = each_task["status"];
+			const progress = each_task["progress"];
+
+			if (tasks_object[task_type]['status'] == "None") {
+				tasks_object[task_type]['status'] = status;
+			}
+			else if (status != "Working") {
+				tasks_object[task_type]['status'] = status;
+			}
+
+			tasks_object[task_type]['progress_sum'] += progress;
+			tasks_object[task_type]['amount'] += 1;
+		}
+
+		var tasks = [];
+		_.forOwn(tasks_object, (value, key) => {
+			tasks.push(<EachTask key={key} task={value} type={key} />);
 		});
 
 		if (_.get(this.props.tasks, 'length', 0)) {
