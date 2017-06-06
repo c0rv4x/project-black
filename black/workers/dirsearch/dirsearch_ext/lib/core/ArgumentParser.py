@@ -79,6 +79,7 @@ class ArgumentParser(object):
                 self.exclude_status_codes = []
         else:
             self.exclude_status_codes = []
+        self.path = path
         self.wordlist = wordlist
         self.force_extensions = force_extensions
 

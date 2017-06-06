@@ -23,6 +23,7 @@ import sys
 import gc
 import urllib
 from threading import Lock
+from urllib.parse import urljoin
 
 from ...lib.connection import Requester, RequestException
 from ...lib.core import Dictionary, Fuzzer, ReportManager, Saver
@@ -52,7 +53,8 @@ class Controller(object):
         self.exclude_subdirs = (arguments.exclude_subdirs if arguments.exclude_subdirs is not None else [])
 
         self.dictionary = Dictionary(self.arguments.wordlist, self.arguments.extensions,
-                                     self.arguments.lowercase, self.arguments.force_extensions)
+                                     self.arguments.lowercase, self.arguments.force_extensions,
+                                     self.arguments.path)
         self.errorLog = None
         self.errorLogPath = None
         self.errorLogLock = Lock()
