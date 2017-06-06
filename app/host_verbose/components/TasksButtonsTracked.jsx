@@ -33,17 +33,31 @@ class TasksButtonsTracked extends React.Component {
 							{
 								"name": "PHP",
 								"options": {
-									"extensions": "php,txt,conf,log,bak"
+									"extensions": "php,php5,phps,php.bak",
+									"path": "/"
 								}
 							},
 							{
 								"name": "ASP",
 								"options": {
-									"extensions": "asp"
+									"extensions": "asp",
+									"path": "/"
+								}
+							},
+							{
+								"name": "Personal favourites",
+								"options": {
+									"extensions": "php,asp,txt,conf,log,bak",
+									"path": "/"
 								}
 							}
 						],
 						"available_options": [
+							{
+								"name": "path",
+								"type": "text",
+								"default_value": "/"
+							},						
 							{
 								"name": "extensions",
 								"type": "text",
