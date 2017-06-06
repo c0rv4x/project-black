@@ -10,7 +10,7 @@ class FilesEventsSubsriber {
     /* Singleton class for managing events subscription for the projects */
     constructor(store) {
         this.store = store;
-        this.connector = new Connector();
+        this.connector = new Connector('files');
 
         this.connector.after_connected((x) => {
             this.emitter = new FilesSocketioEventsEmitter();

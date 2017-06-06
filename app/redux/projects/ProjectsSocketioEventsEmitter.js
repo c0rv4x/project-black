@@ -4,7 +4,7 @@ import Connector from '../SocketConnector.jsx';
 class ProjectsSocketioEventsEmitter {
 	/* Singleton class for managing events subscription for the projects */
 	constructor() {
-        this.connector = new Connector();
+        this.connector = new Connector('projects');
 	}
 
 	requestCreateProject(project_name) {

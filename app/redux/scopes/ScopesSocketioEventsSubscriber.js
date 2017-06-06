@@ -13,7 +13,7 @@ class ScopesSocketioEventsSubscriber {
 	/* Singleton class for managing events subscription for the scopes */
 	constructor(store) {
         this.store = store;
-        this.connector = new Connector();
+        this.connector = new Connector('scopes');
 
         this.connector.after_connected((x) => {
         	this.emitter = new ScopesSocketioEventsEmitter();

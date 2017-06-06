@@ -14,7 +14,7 @@ class TasksSocketioEventsSubsriber {
 	/* Singleton class for managing events subscription for the tasks */
 	constructor(store) {
         this.store = store;
-        this.connector = new Connector();
+        this.connector = new Connector('tasks');
 
         this.connector.after_connected((x) => {
         	this.emitter = new TasksSocketioEventsEmitter();

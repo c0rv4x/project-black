@@ -14,7 +14,7 @@ class ScansEventsSubsriber {
             instance = this;
 
             this.store = store;
-            this.connector = new Connector();
+            this.connector = new Connector('scans');
 
             this.connector.after_connected((x) => {
             	this.emitter = new ScansSocketioEventsEmitter();

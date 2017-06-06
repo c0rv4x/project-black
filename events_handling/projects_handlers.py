@@ -3,16 +3,16 @@ from flask_socketio import emit
 
 class ProjectHandlers(object):
     def __init__(self, socketio, project_manager):
-        @socketio.on('projects:all:get')
+        @socketio.on('projects:all:get', namespace='/projects')
         def handle_custom_event():
             """ When received this message, send back all the projects """
             socketio.emit('projects:all:get:back', {
                 'status': 'success',
                 'projects': project_manager.get_projects()
-            }, broadcast=True)
+            }, broadcast=True, namespace='/projects')
 
 
-        @socketio.on('projects:create')
+        @socketio.on('projects:create', namespace='/projects')
         def handle_project_creation(msg):
             """ When received this message, create a new projects """
             project_name = msg['project_name']
@@ -25,16 +25,16 @@ class ProjectHandlers(object):
                 socketio.emit('projects:create', {
                     'status': 'success',
                     'new_project': addition_result["new_project"]
-                }, broadcast=True)
+                }, broadcast=True, namespace='/projects')
             else:
                 # Error occured
                 socketio.emit('projects:create', {
                     'status': 'error',
                     'text': addition_result["text"]
-                }, broadcast=True)
+                }, broadcast=True, namespace='/projects')
 
 
-        @socketio.on('projects:delete:project_uuid')
+        @socketio.on('projects:delete:project_uuid', namespace='/projects')
         def handle_project_creation(msg):
             """ When received this message, delete the project """
             project_uuid = msg['project_uuid']
@@ -47,17 +47,17 @@ class ProjectHandlers(object):
                 socketio.emit('projects:delete', {
                     'status': 'success',
                     'project_uuid': project_uuid
-                }, broadcast=True)
+                }, broadcast=True, namespace='/projects')
 
             else:
                 # Error occured
                 socketio.emit('projects:delete', {
                     'status': 'error',
                     'text': delete_result["text"]
-                }, broadcast=True)
+                }, broadcast=True, namespace='/projects')
                 
 
-        @socketio.on('projects:update')
+        @socketio.on('projects:update', namespace='/projects')
         def handle_project_updating(msg):
             """ When received this message, update the project """
             project_uuid = msg['project_uuid']
@@ -76,11 +76,11 @@ class ProjectHandlers(object):
                         'project_name': project_name,
                         'comment': comment,
                     }
-                }, broadcast=True)
+                }, broadcast=True, namespace='/projects')
 
             else:
                 # Error occured
                 socketio.emit('projects:update', {
                     'status': 'error',
                     'text': updating_status["text"]
-                }, broadcast=True)
+                }, broadcast=True, namespace='/projects')

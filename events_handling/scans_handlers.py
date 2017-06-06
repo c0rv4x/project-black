@@ -6,7 +6,7 @@ class ScanHandlers(object):
         self.socketio = socketio
         self.scan_manager = scan_manager
 
-        @socketio.on('scans:all:get')
+        @socketio.on('scans:all:get', namespace='/scans')
         def handle_custom_event():
             """ When received this message, send back all the scans """
             self.send_scans_back()
@@ -16,4 +16,4 @@ class ScanHandlers(object):
         self.socketio.emit('scans:all:get:back', {
             'status': 'success',
             'scans': self.scan_manager.get_scans()
-        }, broadcast=True)
+        }, broadcast=True, namespace='/scans')

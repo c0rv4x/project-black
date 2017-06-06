@@ -58,24 +58,20 @@ class TitleButtonsWithHandlers extends React.Component {
 
 			let flags = "-p" + ports.join();
 
-			setTimeout(() => {
-				this.tasksEmitter.requestCreateTask('nmap', 
-													[target], 
-													{
-														'program': [flags, '-sV'],
-														'saver': {
-															'scans_ids': _.map(filtered_scans, (x) => {
-																return {
-																	'scan_id': x.scan_id,
-																	'port_number': x.port_number
-																}
-															})
-														}
-													}, 
-													this.props.project.project_uuid)
-
-			}, startTime);
-			startTime += 300;
+			this.tasksEmitter.requestCreateTask('nmap', 
+												[target], 
+												{
+													'program': [flags, '-sV'],
+													'saver': {
+														'scans_ids': _.map(filtered_scans, (x) => {
+															return {
+																'scan_id': x.scan_id,
+																'port_number': x.port_number
+															}
+														})
+													}
+												}, 
+												this.props.project.project_uuid);
 		}
 
 	}	

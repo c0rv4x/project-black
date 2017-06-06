@@ -33,7 +33,7 @@ function findScopeType(target) {
 class ScopesSocketioEventsEmitter {
 	/* Singleton class for managing events subscription for the scopes */
 	constructor() {
-        this.connector = new Connector();
+        this.connector = new Connector('scopes');
 	}
 
 	requestCreateScope(project_uuid, scopes) {
@@ -64,6 +64,7 @@ class ScopesSocketioEventsEmitter {
 	}
 
 	requestRenewScopes() {
+		console.log('Requested all scopes');
 		this.connector.emit('scopes:all:get');
 	}
 

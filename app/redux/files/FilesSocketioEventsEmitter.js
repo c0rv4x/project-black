@@ -4,7 +4,7 @@ import Connector from '../SocketConnector.jsx';
 class FilesSocketioEventsEmitter {
     /* Singleton class for managing events subscription for the files */
     constructor() {
-        this.connector = new Connector();
+        this.connector = new Connector('files');
     }
 
     renewFiles() {
