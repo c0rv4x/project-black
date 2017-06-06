@@ -42,7 +42,7 @@ class Requester(object):
         }
 
     def __init__(self, url, cookie=None, user_agent=None, maxPool=1, max_retries=5, delay=0, timeout=30, ip=None, proxy=None,
-                 redirect=False, request_by_name=False):
+                 redirect=False, request_by_name=True):
         # if no backslash, append one
         if not url.endswith('/'):
             url = url + '/'
@@ -110,6 +110,7 @@ class Requester(object):
                     url = "{0}://{1}:{2}".format(self.protocol, self.host, self.port)
                 else:
                     url = "{0}://{1}:{2}".format(self.protocol, self.ip, self.port)
+
                 url = urllib.parse.urljoin(url, self.basePath)
 
                 # Joining with concatenation because a urljoin bug with "::"

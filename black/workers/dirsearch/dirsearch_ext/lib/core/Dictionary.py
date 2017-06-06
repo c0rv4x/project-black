@@ -16,6 +16,7 @@
 #
 #  Author: Mauro Soria
 
+import os
 import threading
 import urllib.request, urllib.parse, urllib.error
 from ...lib.utils.FileUtils import File
@@ -24,12 +25,13 @@ from ...thirdparty.oset import *
 
 class Dictionary(object):
 
-    def __init__(self, path, extensions, lowercase=False, forcedExtensions=False):
+    def __init__(self, path, extensions, lowercase=False, forcedExtensions=False, destination_path='/'):
         self.entries = []
         self.currentIndex = 0
         self.condition = threading.Lock()
         self._extensions = extensions
         self._path = path
+        self.destination_path = destination_path
         self._forcedExtensions = forcedExtensions
         self.lowercase = lowercase
         self.dictionaryFile = File(self.path)
@@ -60,16 +62,16 @@ class Dictionary(object):
         self.entries = []
         for line in self.dictionaryFile.getLines():
             # Skip comments
-            entry = line
-            if line.lstrip().startswith("#"): continue
-            if '%EXT%' in line:
+            entry = os.path.join(self.destination_path, line)
+            if entry.lstrip().startswith("#"): continue
+            if '%EXT%' in entry:
                 for extension in self._extensions:
-                    self.entries.append(self.quote(line.replace('%EXT%', extension)))
+                    self.entries.append(self.quote(entry.replace('%EXT%', extension)))
             else:
                 if self._forcedExtensions:
                     for extension in self._extensions:
-                        self.entries.append(self.quote(line) + '.' + extension)
-                quote = self.quote(line)
+                        self.entries.append(self.quote(entry) + '.' + extension)
+                quote = self.quote(entry)
                 self.entries.append(quote)
         if lowercase == True:
             self.entries = list(oset([entry.lower() for entry in self.entries]))
