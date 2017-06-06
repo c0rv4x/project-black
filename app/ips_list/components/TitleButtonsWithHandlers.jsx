@@ -45,6 +45,7 @@ class TitleButtonsWithHandlers extends React.Component {
 		});
 
 		var targets = _.uniq(nonuniqueTargets);
+		var startTime = 0;
 
 		for (var target of targets) {
 			let filtered_scans = _.filter(this.props.scans, (x) => {
@@ -57,20 +58,24 @@ class TitleButtonsWithHandlers extends React.Component {
 
 			let flags = "-p" + ports.join();
 
-			this.tasksEmitter.requestCreateTask('nmap', 
-												[target], 
-												{
-													'program': [flags, '-sV'],
-													'saver': {
-														'scans_ids': _.map(filtered_scans, (x) => {
-															return {
-																'scan_id': x.scan_id,
-																'port_number': x.port_number
-															}
-														})
-													}
-												}, 
-												this.props.project.project_uuid)
+			setTimeout(() => {
+				this.tasksEmitter.requestCreateTask('nmap', 
+													[target], 
+													{
+														'program': [flags, '-sV'],
+														'saver': {
+															'scans_ids': _.map(filtered_scans, (x) => {
+																return {
+																	'scan_id': x.scan_id,
+																	'port_number': x.port_number
+																}
+															})
+														}
+													}, 
+													this.props.project.project_uuid)
+
+			}, startTime);
+			startTime += 300;
 		}
 
 	}	
