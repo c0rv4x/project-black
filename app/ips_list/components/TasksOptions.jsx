@@ -22,7 +22,7 @@ class TasksOptions extends React.Component {
 	}
 
 	startTask() {
-		this.props.task.handler(this.state.optionsInput);
+		this.props.task.handler([this.state.optionsInput]);
 		this.close();
 	}
 
