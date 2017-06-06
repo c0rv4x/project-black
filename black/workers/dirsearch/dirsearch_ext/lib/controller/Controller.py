@@ -70,26 +70,22 @@ class Controller(object):
                 self.currentUrl = url
                 self.output.target(self.currentUrl)
                 try:
-                    print(1)
+
                     self.requester = Requester(url, cookie=self.arguments.cookie,
                                            user_agent=self.arguments.user_agent, maxPool=self.arguments.threads_count,
                                            max_retries=self.arguments.max_retries, delay=self.arguments.delay, timeout=self.arguments.timeout,
                                            ip=self.arguments.ip_address, proxy=self.arguments.proxy,
                                            redirect=self.arguments.redirect, 
                                            request_by_name=self.arguments.request_by_name)
-                    print(1.2)
                     self.requester.request("/")
-                    print(1.3)
 
                 except RequestException as e:
                     self.output.error(e.args[0]['message'])
                     raise SkipTargetInterrupt
-                print(1.4)
                 if self.arguments.use_random_agents:
                     self.requester.setRandomAgents(self.randomAgents)
                 for key, value in arguments.headers.items():
                     self.requester.setHeader(key, value)
-                print(1.5)
                 # Initialize directories Queue with start Path
                 self.basePath = self.requester.basePath
                 if self.arguments.scan_subdirs is not None:
@@ -97,19 +93,14 @@ class Controller(object):
                         self.directories.put(subdir)
                 else:
                     self.directories.put('')
-                print(2)
                 self.setupReports(self.requester)
-                print(3)
                 matchCallbacks = [self.matchCallback]
-                print(4)
                 notFoundCallbacks = [self.notFoundCallback]
                 errorCallbacks = [self.errorCallback, self.appendErrorLog]
-                print(5)
                 self.fuzzer = Fuzzer(self.requester, self.dictionary, testFailPath=self.arguments.test_fail_path,
                                      threads=self.arguments.threads_count, matchCallbacks=matchCallbacks,
                                      notFoundCallbacks=notFoundCallbacks, errorCallbacks=errorCallbacks,
                                      set_status_function=self.set_status_function)
-                print(6)
                 self.wait()
             except SkipTargetInterrupt:
                 pass

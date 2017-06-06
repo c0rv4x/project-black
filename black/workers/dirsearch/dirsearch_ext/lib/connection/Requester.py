@@ -110,6 +110,7 @@ class Requester(object):
                     url = "{0}://{1}:{2}".format(self.protocol, self.host, self.port)
                 else:
                     url = "{0}://{1}:{2}".format(self.protocol, self.ip, self.port)
+
                 url = urllib.parse.urljoin(url, self.basePath)
 
                 # Joining with concatenation because a urljoin bug with "::"
