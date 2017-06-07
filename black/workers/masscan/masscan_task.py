@@ -118,6 +118,9 @@ class MasscanTask(AsyncTask):
         """ Gets the current progress and prints it
         TODO:
             * Should put result back to the queue (not yet and not rdy for this) """
+        old_progress = 0
+        old_found = None
+
         while self.status != "Finished" and self.status != "Aborted":
             if self.status == "New":
                 print("[-] New")
@@ -134,7 +137,11 @@ class MasscanTask(AsyncTask):
                             # time_left[0],
                             found[0]))
 
-                        self.set_status("Working", progress=int(percent[0].split('.')[0]))
+                        new_progress = int(percent[0].split('.')[0])
+                        if new_progress != old_progress or old_found != found[0]:
+                            old_progress = new_progress
+                            self.set_status("Working", progress=new_progress)
+
                 except Exception as exc:
                     print(exc)
                     pass
