@@ -87,15 +87,11 @@ class TitleButtonsWithHandlers extends React.Component {
 									"preformed_options": [
 										{
 											"name": "All Ports",
-											"options": [
-												"-p1-65535"
-											]
+											"options": "-p1-65535"
 										},
 										{
 											"name": "Top 1000 ports",
-											"options": [
-												"-p80,443"
-											]
+											"options": "-p80,443"
 										}
 									]
 						  		},
@@ -105,15 +101,11 @@ class TitleButtonsWithHandlers extends React.Component {
 									"preformed_options": [
 										{
 											"name": "All Ports",
-											"options": [
-												"-p1-65535"
-											]
+											"options": "-p1-65535"
 										},
 										{
-											"name": "Top 1000 ports",
-											"options": [
-												"-p80,443"
-											]
+											"name": "Top ports",
+											"options": "-p80,23,443,21,22,25,3389,110,445,139,143,53,135,3306,8080,1723,111,995,993,5900,1025,587,8888,199,1720,113,554,256"
 										}
 									]
 						  		},
@@ -123,9 +115,7 @@ class TitleButtonsWithHandlers extends React.Component {
 									"preformed_options": [
 										{
 											"name": "Banner",
-											"options": [
-												"-sV"
-											]
+											"options": "-sV"
 										}
 									]
 						  		}
