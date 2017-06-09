@@ -30,6 +30,10 @@ class ShadowTask(object):
 
         self.channel = channel
 
+        # This variable keeps information whether the corresponding task
+        # should be sent back to the web.
+        self.new_status_known = False
+
 
     def send_start_task(self):
         """ Put a message to the queue, which says "start my task, please """
@@ -57,8 +61,24 @@ class ShadowTask(object):
         """ Returns a tuple of status, progress and text of the task"""
         return (self.status, self.progress, self.text)
 
-    def get_as_native_object(self):
+    def get_as_native_object(self, grab_file_descriptors=False):
         """ "Serialize" the task to python native dict """
+        if grab_file_descriptors:
+            if self.status == 'Finished' or self.status == 'Aborted':
+                return {
+                    "task_id" : self.task_id,
+                    "task_type" : self.task_type,
+                    "target" : self.target,
+                    "params" : self.params,
+                    "status" : self.status,
+                    "progress" : self.progress,
+                    "text" : self.text,
+                    "project_uuid" : self.project_uuid,
+                    "stdout" : self.stdout,
+                    "stderr" : self.stderr,
+                    "date_added": str(self.date_added)
+                }
+
         return {
             "task_id" : self.task_id,
             "task_type" : self.task_type,
@@ -72,6 +92,7 @@ class ShadowTask(object):
             # "stderr" : self.stderr,
             "date_added": str(self.date_added)
         }
+
 
 class TaskManager(object):
     """ TaskManager keeps track of all tasks in the system,
@@ -195,15 +216,34 @@ class TaskManager(object):
         """ Returns a list of active tasks and a list of finished tasks """
         return [self.active_tasks, self.finished_tasks]
 
-    def get_tasks_native_objects(self):
+    def get_tasks_native_objects(self, get_all=False):
         """ "Serializes" tasks to native python dicts """
-        active = list(map(lambda x: x.get_as_native_object(), self.active_tasks))
-        finished = list(map(lambda x: x.get_as_native_object(), self.finished_tasks))
+        if get_all:
+            active = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), self.active_tasks))
+            finished = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), self.finished_tasks))
 
-        return {
-            'active': active, 
-            'finished': finished
-        }
+            return {
+                'active': active,
+                'finished': finished
+            }
+        else:
+            active = list(filter(lambda x: x.new_status_known == False, self.active_tasks))
+            finished = list(filter(lambda x: x.new_status_known == False, self.finished_tasks))
+
+            for each_task in active:
+                each_task.new_status_known = True
+
+            for each_task in finished:
+                each_task.new_status_known = True
+
+            active = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=True), active))
+            finished = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=True), finished))
+
+            return {
+                'active': active, 
+                'finished': finished
+            }            
+
 
     def create_task(self, task_type, target, params, project_uuid):
         """ Register the task and send a command to start it """
@@ -216,4 +256,4 @@ class TaskManager(object):
         task.send_start_task()
         self.active_tasks.append(task)
 
-        return task.get_as_native_object()
+        return task.get_as_native_object(grab_file_descriptors=False)
