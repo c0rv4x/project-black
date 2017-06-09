@@ -171,8 +171,15 @@ class TaskManager(object):
         for task in self.active_tasks:
             if task.task_id == task_id:
                 new_status = message['status']
-                task.set_status(new_status, message['progress'], message['text'], message['new_stdout'],
-                    message['new_stderr'])
+                new_progress = message['progress']
+                new_text = message['text']
+                new_stdout = message['new_stdout']
+                new_stderr = message['new_stderr']
+
+                if new_status != task.status or new_progress != task.progress:
+                    task.new_status_known = False
+
+                task.set_status(new_status, new_progress, new_text, new_stdout, new_stderr)
 
                 if new_status == 'Finished' or new_status == 'Aborted':
                     self.active_tasks.remove(task)
@@ -236,8 +243,8 @@ class TaskManager(object):
             for each_task in finished:
                 each_task.new_status_known = True
 
-            active = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=True), active))
-            finished = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=True), finished))
+            active = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), active))
+            finished = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), finished))
 
             return {
                 'active': active, 
