@@ -15,6 +15,10 @@ class HostsTable extends React.Component {
 		this.commentSubmitted = this.commentSubmitted.bind(this);
 	}
 
+	shouldComponentUpdate(nextProps, nextState) {
+		return !_.isEqual(nextProps, this.props);
+	}
+
 	commentSubmitted(comment, _id) {
 		this.scopesEmitter.requestUpdateScope(comment, _id);
 	}

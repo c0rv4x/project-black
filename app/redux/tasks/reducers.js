@@ -75,7 +75,7 @@ function renew_tasks(state = {'active': [], 'finished': []}, action) {
 			}
 		});
 
-		return { 
+		return {
 			'active': parsed_active_tasks,
 			'finished': parsed_finished_tasks
 		};
