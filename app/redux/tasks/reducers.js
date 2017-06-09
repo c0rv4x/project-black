@@ -132,8 +132,8 @@ function update_tasks(state = {'active': [], 'finished': []}, action) {
 		});
 
 		var filtered_active_tasks = state.active.filter((x) => {
-			return ((updated_active_task_ids.indexOf(x.task_id) === -1) || 
-				(updated_finished_task_ids.indexOf(x.task_id) !== -1));
+			return ((updated_active_task_ids.indexOf(x.task_id) === -1) && 
+				(updated_finished_task_ids.indexOf(x.task_id) === -1));
 		});
 
 
