@@ -11,9 +11,7 @@ class ScopeHandlers(object):
         @socketio.on('scopes:all:get', namespace='/scopes')
         def handle_custom_event():
             """ When received this message, send back all the scopes """
-            print("Requested all scopes")
             self.send_scopes_back()
-            print("Sent all scopes")
 
         @socketio.on('scopes:create', namespace='/scopes')
         def handle_scope_creation(msg):
