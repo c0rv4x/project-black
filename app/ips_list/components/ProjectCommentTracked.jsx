@@ -46,7 +46,7 @@ class ProjectCommentTracked extends React.Component {
 		this.projectsEmitter.requestUpdateProject(
 			this.props.project.project_uuid,
 			null,
-			this.props.project.comment);
+			this.state.projectComment);
 	}
 
 	render() {
