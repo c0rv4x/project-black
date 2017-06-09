@@ -136,25 +136,6 @@ function update_tasks(state = {'active': [], 'finished': []}, action) {
 				(updated_finished_task_ids.indexOf(x.task_id) !== -1));
 		});
 
-		/* For debugging */
-		var active_ids = [];
-		parsed_active_tasks.concat(filtered_active_tasks).map((x) => {
-			active_ids.push(x.task_id);
-		});
-
-		if ([...new Set(active_ids)].length !== active_ids.length) {
-			console.log("Active ids are not unique", state.active, message, [...new Set(active_ids)].length, active_ids.length);
-		}
-
-		var finished_ids = [];
-		parsed_finished_tasks.concat(state.finished).map((x) => {
-			finished_ids.push(x.task_id);
-		});
-		if ([...new Set(finished_ids)].length !== finished_ids.length) {
-			console.log("Finished ids are not unique", state.finished, message, [...new Set(finished_ids)].length, finished_ids.length);
-		}
-		/* Finished for debugging */
-
 
 		return { 
 			'active': parsed_active_tasks.concat(filtered_active_tasks),
