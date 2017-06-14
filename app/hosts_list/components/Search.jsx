@@ -47,7 +47,14 @@ class Search extends React.Component {
 			}
 		}
 
-		console.log(resultObject);
+		var regexes = {};
+		for (var eachParam of Object.keys(resultObject)) {
+			console.log(eachParam);
+			var replacedStar
+			// regexes[eachParam] = "(" +  + ")";
+		}
+
+		console.log(regexes);
 	}
 
 	render () {
