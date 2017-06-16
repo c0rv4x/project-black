@@ -4,6 +4,11 @@ import Select from 'react-select'
 import { Button } from 'react-bootstrap'
 
 
+function splice(oldStr, start, delCount, newSubStr) {
+	const intStart = parseInt(start);
+    return oldStr.slice(0, intStart) + newSubStr + oldStr.slice(intStart + Math.abs(delCount));
+};
+
 class Search extends React.Component {
 	constructor(props) {
 		super(props);
@@ -11,10 +16,10 @@ class Search extends React.Component {
 		this.state = {
 			multiValue: [],
 			options: [
-				{ label: 'host: *.ya.ru' },
-				{ label: 'ip: 8.8.8.8' },
-				{ label: 'port: 80' },
-				{ label: 'banner: apache' }
+				{ value: 'host: *.ya.ru', label: 'host: *.ya.ru' },
+				{ value: 'ip: 8.8.8.8', label: 'ip: 8.8.8.8' },
+				{ value: 'port: 80', label: 'port: 80' },
+				{ value: 'banner: apache', label: 'banner: apache' }
 			]
 		}
 
@@ -22,7 +27,7 @@ class Search extends React.Component {
 		this.parseActiveOptions = this.parseActiveOptions.bind(this);
 	}
 
-	handleOnChange (value) {
+	handleOnChange(value) {
 		this.setState({ multiValue: value });
 
 		setTimeout(this.parseActiveOptions, 200);
@@ -33,7 +38,7 @@ class Search extends React.Component {
 		var resultObject = {};
 
 		for (var eachValue of multiValue) {
-			const unparsedOptions = eachValue.label;
+			const unparsedOptions = eachValue.value;
 			const splitted = unparsedOptions.split(":");
 
 			const key = splitted[0].trim();
@@ -49,15 +54,46 @@ class Search extends React.Component {
 
 		var regexes = {};
 		for (var eachParam of Object.keys(resultObject)) {
-			console.log(eachParam);
-			var replacedStar
-			// regexes[eachParam] = "(" +  + ")";
+			regexes[eachParam] = [];
+
+			const value = resultObject[eachParam];
+
+			for (var eachWord of value) {
+				var toRemove = [];
+				var escaped = false;
+
+				for (var i in eachWord) {
+					const eachChar = eachWord[i];
+
+					if ((eachChar == '*') && (!escaped)) {
+						toRemove.push(parseInt(i));
+					}
+					else if (eachChar == '\\') {
+						escaped = true;
+					}
+				}
+
+				var replacedStar = eachWord;
+
+				for (var subIndex = 0; subIndex < toRemove.length; subIndex++) {
+					const index = toRemove[subIndex];
+					replacedStar = splice(replacedStar, index, 1, '.*');
+
+					for (var i = subIndex + 1; i < toRemove.length; i++) {
+						toRemove[i] += 1;
+					}
+				}
+
+				regexes[eachParam].push(replacedStar);
+			}
+
+			regexes[eachParam] = "(" + regexes[eachParam].join('|') + ")";
 		}
 
-		console.log(regexes);
+		console.log('regexes=', regexes);
 	}
 
-	render () {
+	render() {
 		const { multiValue, options } = this.state;
 		return (
 			<div className="section">
