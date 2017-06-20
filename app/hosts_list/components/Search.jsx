@@ -90,7 +90,7 @@ class Search extends React.Component {
 			regexes[eachParam] = "(" + regexes[eachParam].join('|') + ")";
 		}
 
-		console.log('regexes=', regexes);
+		this.props.onFilterChange(regexes);
 	}
 
 	render() {
