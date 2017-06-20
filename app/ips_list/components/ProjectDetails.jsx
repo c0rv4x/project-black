@@ -3,7 +3,7 @@ import React from 'react'
 
 import TitleButtonsWithHandlers from './TitleButtonsWithHandlers.jsx'
 import ProjectCommentTracked from './ProjectCommentTracked.jsx'
-import ScopeTableTracked from './ScopeTableTracked.jsx'
+import IPTableTracked from './IPTableTracked.jsx'
 import Tasks from '../../common/tasks/Tasks.jsx'
 
 
@@ -71,9 +71,8 @@ class ProjectDetails extends React.Component {
 
 				<h3>{this.props.project.project_name}</h3>
 				<Tasks tasks={this.props.tasks} />
-				<ProjectCommentTracked project={this.props.project}
-									   onCommentChange={this.props.onProjectCommentChange} />
-				<ScopeTableTracked scopes={this.props.scopes}
+				<ProjectCommentTracked project={this.props.project} />
+				<IPTableTracked scopes={this.props.scopes}
 
 								   scans={this.props.scans} />
 			</div>

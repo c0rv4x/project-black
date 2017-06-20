@@ -4,10 +4,10 @@ import { Table, Button } from 'react-bootstrap'
 import ReactPaginate from 'react-paginate'
 
 import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
-import ScopeEntryLine from '../presentational/scope/ScopeEntryLine.jsx'
+import IPEntryLine from '../presentational/scope/IPEntryLine.jsx'
 
 
-class ScopeTable extends React.Component {
+class IPTable extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -34,8 +34,8 @@ class ScopeTable extends React.Component {
 		var start = this.limitPerPage * this.state.offsetPage;
 
 		this.setState({
-			shownData: this.props.scopes.slice(start, start + this.limitPerPage),
-			pageCount: Math.ceil(this.props.scopes.length / this.limitPerPage)
+			shownData: this.props.ips.slice(start, start + this.limitPerPage),
+			pageCount: Math.ceil(this.props.ips.length / this.limitPerPage)
 		});
 	}
 
@@ -44,25 +44,25 @@ class ScopeTable extends React.Component {
 
 		this.setState({
 			offsetPage: data.selected,
-			shownData: this.props.scopes.slice(start, start + this.limitPerPage),
+			shownData: this.props.ips.slice(start, start + this.limitPerPage),
 		});
 	}
 
 	render() {
-		const scopes = _.map(this.state.shownData, (x) => {
-			return <ScopeEntryLine key={x._id} 
-								   scope={x} 
-								   onCommentSubmit={(event) => this.commentSubmitted(event.target.value, x._id)}
-								   deleteScope={() => this.props.deleteScope(x._id)}
+		const ips = _.map(this.state.shownData, (x) => {
+			return <IPEntryLine key={x._id} 
+								ip={x} 
+								onCommentSubmit={(event) => this.commentSubmitted(event.target.value, x._id)}
+								deleteScope={() => this.props.deleteScope(x._id)}
 
-								   scans={_.filter(this.props.scans, (y) => {
-								   	return y.target == x.ip_address;
-								   })}/>
+								scans={_.filter(this.props.scans, (y) => {
+								    return y.target == x.ip_address;
+								})}/>
 		});
 
 		return (
 			<div>
-				{scopes}
+				{ips}
 				<ReactPaginate previousLabel={"prev"}
 							   nextLabel={"next"} 
 							   pageCount={this.state.pageCount}
@@ -78,4 +78,4 @@ class ScopeTable extends React.Component {
 
 }
 
-export default ScopeTable;
+export default IPTable;

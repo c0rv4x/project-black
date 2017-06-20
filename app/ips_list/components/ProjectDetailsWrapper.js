@@ -51,21 +51,9 @@ function mapStateToProps(state, ownProps){
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		onProjectCommentChange: (comment, project_uuid) => {
-			dispatch(updateProjectComment({
-				'comment': comment, 
-				'project_uuid': project_uuid
-			}))
-		}
-	}
-}
-
 
 const ProjectsDetailsWrapper = connect(
 	mapStateToProps,
-	mapDispatchToProps
 )(ProjectDetails)
 
 export default ProjectsDetailsWrapper

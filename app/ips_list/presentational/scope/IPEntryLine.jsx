@@ -11,7 +11,7 @@ import {
 
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
 
-class ScopeEntryLine extends React.Component {
+class IPEntryLine extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -19,16 +19,16 @@ class ScopeEntryLine extends React.Component {
 
 	render() {
 		var rendered_ip_address = null;
-		if (this.props.scope.ip_address) {
+		if (this.props.ip.ip_address) {
 			rendered_ip_address = (
-				<span>{this.props.scope.ip_address}
+				<span>{this.props.ip.ip_address}
 				<Glyphicon glyph="remove-circle" onClick={this.props.deleteScope} /></span>
 			)
 		}
 
 		const header = ( 
 			<h3>
-				{rendered_ip_address || this.props.scope.hostname}
+				{rendered_ip_address || this.props.ip.hostname}
 			</h3>
 		)
 
@@ -52,8 +52,8 @@ class ScopeEntryLine extends React.Component {
 			<Panel collapsible defaultExpanded header={header} bsStyle="primary">
 				<ListGroup fill>
 					<ListGroupItem>
-						<ScopeComment commentValue={this.props.scope.comment}
-									  ip={this.props.scope.ip_address}
+						<ScopeComment commentValue={this.props.ip.comment}
+									  ip={this.props.ip.ip_address}
 									  onCommentSubmit={this.props.onCommentSubmit}/>
 					</ListGroupItem>
 					{ports}
@@ -63,4 +63,4 @@ class ScopeEntryLine extends React.Component {
 	}
 }
 
-export default ScopeEntryLine;
+export default IPEntryLine;

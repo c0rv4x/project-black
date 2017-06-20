@@ -2,9 +2,9 @@ import React from 'react'
 
 import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
 
-import ScopeTable from './ScopeTable.jsx'
+import IPTable from './IPTable.jsx'
 
-class ScopeTableTracked extends React.Component {
+class IPTableTracked extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -20,14 +20,14 @@ class ScopeTableTracked extends React.Component {
 
 	render() {
 		return (
-				<ScopeTable scopes={this.props.scopes.ips}
-							deleteScope={this.deleteScope}
+				<IPTable ips={this.props.scopes.ips}
+						 deleteScope={this.deleteScope}
 
-							scans={this.props.scans} />
+						 scans={this.props.scans} />
 		)
 	}
 
 }
 
 
-export default ScopeTableTracked;
+export default IPTableTracked;
