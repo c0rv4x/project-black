@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 
 import HostsListHead from '../presentational/HostsListHead.jsx'
-import Tasks from '../../ips_list/presentational/tasks/Tasks.jsx'
+import Tasks from '../../common/tasks/Tasks.jsx'
 import HostsTableTracked from './HostsTableTracked.jsx'
 
 

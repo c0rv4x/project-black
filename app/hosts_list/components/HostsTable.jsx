@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import { Table, Button } from 'react-bootstrap'
+import ReactPaginate from 'react-paginate'
 
 import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
 import HostsEntryLine from '../presentational/HostsEntryLine.jsx'
@@ -10,9 +11,41 @@ class HostsTable extends React.Component {
 
 	constructor(props) {
 		super(props);
+
+		this.state = {
+			shownData: [],
+			offsetPage: 0,
+			pageCount: 0
+		}
+
+		this.limitPerPage = 10;
+
 		this.scopesEmitter = new ScopesSocketioEventsEmitter();
 
 		this.commentSubmitted = this.commentSubmitted.bind(this);
+		this.handlePageClick = this.handlePageClick.bind(this);
+	}
+
+	componentWillReceiveProps(nextProps) {
+		var start = this.limitPerPage * this.state.offsetPage;
+
+		this.setState({
+			shownData: this.props.scopes.slice(start, start + this.limitPerPage),
+			pageCount: Math.ceil(this.props.scopes.length / this.limitPerPage)
+		});
+	}	
+
+	handlePageClick(data) {
+		var start = this.limitPerPage * data.selected;
+
+		this.setState({
+			offsetPage: data.selected,
+			shownData: this.props.scopes.slice(start, start + this.limitPerPage),
+		});
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		return (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState));
 	}
 
 	commentSubmitted(comment, _id) {
@@ -20,7 +53,7 @@ class HostsTable extends React.Component {
 	}
 
 	render() {
-		const scopes = _.map(this.props.scopes, (x) => {
+		const scopes = _.map(this.state.shownData, (x) => {
 			return <HostsEntryLine key={x._id}
 								   project={this.props.project}
 								   scope={x} 
@@ -40,6 +73,15 @@ class HostsTable extends React.Component {
 				<br />
 >>>>>>> Stashed changes
 				{scopes}
+				<ReactPaginate previousLabel={"prev"}
+							   nextLabel={"next"} 
+							   pageCount={this.state.pageCount}
+		                       breakLabel={<a href="#">...</a>}
+							   onPageChange={this.handlePageClick}		                       
+		                       breakClassName={"break-me"}							   
+		                       containerClassName={"pagination"}
+		                       subContainerClassName={"pages pagination"}
+		                       activeClassName={"active"} />				
 			</div>
 		)
 	}

@@ -12,6 +12,7 @@ from events_handling import Handlers
 # Define Flask app and wrap it into SocketIO
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'KIwTR8ZUNG20UkhrXR0Pv0B9ZZigzQpVVT5KK6FA1M'
+# socketio = SocketIO(app, engineio_logger=True)
 socketio = SocketIO(app)
 
 class RegexConverter(BaseConverter):

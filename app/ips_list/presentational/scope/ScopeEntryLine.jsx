@@ -53,11 +53,7 @@ class ScopeEntryLine extends React.Component {
 				<ListGroup fill>
 					<ListGroupItem>
 						<ScopeComment commentValue={this.props.scope.comment}
-<<<<<<< Updated upstream
-									  onCommentChange={this.props.onCommentChange}
-=======
 									  ip={this.props.scope.ip_address}
->>>>>>> Stashed changes
 									  onCommentSubmit={this.props.onCommentSubmit}/>
 					</ListGroupItem>
 					{ports}

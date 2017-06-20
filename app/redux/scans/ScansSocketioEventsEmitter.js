@@ -9,7 +9,7 @@ class ScansSocketioEventsEmitter {
         if(!instance){
             instance = this;
 
-            this.connector = new Connector();
+            this.connector = new Connector('scans');
         }
 
         return instance;

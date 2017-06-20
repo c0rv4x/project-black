@@ -12,24 +12,25 @@ class ScopeComment extends React.Component {
 
 	constructor(props) {
 		super(props);
-<<<<<<< Updated upstream
-=======
 
 		this.state = {
-			scopeComment: this.props.commentValue
+			scopeComment: "",
+			scopeCommentInited: false
 		};
 
 		this.commentChange = this.commentChange.bind(this);
 	}
 
 	componentWillReceiveProps(nextProps) {
-		const comment = nextProps.commentValue;
+		if ((!this.state.scopeCommentInited) && (this.props.scope)) {
+			const comment = this.props.scope.comment;
 
-		if (comment != this.state.scopeComment) {
-			console.log("Setting comment");
-			this.setState({
-				scopeComment: comment
-			});				
+			if (comment != this.state.scopeComment) {
+				this.setState({
+					scopeCommentInited: true,
+					scopeComment: this.props.scope.comment
+				});				
+			}
 		}
 	}
 
@@ -37,7 +38,6 @@ class ScopeComment extends React.Component {
 		this.setState({
 			scopeComment: e.target.value
 		});
->>>>>>> Stashed changes
 	}
 
 	render() {
@@ -49,8 +49,8 @@ class ScopeComment extends React.Component {
 					<FormControl placeholder="Enter anything, that would help you in future. After moving focus out, the data will be saved."
 				                 type="text" 
 				                 componentClass="textarea"
-				                 value={this.props.commentValue} 
-				                 onChange={this.props.onCommentChange}
+				                 value={this.state.scopeComment} 
+				                 onChange={this.commentChange}
 				                 onBlur={this.props.onCommentSubmit}/>	
 				</FormGroup>
 			</div>

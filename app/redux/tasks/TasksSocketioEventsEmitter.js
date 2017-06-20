@@ -5,7 +5,7 @@ import Connector from '../SocketConnector.jsx';
 class TasksSocketioEventsEmitter {
 	/* Singleton class for managing events subscription for the tasks */
 	constructor() {
-        this.connector = new Connector();
+        this.connector = new Connector('tasks');
 	}
 
 	requestCreateTask(task_type, target, params, project_uuid) {

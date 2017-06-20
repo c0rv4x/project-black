@@ -8,13 +8,12 @@ class ScopeHandlers(object):
         self.socketio = socketio
         self.scope_manager = scope_manager
 
-        @socketio.on('scopes:all:get')
+        @socketio.on('scopes:all:get', namespace='/scopes')
         def handle_custom_event():
             """ When received this message, send back all the scopes """
             self.send_scopes_back()
 
-
-        @socketio.on('scopes:create')
+        @socketio.on('scopes:create', namespace='/scopes')
         def handle_scope_creation(msg):
             """ When received this message, create a new scope """
             scopes = msg['scopes']
@@ -68,7 +67,7 @@ class ScopeHandlers(object):
                     'status': 'error',
                     'project_uuid': project_uuid,
                     'text': error_text
-                }, broadcast=True)
+                }, broadcast=True, namespace='/scopes')
 
             else:
                 # Send the scope back
@@ -76,10 +75,10 @@ class ScopeHandlers(object):
                     'status': 'success',
                     'project_uuid': project_uuid,
                     'new_scopes': new_scopes
-                }, broadcast=True)
+                }, broadcast=True, namespace='/scopes')
 
 
-        @socketio.on('scopes:delete:scope_id')
+        @socketio.on('scopes:delete:scope_id', namespace='/scopes')
         def handle_scope_deletioning(msg):
             """ When received this message, delete the scope """
             scope_id = msg['scope_id']
@@ -92,21 +91,21 @@ class ScopeHandlers(object):
                 self.socketio.emit('scopes:delete', {
                     'status': 'success',
                     '_id': scope_id
-                }, broadcast=True)
+                }, broadcast=True, namespace='/scopes')
 
                 self.socketio.emit('scopes:all:get:back', {
                     'status' : 'success',
                     'ips' : self.scope_manager.get_ips(),
                     'hosts': self.scope_manager.get_hosts()
-                }, broadcast=True)
+                }, broadcast=True, namespace='/scopes')
             else:
                 # Error occured
                 self.socketio.emit('scopes:delete', {
                     'status': 'error',
                     'text': delete_result["text"]
-                }, broadcast=True)
+                }, broadcast=True, namespace='/scopes')
 
-        @socketio.on('scopes:resolve')
+        @socketio.on('scopes:resolve', namespace='/scopes')
         def handle_scopes_resolver(msg):
             """ On receive, resolve the needed scope """
             scopes_ids = msg['scopes_ids']
@@ -117,9 +116,9 @@ class ScopeHandlers(object):
                 'status' : 'success',
                 'ips' : self.scope_manager.get_ips(),
                 'hosts': self.scope_manager.get_hosts()
-            }, broadcast=True)
+            }, broadcast=True, namespace='/scopes')
 
-        @socketio.on('scopes:update')
+        @socketio.on('scopes:update', namespace='/scopes')
         def handle_scope_update(msg): 
             """ Update the scope (now only used for comment). """
             scope_id = msg['scope_id']
@@ -132,13 +131,13 @@ class ScopeHandlers(object):
                 self.socketio.emit('scopes:update:back', {
                     "status": "success",
                     "updated_scope": updated_scope
-                }, broadcast=True)
+                }, broadcast=True, namespace='/scopes')
             else:
-                self.socketio.emit('scopes:update:back', result, broadcast=True)
+                self.socketio.emit('scopes:update:back', result, broadcast=True, namespace='/scopes')
 
     def send_scopes_back(self):
         self.socketio.emit('scopes:all:get:back', {
             'status' : 'success',
             'ips' : self.scope_manager.get_ips(force_update=True),
             'hosts': self.scope_manager.get_hosts()
-        }, broadcast=True)
+        }, broadcast=True, namespace='/scopes')

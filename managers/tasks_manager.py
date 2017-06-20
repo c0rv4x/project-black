@@ -10,7 +10,7 @@ from black.black.db import sessions, Task
 
 class ShadowTask(object):
     """ A shadow of the real task """
-    def __init__(self, task_id, task_type, target, params, project_uuid, status="New", progress=None, text=None, date_added=datetime.datetime.utcnow(), stdout="", stderr=""):
+    def __init__(self, task_id, task_type, target, params, project_uuid, status="New", progress=None, text=None, date_added=datetime.datetime.utcnow(), stdout="", stderr="", channel=None):
         self.task_type = task_type
         self.target = target
         self.params = params
@@ -28,34 +28,16 @@ class ShadowTask(object):
         self.stdout = stdout
         self.stderr = stderr
 
-        self.channel = None
+        self.channel = channel
 
-        # connect to the RabbitMQ broker
-        credentials = pika.PlainCredentials('guest', 'guest')
-        parameters = pika.ConnectionParameters('localhost', credentials=credentials)
-        connection = pika.BlockingConnection(parameters)
-
-        # Open a communications channel
-        self.channel = connection.channel()
-        self.channel.exchange_declare(
-            exchange="tasks.exchange",
-            exchange_type="direct",
-            durable=True)
-        self.channel.queue_declare(queue=self.task_type + "_tasks", durable=True)
-        self.channel.queue_bind(
-            queue=self.task_type + "_tasks",
-            exchange="tasks.exchange",
-            routing_key=self.task_type + "_tasks")
-
-        self.channel.queue_declare(queue=self.task_type + "_notifications", durable=True)
-        self.channel.queue_bind(
-            queue=self.task_type + "_notifications",
-            exchange="tasks.exchange",
-            routing_key=self.task_type + "_notifications")
+        # This variable keeps information whether the corresponding task
+        # should be sent back to the web.
+        self.new_status_known = False
 
 
     def send_start_task(self):
         """ Put a message to the queue, which says "start my task, please """
+        print("[-] Sending start task # {}".format(self.task_id))
         self.channel.basic_publish(exchange='',
                                    routing_key=self.task_type + "_tasks",
                                    body=json.dumps({
@@ -64,6 +46,7 @@ class ShadowTask(object):
                                        'params': self.params,
                                        'project_uuid': self.project_uuid
                                    }))
+        print("[+] Finished sending start task # {}".format(self.task_id))
 
 
     def set_status(self, new_status, progress, text, new_stdout, new_stderr):
@@ -78,8 +61,24 @@ class ShadowTask(object):
         """ Returns a tuple of status, progress and text of the task"""
         return (self.status, self.progress, self.text)
 
-    def get_as_native_object(self):
+    def get_as_native_object(self, grab_file_descriptors=False):
         """ "Serialize" the task to python native dict """
+        if grab_file_descriptors:
+            if self.status == 'Finished' or self.status == 'Aborted':
+                return {
+                    "task_id" : self.task_id,
+                    "task_type" : self.task_type,
+                    "target" : self.target,
+                    "params" : self.params,
+                    "status" : self.status,
+                    "progress" : self.progress,
+                    "text" : self.text,
+                    "project_uuid" : self.project_uuid,
+                    "stdout" : self.stdout,
+                    "stderr" : self.stderr,
+                    "date_added": str(self.date_added)
+                }
+
         return {
             "task_id" : self.task_id,
             "task_type" : self.task_type,
@@ -94,6 +93,7 @@ class ShadowTask(object):
             "date_added": str(self.date_added)
         }
 
+
 class TaskManager(object):
     """ TaskManager keeps track of all tasks in the system,
     exposing some interfaces for public use. """
@@ -102,10 +102,6 @@ class TaskManager(object):
 
         self.active_tasks = list()
         self.finished_tasks = list()
-
-        self.update_from_db()
-
-        self.channel = None
 
         # connect to the RabbitMQ broker
         credentials = pika.PlainCredentials('guest', 'guest')
@@ -129,8 +125,31 @@ class TaskManager(object):
             consumer_callback=self.parse_new_status,
             queue="tasks_statuses")
 
+        self.spawn_all_channels_with_queues()
+
+        self.update_from_db()
+
+
         thread = threading.Thread(target=self.channel.start_consuming)
         thread.start()
+
+    def spawn_all_channels_with_queues(self):
+        for task_type in ['nmap','dnsscan','dirseach', 'dnsscan']:
+            self.channel.exchange_declare(
+                exchange="tasks.exchange",
+                exchange_type="direct",
+                durable=True)
+            self.channel.queue_declare(queue=task_type + "_tasks", durable=True)
+            self.channel.queue_bind(
+                queue=task_type + "_tasks",
+                exchange="tasks.exchange",
+                routing_key=task_type + "_tasks")
+
+            self.channel.queue_declare(queue=task_type + "_notifications", durable=True)
+            self.channel.queue_bind(
+                queue=task_type + "_notifications",
+                exchange="tasks.exchange",
+                routing_key=task_type + "_notifications")
 
     def check_finished_task_necessities(self, task):
         """ After the task finishes, we need to check, whether we should push 
@@ -152,8 +171,15 @@ class TaskManager(object):
         for task in self.active_tasks:
             if task.task_id == task_id:
                 new_status = message['status']
-                task.set_status(new_status, message['progress'], message['text'], message['new_stdout'],
-                    message['new_stderr'])
+                new_progress = message['progress']
+                new_text = message['text']
+                new_stdout = message['new_stdout']
+                new_stderr = message['new_stderr']
+
+                if new_status != task.status or new_progress != task.progress:
+                    task.new_status_known = False
+
+                task.set_status(new_status, new_progress, new_text, new_stdout, new_stderr)
 
                 if new_status == 'Finished' or new_status == 'Aborted':
                     self.active_tasks.remove(task)
@@ -181,7 +207,8 @@ class TaskManager(object):
                                     text=x.text,
                                     date_added=x.date_added,
                                     stdout=x.stdout,
-                                    stderr=x.stderr),
+                                    stderr=x.stderr,
+                                    channel=self.channel),
                          tasks_from_db))
         sessions.destroy_session(session)
 
@@ -196,15 +223,34 @@ class TaskManager(object):
         """ Returns a list of active tasks and a list of finished tasks """
         return [self.active_tasks, self.finished_tasks]
 
-    def get_tasks_native_objects(self):
+    def get_tasks_native_objects(self, get_all=False):
         """ "Serializes" tasks to native python dicts """
-        active = list(map(lambda x: x.get_as_native_object(), self.active_tasks))
-        finished = list(map(lambda x: x.get_as_native_object(), self.finished_tasks))
+        if get_all:
+            active = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), self.active_tasks))
+            finished = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), self.finished_tasks))
 
-        return {
-            'active': active, 
-            'finished': finished
-        }
+            return {
+                'active': active,
+                'finished': finished
+            }
+        else:
+            active = list(filter(lambda x: x.new_status_known == False, self.active_tasks))
+            finished = list(filter(lambda x: x.new_status_known == False, self.finished_tasks))
+
+            for each_task in active:
+                each_task.new_status_known = True
+
+            for each_task in finished:
+                each_task.new_status_known = True
+
+            active = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), active))
+            finished = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), finished))
+
+            return {
+                'active': active, 
+                'finished': finished
+            }            
+
 
     def create_task(self, task_type, target, params, project_uuid):
         """ Register the task and send a command to start it """
@@ -212,8 +258,9 @@ class TaskManager(object):
                           task_type=task_type,
                           target=target,
                           params=params,
-                          project_uuid=project_uuid)
+                          project_uuid=project_uuid,
+                          channel=self.channel)
         task.send_start_task()
         self.active_tasks.append(task)
 
-        return task.get_as_native_object()
+        return task.get_as_native_object(grab_file_descriptors=False)

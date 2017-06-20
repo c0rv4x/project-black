@@ -10,6 +10,11 @@ class ProjectCommentTracked extends React.Component {
 	constructor(props) {
 		super(props);
 
+		this.state = {
+			projectComment: "",
+			inputInited: false
+		};
+
 		this.projectsEmitter = new ProjectsSocketioEventsEmitter();
 		this.scopesEmitter = new ScopesSocketioEventsEmitter();
 
@@ -18,19 +23,35 @@ class ProjectCommentTracked extends React.Component {
 	}
 
 	onCommentInputChange(e) {
-		this.props.onCommentChange(e.target.value, this.props.project.project_uuid);
+		// this.props.onCommentChange(e.target.value, this.props.project.project_uuid);
+		this.setState({
+			projectComment: e.target.value
+		});
+	}
+
+	componentWillReceiveProps(nextProps) {
+		if ((!this.state.inputInited) && (this.props.project)) {
+			const comment = this.props.project.comment;
+
+			if (comment != this.state.projectComment) {
+				this.setState({
+					inputInited: true,
+					projectComment: this.props.project.comment
+				});				
+			}
+		}
 	}
 
 	commentSubmitted() {
 		this.projectsEmitter.requestUpdateProject(
 			this.props.project.project_uuid,
 			null,
-			this.props.project.comment);
+			this.state.projectComment);
 	}
 
 	render() {
 		return (
-			<ProjectComment commentInput={this.props.project.comment}
+			<ProjectComment commentInput={this.state.projectComment}
 							onCommentInputChange={this.onCommentInputChange}
 							commentSubmitted={this.commentSubmitted} 
 

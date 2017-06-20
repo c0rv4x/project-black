@@ -1,7 +1,8 @@
 import { 
 	newTask, 
 	changeStatusTask,
-	renewTasks
+	renewTasks,
+	updateTasks
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
@@ -14,7 +15,7 @@ class TasksSocketioEventsSubsriber {
 	/* Singleton class for managing events subscription for the tasks */
 	constructor(store) {
         this.store = store;
-        this.connector = new Connector();
+        this.connector = new Connector('tasks');
 
         this.connector.after_connected((x) => {
         	this.emitter = new TasksSocketioEventsEmitter();
@@ -27,7 +28,8 @@ class TasksSocketioEventsSubsriber {
 	basic_events_registration() {
 		/* Register handlers on basic events */
 		// Received all tasks in one message
-		this.register_socketio_handler('tasks:all:get:back', renewTasks);
+		this.register_socketio_handler('tasks:all:get:back:all', renewTasks);
+		this.register_socketio_handler('tasks:all:get:back:updated', updateTasks);
 		this.register_project_new_task();
 		this.register_project_delete_task();
 	}

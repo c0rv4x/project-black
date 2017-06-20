@@ -19,6 +19,10 @@ class ScopeSetup extends React.Component {
 		this.deleteScope = this.deleteScope.bind(this);
 	}
 
+	shouldComponentUpdate(nextProps, nextState) {
+		return !_.isEqual(nextProps, this.props);
+	}
+
 	deleteScope(scope_id) {
 		this.scopesEmitter.requestDeleteScope(scope_id);
 	}

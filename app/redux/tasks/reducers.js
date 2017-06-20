@@ -1,7 +1,8 @@
 import {
 	NEW_TASK,
 	CHANGE_STATUS_TASK,
-	RENEW_TASKS
+	RENEW_TASKS,
+	UPDATE_TASKS
 } from './actions';
 
 
@@ -74,7 +75,7 @@ function renew_tasks(state = {'active': [], 'finished': []}, action) {
 			}
 		});
 
-		return { 
+		return {
 			'active': parsed_active_tasks,
 			'finished': parsed_finished_tasks
 		};
@@ -153,6 +154,8 @@ function task_reduce(state = {'active': [], 'finished': []}, action) {
 			return change_status_task(state, action);
 		case RENEW_TASKS:
 			return renew_tasks(state, action);
+		case UPDATE_TASKS:
+			return update_tasks(state, action);			
 		default:
 			return state;
 	}

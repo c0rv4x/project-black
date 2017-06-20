@@ -44,6 +44,21 @@ class ProjectDetails extends React.Component {
 		}
 	}
 
+  // componentDidMount() {
+  //   setTimeout(() => {
+  //     window.Perf.start();
+  //     setTimeout(() => {
+  //       window.Perf.stop();
+  //       window.measurements = window.Perf.getLastMeasurements();
+  //       window.Perf.printWasted(window.measurements);
+  //     }, 30000);
+  //   }, 5000);
+  // }	
+
+	shouldComponentUpdate(nextProps, nextState) {
+		return !_.isEqual(nextProps, this.props);
+	}
+
 	render() {
 		return (
 			<div>
