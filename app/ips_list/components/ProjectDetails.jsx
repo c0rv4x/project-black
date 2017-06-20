@@ -42,7 +42,6 @@ class ProjectDetails extends React.Component {
 				<ProjectCommentTracked project={this.props.project}
 									   onCommentChange={this.props.onProjectCommentChange} />
 				<ScopeTableTracked scopes={this.props.scopes}
-								   onCommentChange={this.props.onScopeCommentChange}
 
 								   scans={this.props.scans} />
 			</div>

@@ -21,7 +21,6 @@ class ScopeTableTracked extends React.Component {
 	render() {
 		return (
 				<ScopeTable scopes={this.props.scopes.ips}
-							onCommentChange={this.props.onCommentChange}
 							deleteScope={this.deleteScope}
 
 							scans={this.props.scans} />

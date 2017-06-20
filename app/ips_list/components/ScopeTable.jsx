@@ -52,8 +52,7 @@ class ScopeTable extends React.Component {
 		const scopes = _.map(this.state.shownData, (x) => {
 			return <ScopeEntryLine key={x._id} 
 								   scope={x} 
-								   onCommentChange={(e) => this.props.onCommentChange(e.target.value, x._id)}
-								   onCommentSubmit={() => this.commentSubmitted(x.comment, x._id)}
+								   onCommentSubmit={(event) => this.commentSubmitted(event.target.value, x._id)}
 								   deleteScope={() => this.props.deleteScope(x._id)}
 
 								   scans={_.filter(this.props.scans, (y) => {

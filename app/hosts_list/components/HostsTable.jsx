@@ -58,8 +58,7 @@ class HostsTable extends React.Component {
 			return <HostsEntryLine key={x._id}
 								   project={this.props.project}
 								   scope={x} 
-								   onCommentChange={(e) => this.props.onCommentChange(e.target.value, x._id)}
-								   onCommentSubmit={() => this.commentSubmitted(x.comment, x._id)}
+								   onCommentSubmit={(event) => this.commentSubmitted(event.target.value, x._id)}
 								   deleteScope={() => this.props.deleteScope(x._id)}
 
 								   scans={_.filter(this.props.scans, (y) => {
@@ -69,7 +68,7 @@ class HostsTable extends React.Component {
 
 		return (
 			<div>
-				<Search />
+				<Search onFilterChange={this.props.onFilterChange} />
 				<br />
 				{scopes}
 				<ReactPaginate previousLabel={"prev"}

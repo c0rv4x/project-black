@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import { 
 	Button, 
@@ -13,21 +14,19 @@ class ScopeComment extends React.Component {
 		super(props);
 
 		this.state = {
-			scopeComment: "",
-			scopeCommentInited: false
+			scopeComment: this.props.commentValue
 		};
 
 		this.commentChange = this.commentChange.bind(this);
 	}
 
 	componentWillReceiveProps(nextProps) {
-		if ((!this.state.scopeCommentInited) && (this.props.scope)) {
-			const comment = this.props.scope.comment;
+		if (nextProps.commentValue) {
+			const comment = nextProps.commentValue;
 
 			if (comment != this.state.scopeComment) {
 				this.setState({
-					scopeCommentInited: true,
-					scopeComment: this.props.scope.comment
+					scopeComment: comment
 				});				
 			}
 		}
