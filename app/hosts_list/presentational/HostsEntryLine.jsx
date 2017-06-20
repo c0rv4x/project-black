@@ -47,7 +47,6 @@ class HostsEntryLine extends React.Component {
 				<ListGroup fill>
 					<ListGroupItem key={this.props.project.project_uuid + "_" +this.props.scope.hostname}>
 						<ScopeComment commentValue={this.props.scope.comment}
-									  onCommentChange={this.props.onCommentChange}
 									  onCommentSubmit={this.props.onCommentSubmit}/>
 					</ListGroupItem>
 					

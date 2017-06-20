@@ -29,10 +29,18 @@ function mapStateToProps(state, ownProps){
         scopes: {
         	'ips': _.filter(state.scopes.ips, (x) => {
 	        	return x.project_uuid == project['project_uuid']
+	        }).sort((a, b) => {
+	        	if (a.ip_address < b.ip_address) return -1
+	        	if (a.ip_address > b.ip_address) return 1
+	        	return 0
 	        }),
         	'hosts': _.filter(state.scopes.hosts, (x) => {
 	        	return x.project_uuid == project['project_uuid']
-	        }),	        
+	        }).sort((a, b) => {
+	        	if (a.hostname < b.hostname) return -1
+	        	if (a.hostname > b.hostname) return 1
+	        	return 0
+	        }),       
         },
         tasks: _.filter(state.tasks.active, (x) => {
         	return x.project_uuid == project['project_uuid']
@@ -50,12 +58,6 @@ const mapDispatchToProps = (dispatch) => {
 				'comment': comment, 
 				'project_uuid': project_uuid
 			}))
-		},
-		onScopeCommentChange: (comment, scope_id) => {
-			dispatch(updateScopeComment({
-				'comment': comment, 
-				'_id': scope_id
-			}))			
 		}
 	}
 }

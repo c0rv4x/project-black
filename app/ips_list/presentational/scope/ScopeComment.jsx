@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import { 
 	Button, 
@@ -11,6 +12,33 @@ class ScopeComment extends React.Component {
 
 	constructor(props) {
 		super(props);
+<<<<<<< Updated upstream
+=======
+
+		this.state = {
+			scopeComment: this.props.commentValue
+		};
+
+		this.commentChange = this.commentChange.bind(this);
+	}
+
+	componentWillReceiveProps(nextProps) {
+		if (nextProps.commentValue) {
+			const comment = nextProps.commentValue;
+
+			if (comment != this.state.scopeComment) {
+				this.setState({
+					scopeComment: comment
+				});				
+			}
+		}
+	}
+
+	commentChange(e) {
+		this.setState({
+			scopeComment: e.target.value
+		});
+>>>>>>> Stashed changes
 	}
 
 	render() {
