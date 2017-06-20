@@ -10,7 +10,7 @@ import {
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
-import ScopeComment from '../../ips_list/presentational/scope/ScopeComment.jsx'
+import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import HostsEntryLinePorts from './HostsEntryLinePorts.jsx'
 
 class HostsEntryLine extends React.Component {

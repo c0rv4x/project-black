@@ -67,11 +67,7 @@ class HostsTable extends React.Component {
 
 		return (
 			<div>
-<<<<<<< Updated upstream
-=======
-				<Search onFilterChange={this.props.onFilterChange} />
 				<br />
->>>>>>> Stashed changes
 				{scopes}
 				<ReactPaginate previousLabel={"prev"}
 							   nextLabel={"next"} 

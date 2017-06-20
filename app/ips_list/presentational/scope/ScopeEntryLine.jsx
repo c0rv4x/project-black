@@ -9,7 +9,7 @@ import {
 	Col
 } from 'react-bootstrap'
 
-import ScopeComment from './ScopeComment.jsx'
+import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
 
 class ScopeEntryLine extends React.Component {
 
