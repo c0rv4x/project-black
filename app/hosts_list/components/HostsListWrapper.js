@@ -63,7 +63,12 @@ const mapDispatchToProps = (dispatch) => {
 			dispatch(updateScopeComment({
 				'comment': comment, 
 				'_id': scope_id
-			}))			
+			}))	
+		},	
+		onFilterChangeHosts: (hostsFilters) => {
+			dispatch(updateFilters({
+				'hosts': hostsFilters
+			}))				
 		}
 	}
 }

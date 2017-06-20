@@ -121,15 +121,16 @@ function update_scope(state = initialState, action) {
 		var updated_scope = message["updated_scope"];
 
 		if (updated_scope["type"] == "ip") {
-			for (var ip_addr of state["ips"]) {
+			for (var ip_addr of new_state["ips"]) {
 				if (ip_addr["_id"] == updated_scope["_id"]) {
+					console.log(ip_addr["comment"], '->>>', updated_scope["comment"]);
 					ip_addr["comment"] = updated_scope["comment"]
 					break;
 				}
 			}
 		}
 		else if (updated_scope["type"] == "host") {
-			for (var host of state["hosts"]) {
+			for (var host of new_state["hosts"]) {
 				if (host["_id"] == updated_scope["_id"]) {
 					host["comment"] = updated_scope["comment"]
 					break;

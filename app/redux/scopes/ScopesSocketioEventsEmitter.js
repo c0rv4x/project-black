@@ -68,6 +68,7 @@ class ScopesSocketioEventsEmitter {
 	}
 
 	requestUpdateScope(comment, scope_id) {
+		console.log("Updating comment", comment, scope_id);
 		this.connector.emit('scopes:update', {
 			'scope_id': scope_id,
 			'comment': comment

@@ -10,6 +10,38 @@ import Tasks from '../../common/tasks/Tasks.jsx'
 class ProjectDetails extends React.Component {
 	constructor(props) {
 		super(props);
+
+		console.log('ProjectDetails.constructor');
+	}
+
+  // componentDidMount() {
+  //   setTimeout(() => {
+  //     window.Perf.start();
+  //     setTimeout(() => {
+  //       window.Perf.stop();
+  //       window.measurements = window.Perf.getLastMeasurements();
+  //       window.Perf.printWasted(window.measurements);
+  //     }, 30000);
+  //   }, 5000);
+  // }	
+
+	componentWillReceiveProps(nextProps) {
+		console.log('+++++++');
+		console.log('----componentWillReceiveProps');
+		if (_.filter(nextProps.scopes.ips, (x) => {
+        	return x.comment.indexOf('secret') !== -1
+	    }).length > 0) {
+			console.log('newprops has secret');
+	    }		
+		if (_.filter(this.props.scopes.ips, (x) => {
+        	return x.comment.indexOf('secret') !== -1
+	    }).length > 0) {
+			console.log('this.props has secret');
+	    }			
+		if (!_.isEqual(nextProps, this.props)) {
+		console.log('ProjectDetails props are new', nextProps);
+
+		}
 	}
 
 	render() {

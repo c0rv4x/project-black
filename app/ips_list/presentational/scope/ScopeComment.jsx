@@ -23,14 +23,13 @@ class ScopeComment extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		if (nextProps.commentValue) {
-			const comment = nextProps.commentValue;
+		const comment = nextProps.commentValue;
 
-			if (comment != this.state.scopeComment) {
-				this.setState({
-					scopeComment: comment
-				});				
-			}
+		if (comment != this.state.scopeComment) {
+			console.log("Setting comment");
+			this.setState({
+				scopeComment: comment
+			});				
 		}
 	}
 

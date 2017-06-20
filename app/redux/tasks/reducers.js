@@ -84,6 +84,67 @@ function renew_tasks(state = {'active': [], 'finished': []}, action) {
 	return state;
 }
 
+function update_tasks(state = {'active': [], 'finished': []}, action) {
+	const message = action.message;
+
+	if (message["status"] == 'success') {
+		const active_tasks = message['tasks']['active'];
+		var updated_active_task_ids = [];
+
+		var parsed_active_tasks = _.map(active_tasks, (x) => {
+			updated_active_task_ids.push(x["task_id"]);
+
+			return {
+				"task_id": x["task_id"],
+				"task_type": x["task_type"],
+				"params": x["params"],
+				"target": x["target"],
+				"status": x["status"],
+				"progress": x["progress"],
+				"project_uuid": x["project_uuid"],
+				"text": x["text"],
+				"stdout": x["stdout"],
+				"stderr": x["stderr"],
+				"date_added": x["date_added"]
+			}
+		});
+
+		const finished_tasks = message['tasks']['finished'];
+		var updated_finished_task_ids = [];
+
+		var parsed_finished_tasks = _.map(finished_tasks, (x) => {
+			updated_finished_task_ids.push(x["task_id"]);
+
+			return {
+				"task_id": x["task_id"],
+				"task_type": x["task_type"],
+				"params": x["params"],
+				"target": x["target"],
+				"status": x["status"],
+				"progress": x["progress"],
+				"project_uuid": x["project_uuid"],
+				"text": x["text"],
+				"stdout": x["stdout"],
+				"stderr": x["stderr"],
+				"date_added": x["date_added"]
+			}
+		});
+
+		var filtered_active_tasks = state.active.filter((x) => {
+			return ((updated_active_task_ids.indexOf(x.task_id) === -1) && 
+				(updated_finished_task_ids.indexOf(x.task_id) === -1));
+		});
+
+
+		return { 
+			'active': parsed_active_tasks.concat(filtered_active_tasks),
+			'finished': parsed_finished_tasks.concat(state.finished)
+		};
+	} else {
+		/* TODO: add error handling */
+	}	
+}
+
 function task_reduce(state = {'active': [], 'finished': []}, action) {
 	switch (action.type) {
 		case NEW_TASK:
