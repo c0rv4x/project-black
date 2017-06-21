@@ -15,7 +15,7 @@ class Tasks extends React.Component {
 	}
 
 	render() {
-		var known_task_types = ['dnsscan', 'nmap', 'dirbuster', 'masscan'];
+		var known_task_types = ['dnsscan', 'nmap', 'dirsearch', 'masscan'];
 		var tasks_object = {};
 
 		for (var task_type of known_task_types) {
