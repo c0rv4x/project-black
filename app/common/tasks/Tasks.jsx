@@ -10,6 +10,10 @@ class Tasks extends React.Component {
 		super(props);
 	}
 
+	shouldComponentUpdate(nextProps, nextState) {
+		return !_.isEqual(nextProps, this.props);
+	}
+
 	render() {
 		var known_task_types = ['dnsscan', 'nmap', 'dirbuster', 'masscan'];
 		var tasks_object = {};

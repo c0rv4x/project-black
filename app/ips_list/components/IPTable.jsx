@@ -30,12 +30,16 @@ class IPTable extends React.Component {
 		this.scopesEmitter.requestUpdateScope(comment, _id);
 	}
 
+	shouldComponentUpdate(nextProps, nextState) {
+		return (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState));
+	}
+
 	componentWillReceiveProps(nextProps) {
 		var start = this.limitPerPage * this.state.offsetPage;
 
 		this.setState({
-			shownData: this.props.ips.slice(start, start + this.limitPerPage),
-			pageCount: Math.ceil(this.props.ips.length / this.limitPerPage)
+			shownData: nextProps.ips.slice(start, start + this.limitPerPage),
+			pageCount: Math.ceil(nextProps.ips.length / this.limitPerPage)
 		});
 	}
 

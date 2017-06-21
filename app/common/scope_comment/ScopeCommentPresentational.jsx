@@ -23,8 +23,10 @@ class ScopeCommentPresentational extends React.Component {
 				                 type="text" 
 				                 componentClass="textarea"
 				                 value={this.props.scopeComment} 
-				                 onChange={this.props.commentChange}
-				                 onBlur={this.props.onCommentSubmit}/>	
+				                 onChange={this.props.onChange}
+				                 onBlur={this.props.onBlur}
+				                 onFocus={this.props.onFocus}
+				                 disabled={this.props.commentDisabled}/>	
 				</FormGroup>
 			</div>
 		)

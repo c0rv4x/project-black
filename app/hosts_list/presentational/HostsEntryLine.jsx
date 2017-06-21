@@ -21,12 +21,12 @@ class HostsEntryLine extends React.Component {
 
 	render() {
 		var rendered_hostname = null;
-		if (this.props.scope.hostname) {
+		if (this.props.host.hostname) {
 			rendered_hostname = (
 				<div>
-					<b>{this.props.scope.hostname}</b>
+					<b>{this.props.host.hostname}</b>
 					<div className="pull-right">
-	                    <Link to={'/project/' + this.props.project.project_name + '/host/' + this.props.scope.hostname}
+	                    <Link to={'/project/' + this.props.project.project_name + '/host/' + this.props.host.hostname}
 	                          target="_blank">
 							<Button bsStyle="default" bsSize="small">
 								<Glyphicon glyph="zoom-in"/>
@@ -41,16 +41,15 @@ class HostsEntryLine extends React.Component {
 			)
 		}
 
-
 		return (
 			<Panel defaultExpanded header={rendered_hostname} bsStyle="primary">
 				<ListGroup fill>
-					<ListGroupItem key={this.props.project.project_uuid + "_" +this.props.scope.hostname}>
-						<ScopeComment commentValue={this.props.scope.comment}
+					<ListGroupItem key={this.props.project.project_uuid + "_" +this.props.host.hostname}>
+						<ScopeComment comment={this.props.host.comment}
 									  onCommentSubmit={this.props.onCommentSubmit}/>
 					</ListGroupItem>
 					
-					<HostsEntryLinePorts scope={this.props.scope} 
+					<HostsEntryLinePorts host={this.props.host} 
 									     deleteScope={this.props.deleteScope} 
 									     scans={this.props.scans} />
 

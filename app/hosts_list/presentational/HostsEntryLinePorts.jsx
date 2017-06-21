@@ -18,9 +18,9 @@ class HostsEntryLinePorts extends React.Component {
 
 	render() {
 		var rendered_hostname = null;
-		if (this.props.scope.hostname) {
+		if (this.props.host.hostname) {
 			rendered_hostname = (
-				<span>{this.props.scope.hostname}
+				<span>{this.props.host.hostname}
 				<Glyphicon glyph="remove-circle" onClick={this.props.deleteScope} /></span>
 			)
 		}
@@ -32,7 +32,7 @@ class HostsEntryLinePorts extends React.Component {
 		)
 
 		var ports = [];
-		for (var ip_address of this.props.scope.ip_addresses) {
+		for (var ip_address of this.props.host.ip_addresses) {
 			const ports_filtered = _.filter(this.props.scans, (x) => {
 				return x["target"] == ip_address;
 			});
@@ -53,7 +53,7 @@ class HostsEntryLinePorts extends React.Component {
 				)
 			});
 			ports.push(
-				<ListGroupItem key={this.props.scope._id + "_" + ip_address}>
+				<ListGroupItem key={this.props.host._id + "_" + ip_address}>
 					<h5>{ip_address}</h5>{ports_nice}
 				</ListGroupItem>);
 		}

@@ -6,12 +6,10 @@ import ProjectCommentTracked from './ProjectCommentTracked.jsx'
 import IPTableTracked from './IPTableTracked.jsx'
 import Tasks from '../../common/tasks/Tasks.jsx'
 
-
+let p;
 class ProjectDetails extends React.Component {
 	constructor(props) {
 		super(props);
-
-		console.log('ProjectDetails.constructor');
 	}
 
   // componentDidMount() {
@@ -25,39 +23,9 @@ class ProjectDetails extends React.Component {
   //   }, 5000);
   // }	
 
-	componentWillReceiveProps(nextProps) {
-		console.log('+++++++');
-		console.log('----componentWillReceiveProps');
-		if (_.filter(nextProps.scopes.ips, (x) => {
-        	return x.comment.indexOf('secret') !== -1
-	    }).length > 0) {
-			console.log('newprops has secret');
-	    }		
-		if (_.filter(this.props.scopes.ips, (x) => {
-        	return x.comment.indexOf('secret') !== -1
-	    }).length > 0) {
-			console.log('this.props has secret');
-	    }			
-		if (!_.isEqual(nextProps, this.props)) {
-		console.log('ProjectDetails props are new', nextProps);
-
-		}
-	}
-
-  // componentDidMount() {
-  //   setTimeout(() => {
-  //     window.Perf.start();
-  //     setTimeout(() => {
-  //       window.Perf.stop();
-  //       window.measurements = window.Perf.getLastMeasurements();
-  //       window.Perf.printWasted(window.measurements);
-  //     }, 30000);
-  //   }, 5000);
-  // }	
-
-	shouldComponentUpdate(nextProps, nextState) {
-		return !_.isEqual(nextProps, this.props);
-	}
+  	shouldComponentUpdate(nextProps) {
+  		return (!_.isEqual(nextProps, this.props))
+  	}
 
 	render() {
 		return (
@@ -73,8 +41,7 @@ class ProjectDetails extends React.Component {
 				<Tasks tasks={this.props.tasks} />
 				<ProjectCommentTracked project={this.props.project} />
 				<IPTableTracked scopes={this.props.scopes}
-
-								   scans={this.props.scans} />
+								scans={this.props.scans} />
 			</div>
 		)
 	}

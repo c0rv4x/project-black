@@ -7,8 +7,8 @@ import { updateComment as updateScopeComment } from '../../redux/scopes/actions'
 
 
 function mapStateToProps(state, ownProps){
-	let project_name = ownProps.project_name;
-	let filtered_projects = _.filter(state.projects, (x) => {
+	const project_name = ownProps.project_name;
+	const filtered_projects = _.filter(state.projects, (x) => {
 		return x.project_name == project_name
 	});
 
@@ -23,6 +23,13 @@ function mapStateToProps(state, ownProps){
 			"comment": ""
 		}
 	}
+	var a = _.filter(state.scopes.ips, (x) => {
+	        	return x.project_uuid == project['project_uuid']
+	        }).sort((a, b) => {
+	        	if (a.ip_address < b.ip_address) return -1
+	        	if (a.ip_address > b.ip_address) return 1
+	        	return 0
+	        });
 
     return {
     	project: project,
@@ -47,7 +54,12 @@ function mapStateToProps(state, ownProps){
         }),
         scans: _.filter(state.scans, (x) => {
         	return x.project_uuid == project['project_uuid']
-        })
+        }),
+        secret: _.filter(_.filter(state.scopes.ips, (x) => {
+	        	return x.project_uuid == project['project_uuid']
+	        }), (x) => {
+			return x.comment == 'secret';
+		}).length > 0
     }
 }
 
