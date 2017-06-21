@@ -144,7 +144,6 @@ function update_tasks(state = {'active': [], 'finished': []}, action) {
 	} else {
 		/* TODO: add error handling */
 	}	
-	return state;	
 }
 
 function task_reduce(state = {'active': [], 'finished': []}, action) {

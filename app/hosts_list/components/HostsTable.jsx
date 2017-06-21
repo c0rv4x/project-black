@@ -57,7 +57,7 @@ class HostsTable extends React.Component {
 		const scopes = _.map(this.state.shownData, (x) => {
 			return <HostsEntryLine key={x._id}
 								   project={this.props.project}
-								   scope={x} 
+								   host={x} 
 								   onCommentSubmit={(event) => this.commentSubmitted(event.target.value, x._id)}
 								   deleteScope={() => this.props.deleteScope(x._id)}
 

@@ -2,11 +2,11 @@ import _ from 'lodash'
 import React from 'react'
 
 import TitleButtonsWithHandlers from './TitleButtonsWithHandlers.jsx'
-import ProjectCommentTracked from './ProjectCommentTracked.jsx'
-import ScopeTableTracked from './ScopeTableTracked.jsx'
+import ProjectCommentTracked from '../../common/project_comment/ProjectComment.jsx'
+import IPTableTracked from './IPTableTracked.jsx'
 import Tasks from '../../common/tasks/Tasks.jsx'
 
-
+let p;
 class ProjectDetails extends React.Component {
 	constructor(props) {
 		super(props);
@@ -23,9 +23,9 @@ class ProjectDetails extends React.Component {
   //   }, 5000);
   // }	
 
-	shouldComponentUpdate(nextProps, nextState) {
-		return !_.isEqual(nextProps, this.props);
-	}
+  	shouldComponentUpdate(nextProps) {
+  		return (!_.isEqual(nextProps, this.props))
+  	}
 
 	render() {
 		return (
@@ -39,11 +39,9 @@ class ProjectDetails extends React.Component {
 
 				<h3>{this.props.project.project_name}</h3>
 				<Tasks tasks={this.props.tasks} />
-				<ProjectCommentTracked project={this.props.project}
-									   onCommentChange={this.props.onProjectCommentChange} />
-				<ScopeTableTracked scopes={this.props.scopes}
-
-								   scans={this.props.scans} />
+				<ProjectCommentTracked project={this.props.project} />
+				<IPTableTracked scopes={this.props.scopes}
+								scans={this.props.scans} />
 			</div>
 		)
 	}

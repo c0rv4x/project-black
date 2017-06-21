@@ -1,6 +1,6 @@
 import React from 'react'
-import ScopeComment from '../../ips_list/presentational/scope/ScopeComment.jsx'
 
+import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import PortsTabs from '../presentational/PortsTabs.jsx'
 import TasksButtonsTracked from './TasksButtonsTracked.jsx'
 import Tasks from '../../common/tasks/Tasks.jsx'
