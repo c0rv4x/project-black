@@ -34,12 +34,12 @@ class MasscanTask(AsyncTask):
         try:
             self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
         except Exception as e:
-            self.set_status("Aborted", progress=-1, text=str(e))
+            await self.set_status("Aborted", progress=-1, text=str(e))
             print(e)
 
             raise e
 
-        self.set_status("Working", progress=0)
+        await self.set_status("Working", progress=0)
 
         # Launch readers
         loop = asyncio.get_event_loop()
@@ -66,7 +66,7 @@ class MasscanTask(AsyncTask):
             stdout_chunk_decoded = stdout_chunk.decode('utf-8')
 
             if stdout_chunk_decoded:
-                self.append_stdout(stdout_chunk_decoded)
+                await self.append_stdout(stdout_chunk_decoded)
 
             # Create the task on reading the next chunk of data
             loop = asyncio.get_event_loop()
@@ -84,7 +84,7 @@ class MasscanTask(AsyncTask):
                 if len(stdout_chunk) == 0:
                     raise Exception("No data left")
                 else:
-                    self.append_stdout(stdout_chunk_decoded)
+                    await self.append_stdout(stdout_chunk_decoded)
             except TimeoutError as _:
                 pass
             except Exception as _:
@@ -97,7 +97,7 @@ class MasscanTask(AsyncTask):
             stderr_chunk_decoded = stderr_chunk.decode('utf-8')
 
             if stderr_chunk_decoded:
-                self.append_stderr(stderr_chunk_decoded)
+                await self.append_stderr(stderr_chunk_decoded)
 
             # Create the task on reading the next chunk of data
             loop = asyncio.get_event_loop()
@@ -111,7 +111,7 @@ class MasscanTask(AsyncTask):
                 if len(stderr_chunk) == 0:
                     raise Exception("No data left")
                 else:
-                    self.append_stderr(stderr_chunk_decoded)
+                    await self.append_stderr(stderr_chunk_decoded)
             except TimeoutError as _:
                 pass
             except Exception as _:
@@ -128,6 +128,7 @@ class MasscanTask(AsyncTask):
             * Should put result back to the queue (not yet and not rdy for this) """
         old_progress = 0
         old_found = None
+        loop = asyncio.new_event_loop()
 
         while self.status != "Finished" and self.status != "Aborted":
             if self.status == "New":
@@ -148,7 +149,8 @@ class MasscanTask(AsyncTask):
                         new_progress = int(percent[0].split('.')[0])
                         if new_progress != old_progress or old_found != found[0]:
                             old_progress = new_progress
-                            self.set_status("Working", progress=new_progress)
+                            # loop.create_task(self.read_stderr())                            
+                            loop.run_until_complete(self.set_status("Working", progress=new_progress))
 
                 except Exception as exc:
                     print(exc)
@@ -170,11 +172,11 @@ class MasscanTask(AsyncTask):
             try:
                 self.save()
             except Exception as e:
-                self.set_status("Aborted", progress=-1, text="".join(self.stderr))
+                await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
             else:
-                self.set_status("Finished", progress=100)
+                await self.set_status("Finished", progress=100)
         else:
-            self.set_status("Aborted", progress=-1, text="".join(self.stderr))
+            await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
 
     def save(self):
         save_raw_output(

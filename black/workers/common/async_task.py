@@ -1,5 +1,6 @@
 """ Async class for Task"""
 import asynqp
+from asyncio import Lock
 from black.db import sessions, models
 from black.workers.common.task import Task
 
@@ -22,9 +23,11 @@ class AsyncTask(Task):
         queue = await channel.declare_queue('tasks_statuses')
         await queue.bind(self.exchange, routing_key='tasks_statuses')
 
-        self.set_status("New")
+        self.exhange_lock = Lock()
 
-    def set_status(self, new_status, progress=0, text=""):
+        await self.set_status("New")
+
+    async def set_status(self, new_status, progress=0, text=""):
         Task.set_status(self, new_status, progress=progress, text=text)
 
         msg = asynqp.Message({
@@ -35,9 +38,12 @@ class AsyncTask(Task):
             'new_stdout': "",
             'new_stderr': ""
         })
-        self.exchange.publish(msg, 'tasks_statuses')
 
-    def append_stdout(self, new_stdout):
+        await self.exhange_lock.acquire()
+        self.exchange.publish(msg, 'tasks_statuses')
+        self.exhange_lock.release()
+
+    async def append_stdout(self, new_stdout):
         new_stdout = new_stdout
         Task.append_stdout(self, new_stdout)
 
@@ -49,9 +55,12 @@ class AsyncTask(Task):
             'new_stdout': new_stdout,
             'new_stderr': ""
         })
-        self.exchange.publish(msg, 'tasks_statuses')
 
-    def append_stderr(self, new_stderr):
+        await self.exhange_lock.acquire()
+        self.exchange.publish(msg, 'tasks_statuses')
+        self.exhange_lock.release()
+
+    async def append_stderr(self, new_stderr):
         new_stderr = new_stderr
         Task.append_stderr(self, new_stderr)
 
@@ -63,4 +72,8 @@ class AsyncTask(Task):
             'new_stdout': "",
             'new_stderr': new_stderr
         })
+
+        await self.exhange_lock.acquire()
         self.exchange.publish(msg, 'tasks_statuses')
+        self.exhange_lock.release()
+
