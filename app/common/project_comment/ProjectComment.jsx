@@ -2,7 +2,7 @@ import React from 'react'
 
 import ProjectsSocketioEventsEmitter from '../../redux/projects/ProjectsSocketioEventsEmitter.js'
 import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
-import ProjectComment from '../presentational/ProjectComment.jsx'
+import ProjectCommentPresentational from './ProjectCommentPresentational.jsx'
 
 
 class ProjectCommentTracked extends React.Component {
@@ -51,11 +51,11 @@ class ProjectCommentTracked extends React.Component {
 
 	render() {
 		return (
-			<ProjectComment commentInput={this.state.projectComment}
-							onCommentInputChange={this.onCommentInputChange}
-							commentSubmitted={this.commentSubmitted} 
+			<ProjectCommentPresentational commentInput={this.state.projectComment}
+										  onCommentInputChange={this.onCommentInputChange}
+										  commentSubmitted={this.commentSubmitted} 
 
-							project={this.props.project}/>
+										  project={this.props.project}/>
 		)
 	}
 

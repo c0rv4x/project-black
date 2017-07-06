@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import HostsList from './HostsList.jsx'
 import { updateComment as updateProjectComment } from '../../redux/projects/actions'
 import { updateComment as updateScopeComment } from '../../redux/scopes/actions'
+import { updateFilters } from '../../redux/filters/actions'
 
 
 function mapStateToProps(state, ownProps){
@@ -47,7 +48,8 @@ function mapStateToProps(state, ownProps){
         }),
         scans: _.filter(state.scans, (x) => {
         	return x.project_uuid == project['project_uuid']
-        })
+        }),
+        filters: state.filters.hosts
     }
 }
 
@@ -63,8 +65,8 @@ const mapDispatchToProps = (dispatch) => {
 			dispatch(updateScopeComment({
 				'comment': comment, 
 				'_id': scope_id
-			}))	
-		},	
+			}))			
+		},
 		onFilterChangeHosts: (hostsFilters) => {
 			dispatch(updateFilters({
 				'hosts': hostsFilters

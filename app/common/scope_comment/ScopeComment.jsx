@@ -13,12 +13,14 @@ class ScopeComment extends React.Component {
 			beforeModification: this.props.comment,
 			disabled: false,
 			focused: false,
-			receivedText: null
+			receivedText: null,
+			commentShown: this.props.comment !== "" && this.props.comment !== null
 		};
 
 		this.commentChange = this.commentChange.bind(this);
 		this.onFocus = this.onFocus.bind(this);
 		this.onBlur = this.onBlur.bind(this);
+		this.triggerCommentShown = this.triggerCommentShown.bind(this);
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -30,6 +32,7 @@ class ScopeComment extends React.Component {
 			if (!this.state.focused) {
 				this.setState({
 					scopeComment: nextProps.comment,
+					commentShown: nextProps.comment !== "" && nextProps.comment !== null,
 					beforeModification: nextProps.comment
 				});
 			}
@@ -68,13 +71,22 @@ class ScopeComment extends React.Component {
 		})
 	}
 
+	triggerCommentShown() {
+		this.setState({
+			commentShown: !this.state.commentShown
+		});
+	}
+
 	render() {
 		return (
 			<ScopeCommentPresentational scopeComment={this.state.scopeComment}
 										onChange={this.commentChange}
 										onFocus={this.onFocus}
 										onBlur={this.onBlur}
-										commentDisabled={this.props.disabled} />
+										commentDisabled={this.props.disabled} 
+
+										triggerCommentShown={this.triggerCommentShown}
+										commentShown={this.state.commentShown} />
 		)
 	}
 }
