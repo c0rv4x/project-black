@@ -30,7 +30,7 @@ class Search extends React.Component {
 	handleOnChange(value) {
 		this.setState({ multiValue: value });
 
-		setTimeout(this.parseActiveOptions, 200);
+		setTimeout(this.parseActiveOptions, 100);
 	}
 
 	parseActiveOptions() {

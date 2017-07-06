@@ -21,34 +21,54 @@ class HostsList extends React.Component {
 
 	filter(data, name) {
 		if (data) {
-			// var filtered = {
-			// 	'ips': data['ips'],
-			// 	'hosts': []
-			// };
-
-			// for (var eachValue of data['hosts']) {
-			// 	console.log(eachValue);
-			// }
-			var hosts = null;
+			// Work only on hosts (hostname filter + banner filter)
+			var hosts = [];
+			var noFilter = true;
 
 			if (this.state.regexesObjects.hasOwnProperty('host')) {
+				noFilter = false;
+
 				var hostsRegex = this.state.regexesObjects['host'];
-				hosts = data['hosts'].filter((x) => {
+				var newHosts = data['hosts'].filter((x) => {
 					return hostsRegex.exec(x['hostname']) !== null;
 				});
-			}
-			else {
-				hosts = data['hosts']
+				hosts = hosts.concat(newHosts);
 			}
 
-			return {
-				'ips': data['ips'],
-				'hosts': hosts
+			if (this.state.regexesObjects.hasOwnProperty('ip')) {
+				noFilter = false;
+
+				var ipRegex = this.state.regexesObjects['ip'];
+				hosts = hosts.concat(data['hosts'].filter((x) => {
+					return x.ip_addresses.filter((y) => {
+						return ipRegex.exec(y) !== null
+					}).length > 0;
+				}));
+			}
+
+			// if (this.state.regexesObjects.hasOwnProperty('banner')) {
+			// 	noFilter = false;
+
+			// 	var bannerRegex = this.state.regexesObjects['banner'];
+			// 	hosts = hosts.concat(data['hosts'].filter((x) => {
+			// 		console.log(x);
+			// 		return bannerRegex.exec(x['banner']) !== null;
+			// 	}));
+			// }
+
+			if (noFilter) {
+				return {
+					'hosts': data['hosts']
+				}				
+			}
+			else {
+				return {
+					'hosts': hosts
+				}
 			}
 		}
 		else {
 			return {
-				'ips': [] ,
 				'hosts': []
 			}
 		}
@@ -77,8 +97,8 @@ class HostsList extends React.Component {
 	}
 
 	render() {
-		// var scopes = this.filter(this.props.scopes, 'host');
-		var scopes = this.props.scopes;
+		var scopes = this.filter(this.props.scopes);
+		// var scopes = this.props.scopes;
 
 		return (
 			<div>
