@@ -2,3 +2,6 @@ flask
 flask-socketio
 eventlet
 dnspython
+netaddr
+sqlalchemy
+psycopg2
