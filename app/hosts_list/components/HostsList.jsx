@@ -12,6 +12,8 @@ class HostsList extends React.Component {
 	}
 
 	render() {
+		var scopes = this.filter(this.props.scopes);
+
 		return (
 			<div>
 				<HostsListHead />
