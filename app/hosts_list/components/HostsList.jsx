@@ -4,6 +4,7 @@ import React from 'react'
 import HostsListHead from '../presentational/HostsListHead.jsx'
 import Tasks from '../../common/tasks/Tasks.jsx'
 import HostsTableTracked from './HostsTableTracked.jsx'
+import TasksButtonsTracked from './TasksButtonsTracked.jsx'
 
 
 class HostsList extends React.Component {
@@ -106,6 +107,9 @@ class HostsList extends React.Component {
 				<Tasks tasks={this.props.tasks} />
 
 				<hr />
+
+				<TasksButtonsTracked scopes={scopes} 
+									 project={this.props.project} />
 
 				<HostsTableTracked project={this.props.project}
 								   scopes={scopes}
