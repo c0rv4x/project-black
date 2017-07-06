@@ -52,7 +52,7 @@ class IPEntryLine extends React.Component {
 			<Panel collapsible defaultExpanded header={header} bsStyle="primary">
 				<ListGroup fill>
 					<ListGroupItem>
-						<ScopeComment comment={this.props.ip.comment}
+						<ScopeComment commentValue={this.props.ip.comment}
 									  onCommentSubmit={this.props.onCommentSubmit}/>
 					</ListGroupItem>
 					{ports}

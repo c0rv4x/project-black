@@ -3,6 +3,7 @@ import React from 'react'
 import { Table, Button } from 'react-bootstrap'
 import ReactPaginate from 'react-paginate'
 
+import Search from './Search.jsx'
 import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
 import HostsEntryLine from '../presentational/HostsEntryLine.jsx'
 
@@ -67,6 +68,7 @@ class HostsTable extends React.Component {
 
 		return (
 			<div>
+				<Search onFilterChange={this.props.onFilterChange} />
 				<br />
 				{scopes}
 				<ReactPaginate previousLabel={"prev"}
