@@ -33,9 +33,7 @@ class HostsEntryLinePorts extends React.Component {
 
 		var ports = [];
 		for (var ip_address of this.props.host.ip_addresses) {
-			const ports_filtered = _.filter(this.props.scans, (x) => {
-				return x["target"] == ip_address;
-			});
+			const ports_filtered = ip_address.scans;
 
 			const ports_sorted = ports_filtered.sort((a, b) => {
 				if (a["port_number"] > b["port_number"]) return 1;
@@ -52,9 +50,10 @@ class HostsEntryLinePorts extends React.Component {
 						</Row>
 				)
 			});
+
 			ports.push(
-				<ListGroupItem key={this.props.host._id + "_" + ip_address}>
-					<h5>{ip_address}</h5>{ports_nice}
+				<ListGroupItem key={this.props.host._id + "_" + ip_address.ip_address}>
+					<h5>{ip_address.ip_address}</h5>{ports_nice}
 				</ListGroupItem>);
 		}
 

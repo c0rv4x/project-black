@@ -14,10 +14,11 @@ class TasksButtonsTracked extends React.Component {
 	}
 
 	dirbusterStart(options) {
-		this.tasksEmitter.requestCreateTask('dirsearch', 
-											[scheme + "://" + target], 
-											{'program': options}, 
-											this.props.project.project_uuid)
+		console.log(this.props.scopes);
+		// this.tasksEmitter.requestCreateTask('dirsearch', 
+		// 									[scheme + "://" + target], 
+		// 									{'program': options}, 
+		// 									this.props.project.project_uuid)
 	}
 
 	render() {
