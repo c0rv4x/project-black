@@ -31,7 +31,6 @@ class MainAccumulator extends React.Component {
 				<h2>{this.props.host.hostname}</h2>
 				<TasksButtonsTracked project={this.props.project}
 									 host={this.props.host}
-									 ports={this.props.ports}
 									 activePortNumber={this.state.activePortNumber} />				
 				<Tasks tasks={this.props.tasks} />
 				<hr />

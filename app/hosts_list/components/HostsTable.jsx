@@ -59,11 +59,7 @@ class HostsTable extends React.Component {
 								   project={this.props.project}
 								   host={x} 
 								   onCommentSubmit={(event) => this.commentSubmitted(event.target.value, x._id)}
-								   deleteScope={() => this.props.deleteScope(x._id)}
-
-								   scans={_.filter(this.props.scans, (y) => {
-								   	return x.ip_addresses.indexOf(y.target) !== -1;
-								   })}/>
+								   deleteScope={() => this.props.deleteScope(x._id)} />
 		});
 
 		return (

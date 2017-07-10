@@ -7,6 +7,36 @@ import { updateComment as updateScopeComment } from '../../redux/scopes/actions'
 import { updateFilters } from '../../redux/filters/actions'
 
 
+function formIPs(ips_list, project_uuid) {
+	var ips = _.filter(ips_list, (x) => {
+    	return x.project_uuid == project_uuid
+    }).sort((a, b) => {
+    	if (a.ip_address < b.ip_address) return -1
+    	if (a.ip_address > b.ip_address) return 1
+    	return 0
+    });
+
+    return ips;
+}
+
+function formHosts(hosts_list, project_uuid, scans) {
+	var hosts = _.filter(hosts_list, (x) => {
+    	return x.project_uuid == project_uuid
+    }).sort((a, b) => {
+    	if (a.hostname < b.hostname) return -1
+    	if (a.hostname > b.hostname) return 1
+    	return 0
+    });
+
+    return hosts
+}
+
+function formScans(scans, project_uuid) {
+	return _.filter(scans, (x) => {
+    	return x.project_uuid == project_uuid
+    });	
+}
+
 function mapStateToProps(state, ownProps){
 	let project_name = ownProps.project_name;
 	let filtered_projects = _.filter(state.projects, (x) => {
@@ -25,30 +55,18 @@ function mapStateToProps(state, ownProps){
 		}
 	}
 
+	let scans = formScans(state.scans, project['project_uuid']);
+
     return {
     	project: project,
         scopes: {
-        	'ips': _.filter(state.scopes.ips, (x) => {
-	        	return x.project_uuid == project['project_uuid']
-	        }).sort((a, b) => {
-	        	if (a.ip_address < b.ip_address) return -1
-	        	if (a.ip_address > b.ip_address) return 1
-	        	return 0
-	        }),
-        	'hosts': _.filter(state.scopes.hosts, (x) => {
-	        	return x.project_uuid == project['project_uuid']
-	        }).sort((a, b) => {
-	        	if (a.hostname < b.hostname) return -1
-	        	if (a.hostname > b.hostname) return 1
-	        	return 0
-	        }),	        
+        	'ips': formIPs(state.scopes.ips, project['project_uuid']),
+        	'hosts': formHosts(state.scopes.hosts, project['project_uuid'], scans)
         },
         tasks: _.filter(state.tasks.active, (x) => {
         	return x.project_uuid == project['project_uuid']
         }),
-        scans: _.filter(state.scans, (x) => {
-        	return x.project_uuid == project['project_uuid']
-        }),
+        scans: scans,
         filters: state.filters.hosts
     }
 }

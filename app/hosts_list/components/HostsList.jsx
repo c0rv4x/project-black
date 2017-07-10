@@ -4,6 +4,7 @@ import React from 'react'
 import HostsListHead from '../presentational/HostsListHead.jsx'
 import Tasks from '../../common/tasks/Tasks.jsx'
 import HostsTableTracked from './HostsTableTracked.jsx'
+import TasksButtonsTracked from './TasksButtonsTracked.jsx'
 
 
 class HostsList extends React.Component {
@@ -17,6 +18,7 @@ class HostsList extends React.Component {
 		};
 
 		this.filter = this.filter.bind(this);
+		this.reworkHostsList = this.reworkHostsList.bind(this);
 	}
 
 	filter(data, name) {
@@ -96,9 +98,28 @@ class HostsList extends React.Component {
 
 	}
 
+	reworkHostsList(hosts_input, scans) {
+		var hosts = JSON.parse(JSON.stringify(hosts_input));
+
+	    for (var each_host of hosts) {
+			for (var ip_index = 0; ip_index < each_host.ip_addresses.length; ip_index++) {
+				let ip_address = each_host.ip_addresses[ip_index];
+				let filtered_scans = scans.filter((x) => {
+					return x.target === ip_address;
+				});
+
+				each_host.ip_addresses[ip_index] = {
+					'ip_address': ip_address,
+					'scans': filtered_scans
+				};
+			}    	
+	    }
+
+	    return hosts
+	}
+
 	render() {
-		var scopes = this.filter(this.props.scopes);
-		// var scopes = this.props.scopes;
+		var scopes = this.reworkHostsList(this.props.scopes.hosts, this.props.scans);
 
 		return (
 			<div>
@@ -106,6 +127,10 @@ class HostsList extends React.Component {
 				<Tasks tasks={this.props.tasks} />
 
 				<hr />
+
+				<TasksButtonsTracked scopes={scopes}
+									 scans={this.props.scans} 
+									 project={this.props.project} />
 
 				<HostsTableTracked project={this.props.project}
 								   scopes={scopes}

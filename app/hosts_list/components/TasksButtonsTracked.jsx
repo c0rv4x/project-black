@@ -14,12 +14,11 @@ class TasksButtonsTracked extends React.Component {
 	}
 
 	dirbusterStart(options) {
-		var scheme = this.props.activePortNumber === 443 ? 'https' : 'http';
-		var target = this.props.host.hostname;
-		this.tasksEmitter.requestCreateTask('dirsearch', 
-											[scheme + "://" + target + ':' + this.props.activePortNumber], 
-											{'program': options}, 
-											this.props.project.project_uuid)
+		console.log(this.props.scopes);
+		// this.tasksEmitter.requestCreateTask('dirsearch', 
+		// 									[scheme + "://" + target], 
+		// 									{'program': options}, 
+		// 									this.props.project.project_uuid)
 	}
 
 	render() {
@@ -31,14 +30,14 @@ class TasksButtonsTracked extends React.Component {
 						"handler": this.dirbusterStart,
 						"preformed_options": [
 							{
-								"name": "PHP",
+								"name": "PHP fanboy",
 								"options": {
 									"extensions": "php,php5,phps,php.bak",
 									"path": "/"
 								}
 							},
 							{
-								"name": "ASP",
+								"name": "ASP faggot",
 								"options": {
 									"extensions": "asp",
 									"path": "/"

@@ -1,4 +1,4 @@
-import React from 'react'
+ import React from 'react'
 import { 
 	Button, 
 	Panel, 
@@ -50,8 +50,7 @@ class HostsEntryLine extends React.Component {
 					</ListGroupItem>
 					
 					<HostsEntryLinePorts host={this.props.host} 
-									     deleteScope={this.props.deleteScope} 
-									     scans={this.props.scans} />
+									     deleteScope={this.props.deleteScope} />
 
 				</ListGroup>		
 			</Panel>
