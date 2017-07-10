@@ -46,6 +46,12 @@ class Requester(object):
         # if no backslash, append one
         if not url.endswith('/'):
             url = url + '/'
+
+        # try:
+        #     url.index('://') 
+        # except ValueError as e:
+        #     url = '//' + url
+
         parsed = urllib.parse.urlparse(url)
         self.basePath = parsed.path
 
@@ -53,9 +59,14 @@ class Requester(object):
         if parsed.scheme != 'http' and parsed.scheme != 'https':
             parsed = urllib.parse.urlparse('http://' + url)
             self.basePath = parsed.path
+            self.defaultProtocolUsed = True
+        else:
+            self.defaultProtocolUsed = False
+
         self.protocol = parsed.scheme
         if self.protocol != 'http' and self.protocol != 'https':
             self.protocol = 'http'
+
         self.host = parsed.netloc.split(':')[0]
 
         # resolve DNS to decrease overhead
@@ -65,6 +76,8 @@ class Requester(object):
             try:
                 self.ip = socket.gethostbyname(self.host)
             except socket.gaierror:
+                print('host = ')
+                print(self.host)
                 raise RequestException({'message': "Couldn't resolve DNS"})
         self.headers['Host'] = self.host
 
@@ -88,6 +101,22 @@ class Requester(object):
         self.redirect = redirect
         self.randomAgents = None
         self.request_by_name = request_by_name
+
+        self.protocolCheck()
+
+    def protocolCheck(self):
+        print('Checking protocol')
+        if self.defaultProtocolUsed:
+            try:
+                self.request('/')
+            except RequestException as e:
+                try:
+                    self.protocol = 'https'
+                    self.request('/')
+                except RequestException as e:
+                    return
+            except Exception as e:
+                pass
 
     def setHeader(self, header, content):
         self.headers[header] = content
