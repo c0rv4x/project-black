@@ -14,11 +14,23 @@ class TasksButtonsTracked extends React.Component {
 	}
 
 	dirbusterStart(options) {
-		console.log(this.props.scopes);
-		// this.tasksEmitter.requestCreateTask('dirsearch', 
-		// 									[scheme + "://" + target], 
-		// 									{'program': options}, 
-		// 									this.props.project.project_uuid)
+		for (var each_host of this.props.scopes) {
+			var ports = new Set();
+
+			for (var ip_address of each_host.ip_addresses) {
+				ip_address.scans.map((x) => {
+					ports.add(x.port_number);
+				});
+			}
+
+			for (var each_port of [...ports]) {
+				var target = each_host.hostname;
+				this.tasksEmitter.requestCreateTask('dirsearch', 
+													[target + ":" + each_port], 
+													{'program': options}, 
+													this.props.project.project_uuid)
+			}
+		}
 	}
 
 	render() {
