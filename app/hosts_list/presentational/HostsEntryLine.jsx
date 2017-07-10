@@ -22,16 +22,16 @@ class HostsEntryLine extends React.Component {
 	render() {
 		var rendered_hostname = null;
 		if (this.props.host.hostname) {
+			const verbose_host_link = '/project/' + this.props.project.project_name + '/host/' + this.props.host.hostname;
 			rendered_hostname = (
 				<div>
 					<b>{this.props.host.hostname}</b>
 					<div className="pull-right">
-	                    <Link to={'/project/' + this.props.project.project_name + '/host/' + this.props.host.hostname}
-	                          target="_blank">
+	                    <a onClick={() => window.open(verbose_host_link, 'newwindow', 'width=500,height=500')}>
 							<Button bsStyle="default" bsSize="small">
 								<Glyphicon glyph="zoom-in"/>
 							</Button>					
-	                    </Link>
+	                    </a>
 
 						<Button bsStyle="danger" bsSize="small" onClick={this.props.deleteScope}>
 							<Glyphicon glyph="remove"/>
