@@ -33,7 +33,7 @@ class HostsList extends React.Component {
 
 				var hostsRegex = this.state.regexesObjects['host'];
 				var newHosts = data_copy.filter((x) => {
-					return hostsRegex.exec(x['hostname']) !== null;
+					return hostsRegex.test(x['hostname']) !== null;
 				});
 				console.log(newHosts);
 				hosts = hosts.concat(newHosts);
@@ -45,7 +45,7 @@ class HostsList extends React.Component {
 				var ipRegex = this.state.regexesObjects['ip'];
 				hosts = hosts.concat(data_copy.filter((x) => {
 					return x.ip_addresses.filter((y) => {
-						return ipRegex.exec(y) !== null
+						return ipRegex.test(y) !== null
 					}).length > 0;
 				}));
 			}
@@ -60,7 +60,7 @@ class HostsList extends React.Component {
 				for (var host of hosts) {
 					for (var ip_address of host['ip_addresses']) {
 						ip_address['scans'] = ip_address['scans'].filter((x) => {
-							return bannerRegex.exec(x['banner']);
+							return bannerRegex.test(x['banner']);
 						});
 					}
 
@@ -84,7 +84,7 @@ class HostsList extends React.Component {
 				for (var host of hosts) {
 					for (var ip_address of host['ip_addresses']) {
 						ip_address['scans'] = ip_address['scans'].filter((x) => {
-							return portRegex.exec(String(x['port_number']));
+							return portRegex.test(String(x['port_number']));
 						});
 					}
 
