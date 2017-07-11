@@ -24,6 +24,7 @@ class HostsList extends React.Component {
 	filter(data, name) {
 		if (data) {
 			// Work only on hosts (hostname filter + banner filter)
+			var data_copy = JSON.parse(JSON.stringify(data));
 			var hosts = [];
 			var noFilter = true;
 
@@ -31,9 +32,10 @@ class HostsList extends React.Component {
 				noFilter = false;
 
 				var hostsRegex = this.state.regexesObjects['host'];
-				var newHosts = data['hosts'].filter((x) => {
+				var newHosts = data_copy.filter((x) => {
 					return hostsRegex.exec(x['hostname']) !== null;
 				});
+				console.log(newHosts);
 				hosts = hosts.concat(newHosts);
 			}
 
@@ -41,38 +43,71 @@ class HostsList extends React.Component {
 				noFilter = false;
 
 				var ipRegex = this.state.regexesObjects['ip'];
-				hosts = hosts.concat(data['hosts'].filter((x) => {
+				hosts = hosts.concat(data_copy.filter((x) => {
 					return x.ip_addresses.filter((y) => {
 						return ipRegex.exec(y) !== null
 					}).length > 0;
 				}));
 			}
 
-			// if (this.state.regexesObjects.hasOwnProperty('banner')) {
-			// 	noFilter = false;
+			if (this.state.regexesObjects.hasOwnProperty('banner')) {
+				if (noFilter) {
+					hosts = data_copy;
+				}
 
-			// 	var bannerRegex = this.state.regexesObjects['banner'];
-			// 	hosts = hosts.concat(data['hosts'].filter((x) => {
-			// 		console.log(x);
-			// 		return bannerRegex.exec(x['banner']) !== null;
-			// 	}));
-			// }
+				noFilter = false;
+				var bannerRegex = this.state.regexesObjects['banner'];
+				for (var host of hosts) {
+					for (var ip_address of host['ip_addresses']) {
+						ip_address['scans'] = ip_address['scans'].filter((x) => {
+							return bannerRegex.exec(x['banner']);
+						});
+					}
+
+					host['ip_addresses'] = host['ip_addresses'].filter((x) => {
+						return x.scans.length > 0;
+					});
+				}
+
+				hosts = hosts.filter((x) => {
+					return x.ip_addresses.length > 0;
+				});
+			}
+
+			if (this.state.regexesObjects.hasOwnProperty('port')) {
+				if (noFilter) {
+					hosts = data_copy;
+				}
+
+				noFilter = false;
+				var portRegex = this.state.regexesObjects['port'];
+				for (var host of hosts) {
+					for (var ip_address of host['ip_addresses']) {
+						ip_address['scans'] = ip_address['scans'].filter((x) => {
+							return portRegex.exec(String(x['port_number']));
+						});
+					}
+
+					host['ip_addresses'] = host['ip_addresses'].filter((x) => {
+						return x.scans.length > 0;
+					});
+
+				}
+
+				hosts = hosts.filter((x) => {
+					return x.ip_addresses.length > 0;
+				});
+			}
 
 			if (noFilter) {
-				return {
-					'hosts': data['hosts']
-				}				
+				return data_copy
 			}
 			else {
-				return {
-					'hosts': hosts
-				}
+				return hosts
 			}
 		}
 		else {
-			return {
-				'hosts': []
-			}
+			return []
 		}
 	}
 
@@ -119,7 +154,8 @@ class HostsList extends React.Component {
 	}
 
 	render() {
-		var scopes = this.reworkHostsList(this.props.scopes.hosts, this.props.scans);
+		const scopes = this.reworkHostsList(this.props.scopes.hosts, this.props.scans);
+		const filtered_scopes = this.filter(scopes);
 
 		return (
 			<div>
@@ -128,12 +164,12 @@ class HostsList extends React.Component {
 
 				<hr />
 
-				<TasksButtonsTracked scopes={scopes}
+				<TasksButtonsTracked scopes={filtered_scopes}
 									 scans={this.props.scans} 
 									 project={this.props.project} />
 
 				<HostsTableTracked project={this.props.project}
-								   scopes={scopes}
+								   scopes={filtered_scopes}
 								   onFilterChange={this.props.onFilterChangeHosts}
 
 								   scans={this.props.scans} />
