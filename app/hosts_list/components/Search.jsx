@@ -86,7 +86,10 @@ class Search extends React.Component {
 						toRemove[i] += 1;
 					}
 				}
-				regexes[eachParam].push(replacedStar);
+
+				if (replacedStar.indexOf('!') === -1) {
+					regexes[eachParam].push(replacedStar);
+				}
 
 				// Replace negative in regexes
 				var toRemove = [];
