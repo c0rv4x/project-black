@@ -86,6 +86,7 @@ class Search extends React.Component {
 						toRemove[i] += 1;
 					}
 				}
+				regexes[eachParam].push(replacedStar);
 
 				// Replace negative in regexes
 				var toRemove = [];
@@ -123,7 +124,8 @@ class Search extends React.Component {
 				// regexes[eachParam].push(replacedExclamation);
 			}
 
-			var basicRegex = "(" + regexes[eachParam].join('|') + ")";
+			var basicRegex = null;
+			console.log(regexes[eachParam]);
 			if (regexes[eachParam].length == 0) {
 				basicRegex = "(" + '.*' + ")";
 			}
