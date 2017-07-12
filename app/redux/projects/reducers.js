@@ -17,7 +17,7 @@ function create_project(state = [], action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
-		var state_new = state.slice();
+		var state_new = JSON.parse(JSON.stringify(state));
 
 		state_new.push({
 			"project_name": message["new_project"]["project_name"],
@@ -35,7 +35,7 @@ function delete_project(state = [], action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
-		var state_new = state.slice();
+		var state_new = JSON.parse(JSON.stringify(state));
 
 		var projects_filtered = _.filter(state_new, (x) => {
 			return x["project_uuid"] != message["project_uuid"];
@@ -89,7 +89,7 @@ function update_comment(state = [], action) {
 	const project_uuid = action.message['project_uuid'];
 	const new_comment = action.message['comment'];
 
-	var new_state = state.slice();
+	var new_state = JSON.parse(JSON.stringify(state));
 	for (var project of new_state) {
 		if (project.project_uuid == project_uuid) {
 			project.comment = new_comment;
