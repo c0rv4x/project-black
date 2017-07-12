@@ -10,7 +10,7 @@ function new_task(state = {'active': [], 'finished': []}, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
-		let active_tasks = JSON.parse(JSON.stringify(state['active']));
+		let active_tasks = Object.assign([], state['active'], null);
 		active_tasks.push(message['new_task']);
 
 		return {
