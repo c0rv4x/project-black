@@ -32,7 +32,7 @@ class MasscanTask(AsyncTask):
         self.command = ['sudo', 'masscan'] + [self.target] + ['-oX', '-'] + self.params['program']
 
         try:
-            self.proc = await asyncio.create_subprocess_exec(*self.command, stdout=PIPE, stderr=PIPE)
+            self.proc = await asyncio.create_subprocess_shell(' '.join(self.command), stdout=PIPE, stderr=PIPE)
         except Exception as e:
             await self.set_status("Aborted", progress=-1, text=str(e))
             print(e)
