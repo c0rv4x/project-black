@@ -35,6 +35,10 @@ class Connector {
     	}
     }
 
+    close() {
+        this.socketio.close();
+    }
+
 }
 
 export default Connector;

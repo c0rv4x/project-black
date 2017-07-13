@@ -25,25 +25,33 @@ import NavigationTabs from './NavigationTabs.jsx'
 import HostPage from '../../host_verbose/components/MainAccumulatorWrapper.jsx'
 
 
-mainStore = createStore(rdcs);
+var mainStore = createStore(rdcs);
 
 class NavigationTabsWrapper extends React.Component {
     constructor(props) {
         super(props);
 
-        const projectsSubscriber = new ProjectsSocketioEventsSubscriber(this.mainStore);
-        const scopesSubscriber = new ScopesSocketioEventsSubsriber(this.mainStore);
-        const tasksSubscriber = new TasksSocketioEventsSubsriber(this.mainStore);
-        const scansSubscriber = new ScansSocketioEventsSubsriber(this.mainStore);
-        const filesSubscriber = new FilesSocketioEventsSubsriber(this.mainStore);        
+        this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore);
+        this.scopesSubscriber = new ScopesSocketioEventsSubsriber(mainStore);
+        this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore);
+        this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore);
+        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore);        
     }
 
     render() {
         return (
-            <Provider store={this.mainStore}>
+            <Provider store={mainStore}>
                 <NavigationTabs {...this.props} />
             </Provider>
         )
+    }
+
+    componentWillUnmount() {
+        this.projectsSubscriber.close();
+        this.scopesSubscriber.close();
+        this.tasksSubscriber.close();
+        this.scansSubscriber.close();
+        this.filesSubscriber.close();
     }
 }
 
@@ -51,19 +59,22 @@ class Projects extends React.Component {
     constructor(props) {
         super(props);
 
-        this.projectStore = createStore(combineReducers({
+        mainStore.replaceReducer(combineReducers({
             projects: project_reduce
         }));
-        const projectsSubscriber = new ProjectsSocketioEventsSubscriber(this.projectStore);        
+        const projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore);        
     }
 
     render() {
         return (
-            <Provider store={this.projectStore}>
+            <Provider store={mainStore}>
                 <ProjectsMainComponentWrapper {...this.props} />
             </Provider>
         )
-    }    
+    } 
+    componentWillUnmount() {
+        this.projectsSubscriber.close();
+    }       
 }
 
 class Routing extends React.Component {
