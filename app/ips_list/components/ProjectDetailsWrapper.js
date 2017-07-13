@@ -67,12 +67,24 @@ function mapStateToProps(state, ownProps){
             return x.project_uuid == project['project_uuid']
         }),
         scans: scans,
-        filters: state.filters.hosts
+        filters: state.filters.ips
+    }
+}
+
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onFilterChangeIPs: (ipsFilters) => {
+            dispatch(updateFilters({
+                'ips': ipsFilters
+            }))             
+        }
     }
 }
 
 const ProjectDetailsWrapper = connect(
-    mapStateToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(ProjectDetails)
 
 export default ProjectDetailsWrapper
