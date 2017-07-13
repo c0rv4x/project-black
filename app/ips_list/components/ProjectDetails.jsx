@@ -72,21 +72,14 @@ class ProjectDetails extends React.Component {
 
 				noFilter = false;
 				var portRegex = this.state.regexesObjects['port'];
-				for (var host of ips) {
-					for (var ip_address of host['ip_addresses']) {
-						ip_address['scans'] = ip_address['scans'].filter((x) => {
-							return portRegex.test(String(x['port_number']));
-						});
-					}
-
-					host['ip_addresses'] = host['ip_addresses'].filter((x) => {
-						return x.scans.length > 0;
+				for (var ip_address of ips) {
+					ip_address['scans'] = ip_address['scans'].filter((x) => {
+						return portRegex.test(String(x['port_number']));
 					});
-
 				}
 
 				ips = ips.filter((x) => {
-					return x.ip_addresses.length > 0;
+					return x.scans.length > 0;
 				});
 			}
 
@@ -155,10 +148,10 @@ class ProjectDetails extends React.Component {
 
 				<TitleButtonsWithHandlers scopes={filtered_scopes}
 									      project={this.props.project} 
-									      scans={this.props.scans}
-									      onFilterChange={this.props.onFilterIPChange} />				
+									      scans={this.props.scans} />				
 				<IPTableTracked scopes={filtered_scopes}
-								scans={this.props.scans} />
+								scans={this.props.scans}
+								onFilterChange={this.props.onFilterChangeIPs} />
 			</div>
 		)
 	}
