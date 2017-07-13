@@ -35,7 +35,7 @@ class HostsList extends React.Component {
 				var newHosts = data_copy.filter((x) => {
 					return hostsRegex.test(x['hostname']) !== null;
 				});
-				console.log(newHosts);
+
 				hosts = hosts.concat(newHosts);
 			}
 
@@ -93,7 +93,6 @@ class HostsList extends React.Component {
 					});
 
 				}
-
 				hosts = hosts.filter((x) => {
 					return x.ip_addresses.length > 0;
 				});
@@ -156,6 +155,7 @@ class HostsList extends React.Component {
 	render() {
 		const scopes = this.reworkHostsList(this.props.scopes.hosts, this.props.scans);
 		const filtered_scopes = this.filter(scopes);
+		
 
 		return (
 			<div>

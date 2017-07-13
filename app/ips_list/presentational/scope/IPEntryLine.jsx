@@ -32,7 +32,7 @@ class IPEntryLine extends React.Component {
 			</h3>
 		)
 
-		const ports = _.map(this.props.scans.sort((a, b) => {
+		const ports = _.map(this.props.ip.scans.sort((a, b) => {
 			if (a["port_number"] > b["port_number"]) return 1;
 			if (a["port_number"] < b["port_number"]) return -1;
 			return 0;

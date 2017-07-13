@@ -6,8 +6,8 @@ import {
 
 
 const initialState = {
-	"ips": null,
-	"hosts": null
+	"ips": {},
+	"hosts": {}
 };
 
 function update_filters(state = initialState, action) {
@@ -17,8 +17,14 @@ function update_filters(state = initialState, action) {
 	if (message.hasOwnProperty('hosts')) {
 		newState['hosts'] = message['hosts'];
 	}
+	else {
+		newState['hosts'] = {};
+	}
 	if (message.hasOwnProperty('ips')) {
 		newState['ips'] = message['ips'];
+	}
+	else {
+		newState['ips'] = {};
 	}
 
 	return newState;
