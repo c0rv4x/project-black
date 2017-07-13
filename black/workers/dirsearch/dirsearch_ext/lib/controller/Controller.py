@@ -190,11 +190,11 @@ class Controller(object):
 
     def notFoundCallback(self, path):
         self.index += 1
-        self.output.lastPath(path, self.index, len(self.dictionary))
+        #self.output.lastPath(path, self.index, len(self.dictionary))
         del path
 
     def errorCallback(self, path, errorMsg):
-        self.output.addConnectionError()
+        #self.output.addConnectionError()
         del path
 
     def appendErrorLog(self, path, errorMsg):
