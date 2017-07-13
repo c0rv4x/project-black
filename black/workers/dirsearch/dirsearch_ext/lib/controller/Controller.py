@@ -78,7 +78,8 @@ class Controller(object):
                                            max_retries=self.arguments.max_retries, delay=self.arguments.delay, timeout=self.arguments.timeout,
                                            ip=self.arguments.ip_address, proxy=self.arguments.proxy,
                                            redirect=self.arguments.redirect, 
-                                           request_by_name=self.arguments.request_by_name)
+                                           request_by_name=self.arguments.request_by_name,
+                                           arguments_object=self.arguments)
                     self.requester.request("/")
 
                 except RequestException as e:
