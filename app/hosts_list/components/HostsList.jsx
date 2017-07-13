@@ -35,7 +35,7 @@ class HostsList extends React.Component {
 				var newHosts = data_copy.filter((x) => {
 					return hostsRegex.test(x['hostname']) !== null;
 				});
-				console.log(newHosts);
+
 				hosts = hosts.concat(newHosts);
 			}
 

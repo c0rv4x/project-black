@@ -5,6 +5,7 @@ import ReactPaginate from 'react-paginate'
 
 import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
 import IPEntryLine from '../presentational/scope/IPEntryLine.jsx'
+import Search from './Search.jsx'
 
 
 class IPTable extends React.Component {
@@ -57,15 +58,12 @@ class IPTable extends React.Component {
 			return <IPEntryLine key={x._id} 
 								ip={x} 
 								onCommentSubmit={(event) => this.commentSubmitted(event.target.value, x._id)}
-								deleteScope={() => this.props.deleteScope(x._id)}
-
-								scans={_.filter(this.props.scans, (y) => {
-								    return y.target == x.ip_address;
-								})}/>
+								deleteScope={() => this.props.deleteScope(x._id)} />
 		});
 
 		return (
 			<div>
+				<Search onFilterChange={this.props.onFilterChange} />
 				{ips}
 				<ReactPaginate previousLabel={"prev"}
 							   nextLabel={"next"} 
