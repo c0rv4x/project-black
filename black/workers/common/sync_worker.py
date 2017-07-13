@@ -77,7 +77,12 @@ class SyncWorker(Worker):
             processes's object. """
         # Add a unique id to the task, so we can track the notifications
         # which are addressed to the ceratin task
-        message = json.loads(message)
+        try:
+            message = message.decode('utf-8')
+            message = json.loads(message)
+        except Exception as e:
+            message = json.loads(message)
+
         task_id = message['task_id']
         target = message['target']
         params = message['params']
