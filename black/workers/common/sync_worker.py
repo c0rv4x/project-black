@@ -36,6 +36,11 @@ class SyncWorker(Worker):
             queue=self.name + "_tasks",
             exchange="tasks.exchange",
             routing_key=self.name + "_tasks")
+        self.channel.queue_declare(queue=self.name + "_notifications", durable=True)
+        self.channel.queue_bind(
+            queue=self.name + "_notifications",
+            exchange="tasks.exchange",
+            routing_key=self.name + "_notifications")        
 
     def acquire_resources(self):
         """ Function that captures resources, now it is just a semaphore """

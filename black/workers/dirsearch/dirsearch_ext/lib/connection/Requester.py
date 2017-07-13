@@ -42,7 +42,7 @@ class Requester(object):
         }
 
     def __init__(self, url, cookie=None, user_agent=None, maxPool=1, max_retries=5, delay=0, timeout=30, ip=None, proxy=None,
-                 redirect=False, request_by_name=True):
+                 redirect=False, request_by_name=True, arguments_object=None):
         # if no backslash, append one
         if not url.endswith('/'):
             url = url + '/'
@@ -101,6 +101,7 @@ class Requester(object):
         self.redirect = redirect
         self.randomAgents = None
         self.request_by_name = request_by_name
+        self.arguments_object = arguments_object
 
         self.protocolCheck()
 
@@ -117,6 +118,13 @@ class Requester(object):
                     return
             except Exception as e:
                 pass
+
+
+        if self.request_by_name:
+            self.arguments_object.url = "{0}://{1}:{2}".format(self.protocol, self.host, self.port)
+        else:
+            self.arguments_object.url = "{0}://{1}:{2}".format(self.protocol, self.ip, self.port)
+
 
     def setHeader(self, header, content):
         self.headers[header] = content
