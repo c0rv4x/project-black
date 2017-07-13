@@ -27,7 +27,7 @@ class NmapTask(AsyncTask):
         self.command = ['nmap', '-oX', '-'] + self.params['program'] + self.target
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
-        self.set_status("Working", 0, "")
+        await self.set_status("Working", 0, "")
         loop = asyncio.get_event_loop()
         loop.create_task(self.read_stdout())
         loop.create_task(self.read_stderr())
@@ -50,7 +50,7 @@ class NmapTask(AsyncTask):
             stdout_chunk_decoded = stdout_chunk.decode('utf-8')
 
             if stdout_chunk_decoded:
-                self.append_stdout(stdout_chunk_decoded)
+                await self.append_stdout(stdout_chunk_decoded)
 
             # Create the task on reading the next chunk of data
             loop = asyncio.get_event_loop()
@@ -68,7 +68,7 @@ class NmapTask(AsyncTask):
                 if len(stdout_chunk) == 0:
                     raise Exception("No data left")
                 else:
-                    self.append_stdout(stdout_chunk_decoded)
+                    await self.append_stdout(stdout_chunk_decoded)
             except TimeoutError as _:
                 pass
             except Exception as _:
@@ -81,7 +81,7 @@ class NmapTask(AsyncTask):
             stderr_chunk_decoded = stderr_chunk.decode('utf-8')
 
             if stderr_chunk_decoded:
-                self.append_stderr(stderr_chunk_decoded)
+                await self.append_stderr(stderr_chunk_decoded)
 
             # Create the task on reading the next chunk of data
             loop = asyncio.get_event_loop()
@@ -95,7 +95,7 @@ class NmapTask(AsyncTask):
                 if len(stderr_chunk) == 0:
                     raise Exception("No data left")
                 else:
-                    self.append_stderr(stderr_chunk_decoded)
+                    await self.append_stderr(stderr_chunk_decoded)
             except TimeoutError as _:
                 pass
             except Exception as _:
@@ -123,13 +123,13 @@ class NmapTask(AsyncTask):
             except Exception as e:
                 print("Set to aborted", "".join(self.stderr))
                 print(str(e))
-                self.set_status("Aborted", progress=-1, text="".join(self.stderr))
+                await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
             else:
-                self.set_status("Finished", progress=100)
+                await self.set_status("Finished", progress=100)
         else:
             print("Not null exit code")
             print("".join(self.stderr))
-            self.set_status("Aborted", progress=-1, text="".join(self.stderr))
+            await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
 
 
     def parse_results(self):
