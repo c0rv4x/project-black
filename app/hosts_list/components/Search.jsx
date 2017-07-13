@@ -140,6 +140,7 @@ class Search extends React.Component {
 			regexes[eachParam] = negativeRegex;
 
 		}
+		console.log(regexes);
 
 		this.props.onFilterChange(regexes);
 	}

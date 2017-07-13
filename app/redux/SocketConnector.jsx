@@ -11,7 +11,7 @@ class Connector {
         }
         else {
             this.name = name;
-            this.socketio = io("http://127.0.0.1:5000/" + name);  
+            this.socketio = io("http://31.44.88.173:5000/" + name);  
             connections[name] = this.socketio;
         }
     }
