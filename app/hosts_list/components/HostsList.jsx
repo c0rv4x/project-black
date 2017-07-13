@@ -7,6 +7,7 @@ import HostsTableTracked from './HostsTableTracked.jsx'
 import TasksButtonsTracked from './TasksButtonsTracked.jsx'
 
 
+
 class HostsList extends React.Component {
 	constructor(props) {
 		super(props);
@@ -51,12 +52,35 @@ class HostsList extends React.Component {
 			// if (this.state.regexesObjects.hasOwnProperty('banner')) {
 			// 	noFilter = false;
 
-			// 	var bannerRegex = this.state.regexesObjects['banner'];
-			// 	hosts = hosts.concat(data['hosts'].filter((x) => {
-			// 		console.log(x);
-			// 		return bannerRegex.exec(x['banner']) !== null;
-			// 	}));
-			// }
+				hosts = hosts.filter((x) => {
+					return x.ip_addresses.length > 0;
+				});
+			}
+
+			if (this.state.regexesObjects.hasOwnProperty('port')) {
+				if (noFilter) {
+					hosts = data_copy;
+				}
+
+				noFilter = false;
+				var portRegex = this.state.regexesObjects['port'];
+				for (var host of hosts) {
+					for (var ip_address of host['ip_addresses']) {
+						ip_address['scans'] = ip_address['scans'].filter((x) => {
+							return portRegex.test(String(x['port_number']));
+						});
+					}
+
+					host['ip_addresses'] = host['ip_addresses'].filter((x) => {
+						return x.scans.length > 0;
+					});
+
+				}
+
+				hosts = hosts.filter((x) => {
+					return x.ip_addresses.length > 0;
+				});
+			}
 
 			if (noFilter) {
 				return {
@@ -119,7 +143,8 @@ class HostsList extends React.Component {
 	}
 
 	render() {
-		var scopes = this.reworkHostsList(this.props.scopes.hosts, this.props.scans);
+		const scopes = this.reworkHostsList(this.props.scopes.hosts, this.props.scans);
+		const filtered_scopes = this.filter(scopes);
 
 		return (
 			<div>
