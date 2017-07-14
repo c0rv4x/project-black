@@ -33,6 +33,10 @@ class FilesEventsSubsriber {
             this.store.dispatch(callback(x));
         });
     }
+
+    close() {
+        this.connector.close();
+    }
 }
 
 export default FilesEventsSubsriber;

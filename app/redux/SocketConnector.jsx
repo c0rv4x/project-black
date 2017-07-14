@@ -35,6 +35,11 @@ class Connector {
     	}
     }
 
+    close() {
+        connections[this.name].close();
+        delete connections[this.name];
+    }
+
 }
 
 export default Connector;

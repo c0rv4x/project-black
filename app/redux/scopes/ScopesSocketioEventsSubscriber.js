@@ -48,6 +48,10 @@ class ScopesSocketioEventsSubscriber {
 			this.store.dispatch(callback(x));
 		});
 	}
+
+    close() {
+        this.connector.close();
+    }	
 }
 
 export default ScopesSocketioEventsSubscriber;

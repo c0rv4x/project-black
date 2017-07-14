@@ -40,6 +40,10 @@ class ScansEventsSubsriber {
 			this.store.dispatch(callback(x));
 		});
 	}
+
+    close() {
+        this.connector.close();
+    }	
 }
 
 export default ScansEventsSubsriber;
