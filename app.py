@@ -7,6 +7,8 @@ from werkzeug.routing import BaseConverter
 from flask_socketio import SocketIO
 
 from events_handling import Handlers
+from functools import wraps
+from flask import request, Response
 
 
 def check_auth(username, password):
@@ -45,18 +47,20 @@ class RegexConverter(BaseConverter):
 
 app.url_map.converters['regex'] = RegexConverter
 
-
 @app.route('/')
+@requires_auth
 def send_main():
     """ Simple server of statics """
     return send_from_directory('public', 'index.html')
 
 @app.route('/<regex(".*[^\.js]"):path>')
+@requires_auth
 def send_not_js(path):
     """ Simple server of statics """
     return send_from_directory('public', 'index.html')
 
 @app.route('/<regex(".*\.js"):path>')
+@requires_auth
 def send_js(path):
     """ Simple server of statics """
     return send_from_directory('public', path)
