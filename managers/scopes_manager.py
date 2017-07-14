@@ -26,6 +26,7 @@ class ScopeManager(object):
         """ Returns all existing ips objects, serialized """
         if force_update:
             self.update_from_db()
+        print(len(self.ips))
         return list(map(lambda x: x.toJSON(), self.ips))
 
     def get_hosts(self, force_update=False):

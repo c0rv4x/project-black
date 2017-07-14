@@ -7,6 +7,7 @@ import HostsTableTracked from './HostsTableTracked.jsx'
 import TasksButtonsTracked from './TasksButtonsTracked.jsx'
 
 
+
 class HostsList extends React.Component {
 	constructor(props) {
 		super(props);
@@ -93,6 +94,31 @@ class HostsList extends React.Component {
 					});
 
 				}
+				hosts = hosts.filter((x) => {
+					return x.ip_addresses.length > 0;
+				});
+			}
+
+			if (this.state.regexesObjects.hasOwnProperty('port')) {
+				if (noFilter) {
+					hosts = data_copy;
+				}
+
+				noFilter = false;
+				var portRegex = this.state.regexesObjects['port'];
+				for (var host of hosts) {
+					for (var ip_address of host['ip_addresses']) {
+						ip_address['scans'] = ip_address['scans'].filter((x) => {
+							return portRegex.test(String(x['port_number']));
+						});
+					}
+
+					host['ip_addresses'] = host['ip_addresses'].filter((x) => {
+						return x.scans.length > 0;
+					});
+
+				}
+
 				hosts = hosts.filter((x) => {
 					return x.ip_addresses.length > 0;
 				});

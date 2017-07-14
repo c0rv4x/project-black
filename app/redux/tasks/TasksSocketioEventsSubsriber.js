@@ -50,6 +50,10 @@ class TasksSocketioEventsSubsriber {
 			this.store.dispatch(callback(x));
 		});
 	}
+
+    close() {
+        this.connector.close();
+    }	
 }
 
 export default TasksSocketioEventsSubsriber;
