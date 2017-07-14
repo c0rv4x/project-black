@@ -36,7 +36,8 @@ class Connector {
     }
 
     close() {
-        this.socketio.close();
+        connections[this.name].close();
+        delete connections[this.name];
     }
 
 }

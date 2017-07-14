@@ -59,10 +59,7 @@ class Projects extends React.Component {
     constructor(props) {
         super(props);
 
-        mainStore.replaceReducer(combineReducers({
-            projects: project_reduce
-        }));
-        const projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore);        
+        this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore);        
     }
 
     render() {
