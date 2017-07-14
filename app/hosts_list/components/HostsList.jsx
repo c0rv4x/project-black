@@ -52,10 +52,10 @@ class HostsList extends React.Component {
 			// if (this.state.regexesObjects.hasOwnProperty('banner')) {
 			// 	noFilter = false;
 
-				hosts = hosts.filter((x) => {
-					return x.ip_addresses.length > 0;
-				});
-			}
+			// 	hosts = hosts.filter((x) => {
+			// 		return x.ip_addresses.length > 0;
+			// 	});
+			// }
 
 			if (this.state.regexesObjects.hasOwnProperty('port')) {
 				if (noFilter) {
