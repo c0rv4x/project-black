@@ -20,10 +20,9 @@ class IPTableTracked extends React.Component {
 
 	render() {
 		return (
-				<IPTable ips={this.props.scopes.ips}
+				<IPTable ips={this.props.scopes}
 						 deleteScope={this.deleteScope}
-
-						 scans={this.props.scans} />
+						 onFilterChange={this.props.onFilterChange} />
 		)
 	}
 

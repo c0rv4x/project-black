@@ -165,7 +165,11 @@ class TaskManager(object):
         """ Parse the message from the queue, which contains task status,
         updates the relevant ShadowTask and, we notify the upper module that
         it must update the scan results. """
-        message = json.loads(message)
+        try:
+            message = message.decode('utf-8')
+            message = json.loads(message)
+        except Exception as e:
+            message = json.loads(message)
         task_id = message['task_id']
 
         for task in self.active_tasks:
