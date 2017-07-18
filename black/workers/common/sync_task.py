@@ -1,6 +1,7 @@
 """ Sync class for Task"""
 import pika
 import json
+from threading import Lock
 from black.db import sessions, models
 from black.workers.common.task import Task
 
@@ -28,9 +29,12 @@ class SyncTask(Task):
             exchange="tasks.exchange",
             routing_key="tasks_statuses")
 
+        self.status_lock = Lock()
+
     def set_status(self, new_status, progress=0, text=""):
         Task.set_status(self, new_status, progress=progress, text=text)
 
+        self.status_lock.acquire()
         self.channel.basic_publish(
             exchange='',
             routing_key='tasks_statuses',
@@ -42,3 +46,4 @@ class SyncTask(Task):
                 'new_stdout': "",
                 'new_stderr': ""
             }))
+        self.status_lock.release()
