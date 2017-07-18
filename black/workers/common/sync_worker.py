@@ -110,6 +110,7 @@ class SyncWorker(Worker):
 
     def handle_finished_task(self, proc):
         """ After the task is finished, remove it from 'active' list """
+        proc.finish()
         self.active_processes.remove(proc)
         self.finished_processes.append(proc)
 

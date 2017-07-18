@@ -15,10 +15,10 @@ class SyncTask(Task):
         # Connect to the queue
         credentials = pika.PlainCredentials('guest', 'guest')
         parameters = pika.ConnectionParameters('localhost', credentials=credentials)
-        connection = pika.BlockingConnection(parameters)
+        self.connection = pika.BlockingConnection(parameters)
 
         # Open a communications channel
-        self.channel = connection.channel()
+        self.channel = self.connection.channel()
         self.channel.exchange_declare(
             exchange="tasks.exchange",
             exchange_type="direct",
@@ -47,3 +47,6 @@ class SyncTask(Task):
                 'new_stderr': ""
             }))
         self.status_lock.release()
+
+    def finish(self):
+        self.connection.close()
