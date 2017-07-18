@@ -69,11 +69,9 @@ class SyncWorker(Worker):
 
     def schedule_task(self, something, method, properties, body):
         """ Wrapper of execute_task that puts the task to the event loop """
-        print("Got msg {}".format(body))
         self.channel.basic_ack(delivery_tag=method.delivery_tag)
 
         self.acquire_resources()
-        print("Enough resources on {}".format(body))
         thread = threading.Thread(target=self.execute_task, args=(body,))
         thread.start()
 
