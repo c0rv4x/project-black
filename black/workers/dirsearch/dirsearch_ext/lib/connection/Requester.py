@@ -19,6 +19,7 @@
 import random
 import urllib.parse
 import socket
+import string
 import http.client
 import urllib.request
 import urllib.parse
@@ -76,8 +77,7 @@ class Requester(object):
             try:
                 self.ip = socket.gethostbyname(self.host)
             except socket.gaierror:
-                print('host = ')
-                print(self.host)
+                print('host = ', self.host)
                 raise RequestException({'message': "Couldn't resolve DNS"})
         self.headers['Host'] = self.host
 
@@ -106,14 +106,13 @@ class Requester(object):
         self.protocolCheck()
 
     def protocolCheck(self):
-        print('Checking protocol')
         if self.defaultProtocolUsed:
             try:
-                self.request('/')
+                self.request('/' + ''.join(random.choice(string.ascii_lowercase) for _ in range(20)))
             except RequestException as e:
                 try:
                     self.protocol = 'https'
-                    self.request('/')
+                    self.request('/' + ''.join(random.choice(string.ascii_lowercase) for _ in range(20)))
                 except RequestException as e:
                     return
             except Exception as e:
@@ -155,6 +154,7 @@ class Requester(object):
                     url += "/"
                 if path.startswith('/'):
                     path = path[1:]
+
                 url += path
 
                 headers = dict(self.headers)
@@ -185,7 +185,8 @@ class Requester(object):
             finally:
                 i = i + 1
         if i > self.max_retries:
+            # print("path=",path)
             raise RequestException(\
-                {'message': 'CONNECTION TIMEOUT: There was a problem in the request to: {0}'.format(path)}
+                {'message': 'CONNECTION TIMEOUT: There was a problem in the request to: {0}'.format(url)}
                 )
         return result
