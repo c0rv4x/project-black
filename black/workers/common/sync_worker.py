@@ -1,9 +1,11 @@
 """ Basic worker """
 import json
 import threading
-import pika
+import multiprocessing
+from time import sleep
 
 from .worker import Worker
+from .sync_consumer import SyncConsumer
 
 
 class SyncWorker(Worker):
@@ -15,32 +17,16 @@ class SyncWorker(Worker):
 
     def __init__(self, worker_name, task_class):
         Worker.__init__(self, worker_name, task_class)
-        self.semaphore = threading.Semaphore(value=3)
+        self.semaphore = threading.Semaphore(value=30)
         self.channel = None
 
     def initialize(self):
         """ Init variables """
-        # connect to the RabbitMQ broker
-        credentials = pika.PlainCredentials('guest', 'guest')
-        parameters = pika.ConnectionParameters('localhost', credentials=credentials)
-        connection = pika.BlockingConnection(parameters)
+        self.tasks_consumer = SyncConsumer(self.name + "_tasks", self.name + "_tasks")
+        self.tasks_consumer.add_consumer_handler(self.schedule_task)
 
-        # Open a communications channel
-        self.channel = connection.channel()
-        self.channel.exchange_declare(
-            exchange="tasks.exchange",
-            exchange_type="direct",
-            durable=True)
-        self.channel.queue_declare(queue=self.name + "_tasks", durable=True)
-        self.channel.queue_bind(
-            queue=self.name + "_tasks",
-            exchange="tasks.exchange",
-            routing_key=self.name + "_tasks")
-        self.channel.queue_declare(queue=self.name + "_notifications", durable=True)
-        self.channel.queue_bind(
-            queue=self.name + "_notifications",
-            exchange="tasks.exchange",
-            routing_key=self.name + "_notifications")        
+        self.notifications_consumer = SyncConsumer(self.name + "_notifications", self.name + "_notifications")
+        self.notifications_consumer.add_consumer_handler(self.handle_notification)
 
     def acquire_resources(self):
         """ Function that captures resources, now it is just a semaphore """
@@ -50,27 +36,14 @@ class SyncWorker(Worker):
         """ Function that releases resources, now it is just a semaphore """
         self.semaphore.release()
 
-    def produce_sample(self):
-        """ Quick funcitons for submitting a task sample """
-        from uuid import uuid4
-        task_id = self.name + "_task_" + str(uuid4())
-        msg = {"task_id": task_id, "target": "hey", "parameters": ["some params"], "project_uuid": "test_project"}
-        self.channel.basic_publish(exchange='tasks.exchange',
-                                   routing_key=self.name + '_tasks',
-                                   body=json.dumps(msg),
-                                   properties=pika.BasicProperties(content_type='application/json'))
-
     def start_tasks_consumer(self):
         """ Check if tasks queue has any data.
         If any, launch the tasks execution """
-        self.channel.basic_consume(
-            consumer_callback=self.schedule_task,
-            queue=self.name + '_tasks')
+        p = multiprocessing.Process(target=self.tasks_consumer.run)
+        p.start()
 
-    def schedule_task(self, something, method, properties, body):
+    def schedule_task(self, body):
         """ Wrapper of execute_task that puts the task to the event loop """
-        self.channel.basic_ack(delivery_tag=method.delivery_tag)
-
         self.acquire_resources()
         thread = threading.Thread(target=self.execute_task, args=(body,))
         thread.start()
@@ -112,21 +85,19 @@ class SyncWorker(Worker):
         self.active_processes.remove(proc)
         self.finished_processes.append(proc)
 
-        print("Releasing resources")
         self.release_resources()
 
 
     def start_notifications_consumer(self):
         """ Check if tasks queue has any data.
         If any, launch the tasks execution """
-        self.channel.basic_consume(
-            consumer_callback=self.handle_notification,
-            queue=self.name + '_notifications')
+        p = multiprocessing.Process(target=self.notifications_consumer.run)
+        p.start()
 
-    def handle_notification(self, something, method, properties, body):
+
+    def handle_notification(self, body):
         """ Handle the notification, just received. """
         print("Notification received")
-        self.channel.basic_ack(delivery_tag=method.delivery_tag)
         # Add a unique id to the task, so we can track the notifications
         # which are addressed to the ceratin task
         message = json.loads(body)
@@ -152,4 +123,6 @@ class SyncWorker(Worker):
         """ Launch both queues and start consuming """
         self.start_tasks_consumer()
         self.start_notifications_consumer()
-        self.channel.start_consuming()
+
+        while True:
+            sleep(2)

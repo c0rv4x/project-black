@@ -186,6 +186,7 @@ class Requester(object):
                 i = i + 1
         if i > self.max_retries:
             # print("path=",path)
+            print("timeout on {}".format(url))
             raise RequestException(\
                 {'message': 'CONNECTION TIMEOUT: There was a problem in the request to: {0}'.format(url)}
                 )
