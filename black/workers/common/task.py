@@ -29,8 +29,10 @@ class Task(object):
         # Task's status
         self.status = None
 
+        # Tasks progress
         self.progress = None
 
+        # Tasks text
         self.text = None
 
         # Points the the asyncio.Process object 
@@ -86,16 +88,19 @@ class Task(object):
 
     async def start(self):
         """ Launch the task """
-        pass
+        raise NotImplementedError
 
     def send_notification(self, command):
         """ Sends 'command' notification to the current process """
-        pass
+        raise NotImplementedError
 
     async def check_if_exited(self):
         """ Check if the process exited. If so,
         save stdout, stderr, exit_code and update the status """
-        pass
+        raise NotImplementedError
+
+    def wait_for_exit(self):
+        raise NotImplementedError
 
     def create_db_record(self):
         """ Creates the record of the task in a special DB table """

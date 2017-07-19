@@ -70,14 +70,17 @@ class SyncWorker(Worker):
         # Store the object that points to the process
         self.active_processes.append(proc)
 
-        # Launch
-        proc.start()
+        try:
+            # Launch
+            proc.start()
+        except Exception as e:
+            pass
+        finally:
+            # Wait till finishing the task
+            proc.wait_for_exit()
 
-        # Wait till finishing the task
-        proc.wait_for_exit()
-
-        # Do some finalization
-        self.handle_finished_task(proc)
+            # Do some finalization
+            self.handle_finished_task(proc)
 
     def handle_finished_task(self, proc):
         """ After the task is finished, remove it from 'active' list """

@@ -7,9 +7,6 @@ from black.db import sessions, models
 from black.workers.common.task import Task
 
 
-def cbb(connection, reply_code, reply_text) :
-    print('Connection closed', connection, reply_code, reply_text)
-
 class SyncTask(Task):
     """ Sync class for the task """
 
