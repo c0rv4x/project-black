@@ -14,8 +14,11 @@ class DirsearchTask(SyncTask):
 
     def start(self):
         """ Launch the task and readers of stdout, stderr """
-        print("Received dirsearch task for {}".format(self.target[0]))
-        Program(self.target[0], self.task_id, self.project_uuid, self.set_status, self.params_object)
+        try:
+            print("Starting {}".format(self.target[0]))
+            Program(self.target[0], self.task_id, self.project_uuid, self.set_status, self.params_object)
+        except Exception as e:
+            self.set_status("Aborted", progress=0)
 
     def send_notification(self, command):
         """ Sends 'command' notification to the current process. """

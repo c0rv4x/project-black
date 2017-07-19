@@ -61,7 +61,7 @@ class Controller(object):
         self.batch = False
         self.batchSession = None
         self.setupErrorLogs()
-        self.output.newLine("\nError Log: {0}".format(self.errorLogPath))
+        # self.output.newLine("\nError Log: {0}".format(self.errorLogPath))
         if self.arguments.use_random_agents:
             self.randomAgents = FileUtils.getLines(FileUtils.buildPath(script_path, "db", "user-agents.txt"))
         try:
@@ -70,7 +70,7 @@ class Controller(object):
                 gc.collect()
                 self.reportManager = ReportManager()
                 self.currentUrl = url
-                self.output.target(self.currentUrl)
+                # self.output.target(self.currentUrl)
                 try:
 
                     self.requester = Requester(url, cookie=self.arguments.cookie,
@@ -83,7 +83,7 @@ class Controller(object):
                     self.requester.request("/")
 
                 except RequestException as e:
-                    self.output.error(e.args[0]['message'])
+                    # self.output.error(e.args[0]['message'])
                     raise SkipTargetInterrupt
                 if self.arguments.use_random_agents:
                     self.requester.setRandomAgents(self.randomAgents)
@@ -119,7 +119,7 @@ class Controller(object):
                 self.errorLog.close()
             self.reportManager.close()
 
-        self.output.warning('\nFinished')
+        self.output.warning('\nFinished {}'.format(self.arguments.url))
 
     def getSavePath(self):
         basePath = None
@@ -177,7 +177,7 @@ class Controller(object):
             to_continue = path.status not in self.exclude_status_codes and self.blacklists.get(path.status) is None
             to_continue = to_continue or (self.blacklists.get(path.status) is not None and path.path not in self.blacklists.get(path.status))
             if  to_continue:
-                self.output.statusReport(path.path, path.response)
+                self.output.statusReport(path.path, path.response, self.arguments.url)
                 self.addDirectory(path.path)
                 self.reportManager.addPath(self.currentDirectory + path.path, path.status, path.response)
 
@@ -249,7 +249,7 @@ class Controller(object):
         while not self.directories.empty():
             self.index = 0
             self.currentDirectory = self.directories.get()
-            self.output.warning('[{1}] Starting: {0}'.format(self.currentDirectory, time.strftime('%H:%M:%S')))
+            self.output.warning('[{2}] Starting: {0}'.format(self.currentDirectory, self.arguments.url, time.strftime('%H:%M:%S')))
             self.fuzzer.requester.basePath = self.basePath + self.currentDirectory
             self.output.basePath = self.basePath + self.currentDirectory
             self.fuzzer.start()

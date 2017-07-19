@@ -56,7 +56,7 @@ class CLIOutput(object):
         self.lastInLine = False
         sys.stdout.flush()
 
-    def statusReport(self, path, response):
+    def statusReport(self, path, response, url):
         with self.mutex:
             contentLength = None
             status = response.status
@@ -78,11 +78,12 @@ class CLIOutput(object):
             else:
                 showPath = urllib.parse.urljoin("/", self.basePath)
                 showPath = urllib.parse.urljoin(showPath, path)
-            message = '[{0}] {1} - {2} - {3}'.format(
+            message = '[{0}] {1} - {2} - {3} // {4}'.format(
                 time.strftime('%H:%M:%S'),
                 status,
                 contentLength.rjust(6, ' '),
-                showPath
+                showPath,
+                url
             )
 
             if status == 200:
