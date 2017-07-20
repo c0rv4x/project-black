@@ -74,6 +74,34 @@ class Projects extends React.Component {
     }       
 }
 
+class Host extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore);
+        this.scopesSubscriber = new ScopesSocketioEventsSubsriber(mainStore);
+        this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore);
+        this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore);
+        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore); 
+    }
+
+    render() {
+        return (
+            <Provider store={mainStore}>
+                <HostPage {...this.props} />
+            </Provider>
+        )
+    } 
+    componentWillUnmount() {
+        this.projectsSubscriber.close();
+        this.scopesSubscriber.close();
+        this.tasksSubscriber.close();
+        this.scansSubscriber.close();
+        this.filesSubscriber.close();        
+    }       
+}
+
+
 class Routing extends React.Component {
     constructor(props) {
         super(props);
@@ -88,7 +116,7 @@ class Routing extends React.Component {
                     <Route exact path="/project/:project_name" 
                            component={NavigationTabsWrapper} />
                     <Route exact path="/project/:project_name/host/:hostname" 
-                           component={HostPage} />                           
+                           component={Host} />                           
                 </div>
             </Router> 
         )
