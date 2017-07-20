@@ -18,7 +18,7 @@ class TitleButtonsWithHandlers extends React.Component {
 	}
 
 	runMasscan(params) {
-		var targets = _.map(this.props.scopes.ips, (x) => {
+		var targets = _.map(this.props.scopes, (x) => {
 			return x.ip_address || x.hostname
 		});
 
@@ -29,7 +29,7 @@ class TitleButtonsWithHandlers extends React.Component {
 	}
 
 	runNmap(params) {
-		var targets = _.map(this.props.scopes.ips, (x) => {
+		var targets = _.map(this.props.scopes, (x) => {
 			return x.ip_address;
 		});
 
