@@ -16,6 +16,7 @@ class NmapTask(AsyncTask):
     """ Major class for working with nmap """
     def __init__(self, task_id, target, params, project_uuid):
         AsyncTask.__init__(self, task_id, 'nmap', target, params, project_uuid)
+        print(self.target, self.params['program'])
         self.proc = None
 
         self.exit_code = None
@@ -111,11 +112,9 @@ class NmapTask(AsyncTask):
     async def wait_for_exit(self):
         """ Check if the process exited. If so,
         save stdout, stderr, exit_code and update the status. """
-        print("Task started")
         exit_code = await self.proc.wait()
         self.exit_code = exit_code
         # The process has exited.
-        print("The process finished OK")
 
         if self.exit_code == 0:
             try:
