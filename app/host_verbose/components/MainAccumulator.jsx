@@ -18,6 +18,17 @@ class MainAccumulator extends React.Component {
 		this.tabChange = this.tabChange.bind(this);
 	}
 
+	componentWillReceiveProps(newProps) {
+		if (JSON.stringify(this.props.ports) !== JSON.stringify(newProps.ports)) {
+			if (typeof this.state.activePortNumber === 'undefined') {
+				this.setState({
+					activePortNumber: newProps.ports[0].port_number,
+					activeTabNumber: 0
+				});
+			}
+		}
+	}
+
 	tabChange(newNumber, portNumber) {
 		this.setState({
 			activeTabNumber: newNumber,
