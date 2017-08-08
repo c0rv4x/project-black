@@ -42,7 +42,7 @@ function renew_tasks(state = {'active': [], 'finished': []}, action) {
 
 	if (message["status"] == 'success') {
 		const active_tasks = message['tasks']['active'];
-		var parsed_active_tasks = _.map(active_tasks, (x) => {
+		var parsed_active_tasks = _.map(_.uniq(active_tasks), (x) => {
 			return {
 				"task_id": x["task_id"],
 				"task_type": x["task_type"],
@@ -59,7 +59,7 @@ function renew_tasks(state = {'active': [], 'finished': []}, action) {
 		});
 
 		const finished_tasks = message['tasks']['finished'];
-		var parsed_finished_tasks = _.map(finished_tasks, (x) => {
+		var parsed_finished_tasks = _.map(_.uniq(finished_tasks), (x) => {
 			return {
 				"task_id": x["task_id"],
 				"task_type": x["task_type"],
