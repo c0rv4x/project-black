@@ -36,10 +36,9 @@ class TasksListEntry extends React.Component {
 			}
 			else {
 				const target = extracted_target[target_number];
-				targets.push(<div key={target}>{target}</div>);				
+				targets.push(<div key={target}>{target.ip_address || target.hostname}</div>);				
 			}
 		}
-
 		return (
 			<tr onClick={this.open}>
 				<td>{this.props.task.task_type}</td>
