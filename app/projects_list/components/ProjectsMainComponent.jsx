@@ -31,7 +31,7 @@ class ProjectsMainComponent extends React.Component {
 
 						  newProjectName={this.state.newProjectName}
 						  onProjectNameChange={this.changeNewProjectName}
-						  submitNewProject={() => this.emitter.requestCreateProject(this.state.newProjectName)}/>
+						  submitNewProject={() => this.emitter.requestCreateProject(this.state.newProjectName.trim())}/>
 		)
 	}
 }
