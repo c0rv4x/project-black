@@ -6,8 +6,9 @@ a one->many relationship in the SQLalchemy. """
 import re
 import uuid
 import socket
-import dns.resolver
+from multiprocessing import Pool
 
+from managers.resolver import Resolver, ResolverTimeoutException
 from black.black.db import sessions, IP_addr
 from black.black.db import Host as HostDB
 from managers.scopes.ip import IP
@@ -189,30 +190,22 @@ class ScopeManager(object):
     def resolve_scopes(self, scopes_ids, project_uuid):
         """ Using all the ids of scopes, resolve the hosts, now we
         resolve ALL the scopes, that are related to the project_uuid """
-        def try_connecection_to_ns(nameserver):
-            """ Check if ns is reachable """
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            try:
-                sock.connect((nameserver, 53))
-            except socket.error as e:
-                print('Error connecting to the NS')
-            sock.close()
-
-        resolver = dns.resolver.Resolver()
-        resolver.nameservers = ['8.8.8.8']
-        try_connecection_to_ns('8.8.8.8')
-
         filtered_hosts = list(filter(lambda x: x.get_project_uuid() == project_uuid, self.hosts))
         if scopes_ids is None:
             to_resolve = filtered_hosts
         else:
             to_resolve = list(filter(lambda x: x.get_id() in scopes_ids, filtered_hosts))
 
-        for host in to_resolve:
-            self.resolve_single_host(host, resolver)
+        dns_pool = Pool(processes=5)
+        dns_pool.map(resolve_single_host, to_resolve)
 
 
-    def resolve_single_host(self, host, resolver):
+    def resolve_single_host(self, host):
+        try:
+            resolver = Resolver()
+        except ResolverTimeoutException:
+            print("Timeout connecting to NS")
+            return
         project_uuid = host.get_project_uuid()
         hostname = host.get_hostname()
 
@@ -249,3 +242,5 @@ class ScopeManager(object):
                     "status": "error",
                     "text": "No such domain"
                 }
+            except Exception as e:
+                print("Exception during resolve: {}".format(str(e)), e)
