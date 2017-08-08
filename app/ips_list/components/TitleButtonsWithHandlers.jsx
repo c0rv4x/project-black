@@ -33,45 +33,51 @@ class TitleButtonsWithHandlers extends React.Component {
 			return x.ip_address;
 		});
 
-		this.tasksEmitter.requestCreateTask('nmap', 
-											targets, 
-											{'program': params}, 
-											this.props.project.project_uuid)
-	}	
-
-	runNmapOnlyOpen(params) {
-		var nonuniqueTargets = _.map(this.props.scans, (x) => {
-			return x.target;
-		});
-
-		var targets = _.uniq(nonuniqueTargets);
 		var startTime = 0;
 
 		for (var target of targets) {
-			let filtered_scans = _.filter(this.props.scans, (x) => {
-				return x.target == target;
-			});
+			setTimeout(() => {
+				this.tasksEmitter.requestCreateTask('nmap', 
+													[target], 
+													{'program': params}, 
+													this.props.project.project_uuid)
+			}, startTime);
 
-			let ports = _.map(filtered_scans, (x) => {
+			startTime += 70;
+		}
+	}	
+
+	runNmapOnlyOpen(params) {
+		var targets = this.props.scopes.filter((x) => {
+			return x.scans.length > 0;
+		});
+		var startTime = 0;
+
+		for (var target of targets) {
+			let ip_address = target.ip_address;
+			let ports = target.scans.map((x) => {
 				return x.port_number;
 			});
 
 			let flags = "-p" + ports.join();
 
-			this.tasksEmitter.requestCreateTask('nmap', 
-												[target], 
-												{
-													'program': [flags, '-sV'],
-													'saver': {
-														'scans_ids': _.map(filtered_scans, (x) => {
-															return {
-																'scan_id': x.scan_id,
-																'port_number': x.port_number
-															}
-														})
-													}
-												}, 
-												this.props.project.project_uuid);
+			setTimeout(() => {
+				this.tasksEmitter.requestCreateTask('nmap', 
+													[target], 
+													{
+														'program': [flags, '-sV'],
+														'saver': {
+															'scans_ids': target.scans.map((x) => {
+																return {
+																	'scan_id': x.scan_id,
+																	'port_number': x.port_number
+																}
+															})
+														}
+													}, 
+													this.props.project.project_uuid);
+			}, startTime);
+			startTime += 70;
 		}
 
 	}	
