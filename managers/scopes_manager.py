@@ -6,7 +6,9 @@ a one->many relationship in the SQLalchemy. """
 import re
 import uuid
 import socket
-from multiprocessing import Pool
+import dns.resolver
+import threading
+import queue
 
 from managers.resolver import Resolver, ResolverTimeoutException
 from black.black.db import sessions, IP_addr
@@ -205,51 +207,38 @@ class ScopeManager(object):
         else:
             to_resolve = list(filter(lambda x: x.get_id() in scopes_ids, filtered_hosts))
 
-        dns_pool = Pool(processes=5)
-        dns_pool.map(resolve_single_host, to_resolve)
+        threads = []
+        tasks_queue = queue.Queue()
+        result_queue = queue.Queue()
 
+        for each_host in to_resolve:
+            tasks_queue.put_nowait(each_host)
 
-    def resolve_single_host(self, host):
-        try:
-            resolver = Resolver()
-        except ResolverTimeoutException:
-            print("Timeout connecting to NS")
-            return
-        project_uuid = host.get_project_uuid()
-        hostname = host.get_hostname()
+        for i in range(5):
+            resolver = Resolver(tasks_queue, result_queue)
+            t = threading.Thread(target=resolver.start_resolving, args=())
+            threads.append(t)
+            t.start()
 
-        if hostname:
-            try:
-                answers = resolver.query(hostname, 'A').response.answer
+        for t in threads:
+            t.join()
 
-                # Iterate over answers from nses
-                for answer in answers:
-                    # Iterate over ips in the answer
-                    for address in answer:
-                        # Lets find if the new IP already exists in the DB
-                        new_ip = str(address)
-                        if not re.match(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', new_ip):
-                            continue
-                        found_ips = self.find_ip(new_ip, project_uuid)
+        assert tasks_queue.empty()  
 
-                        if len(found_ips) == 0:
-                            # Lets crete such ip
-                            create_result = self.create_scope_internal(new_ip, None, project_uuid)
+        while not result_queue.empty():
+            host, new_ip, project_uuid = result_queue.get()
+            found_ips = self.find_ip(new_ip, project_uuid)
 
-                            if create_result['status'] == 'success':
-                                newly_created_ip = create_result['new_scope']
-                                host.append_ip(newly_created_ip)
-                                newly_created_ip.append_host(host)
-                        else:
-                            # Such ip already exists
-                            existing_ip = found_ips[0]
-                            host.append_ip(existing_ip)
-                            existing_ip.append_host(host)
+            if len(found_ips) == 0:
+                # Lets crete such ip
+                create_result = self.create_scope_internal(new_ip, None, project_uuid)
 
-            except dns.resolver.NXDOMAIN as e:
-                return {
-                    "status": "error",
-                    "text": "No such domain"
-                }
-            except Exception as e:
-                print("Exception during resolve: {}".format(str(e)), e)
+                if create_result['status'] == 'success':
+                    newly_created_ip = create_result['new_scope']
+                    host.append_ip(newly_created_ip)
+                    newly_created_ip.append_host(host)
+            else:
+                # Such ip already exists
+                existing_ip = found_ips[0]
+                host.append_ip(existing_ip)
+                existing_ip.append_host(host)            
