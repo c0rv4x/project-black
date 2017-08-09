@@ -16,23 +16,23 @@ class NavigationTabs extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.project_name = this.props.match.params.project_name;
+		this.project_uuid = this.props.match.params.project_uuid;
 	}
 
 	render() {
 		return (
 			<Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
 				<Tab eventKey={1} title="Scope Setup">
-					<ScopeSetupWrapper project_name={this.project_name} />
+					<ScopeSetupWrapper project_uuid={this.project_uuid} />
 				</Tab>
 				<Tab eventKey={2} title="IPs">
-					<ProjectDetailsWrapper project_name={this.project_name} />
+					<ProjectDetailsWrapper project_uuid={this.project_uuid} />
 				</Tab>
 				<Tab eventKey={3} title="Hostnames">
-					<HostsListWrapper project_name={this.project_name} />
+					<HostsListWrapper project_uuid={this.project_uuid} />
 				</Tab>
 				<Tab eventKey={4} title="All Tasks">
-					<TasksTabWrapper project_name={this.project_name} />
+					<TasksTabWrapper project_uuid={this.project_uuid} />
 				</Tab>				
 			</Tabs>
 		);

@@ -31,11 +31,13 @@ class NavigationTabsWrapper extends React.Component {
     constructor(props) {
         super(props);
 
-        this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore);
-        this.scopesSubscriber = new ScopesSocketioEventsSubsriber(mainStore);
-        this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore);
-        this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore);
-        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore);        
+        const project_uuid = this.props.match.params.project_uuid;
+
+        this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
+        this.scopesSubscriber = new ScopesSocketioEventsSubsriber(mainStore, project_uuid);
+        this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
+        this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
+        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);        
     }
 
     render() {
@@ -78,11 +80,13 @@ class Host extends React.Component {
     constructor(props) {
         super(props);
 
-        this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore);
-        this.scopesSubscriber = new ScopesSocketioEventsSubsriber(mainStore);
-        this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore);
-        this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore);
-        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore); 
+        const project_uuid = this.props.match.params.project_uuid;
+
+        this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
+        this.scopesSubscriber = new ScopesSocketioEventsSubsriber(mainStore, project_uuid);
+        this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
+        this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
+        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid); 
     }
 
     render() {
@@ -113,9 +117,9 @@ class Routing extends React.Component {
                 <div>
                     <Route exact path="/"
                            component={Projects} />
-                    <Route exact path="/project/:project_name" 
+                    <Route exact path="/project/:project_uuid" 
                            component={NavigationTabsWrapper} />
-                    <Route exact path="/project/:project_name/host/:hostname" 
+                    <Route exact path="/project/:project_uuid/host/:hostname" 
                            component={Host} />                           
                 </div>
             </Router> 

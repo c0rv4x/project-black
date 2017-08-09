@@ -18,7 +18,7 @@ class ProjectsListLine extends React.Component
                 <td>{this.props.project.project_uuid}</td>
                 <td>{this.props.project.project_name}</td>
                 <td>
-                    <Link to={"/project/" + this.props.project.project_name}>
+                    <Link to={"/project/" + this.props.project.project_uuid}>
                         <Button bsStyle="default">Details</Button>
                     </Link>
                     <Button bsStyle="danger" 
