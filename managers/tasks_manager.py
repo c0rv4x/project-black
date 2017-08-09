@@ -227,19 +227,26 @@ class TaskManager(object):
         """ Returns a list of active tasks and a list of finished tasks """
         return [self.active_tasks, self.finished_tasks]
 
-    def get_tasks_native_objects(self, get_all=False):
+    def get_tasks_native_objects(self, project_uuid, get_all=False):
         """ "Serializes" tasks to native python dicts """
+        active_filtered = list(filter(
+            lambda x: project_uuid is not None and x.project_uuid == project_uuid,
+            self.active_tasks))
+        finished_filtered = list(filter(
+            lambda x: project_uuid is not None and x.project_uuid == project_uuid,
+            self.finished_tasks))
+
         if get_all:
-            active = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), self.active_tasks))
-            finished = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), self.finished_tasks))
+            active = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), active_filtered))
+            finished = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), finished_filtered))
 
             return {
                 'active': active,
                 'finished': finished
             }
         else:
-            active = list(filter(lambda x: x.new_status_known == False, self.active_tasks))
-            finished = list(filter(lambda x: x.new_status_known == False, self.finished_tasks))
+            active = list(filter(lambda x: x.new_status_known == False, active_filtered))
+            finished = list(filter(lambda x: x.new_status_known == False, finished_filtered))
 
             for each_task in active:
                 each_task.new_status_known = True

@@ -11,11 +11,13 @@ class ScanManager(object):
         self.scans = []
         self.update_from_db()
 
-    def get_scans(self):
+    def get_scans(self, project_uuid):
         """ Returns the list of scans """
-        self.update_from_db()
+        # self.update_from_db()
 
-        return self.scans
+        return list(filter(
+            lambda x: project_uuid is not None and x['project_uuid'] == project_uuid,
+            self.scans))
 
     def update_from_db(self):
         """ Extract all the scans from the DB """

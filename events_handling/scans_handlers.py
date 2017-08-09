@@ -7,13 +7,15 @@ class ScanHandlers(object):
         self.scan_manager = scan_manager
 
         @socketio.on('scans:all:get', namespace='/scans')
-        def handle_custom_event():
+        def handle_custom_event(msg):
             """ When received this message, send back all the scans """
-            self.send_scans_back()
+            project_uuid = msg.get('project_uuid', None)
+            self.send_scans_back(project_uuid)
 
 
-    def send_scans_back(self):
+    def send_scans_back(self, project_uuid):
         self.socketio.emit('scans:all:get:back', {
             'status': 'success',
-            'scans': self.scan_manager.get_scans()
+            'project_uuid': project_uuid,
+            'scans': self.scan_manager.get_scans(project_uuid)
         }, broadcast=True, namespace='/scans')

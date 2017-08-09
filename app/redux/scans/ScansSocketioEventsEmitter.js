@@ -15,8 +15,10 @@ class ScansSocketioEventsEmitter {
         return instance;
 	}
 
-	renewScans() {
-		this.connector.emit('scans:all:get');
+	renewScans(project_uuid) {
+		this.connector.emit('scans:all:get', {
+			"project_uuid": project_uuid
+		});
 	}
 
 }

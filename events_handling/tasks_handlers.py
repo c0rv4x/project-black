@@ -7,9 +7,10 @@ class TaskHandlers(object):
         self.task_manager = task_manager     
 
         @socketio.on('tasks:all:get', namespace='/tasks')
-        def handle_custom_event():
+        def handle_custom_event(msg):
             """ When received this message, send back all the tasks """
-            self.send_tasks_back(send_all=True)
+            project_uuid = msg.get('project_uuid', None)
+            self.send_tasks_back(project_uuid, send_all=True)
 
         @socketio.on('tasks:create', namespace='/tasks')
         def handle_project_creation(msg):
@@ -34,16 +35,18 @@ class TaskHandlers(object):
         def handle_project_updating(msg):
             """ When received this message, update the project """
 
-    def send_tasks_back(self, send_all=False):
+    def send_tasks_back(self, project_uuid, send_all=False):
         if send_all:
-            tasks = self.task_manager.get_tasks_native_objects(get_all=True)
+            tasks = self.task_manager.get_tasks_native_objects(project_uuid, get_all=True)
             self.socketio.emit('tasks:all:get:back:all', {
                 "status": "success", 
+                'project_uuid': project_uuid,
                 "tasks": tasks
             }, broadcast=True, namespace='/tasks')
         else:
-            tasks = self.task_manager.get_tasks_native_objects(get_all=False)
+            tasks = self.task_manager.get_tasks_native_objects(project_uuid, get_all=False)
             self.socketio.emit('tasks:all:get:back:updated', {
                 "status": "success", 
+                'project_uuid': project_uuid,
                 "tasks": tasks
             }, broadcast=True, namespace='/tasks')            

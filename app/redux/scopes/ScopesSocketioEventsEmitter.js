@@ -63,9 +63,10 @@ class ScopesSocketioEventsEmitter {
 		});
 	}
 
-	requestRenewScopes() {
-		console.log('Requested all scopes');
-		this.connector.emit('scopes:all:get');
+	requestRenewScopes(project_uuid) {
+		this.connector.emit('scopes:all:get', {
+			'project_uuid': project_uuid
+		});
 	}
 
 	requestUpdateScope(comment, scope_id) {

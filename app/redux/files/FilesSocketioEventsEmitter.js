@@ -7,8 +7,10 @@ class FilesSocketioEventsEmitter {
         this.connector = new Connector('files');
     }
 
-    renewFiles() {
-        this.connector.emit('files:all:get');
+    renewFiles(project_uuid) {
+        this.connector.emit('files:all:get', {
+        	"project_uuid": project_uuid
+        });
     }
 
 }

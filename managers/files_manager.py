@@ -11,11 +11,13 @@ class FileManager(object):
         self.files = []
         self.update_from_db()
 
-    def get_files(self):
+    def get_files(self, project_uuid):
         """ Returns the list of files """
         self.update_from_db()
 
-        return self.files
+        return list(filter(
+            lambda x: project_uuid is not None and x['project_uuid'] == project_uuid,
+            self.files))
 
     def update_from_db(self):
         """ Extract all the files from the DB """

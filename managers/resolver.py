@@ -1,7 +1,9 @@
+import re
 import socket
+import dns.resolver
 
 
-class ResolverException(object):
+class ResolverException(Exception):
     def __init__(self):
         pass
 

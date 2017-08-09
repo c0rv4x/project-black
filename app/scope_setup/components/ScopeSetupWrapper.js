@@ -5,9 +5,9 @@ import ScopeSetup from './ScopeSetup.jsx'
 
 
 function mapStateToProps(state, ownProps){
-	let project_name = ownProps.project_name;
+	let project_uuid = ownProps.project_uuid;
 	let filtered_projects = _.filter(state.projects, (x) => {
-		return x.project_name == project_name
+		return x.project_uuid == project_uuid
 	});
 
 	let project = null;

@@ -23,8 +23,10 @@ class TasksSocketioEventsEmitter {
 		});
 	}
 
-	requestRenewTasks() {
-		this.connector.emit('tasks:all:get');
+	requestRenewTasks(project_uuid) {
+		this.connector.emit('tasks:all:get', {
+			'project_uuid': project_uuid
+		});
 	}
 
 }

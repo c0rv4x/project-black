@@ -9,9 +9,10 @@ class ScopeHandlers(object):
         self.scope_manager = scope_manager
 
         @socketio.on('scopes:all:get', namespace='/scopes')
-        def handle_custom_event():
+        def handle_custom_event(msg):
             """ When received this message, send back all the scopes """
-            self.send_scopes_back()
+            project_uuid = msg.get('project_uuid', None)
+            self.send_scopes_back(project_uuid)
 
         @socketio.on('scopes:create', namespace='/scopes')
         def handle_scope_creation(msg):
@@ -112,10 +113,11 @@ class ScopeHandlers(object):
             project_uuid = msg['project_uuid']
 
             self.scope_manager.resolve_scopes(scopes_ids, project_uuid)
+            print("Sending after resolve:", self.scope_manager.get_ips(project_uuid), self.scope_manager.get_hosts(project_uuid))
             self.socketio.emit('scopes:all:get:back', {
                 'status' : 'success',
-                'ips' : self.scope_manager.get_ips(),
-                'hosts': self.scope_manager.get_hosts()
+                'ips' : self.scope_manager.get_ips(project_uuid),
+                'hosts': self.scope_manager.get_hosts(project_uuid)
             }, broadcast=True, namespace='/scopes')
 
         @socketio.on('scopes:update', namespace='/scopes')
@@ -135,9 +137,10 @@ class ScopeHandlers(object):
             else:
                 self.socketio.emit('scopes:update:back', result, broadcast=True, namespace='/scopes')
 
-    def send_scopes_back(self):
+    def send_scopes_back(self, project_uuid):
         self.socketio.emit('scopes:all:get:back', {
             'status' : 'success',
-            'ips' : self.scope_manager.get_ips(force_update=True),
-            'hosts': self.scope_manager.get_hosts()
+            'project_uuid': project_uuid,
+            'ips' : self.scope_manager.get_ips(project_uuid, force_update=True),
+            'hosts': self.scope_manager.get_hosts(project_uuid)
         }, broadcast=True, namespace='/scopes')

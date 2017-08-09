@@ -9,16 +9,17 @@ let instance = null;
 
 class ScansEventsSubsriber {
 	/* Singleton class for managing events subscription for the projects */
-	constructor(store) {
+	constructor(store, project_uuid) {
         if(!instance){
             instance = this;
 
             this.store = store;
+            this.project_uuid = project_uuid;
             this.connector = new Connector('scans');
 
             this.connector.after_connected((x) => {
             	this.emitter = new ScansSocketioEventsEmitter();
-            	this.emitter.renewScans();
+            	this.emitter.renewScans(this.project_uuid);
             });
 
             this.basic_events_registration();

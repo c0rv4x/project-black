@@ -13,13 +13,14 @@ let instance = null;
 
 class TasksSocketioEventsSubsriber {
 	/* Singleton class for managing events subscription for the tasks */
-	constructor(store) {
+	constructor(store, project_uuid) {
         this.store = store;
+        this.project_uuid = project_uuid;
         this.connector = new Connector('tasks');
 
         this.connector.after_connected((x) => {
         	this.emitter = new TasksSocketioEventsEmitter();
-        	this.emitter.requestRenewTasks();
+        	this.emitter.requestRenewTasks(this.project_uuid);
         });
 
         this.basic_events_registration();
