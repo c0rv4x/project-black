@@ -13,7 +13,7 @@ class FileHandlers(object):
             self.send_files_back(project_uuid)
 
 
-    def send_files_back(self, project_uuid):
+    def send_files_back(self, project_uuid=None):
         self.socketio.emit('files:all:get:back', {
             'status': 'success',
             'project_uuid': project_uuid,

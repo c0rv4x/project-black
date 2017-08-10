@@ -13,7 +13,7 @@ class ScanHandlers(object):
             self.send_scans_back(project_uuid)
 
 
-    def send_scans_back(self, project_uuid):
+    def send_scans_back(self, project_uuid=None):
         self.socketio.emit('scans:all:get:back', {
             'status': 'success',
             'project_uuid': project_uuid,

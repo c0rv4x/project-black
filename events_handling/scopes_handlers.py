@@ -137,7 +137,7 @@ class ScopeHandlers(object):
             else:
                 self.socketio.emit('scopes:update:back', result, broadcast=True, namespace='/scopes')
 
-    def send_scopes_back(self, project_uuid):
+    def send_scopes_back(self, project_uuid=None):
         self.socketio.emit('scopes:all:get:back', {
             'status' : 'success',
             'project_uuid': project_uuid,

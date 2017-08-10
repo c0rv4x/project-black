@@ -16,7 +16,7 @@ class ScanManager(object):
         # self.update_from_db()
 
         return list(filter(
-            lambda x: project_uuid is not None and x['project_uuid'] == project_uuid,
+            lambda x: project_uuid is None or x['project_uuid'] == project_uuid,
             self.scans))
 
     def update_from_db(self):
