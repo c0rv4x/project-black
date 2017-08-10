@@ -37,7 +37,6 @@ class ShadowTask(object):
 
     def send_start_task(self):
         """ Put a message to the queue, which says "start my task, please """
-        print("[-] Sending start task # {}".format(self.task_id))
         self.channel.basic_publish(exchange='',
                                    routing_key=self.task_type + "_tasks",
                                    body=json.dumps({
@@ -46,7 +45,6 @@ class ShadowTask(object):
                                        'params': self.params,
                                        'project_uuid': self.project_uuid
                                    }))
-        print("[+] Finished sending start task # {}".format(self.task_id))
 
 
     def set_status(self, new_status, progress, text, new_stdout, new_stderr):
