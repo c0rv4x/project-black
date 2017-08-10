@@ -13,7 +13,7 @@ class ScanManager(object):
 
     def get_scans(self, project_uuid):
         """ Returns the list of scans """
-        # self.update_from_db()
+        self.update_from_db()
 
         return list(filter(
             lambda x: project_uuid is None or x['project_uuid'] == project_uuid,
