@@ -38,16 +38,16 @@ class Handlers(object):
             self.taskHandlers.send_tasks_back()
 
             try:
-                updated = self.data_updated_queue.get_nowait()
+                task_type, project_uuid = self.data_updated_queue.get_nowait()
 
-                if updated == "scan":
-                    self.scanHandlers.send_scans_back()
+                if task_type == "scan":
+                    self.scanHandlers.send_scans_back(project_uuid)
                     self.data_updated_queue.task_done()
-                if updated == "file":
-                    self.fileHandlers.send_files_back()
+                if task_type == "file":
+                    self.fileHandlers.send_files_back(project_uuid)
                     self.data_updated_queue.task_done() 
-                if updated == "scope":
-                    self.scopeHandlers.send_scopes_back()
+                if task_type == "scope":
+                    self.scopeHandlers.send_scopes_back(project_uuid)
                     self.data_updated_queue.task_done()                                        
             except queue.Empty as e:
                 continue
