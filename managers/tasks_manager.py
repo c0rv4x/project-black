@@ -225,13 +225,13 @@ class TaskManager(object):
         """ Returns a list of active tasks and a list of finished tasks """
         return [self.active_tasks, self.finished_tasks]
 
-    def get_tasks_native_objects(self, project_uuid, get_all=False):
+    def get_tasks_native_objects(self, project_uuid=None, get_all=False):
         """ "Serializes" tasks to native python dicts """
         active_filtered = list(filter(
-            lambda x: project_uuid is not None and x.project_uuid == project_uuid,
+            lambda x: project_uuid is None or x.project_uuid == project_uuid,
             self.active_tasks))
         finished_filtered = list(filter(
-            lambda x: project_uuid is not None and x.project_uuid == project_uuid,
+            lambda x: project_uuid is None or x.project_uuid == project_uuid,
             self.finished_tasks))
 
         if get_all:

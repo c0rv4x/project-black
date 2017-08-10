@@ -35,7 +35,7 @@ class TaskHandlers(object):
         def handle_project_updating(msg):
             """ When received this message, update the project """
 
-    def send_tasks_back(self, project_uuid, send_all=False):
+    def send_tasks_back(self, project_uuid=None, send_all=False):
         if send_all:
             tasks = self.task_manager.get_tasks_native_objects(project_uuid, get_all=True)
             self.socketio.emit('tasks:all:get:back:all', {
