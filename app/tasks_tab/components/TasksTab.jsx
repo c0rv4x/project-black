@@ -16,8 +16,7 @@ class TasksTab extends React.Component {
 	render() {
 		return (
 			<div>
-				<TasksTabHead />
-				<TasksList tasks={this.props.tasks}/>
+
 			</div>
 		)
 	}
