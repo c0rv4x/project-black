@@ -56,7 +56,6 @@ class TitleButtonsWithHandlers extends React.Component {
 													'program': [each_task.flags, '-sV'],
 													'saver': {
 														'scans_ids': each_task.scans.map((x) => {
-															console.log(x.scan_id, x.port_number, x);
 															return {
 																'scan_id': x.scan_id,
 																'port_number': x.port_number

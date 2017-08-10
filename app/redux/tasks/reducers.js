@@ -136,7 +136,6 @@ function update_tasks(state = {'active': [], 'finished': []}, action) {
 				(updated_finished_task_ids.indexOf(x.task_id) === -1));
 		});
 
-
 		return { 
 			'active': parsed_active_tasks.concat(filtered_active_tasks),
 			'finished': parsed_finished_tasks.concat(state.finished)
