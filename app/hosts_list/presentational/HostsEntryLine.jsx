@@ -22,7 +22,7 @@ class HostsEntryLine extends React.Component {
 	render() {
 		var rendered_hostname = null;
 		if (this.props.host.hostname) {
-			const verbose_host_link = '/project/' + this.props.project.project_name + '/host/' + this.props.host.hostname;
+			const verbose_host_link = '/project/' + this.props.project.project_uuid + '/host/' + this.props.host.hostname;
 			rendered_hostname = (
 				<div>
 					<b>{this.props.host.hostname}</b>
