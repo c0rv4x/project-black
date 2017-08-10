@@ -89,7 +89,7 @@ class DNSScanTask(AsyncTask):
 
     async def start(self):
         loop = asyncio.get_event_loop()
-        self.set_status("Working")
+        await self.set_status("Working")
         # tasks = list()
         # tasks.append(loop.create_task(self.resolve(self.target, 'NS')))
         # tasks.append(loop.create_task(self.resolve(self.target, 'MX')))
@@ -126,7 +126,7 @@ class DNSScanTask(AsyncTask):
             # result = loop.run_until_complete(self.resolve_item_from_queue())
             result = await self.resolve_item_from_queue()
 
-        self.set_status("Finished", progress=100, text=json.dumps({
+        await self.set_status("Finished", progress=100, text=json.dumps({
             "new_ips_ids": self.new_ips_ids,
             "new_hosts_ids": self.new_hosts_ids
         }))
