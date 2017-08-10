@@ -141,6 +141,6 @@ class ScopeHandlers(object):
         self.socketio.emit('scopes:all:get:back', {
             'status' : 'success',
             'project_uuid': project_uuid,
-            'ips' : self.scope_manager.get_ips(project_uuid, force_update=True),
+            'ips' : self.scope_manager.get_ips(project_uuid),
             'hosts': self.scope_manager.get_hosts(project_uuid)
         }, broadcast=True, namespace='/scopes')
