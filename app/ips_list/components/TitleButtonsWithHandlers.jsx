@@ -15,6 +15,7 @@ class TitleButtonsWithHandlers extends React.Component {
 		this.runMasscan = this.runMasscan.bind(this);
 		this.runNmap = this.runNmap.bind(this);
 		this.runNmapOnlyOpen = this.runNmapOnlyOpen.bind(this);
+		this.doSetTimeout = this.doSetTimeout.bind(this);
 	}
 
 	runMasscan(params) {
@@ -47,11 +48,33 @@ class TitleButtonsWithHandlers extends React.Component {
 		}
 	}	
 
+	doSetTimeout(each_task, startTime) {
+		// setTimeout(() => {
+			this.tasksEmitter.requestCreateTask('nmap', 
+												[each_task.ip_address], 
+												{
+													'program': [each_task.flags, '-sV'],
+													'saver': {
+														'scans_ids': each_task.scans.map((x) => {
+															console.log(x.scan_id, x.port_number, x);
+															return {
+																'scan_id': x.scan_id,
+																'port_number': x.port_number
+															}
+														})
+													}
+												}, 
+												this.props.project.project_uuid);
+		// }, startTime);
+	}
+
 	runNmapOnlyOpen(params) {
 		var targets = this.props.scopes.filter((x) => {
 			return x.scans.length > 0;
 		});
 		var startTime = 0;
+
+		var task_queue = [];
 
 		for (var target of targets) {
 			let ip_address = target.ip_address;
@@ -61,22 +84,16 @@ class TitleButtonsWithHandlers extends React.Component {
 
 			let flags = "-p" + ports.join();
 
-			setTimeout(() => {
-				this.tasksEmitter.requestCreateTask('nmap', 
-													[target], 
-													{
-														'program': [flags, '-sV'],
-														'saver': {
-															'scans_ids': target.scans.map((x) => {
-																return {
-																	'scan_id': x.scan_id,
-																	'port_number': x.port_number
-																}
-															})
-														}
-													}, 
-													this.props.project.project_uuid);
-			}, startTime);
+			task_queue.push({
+				ip_address: ip_address,
+				flags: flags,
+				scans: target.scans
+			});
+		}
+
+		for (var each_task of task_queue) {
+			this.doSetTimeout(each_task, startTime);
+
 			startTime += 70;
 		}
 
