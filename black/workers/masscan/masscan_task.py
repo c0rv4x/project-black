@@ -25,7 +25,6 @@ class MasscanTask(AsyncTask):
 
         if type(self.target) == list:
             self.target = ",".join(self.target)
-        print(self.target)
 
     async def start(self):
         """ Launch the task and readers of stdout, stderr """
@@ -36,11 +35,10 @@ class MasscanTask(AsyncTask):
         except Exception as e:
             await self.set_status("Aborted", progress=-1, text=str(e))
             print(e)
-
             raise e
 
         await self.set_status("Working", progress=0)
-
+ 
         # Launch readers
         loop = asyncio.get_event_loop()
         loop.create_task(self.read_stdout())
@@ -157,16 +155,13 @@ class MasscanTask(AsyncTask):
                     pass
 
             sleep(1)
-        print(self.status)
 
     async def wait_for_exit(self):
         """ Check if the process exited. If so,
         save stdout, stderr, exit_code and update the status. """
-        print("Task started")
         exit_code = await self.proc.wait()
         self.exit_code = exit_code
         # The process has exited.
-        print("The process finished OK")
 
         if self.exit_code == 0:
             try:
