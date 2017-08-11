@@ -79,9 +79,10 @@ function mapStateToProps(state, ownProps){
         }),
         files: _.filter(state.files, (x) => {
         	return ((x.project_uuid == project['project_uuid']) && (
-        		x['target'] == host['hostname']));
+        		x['target'].split(':')[0] == host['hostname']));
         })        
     }
+    // x['target'].split(':')[0] == host['hostname'])); is a shitty costil'
 }
 
 
