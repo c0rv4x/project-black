@@ -19,8 +19,8 @@ class ScopeCommentPresentational extends React.Component {
 
 		return (
 			<div>
-				<FormGroup controlId="formBasicText">
-					<ControlLabel><Button onClick={this.props.triggerCommentShown}>{triggerGlyph} Comment</Button></ControlLabel>
+				<FormGroup controlId="formBasicText" style={{'margin-bottom': '-10px'}}>
+					<ControlLabel><div><Button bsSize="small" onClick={this.props.triggerCommentShown}>{triggerGlyph} Comment</Button></div></ControlLabel>
 
 					{this.props.commentShown && 
 						<FormControl placeholder="Enter anything, that would help you in future. After moving focus out, the data will be saved."
