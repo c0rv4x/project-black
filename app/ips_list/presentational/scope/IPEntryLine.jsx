@@ -21,16 +21,16 @@ class IPEntryLine extends React.Component {
 		var rendered_ip_address = null;
 		if (this.props.ip.ip_address) {
 			rendered_ip_address = (
-				<span>{this.props.ip.ip_address}
-				<Glyphicon glyph="remove-circle" onClick={this.props.deleteScope} /></span>
+				<div>
+					<span><b>{this.props.ip.ip_address}</b></span>
+					<div className="pull-right">
+						<Button bsStyle="danger" bsSize="small" onClick={this.props.deleteScope}>
+							<Glyphicon glyph="remove"/>
+						</Button>
+					</div>	
+				</div>			
 			)
 		}
-
-		const header = ( 
-			<h3>
-				{rendered_ip_address || this.props.ip.hostname}
-			</h3>
-		)
 
 		const ports = _.map(this.props.ip.scans.sort((a, b) => {
 			if (a["port_number"] > b["port_number"]) return 1;
@@ -49,7 +49,7 @@ class IPEntryLine extends React.Component {
 		});
 
 		return (
-			<Panel collapsible defaultExpanded header={header} bsStyle="primary">
+			<Panel defaultExpanded header={rendered_ip_address || this.props.ip.hostname} bsStyle="primary">
 				<ListGroup fill>
 					<ListGroupItem>
 						<ScopeComment commentValue={this.props.ip.comment}

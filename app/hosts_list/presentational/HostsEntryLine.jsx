@@ -25,7 +25,7 @@ class HostsEntryLine extends React.Component {
 			const verbose_host_link = '/project/' + this.props.project.project_uuid + '/host/' + this.props.host.hostname;
 			rendered_hostname = (
 				<div>
-					<b>{this.props.host.hostname}</b>
+					<span><b>{this.props.host.hostname}</b></span>
 					<div className="pull-right">
 	                    <a onClick={() => window.open(verbose_host_link, 'newwindow', 'width=500,height=500')}>
 							<Button bsStyle="default" bsSize="small">
