@@ -4,7 +4,7 @@ import threading
 
 import asyncio
 from asyncio.subprocess import PIPE
-from libnmap.parser import NmapParser
+from libnmap.parser import NmapParser, NmapParserException
 from black.db import Project, Scan, get_new_session, destroy_session
 
 from black.workers.common.async_task import AsyncTask
