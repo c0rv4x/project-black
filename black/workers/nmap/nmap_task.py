@@ -70,6 +70,7 @@ class NmapTask(AsyncTask):
                     raise Exception("No data left")
                 else:
                     await self.append_stdout(stdout_chunk_decoded)
+                    loop.create_task(self.read_stdout())
             except TimeoutError as _:
                 pass
             except Exception as _:
@@ -97,6 +98,7 @@ class NmapTask(AsyncTask):
                     raise Exception("No data left")
                 else:
                     await self.append_stderr(stderr_chunk_decoded)
+                    loop.create_task(self.read_stderr())
             except TimeoutError as _:
                 pass
             except Exception as _:
