@@ -1,3 +1,5 @@
+import random
+from time import sleep
 from sqlalchemy import Column, Integer, String, ForeignKey, create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -10,6 +12,9 @@ Session_builder = sessionmaker(bind=engine)
 sessions_list = list()
 
 def get_new_session():
+    while len(sessions_list) == 5:
+        sleep(random.random() / 3)
+
     session = Session_builder()
     sessions_list.append(session)
 
