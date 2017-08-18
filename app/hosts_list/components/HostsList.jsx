@@ -34,7 +34,7 @@ class HostsList extends React.Component {
 
 				var hostsRegex = this.state.regexesObjects['host'];
 				var newHosts = data_copy.filter((x) => {
-					return hostsRegex.test(x['hostname']) !== null;
+					return hostsRegex.test(x['hostname']);
 				});
 
 				hosts = hosts.concat(newHosts);
@@ -46,7 +46,7 @@ class HostsList extends React.Component {
 				var ipRegex = this.state.regexesObjects['ip'];
 				hosts = hosts.concat(data_copy.filter((x) => {
 					return x.ip_addresses.filter((y) => {
-						return ipRegex.test(y) !== null
+						return ipRegex.test(y)
 					}).length > 0;
 				}));
 			}
