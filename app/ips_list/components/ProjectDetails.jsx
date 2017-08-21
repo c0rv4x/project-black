@@ -54,14 +54,13 @@ class ProjectDetails extends React.Component {
 
 				noFilter = false;
 				var bannerRegex = this.state.regexesObjects['banner'];
-				for (var ip_adress of ips) {
+				for (var ip_address of ips) {
 					ip_address['scans'] = ip_address['scans'].filter((x) => {
 						return bannerRegex.test(x['banner']);
 					});
 				}
-
 				ips = ips.filter((x) => {
-					return x.ip_addresses.length > 0;
+					return x['scans'].length > 0;
 				});
 			}
 
