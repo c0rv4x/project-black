@@ -27,7 +27,7 @@ class HostsEntryLine extends React.Component {
 				<div>
 					<span><b>{this.props.host.hostname}</b></span>
 					<div className="pull-right">
-	                    <a onClick={() => window.open(verbose_host_link, 'newwindow', 'width=500,height=500')}>
+	                    <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
 							<Button bsStyle="default" bsSize="small">
 								<Glyphicon glyph="zoom-in"/>
 							</Button>					
