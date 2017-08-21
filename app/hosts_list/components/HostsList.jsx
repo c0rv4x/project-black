@@ -30,6 +30,9 @@ class HostsList extends React.Component {
 			var noFilter = true;
 
 			if (this.state.regexesObjects.hasOwnProperty('host')) {
+				if (noFilter) {
+					hosts = data_copy;
+				}
 				noFilter = false;
 
 				var hostsRegex = this.state.regexesObjects['host'];
@@ -41,14 +44,21 @@ class HostsList extends React.Component {
 			}
 
 			if (this.state.regexesObjects.hasOwnProperty('ip')) {
+				if (noFilter) {
+					hosts = data_copy;
+				}				
 				noFilter = false;
 
 				var ipRegex = this.state.regexesObjects['ip'];
-				hosts = hosts.concat(data_copy.filter((x) => {
-					return x.ip_addresses.filter((y) => {
-						return ipRegex.test(y)
-					}).length > 0;
-				}));
+				for (var host of hosts) {
+					host['ip_addresses'] = host['ip_addresses'].filter((x) => {
+						return ipRegex.test(x['ip_address']);
+					});
+				}
+
+				hosts = hosts.filter((x) => {
+					return x.ip_addresses.length > 0;
+				});
 			}
 
 			if (this.state.regexesObjects.hasOwnProperty('banner')) {

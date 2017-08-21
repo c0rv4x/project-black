@@ -128,7 +128,6 @@ class Search extends React.Component {
 			}
 
 			var basicRegex = null;
-			console.log(regexes[eachParam]);
 			if (regexes[eachParam].length == 0) {
 				basicRegex = "(" + '.*' + ")";
 			}
@@ -136,11 +135,9 @@ class Search extends React.Component {
 				basicRegex = "(" + regexes[eachParam].join('|') + ")";
 			}
 			var negativeRegex = '^(?!^' + negativeOptions.join('|') + '$)' + basicRegex + '$';
-			console.log(negativeRegex);
 			regexes[eachParam] = negativeRegex;
 
 		}
-		console.log(regexes);
 
 		this.props.onFilterChange(regexes);
 	}
