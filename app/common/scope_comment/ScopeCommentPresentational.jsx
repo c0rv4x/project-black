@@ -19,7 +19,7 @@ class ScopeCommentPresentational extends React.Component {
 
 		return (
 			<div>
-				<FormGroup controlId="formBasicText" style={{'marginBottom': '-10px'}}>
+				<FormGroup controlId="formBasicText">
 					<ControlLabel><div><Button bsSize="small" onClick={this.props.triggerCommentShown}>{triggerGlyph} Comment</Button></div></ControlLabel>
 
 					{this.props.commentShown && 
