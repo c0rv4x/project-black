@@ -40,13 +40,38 @@ class HostsEntryLine extends React.Component {
 				</div>
 			)
 		}
+		var files_by_statuses = {
+			'2xx': this.props.host.files.filter((x) => {
+				return Math.floor(x.status_code / 100) === 2;
+			}).length,
+			'3xx': this.props.host.files.filter((x) => {
+				return Math.floor(x.status_code / 100) === 3;
+			}).length,
+			'4xx': this.props.host.files.filter((x) => {
+				return Math.floor(x.status_code / 100) === 4 && x.status_code !== 404;
+			}).length,	
+			'5xx': this.props.host.files.filter((x) => {
+				return Math.floor(x.status_code / 100) === 5 && x.status_code !== 404;
+			}).length						
+		};
 
 		return (
 			<Panel defaultExpanded header={rendered_hostname} bsStyle="primary">
 				<ListGroup fill>
-					<ListGroupItem key={this.props.project.project_uuid + "_" +this.props.host.hostname}>
-						<ScopeComment comment={this.props.host.comment}
-									  onCommentSubmit={this.props.onCommentSubmit}/>
+					<ListGroupItem key={this.props.project.project_uuid + "_" + this.props.host.hostname}>
+						<ul>
+							<li>Dirsearch: 
+								<ul>
+									<li>2xx: <strong>{files_by_statuses['2xx']}</strong></li> 
+									<li>3xx: {files_by_statuses['3xx']}</li>
+									<li>4xx: {files_by_statuses['4xx']}</li>
+									<li>5xx: {files_by_statuses['5xx']}</li>
+								</ul>
+							</li>
+							<li>Comment: <ScopeComment comment={this.props.host.comment}
+									  				   onCommentSubmit={this.props.onCommentSubmit}/></li>
+						</ul>
+						
 					</ListGroupItem>
 					
 					<HostsEntryLinePorts host={this.props.host} 
