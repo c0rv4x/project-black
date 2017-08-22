@@ -47,12 +47,17 @@ class IPEntryLine extends React.Component {
 				</ListGroupItem>
 			)
 		});
+
 		return (
 			<Panel defaultExpanded header={rendered_ip_address || this.props.ip.hostname} bsStyle="primary">
 				<ListGroup fill>
 					<ListGroupItem>
-						<ScopeComment comment={this.props.ip.comment}
-									  onCommentSubmit={this.props.onCommentSubmit}/>
+						<ul>
+							<li>Hosts: <strong>{this.props.ip.hostnames.join(', ')}</strong></li>
+							<li>Comment: <ScopeComment comment={this.props.ip.comment}
+									  				   onCommentSubmit={this.props.onCommentSubmit}/>
+							</li>
+						</ul>				
 					</ListGroupItem>
 					{ports}
 				</ListGroup>		
