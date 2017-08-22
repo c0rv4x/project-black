@@ -47,7 +47,7 @@ class NmapTask(AsyncTask):
         """ Read from stdout by chunks, store it in self.stdout """
         # If we know, that there will be some data, we read it
         if self.status == 'New' or self.status == 'Working':
-            stdout_chunk = await self.proc.stdout.read(1024)
+            stdout_chunk = await self.proc.stdout.read(4096)
             stdout_chunk_decoded = stdout_chunk.decode('utf-8')
 
             if stdout_chunk_decoded:

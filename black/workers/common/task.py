@@ -24,7 +24,16 @@ class Task(object):
         self.project_uuid = project_uuid
 
         # Point to the object of ORM
-        self.create_db_record()
+        try:
+            self.create_db_record()
+        except Exception as e:
+            print("!!!!!!!!!!!!!!!!!!! SHIT")
+            print(task_id)
+            print(task_type)
+            print(target)
+            print(params)
+            print(project_uuid)
+            print("!!!!!!!!!!!!!!!!!!! /SHIT")
 
         # Task's status
         self.status = None

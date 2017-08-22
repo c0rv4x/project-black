@@ -11,6 +11,7 @@ class SyncTask(Task):
     """ Sync class for the task """
 
     def __init__(self, task_id, task_type, target, params, project_uuid):
+        print("Task.__init__({})".format(task_id))
         Task.__init__(self, task_id, task_type, target, params, project_uuid)       
 
         self.sync_publisher = SyncPublisher('tasks_statuses')
