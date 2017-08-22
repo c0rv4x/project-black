@@ -37,6 +37,7 @@ class ShadowTask(object):
 
     def send_start_task(self):
         """ Put a message to the queue, which says "start my task, please """
+        print("Literally sendin start task", self.task_id, self.target)
         self.channel.basic_publish(exchange='',
                                    routing_key=self.task_type + "_tasks",
                                    body=json.dumps({
@@ -269,6 +270,7 @@ class TaskManager(object):
                           params=params,
                           project_uuid=project_uuid,
                           channel=self.channel)
+        print("task_manager creating", target, project_uuid)
         task.send_start_task()
         self.active_tasks.append(task)
 
