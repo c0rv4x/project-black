@@ -19,7 +19,7 @@ function formIPs(ips_list, project_uuid) {
     return ips;
 }
 
-function formHosts(hosts_list, project_uuid, scans) {
+function formHosts(hosts_list, project_uuid, scans, files) {
 	var hosts = _.filter(hosts_list, (x) => {
     	return x.project_uuid == project_uuid
     }).sort((a, b) => {
@@ -28,7 +28,13 @@ function formHosts(hosts_list, project_uuid, scans) {
     	return 0
     });
 
-    return hosts
+    for (var each_host of hosts) {
+    	each_host['files'] = files.filter((x) => {
+    		return x.target.split(':')[0] == each_host['hostname'];
+    	});
+    }
+
+    return hosts;
 }
 
 function formScans(scans, project_uuid) {
@@ -37,7 +43,7 @@ function formScans(scans, project_uuid) {
     });	
 }
 
-function mapStateToProps(state, ownProps){
+function mapStateToProps(state, ownProps) {
 	let project_uuid = ownProps.project_uuid;
 	let filtered_projects = _.filter(state.projects, (x) => {
 		return x.project_uuid == project_uuid
@@ -61,7 +67,7 @@ function mapStateToProps(state, ownProps){
     	project: project,
         scopes: {
         	'ips': formIPs(state.scopes.ips, project['project_uuid']),
-        	'hosts': formHosts(state.scopes.hosts, project['project_uuid'], scans)
+        	'hosts': formHosts(state.scopes.hosts, project['project_uuid'], scans, state.files)
         },
         tasks: _.filter(state.tasks.active, (x) => {
         	return x.project_uuid == project['project_uuid']
