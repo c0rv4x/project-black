@@ -170,7 +170,7 @@ class TaskManager(object):
         except Exception as e:
             message = json.loads(message)
         task_id = message['task_id']
-        print("Message:",message)
+        print("Message:",message, list(self.active_tasks.map(lambda x: x.task_id)))
 
         for task in self.active_tasks:
             if task.task_id == task_id:
