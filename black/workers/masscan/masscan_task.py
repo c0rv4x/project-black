@@ -45,7 +45,7 @@ class MasscanTask(AsyncTask):
         loop.create_task(self.read_stderr())
 
         # Launch status poller
-        self.spawn_status_poller()
+        loop.create_task(self.spawn_status_poller())
 
     def send_notification(self, command):
         """ Sends 'command' notification to the current process. """
@@ -115,7 +115,7 @@ class MasscanTask(AsyncTask):
             except Exception as _:
                 pass
 
-    def spawn_status_poller(self):
+    async def spawn_status_poller(self):
         """ Spawn the thread that will poll for the progress """
         # thread = threading.Thread(target=self.progress_poller)
         # thread.start()
