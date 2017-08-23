@@ -180,6 +180,7 @@ class TaskManager(object):
                 new_stderr = message['new_stderr']
 
                 if new_status != task.status or new_progress != task.progress:
+                    print(new_status, new_progress, "Were not known before")
                     task.new_status_known = False
 
                 task.set_status(new_status, new_progress, new_text, new_stdout, new_stderr)
@@ -253,12 +254,12 @@ class TaskManager(object):
             for each_task in finished:
                 each_task.new_status_known = True
 
-            active = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), active))
-            finished = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), finished))
+            active_objects = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), active))
+            finished_objects = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), finished))
 
             return {
-                'active': active, 
-                'finished': finished
+                'active': active_objects, 
+                'finished': finished_objects
             }            
 
 
