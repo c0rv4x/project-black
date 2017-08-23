@@ -54,12 +54,11 @@ class AsyncWorker(Worker):
         loop = asyncio.get_event_loop()
         loop.create_task(self.execute_task(message))
 
-        message.ack()
-
     async def execute_task(self, message):
         """ Method launches the task execution, remembering the
             processes's object. """
         await self.acquire_resources()
+        message.ack()
 
         try:
             # Add a unique id to the task, so we can track the notifications
