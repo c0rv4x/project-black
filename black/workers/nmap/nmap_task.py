@@ -16,7 +16,6 @@ class NmapTask(AsyncTask):
     """ Major class for working with nmap """
     def __init__(self, task_id, target, params, project_uuid):
         AsyncTask.__init__(self, task_id, 'nmap', target, params, project_uuid)
-        print(self.target, self.params['program'])
         self.proc = None
 
         self.exit_code = None
@@ -26,7 +25,7 @@ class NmapTask(AsyncTask):
     async def start(self):
         """ Launch the task """
         self.command = ['nmap', '-oX', '-'] + self.params['program'] + self.target
-        print("Start: ",''.join(self.command))
+        print("Start: ",' '.join(self.command))
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
         await self.set_status("Working", 0, "")
@@ -80,7 +79,7 @@ class NmapTask(AsyncTask):
     async def read_stderr(self):
         """ Similar to read_stdout """
         if self.status == 'New' or self.status == 'Working':
-            stderr_chunk = await self.proc.stderr.read(1024)
+            stderr_chunk = await self.proc.stderr.read(4096)
             stderr_chunk_decoded = stderr_chunk.decode('utf-8')
 
             if stderr_chunk_decoded:
@@ -127,10 +126,10 @@ class NmapTask(AsyncTask):
                 print(str(e))
                 await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
             else:
-                print("Finished: ",''.join(self.command))
+                print("Finished: ",' '.join(self.command))
                 await self.set_status("Finished", progress=100)
         else:
-            print("Not null exit code", ''.join(self.command))
+            print("Not null exit code", ' '.join(self.command))
             print("".join(self.stderr))
             await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
 
