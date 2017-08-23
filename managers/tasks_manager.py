@@ -170,6 +170,7 @@ class TaskManager(object):
         except Exception as e:
             message = json.loads(message)
         task_id = message['task_id']
+        print("Message:",message)
 
         for task in self.active_tasks:
             if task.task_id == task_id:
@@ -180,7 +181,7 @@ class TaskManager(object):
                 new_stderr = message['new_stderr']
 
                 if new_status != task.status or new_progress != task.progress:
-                    print(task_id, new_status, new_progress, "Were not known before")
+                    print("Were not known before", task_id, new_status, new_progress)
                     task.new_status_known = False
 
                 task.set_status(new_status, new_progress, new_text, new_stdout, new_stderr)
