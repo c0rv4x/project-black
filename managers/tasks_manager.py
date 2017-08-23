@@ -180,7 +180,7 @@ class TaskManager(object):
                 new_stderr = message['new_stderr']
 
                 if new_status != task.status or new_progress != task.progress:
-                    print(new_status, new_progress, "Were not known before")
+                    print(task_id, new_status, new_progress, "Were not known before")
                     task.new_status_known = False
 
                 task.set_status(new_status, new_progress, new_text, new_stdout, new_stderr)
@@ -247,7 +247,7 @@ class TaskManager(object):
         else:
             active = list(filter(lambda x: x.new_status_known == False, active_filtered))
             finished = list(filter(lambda x: x.new_status_known == False, finished_filtered))
-
+            print("i am goin to return", active, finished, len(active), len(finished))
             for each_task in active:
                 each_task.new_status_known = True
 
