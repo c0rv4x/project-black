@@ -171,7 +171,9 @@ class MasscanTask(AsyncTask):
             except Exception as e:
                 await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
             else:
+                print("Finishing")
                 await self.set_status("Finished", progress=100)
+                print("finished")
         else:
             await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
 
