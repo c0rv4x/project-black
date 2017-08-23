@@ -26,6 +26,7 @@ class NmapTask(AsyncTask):
     async def start(self):
         """ Launch the task """
         self.command = ['nmap', '-oX', '-'] + self.params['program'] + self.target
+        print("Start: ",''.join(self.command))
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
         await self.set_status("Working", 0, "")
@@ -126,9 +127,10 @@ class NmapTask(AsyncTask):
                 print(str(e))
                 await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
             else:
+                print("Finished: ",''.join(self.command))
                 await self.set_status("Finished", progress=100)
         else:
-            print("Not null exit code")
+            print("Not null exit code", ''.join(self.command))
             print("".join(self.stderr))
             await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
 
