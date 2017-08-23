@@ -247,7 +247,6 @@ class TaskManager(object):
         else:
             active = list(filter(lambda x: x.new_status_known == False, active_filtered))
             finished = list(filter(lambda x: x.new_status_known == False, finished_filtered))
-            print("i am goin to return", active, finished, len(active), len(finished))
             for each_task in active:
                 each_task.new_status_known = True
 
