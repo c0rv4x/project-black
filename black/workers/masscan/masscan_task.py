@@ -151,7 +151,7 @@ class MasscanTask(AsyncTask):
                         await self.set_status("Working", progress=new_progress)
 
             except Exception as exc:
-                print("Masscan, status parse:", exc, data)
+                print("Masscan, status parse:", exc)
                 pass
 
         if self.status != "Finished" and self.status != "Aborted":
