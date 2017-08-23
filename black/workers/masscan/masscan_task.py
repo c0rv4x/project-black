@@ -117,44 +117,46 @@ class MasscanTask(AsyncTask):
 
     def spawn_status_poller(self):
         """ Spawn the thread that will poll for the progress """
-        thread = threading.Thread(target=self.progress_poller)
-        thread.start()
+        # thread = threading.Thread(target=self.progress_poller)
+        # thread.start()
+        await self.progress_poller()
 
-    def progress_poller(self):
+
+    async def progress_poller(self):
         """ Gets the current progress and prints it
         TODO:
             * Should put result back to the queue (not yet and not rdy for this) """
         old_progress = 0
         old_found = None
-        loop = asyncio.new_event_loop()
 
-        while self.status != "Finished" and self.status != "Aborted":
-            if self.status == "New":
-                print("[-] New")
-            elif self.status == "Working":
-                try:
-                    data = str(self.stderr[-1])
-                    if data:
-                        percent = re.findall(r"([0-9]{1,3}\.[0-9]{1,3})%", data)
-                        # time_left = re.findall(r"([0-9]{1,4}:[0-9]{1,2}:[0-9]{1,2})", data)
-                        found = re.findall(r"found=([0-9]{0,5000})", data)
+        if self.status == "New":
+            print("[-] New")
+        elif self.status == "Working":
+            try:
+                data = str(self.stderr[-1])
+                if data:
+                    percent = re.findall(r"([0-9]{1,3}\.[0-9]{1,3})%", data)
+                    # time_left = re.findall(r"([0-9]{1,4}:[0-9]{1,2}:[0-9]{1,2})", data)
+                    found = re.findall(r"found=([0-9]{0,5000})", data)
 
-                        print("[-] Working {}%, {} found".format(
-                            percent[0],
-                            # time_left[0],
-                            found[0]))
+                    print("[-] Working {}%, {} found".format(
+                        percent[0],
+                        # time_left[0],
+                        found[0]))
 
-                        new_progress = int(percent[0].split('.')[0])
-                        if new_progress != old_progress or old_found != found[0]:
-                            old_progress = new_progress
-                            # loop.create_task(self.read_stderr())                            
-                            loop.run_until_complete(self.set_status("Working", progress=new_progress))
+                    new_progress = int(percent[0].split('.')[0])
+                    if new_progress != old_progress or old_found != found[0]:
+                        old_progress = new_progress
+                        # loop.create_task(self.read_stderr())                            
+                        await self.set_status("Working", progress=new_progress)
 
-                except Exception as exc:
-                    print(exc)
-                    pass
+            except Exception as exc:
+                print("Masscan, status parse:", exc, data)
+                pass
 
-            sleep(1)
+        if self.status != "Finished" and self.status != "Aborted":
+            await asyncio.sleep(1)
+            await self.progress_poller()
 
     async def wait_for_exit(self):
         """ Check if the process exited. If so,
