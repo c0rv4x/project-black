@@ -12,7 +12,7 @@ function findScopeType(target) {
     }
 
     function tryHostname(target) {
-        return target.match(/^([a-zA-Z]{1}[a-zA-Z0-9\-]{0,255}\.){1,}[a-zA-Z]{2,15}$/);
+        return target.match(/^([a-zA-Z0-9]{1}[a-zA-Z0-9\-]{0,255}\.){1,}[a-zA-Z]{2,15}$/);
     }
 
     if (tryip_addressNetwork(target)) {
