@@ -174,6 +174,7 @@ class TaskManager(object):
 
         for task in self.active_tasks:
             if task.task_id == task_id:
+                print("Found the task:", task.task_id, task.status, task.progress)
                 new_status = message['status']
                 new_progress = message['progress']
                 new_text = message['text']
