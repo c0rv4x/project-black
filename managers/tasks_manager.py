@@ -171,9 +171,10 @@ class TaskManager(object):
             message = json.loads(message)
         task_id = message['task_id']
         print("Message:",message, list(map(lambda x: x.task_id, self.active_tasks)))
-
+        done = False
         for task in self.active_tasks:
             if task.task_id == task_id:
+                done = True
                 print("Found the task:", task.task_id, task.status, task.progress)
                 new_status = message['status']
                 new_progress = message['progress']
@@ -195,8 +196,8 @@ class TaskManager(object):
                     self.check_finished_task_necessities(task)
 
                 break
-            else:
-                print("Wtf, this task is not in active list", task_id)
+        if not done:
+            print("Wtf, this task is not in active list", task_id)
 
         channel.basic_ack(delivery_tag=method.delivery_tag)
 
