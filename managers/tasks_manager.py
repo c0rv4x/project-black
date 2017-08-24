@@ -197,7 +197,13 @@ class TaskManager(object):
 
                 break
         if not done:
-            print("Wtf, this task is not in active list", task_id)
+            kk = False
+            for task in self.finished_tasks:
+                if task.task_id == task_id:
+                    kk = True
+                    print("Wtf, this task is not in active list. It is in finished.", task_id)
+            if not kk:
+                print("Wtf, this task is not in active list. And not in finished", task_id)
 
         channel.basic_ack(delivery_tag=method.delivery_tag)
 
