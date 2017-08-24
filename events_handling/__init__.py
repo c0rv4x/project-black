@@ -18,7 +18,6 @@ class Handlers(object):
 
         self.project_manager = ProjectManager()
         self.scope_manager = ScopeManager()
-        print('Handler:init()')
         self.task_manager = TaskManager(self.data_updated_queue)
         self.scan_manager = ScanManager()
         self.file_manager = FileManager()
