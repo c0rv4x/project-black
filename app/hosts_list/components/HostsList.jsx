@@ -40,7 +40,7 @@ class HostsList extends React.Component {
 					return hostsRegex.test(x['hostname']);
 				});
 
-				hosts = hosts.concat(newHosts);
+				hosts = newHosts;
 			}
 
 			if (this.state.regexesObjects.hasOwnProperty('ip')) {
