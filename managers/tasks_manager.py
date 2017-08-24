@@ -195,6 +195,8 @@ class TaskManager(object):
                     self.check_finished_task_necessities(task)
 
                 break
+            else:
+                print("Wtf, this task is not in active list", task_id)
 
         channel.basic_ack(delivery_tag=method.delivery_tag)
 
