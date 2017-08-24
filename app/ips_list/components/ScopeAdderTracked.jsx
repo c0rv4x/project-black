@@ -32,10 +32,12 @@ class ScopeAdderTracked extends React.Component {
 			<ScopeAdder newScopeInput={this.state.newScopeInput}
 						handleNewScopeChange={this.handleNewScopeChange}
 						onNewScopeClick={
-					      (scopes) => this.submitNewScope(scopes);
-					      this.setState({
-					      	"newScopeInput": ""
-					      });
+							{
+						      (scopes) => this.submitNewScope(scopes);
+						      this.setState({
+						      	"newScopeInput": ""
+						      });
+						    }
 		   			    } />
 		)
 	}
