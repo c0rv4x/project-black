@@ -16,6 +16,7 @@ class Search extends React.Component {
 		this.state = {
 			multiValue: [],
 			options: [
+				{ value: 'host: *.ya.ru', label: 'host: *.ya.ru'},
 				{ value: 'ip: 8.8.8.8', label: 'ip: 8.8.8.8' },
 				{ value: 'port: !443', label: 'port: !443'},
 				{ value: 'port: 80', label: 'port: 80' },

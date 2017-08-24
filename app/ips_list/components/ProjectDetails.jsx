@@ -47,6 +47,25 @@ class ProjectDetails extends React.Component {
 				}));
 			}
 
+			if (this.state.regexesObjects.hasOwnProperty('host')) {
+				if (noFilter) {
+					ips = data_copy;
+				}				
+				noFilter = false;
+
+				var hostRegex = this.state.regexesObjects['host'];
+				for (var ip_address of ips) {
+					console.log(ip_address);
+					ip_address['hostnames'] = ip_address['hostnames'].filter((x) => {
+						return hostRegex.test(x);
+					});
+				}
+
+				ips = ips.filter((x) => {
+					return x.hostnames.length > 0;
+				});
+			}
+
 			if (this.state.regexesObjects.hasOwnProperty('banner')) {
 				if (noFilter) {
 					ips = data_copy;
