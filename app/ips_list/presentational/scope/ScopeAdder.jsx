@@ -52,8 +52,7 @@ class ScopeAdder extends React.Component {
 		return (
 
 			<form>
-				<FormGroup controlId="formBasicText"
-     					   validationState={this.findScopeType()}>
+				<FormGroup controlId="formBasicText">
 
 					<ControlLabel>Add new scope</ControlLabel>
 
