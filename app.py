@@ -63,8 +63,8 @@ def requires_auth(f):
 # Define Flask app and wrap it into SocketIO
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'KIwTR8ZUNG20UkhrXR0Pv0B9ZZigzQpVVT5KK6FA1M'
-# socketio = SocketIO(app, engineio_logger=True)
-socketio = SocketIO(app)
+socketio = SocketIO(app, engineio_logger=True, async_mode='gevent')
+# socketio = SocketIO(app)
 
 class RegexConverter(BaseConverter):
     def __init__(self, url_map, *items):
@@ -96,4 +96,4 @@ print("app.py.handlers")
 h = Handlers(socketio)
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0')
+    socketio.run(app, host='0.0.0.0', debug=False)
