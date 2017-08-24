@@ -202,6 +202,7 @@ class TaskManager(object):
 
     def update_from_db(self):
         """ Extract all the tasks from the DB """
+        print("Updating from db.")
         session = sessions.get_new_session()
         tasks_from_db = session.query(Task).all()
         tasks = list(map(lambda x:
