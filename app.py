@@ -92,6 +92,7 @@ def send_js(path):
     return send_from_directory('public', path)
 
 
+print("app.py.handlers")
 h = Handlers(socketio)
 
 if __name__ == '__main__':

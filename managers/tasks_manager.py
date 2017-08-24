@@ -37,6 +37,7 @@ class ShadowTask(object):
 
     def send_start_task(self):
         """ Put a message to the queue, which says "start my task, please """
+        print("Literally sendin start task", self.task_id, self.target)
         self.channel.basic_publish(exchange='',
                                    routing_key=self.task_type + "_tasks",
                                    body=json.dumps({
@@ -124,7 +125,7 @@ class TaskManager(object):
             queue="tasks_statuses")
 
         self.spawn_all_channels_with_queues()
-
+        print("TaskManager:init()")
         self.update_from_db()
 
 
@@ -169,9 +170,12 @@ class TaskManager(object):
         except Exception as e:
             message = json.loads(message)
         task_id = message['task_id']
-
+        print("Message:",message, list(map(lambda x: x.task_id, self.active_tasks)))
+        done = False
         for task in self.active_tasks:
             if task.task_id == task_id:
+                done = True
+                print("Found the task:", task.task_id, task.status, task.progress)
                 new_status = message['status']
                 new_progress = message['progress']
                 new_text = message['text']
@@ -179,6 +183,7 @@ class TaskManager(object):
                 new_stderr = message['new_stderr']
 
                 if new_status != task.status or new_progress != task.progress:
+                    print("Were not known before", task_id, new_status, new_progress)
                     task.new_status_known = False
 
                 task.set_status(new_status, new_progress, new_text, new_stdout, new_stderr)
@@ -191,11 +196,20 @@ class TaskManager(object):
                     self.check_finished_task_necessities(task)
 
                 break
+        if not done:
+            kk = False
+            for task in self.finished_tasks:
+                if task.task_id == task_id:
+                    kk = True
+                    print("Wtf, this task is not in active list. It is in finished.", task_id)
+            if not kk:
+                print("Wtf, this task is not in active list. And not in finished", task_id)
 
         channel.basic_ack(delivery_tag=method.delivery_tag)
 
     def update_from_db(self):
         """ Extract all the tasks from the DB """
+        print("Updating from db.")
         session = sessions.get_new_session()
         tasks_from_db = session.query(Task).all()
         tasks = list(map(lambda x:
@@ -245,19 +259,18 @@ class TaskManager(object):
         else:
             active = list(filter(lambda x: x.new_status_known == False, active_filtered))
             finished = list(filter(lambda x: x.new_status_known == False, finished_filtered))
-
             for each_task in active:
                 each_task.new_status_known = True
 
             for each_task in finished:
                 each_task.new_status_known = True
 
-            active = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), active))
-            finished = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), finished))
+            active_objects = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), active))
+            finished_objects = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), finished))
 
             return {
-                'active': active, 
-                'finished': finished
+                'active': active_objects, 
+                'finished': finished_objects
             }            
 
 
@@ -269,6 +282,7 @@ class TaskManager(object):
                           params=params,
                           project_uuid=project_uuid,
                           channel=self.channel)
+        print("task_manager creating", target, project_uuid)
         task.send_start_task()
         self.active_tasks.append(task)
 
