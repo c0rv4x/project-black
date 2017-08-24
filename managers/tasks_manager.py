@@ -125,7 +125,7 @@ class TaskManager(object):
             queue="tasks_statuses")
 
         self.spawn_all_channels_with_queues()
-
+        print("TaskManager:init()")
         self.update_from_db()
 
 
