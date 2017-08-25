@@ -23,7 +23,7 @@ class HostsList extends React.Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-		return ((JSON.stringify(nextProps) !== JSON.stringify(this.props)) || ((JSON.stringify(nextState) !== JSON.stringify(this.state)));
+		return ((JSON.stringify(nextProps) !== JSON.stringify(this.props)) || ((JSON.stringify(nextState) !== JSON.stringify(this.state))));
 	}
 
 	filter(data, name) {
