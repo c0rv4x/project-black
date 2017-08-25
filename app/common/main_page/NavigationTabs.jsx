@@ -17,6 +17,7 @@ class NavigationTabs extends React.Component {
 		super(props);
 
 		this.project_uuid = this.props.match.params.project_uuid;
+		window.Perf.start();
 	}
 
 	render() {
