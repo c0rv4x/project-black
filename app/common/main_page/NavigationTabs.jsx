@@ -20,6 +20,10 @@ class NavigationTabs extends React.Component {
 
 	}
 
+	shouldComponentUpdate(nextProps) {
+		return JSON.stringify(nextProps) !== JSON.stringify(this.props);
+	}
+
 componentDidMount() {
   setTimeout(() => {
     window.Perf.start();

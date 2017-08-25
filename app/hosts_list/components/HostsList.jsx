@@ -22,6 +22,10 @@ class HostsList extends React.Component {
 		this.reworkHostsList = this.reworkHostsList.bind(this);
 	}
 
+	shouldComponentUpdate(nextProps, nextState) {
+		return ((JSON.stringify(nextProps) !== JSON.stringify(this.props)) || ((JSON.stringify(nextState) !== JSON.stringify(this.state)));
+	}
+
 	filter(data, name) {
 		if (data) {
 			// Work only on hosts (hostname filter + banner filter)
