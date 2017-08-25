@@ -5,7 +5,7 @@ import {
 } from './actions.js'
 
 
-function renew_files(state = [], action) {
+function renew_files(state = {}, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
