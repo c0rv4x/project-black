@@ -24,29 +24,34 @@ class FileManager(object):
         self.files = []
         session = sessions.get_new_session()
 
-        files_db = session.query(FoundFile.target).distinct().all()
-        print(files_db)
-        files = list(map(lambda x: {
-            "file_id": x.file_id,
-            "file_name": x.file_name,
-            "target": x.target,
-            "port_number": x.port_number,
-            "file_path": x.file_path,
-            "status_code": x.status_code,
-            "content_length": x.content_length,
-            "special_note": x.special_note,
-            "task_id": x.task_id,
-            "project_uuid": x.project_uuid,
-            "date_added": str(x.date_added)
-            }, files_db))
-        files.sort(key=itemgetter("date_added"), reverse=True)
+        targets = session.query(FoundFile.target).distinct().all()
+        
+        for each_target in targets:
+            host = each_target[0].split(':')[0]
 
-        unique_files = set()
-        for file in files:
-            file_n = file['file_path']
+            files_found = session.query(FoundFile).distinct(FoundFile.file_path, FoundFile.status_code).all()
+            files = list(map(lambda x: {
+                "file_id": x.file_id,
+                "file_name": x.file_name,
+                "target": x.target,
+                "port_number": x.port_number,
+                "file_path": x.file_path,
+                "status_code": x.status_code,
+                "content_length": x.content_length,
+                "special_note": x.special_note,
+                "task_id": x.task_id,
+                "project_uuid": x.project_uuid,
+                "date_added": str(x.date_added)
+                }, files_found))
+            files.sort(key=itemgetter("status_code"))
+            print(files)
 
-            if file_n not in unique_files:
-                unique_files.add(file_n)
-                self.files.append(file)
+        # unique_files = set()
+        # for file in files:
+        #     file_n = file['file_path']
+
+        #     if file_n not in unique_files:
+        #         unique_files.add(file_n)
+        #         self.files.append(file)
 
         sessions.destroy_session(session)
