@@ -24,7 +24,7 @@ class FileManager(object):
         self.files = []
         session = sessions.get_new_session()
 
-        files_db = session.query(FoundFile).with_entities(FoundFile.target).distinct().all()
+        files_db = session.query(FoundFile.target).distinct().all()
         print(files_db)
         files = list(map(lambda x: {
             "file_id": x.file_id,
