@@ -47,9 +47,6 @@ class NavigationTabs extends React.Component {
 				<Tab eventKey={2} title="IPs">
 					<ProjectDetailsWrapper project_uuid={this.project_uuid} />
 				</Tab>
-				<Tab eventKey={3} title="Hostnames">
-					<HostsListWrapper project_uuid={this.project_uuid} />
-				</Tab>
 				<Tab eventKey={4} title="All Tasks">
 					<TasksTabWrapper project_uuid={this.project_uuid} />
 				</Tab>				
