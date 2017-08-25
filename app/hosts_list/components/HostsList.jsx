@@ -150,18 +150,6 @@ class HostsList extends React.Component {
 		}
 	}
 
-	componentWillMount() {
-		window.Perf.start();
-	}
-
-	componentDidMount() {
-      window.Perf.stop();
-      window.measurements = window.Perf.getLastMeasurements();
-      window.Perf.printWasted(window.measurements);
-      window.Perf.printInclusive(window.measurements);
-      window.Perf.printExclusive(window.measurements);		
-	}
-
 	componentWillReceiveProps(newProps, newState) {
 		const newFilters = newProps['filters'];
 
