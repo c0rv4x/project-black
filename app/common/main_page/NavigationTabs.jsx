@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import {
     Link
@@ -21,15 +22,16 @@ class NavigationTabs extends React.Component {
 	}
 
 	shouldComponentUpdate(nextProps) {
-		return JSON.stringify(nextProps) !== JSON.stringify(this.props);
+		return (!_.isEqual(nextProps, this.props));
 	}
 
-componentDidMount() {
+componentWillMount() {
   setTimeout(() => {
     window.Perf.start();
     setTimeout(() => {
       window.Perf.stop();
       window.measurements = window.Perf.getLastMeasurements();
+      window.Perf.printWasted(window.measurements);
       window.Perf.printInclusive(window.measurements);
       window.Perf.printExclusive(window.measurements);
     }, 30000);

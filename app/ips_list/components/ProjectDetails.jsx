@@ -147,7 +147,8 @@ class ProjectDetails extends React.Component {
 	}
 
   	shouldComponentUpdate(nextProps) {
-  		return (!_.isEqual(nextProps, this.props))
+  		console.log(!_.isEqual(nextProps, this.props));
+  		return (!_.isEqual(nextProps, this.props));
   	}
 
 	render() {
