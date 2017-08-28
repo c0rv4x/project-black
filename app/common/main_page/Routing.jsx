@@ -81,12 +81,13 @@ class Host extends React.Component {
         super(props);
 
         const project_uuid = this.props.match.params.project_uuid;
+        const hostname = this.props.match.params.hostname;
 
         this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
         this.scopesSubscriber = new ScopesSocketioEventsSubsriber(mainStore, project_uuid);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
-        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid); 
+        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid, hostname); 
     }
 
     render() {

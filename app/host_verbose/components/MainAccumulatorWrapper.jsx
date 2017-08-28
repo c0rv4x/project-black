@@ -77,7 +77,7 @@ function mapStateToProps(state, ownProps){
         tasks: _.filter(state.tasks.active, (x) => {
         	return x.project_uuid == project['project_uuid']
         }),
-        files: state.files[host.hostname]
+        files: state.files
     }
     // x['target'].split(':')[0] == host['hostname'])); is a shitty costil'
 }

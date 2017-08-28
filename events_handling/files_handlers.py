@@ -10,12 +10,13 @@ class FileHandlers(object):
         def handle_custom_event(msg):
             """ When received this message, send back all the files """
             project_uuid = msg.get('project_uuid', None)
-            self.send_files_back(project_uuid)
+            hostname = msg.get('hostname', None)
+            self.send_files_back(project_uuid, hostname)
 
 
-    def send_files_back(self, project_uuid=None):
+    def send_files_back(self, project_uuid=None, hostname=None):
         self.socketio.emit('files:all:get:back', {
             'status': 'success',
             'project_uuid': project_uuid,
-            'files': self.file_manager.get_files(project_uuid)
+            'files': self.file_manager.get_files(project_uuid, hostname)
         }, broadcast=True, namespace='/files')
