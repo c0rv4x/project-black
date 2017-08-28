@@ -31,7 +31,7 @@ function mapStateToProps(state, ownProps){
 	let host = null;
 
 	if (filtered_hosts.length) {
-		host = filtered_hosts[0]
+		host = filtered_hosts[0];
 	} else {
 		host = {
 			"hostname": null,

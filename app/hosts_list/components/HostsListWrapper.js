@@ -70,8 +70,8 @@ function mapStateToProps(state, ownProps) {
     return {
     	project: project,
         scopes: {
-        	'ips': formIPs(state.scopes.ips, project['project_uuid']),
-        	'hosts': formHosts(state.scopes.hosts, project['project_uuid'], scans, state.files)
+        	'ips': formIPs(JSON.parse(JSON.stringify(state.scopes.ips)), project['project_uuid']),
+        	'hosts': formHosts(JSON.parse(JSON.stringify(state.scopes.hosts)), project['project_uuid'], scans, state.files)
         },
         tasks: _.filter(state.tasks.active, (x) => {
         	return x.project_uuid == project['project_uuid']
