@@ -29,9 +29,13 @@ function formHosts(hosts_list, project_uuid, scans, files) {
     });
 
     for (var each_host of hosts) {
-    	each_host['files'] = files.filter((x) => {
-    		return x.target.split(':')[0] == each_host['hostname'];
-    	});
+    	if (files.hasOwnProperty(each_host.hostname)) {
+	    	each_host.files = files[each_host.hostname];
+    		// console.log(each_host, files[each_host.hostname]);
+    	}
+    	else {
+	    	each_host.files = [];
+    	}
     }
 
     return hosts;

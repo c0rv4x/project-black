@@ -15,7 +15,7 @@ function renew_files(state = {}, action) {
 	}		
 }
 
-function file_reduce(state = [], action) {
+function file_reduce(state = {}, action) {
 	switch (action.type) {
 		case RENEW_FILES:
 			return renew_files(state, action);

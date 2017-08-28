@@ -195,7 +195,6 @@ class HostsList extends React.Component {
 	render() {
 		const scopes = this.reworkHostsList(this.props.scopes.hosts, this.props.scans);
 		const filtered_scopes = this.filter(scopes);
-		
 
 		return (
 			<div>

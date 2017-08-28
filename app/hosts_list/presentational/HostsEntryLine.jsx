@@ -40,6 +40,7 @@ class HostsEntryLine extends React.Component {
 				</div>
 			)
 		}
+
 		var files_by_statuses = {
 			'2xx': this.props.host.files.filter((x) => {
 				return Math.floor(x.status_code / 100) === 2;
