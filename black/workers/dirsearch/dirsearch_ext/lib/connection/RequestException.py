@@ -18,3 +18,6 @@
 
 class RequestException(Exception):
     pass
+
+class ProtocolCheckException(Exception):
+	pass

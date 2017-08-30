@@ -25,7 +25,7 @@ import urllib
 from threading import Lock
 from urllib.parse import urljoin
 
-from ...lib.connection import Requester, RequestException
+from ...lib.connection import Requester, RequestException, ProtocolCheckException
 from ...lib.core import Dictionary, Fuzzer, ReportManager, Saver
 from ...lib.reports import JSONReport
 from ...lib.utils import FileUtils
@@ -85,6 +85,8 @@ class Controller(object):
                 except RequestException as e:
                     # self.output.error(e.args[0]['message'])
                     raise SkipTargetInterrupt
+                except ProtocolCheckException as e:
+                    self.set_status_function("Finished", progress=-1)
                 if self.arguments.use_random_agents:
                     self.requester.setRandomAgents(self.randomAgents)
                 for key, value in arguments.headers.items():
