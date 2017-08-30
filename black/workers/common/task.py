@@ -104,17 +104,21 @@ class Task(object):
 
     def create_db_record(self):
         """ Creates the record of the task in a special DB table """
-        session = sessions.get_new_session()
 
-        task_new_object = models.Task(
-            task_id=self.get_id(),
-            task_type=self.task_type,
-            target=json.dumps(self.target),
-            params=json.dumps(self.params),
-            project_uuid=self.project_uuid,
-            stdout="",
-            stderr="")
+        try:
+            session = sessions.get_new_session()
 
-        session.add(task_new_object)
-        session.commit()
-        sessions.destroy_session(session)
+            task_new_object = models.Task(
+                task_id=self.get_id(),
+                task_type=self.task_type,
+                target=json.dumps(self.target),
+                params=json.dumps(self.params),
+                project_uuid=self.project_uuid,
+                stdout="",
+                stderr="")
+
+            session.add(task_new_object)
+            session.commit()
+            sessions.destroy_session(session)
+        except Exception as e:
+            print("TOTAL SHIT", e, str(e), self.get_id(), self.task_type)

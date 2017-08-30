@@ -7,6 +7,7 @@ class DirsearchTask(SyncTask):
     """ Instance of running dirsearch """
 
     def __init__(self, task_id, target, params, project_uuid):
+        print("DirsearchTask.__init__", task_id)
         SyncTask.__init__(self, task_id, 'dirsearch', target, params, project_uuid)
 
         program_params = params['program']
@@ -18,7 +19,7 @@ class DirsearchTask(SyncTask):
             print("Starting {}".format(self.target[0]))
             Program(self.target[0], self.task_id, self.project_uuid, self.set_status, self.params_object)
         except Exception as e:
-            print(e, str(e), self.target[0])
+            print("Aborted", e, str(e), self.target[0])
             self.set_status("Aborted", progress=0)
 
     def send_notification(self, command):

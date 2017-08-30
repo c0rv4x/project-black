@@ -9,7 +9,6 @@ from black.db import Project, Scan, get_new_session, destroy_session
 
 from black.workers.common.async_task import AsyncTask
 from uuid import uuid4
-from black.workers.common.task import Task
 
 
 class NmapTask(AsyncTask):

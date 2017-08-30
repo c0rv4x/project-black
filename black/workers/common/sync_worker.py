@@ -63,6 +63,7 @@ class SyncWorker(Worker):
         target = message['target']
         params = message['params']
         project_uuid = message['project_uuid']
+        print("Got message", task_id, target, params, project_uuid)
 
         # Spawn the process
         proc = self.task_class(task_id, target, params, project_uuid)
