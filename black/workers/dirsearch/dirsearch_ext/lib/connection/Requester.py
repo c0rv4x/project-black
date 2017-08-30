@@ -103,7 +103,6 @@ class Requester(object):
         self.request_by_name = request_by_name
         self.arguments_object = arguments_object
 
-        self.protocolCheck()
 
     def protocolCheck(self):
         if self.defaultProtocolUsed:

@@ -72,7 +72,6 @@ class Controller(object):
                 self.currentUrl = url
                 # self.output.target(self.currentUrl)
                 try:
-                    print(1, url)
                     self.requester = Requester(url, cookie=self.arguments.cookie,
                                            user_agent=self.arguments.user_agent, maxPool=self.arguments.threads_count,
                                            max_retries=self.arguments.max_retries, delay=self.arguments.delay, timeout=self.arguments.timeout,
@@ -80,16 +79,14 @@ class Controller(object):
                                            redirect=self.arguments.redirect, 
                                            request_by_name=self.arguments.request_by_name,
                                            arguments_object=self.arguments)
+                    self.requester.protocolCheck()
                     self.requester.request("/")
-                    print(2, url)
 
                 except RequestException as e:
                     # self.output.error(e.args[0]['message'])
                     raise SkipTargetInterrupt
                 except ProtocolCheckException as e:
-                    print(3, url)
                     self.set_status_function("Finished", progress=-1)
-                    print(4, url)
                 if self.arguments.use_random_agents:
                     self.requester.setRandomAgents(self.randomAgents)
                 for key, value in arguments.headers.items():
