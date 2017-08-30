@@ -87,6 +87,7 @@ class Controller(object):
                     raise SkipTargetInterrupt
                 except ProtocolCheckException as e:
                     self.set_status_function("Finished", progress=-1)
+                    return
                 if self.arguments.use_random_agents:
                     self.requester.setRandomAgents(self.randomAgents)
                 for key, value in arguments.headers.items():
