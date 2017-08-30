@@ -16,6 +16,8 @@ class SyncTask(Task):
         self.sync_publisher = SyncPublisher('tasks_statuses')
         self.sync_publisher.connect()
 
+        self.set_status("New")
+
     def set_status(self, new_status, progress=0, text=""):
         Task.set_status(self, new_status, progress=progress, text=text)
 
