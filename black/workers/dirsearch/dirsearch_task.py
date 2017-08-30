@@ -18,6 +18,7 @@ class DirsearchTask(SyncTask):
             print("Starting {}".format(self.target[0]))
             Program(self.target[0], self.task_id, self.project_uuid, self.set_status, self.params_object)
         except Exception as e:
+            print(e, str(e))
             self.set_status("Aborted", progress=0)
 
     def send_notification(self, command):
