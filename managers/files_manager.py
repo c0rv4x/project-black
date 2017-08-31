@@ -36,9 +36,7 @@ class FileManager(object):
             self.files[each_project_uuid] = {}
 
             targets = session.query(FoundFile.target).filter(FoundFile.project_uuid == each_project_uuid).distinct().all()
-            print(each_project_uuid, len(targets))
-            from time import sleep
-            sleep(1.5)
+
             for each_target in targets:
                 host = each_target[0].split(':')[0]
 
@@ -59,6 +57,11 @@ class FileManager(object):
                 files.sort(key=itemgetter("status_code"))
 
                 self.files[each_project_uuid][host] = files
+
+                if len(targets) == 1:
+                    print(files)
+                    from time import sleep
+                    sleep(2)
 
 
         sessions.destroy_session(session)
