@@ -15,7 +15,7 @@ class ShadowTask(object):
         self.target = target
         self.params = params
         self.project_uuid = project_uuid
-
+        print("ShadowTask")
         if task_id:
             self.task_id = task_id
         else:

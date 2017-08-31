@@ -45,7 +45,7 @@ class Handlers(object):
                     self.data_updated_queue.task_done()
                 if task_type == "file":
                     self.fileHandlers.send_files_back(project_uuid)
-                    self.data_updated_queue.task_done() 
+                    self.data_updated_queue.task_done()
                 if task_type == "scope":
                     self.scopeHandlers.send_scopes_back(project_uuid)
                     self.data_updated_queue.task_done()                                        

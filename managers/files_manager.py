@@ -30,6 +30,7 @@ class FileManager(object):
         session = sessions.get_new_session()
 
         project_uuids = session.query(Project.project_uuid).all()
+
         for each_project_uuid_tupled in project_uuids:
             each_project_uuid = each_project_uuid_tupled[0]
             self.files[each_project_uuid] = {}

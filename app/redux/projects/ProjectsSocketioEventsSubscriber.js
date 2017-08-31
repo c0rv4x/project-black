@@ -15,6 +15,8 @@ class ProjectsSocketioEventsSubscriber {
         this.store = store;
         this.connector = new Connector('projects');
 
+        console.log(this.connector.after_connected);
+
         this.connector.after_connected((x) => {
         	this.emitter = new ProjectsSocketioEventsEmitter();
         	this.emitter.requestRenewProjects();
