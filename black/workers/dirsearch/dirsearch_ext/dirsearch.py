@@ -26,5 +26,7 @@ class Program(object):
         self.arguments = ArgumentParser(url, **params_object)
         self.output = CLIOutput()
         self.saver = Saver(task_id, project_uuid)
+        from time import sleep
+        sleep(35)
         set_status_function("Finished", progress=100)
         # self.controller = Controller("./black/workers/dirsearch/dirsearch_ext/", self.arguments, self.output, self.saver, set_status_function)
