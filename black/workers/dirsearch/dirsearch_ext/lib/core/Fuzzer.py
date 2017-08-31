@@ -45,6 +45,8 @@ class Fuzzer(object):
         self.errors = []
         self.counter = 0
 
+        self.timeouts = 0
+
     def wait(self, timeout=None):
         for thread in self.threads:
             thread.join(timeout)
@@ -146,10 +148,15 @@ class Fuzzer(object):
                     else:
                         for callback in self.notFoundCallbacks:
                             callback(result)
+                    self.timeouts = 0
                     del status
                     del response
                 except RequestException as e:
                     self.counter += 1
+                    self.timeouts += 1
+
+                    if self.timeouts > 20:
+                        raise StopIteration()
                     for callback in self.errorCallbacks:
                         callback(path, e.args[0]['message'])
                     continue
