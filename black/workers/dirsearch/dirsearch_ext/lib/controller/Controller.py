@@ -252,7 +252,7 @@ class Controller(object):
         while not self.directories.empty():
             self.index = 0
             self.currentDirectory = self.directories.get()
-            self.output.warning('[{2}] Starting: {0}'.format(self.currentDirectory, self.arguments.url, time.strftime('%H:%M:%S')))
+            self.output.warning('{1} {0}'.format(self.currentDirectory, self.arguments.url))
             self.fuzzer.requester.basePath = self.basePath + self.currentDirectory
             self.output.basePath = self.basePath + self.currentDirectory
             self.fuzzer.start()
