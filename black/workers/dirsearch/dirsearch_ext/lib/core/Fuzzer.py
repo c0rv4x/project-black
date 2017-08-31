@@ -64,7 +64,7 @@ class Fuzzer(object):
         if len(self.threads) != 0:
             self.threads = []
         for thread in range(self.threads_count):
-            newThread = threading.Thread(target=self.thread_proc)
+            newThread = threading.Thread(target=self.thread_proc, args=(thread,))
             newThread.daemon = True
             self.threads.append(newThread)
 
@@ -127,13 +127,13 @@ class Fuzzer(object):
     def stopThread(self):
         self.runningThreadsCount -= 1
 
-    def thread_proc(self):
+    def thread_proc(self, thread_num):
         self.playEvent.wait()
         try:
             path = next(self.dictionary)
             while path is not None:
-                if self.counter % 100 == 0:
-                    print(self.requester.url, self.counter)
+                if self.counter % 100 == 0 and self.counter > 0:
+                    print(thread_num, self.requester.url, self.counter)
                 if self.counter % 50 == 0 and self.counter / 50 > 0:
                     self.set_status_function('Working', progress=int(float(self.counter) / float(len(self.dictionary)) * 100))
                 try:
