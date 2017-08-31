@@ -109,14 +109,15 @@ class TaskManager(object):
         # Open a communications channel
         self.channel = connection.channel()
         self.channel.exchange_declare(
-            exchange="tasks.exchange",
-            exchange_type="direct",
+            exchange="amq.rabbitmq.trace",
+            internal=True,
+            exchange_type="topic",
             durable=True)
 
         self.channel.queue_declare(queue="tasks_statuses", durable=True)
         self.channel.queue_bind(
             queue="tasks_statuses",
-            exchange="tasks.exchange",
+            exchange="amq.rabbitmq.trace",
             routing_key="tasks_statuses")
 
         self.channel.basic_consume(
@@ -134,19 +135,20 @@ class TaskManager(object):
     def spawn_all_channels_with_queues(self):
         for task_type in ['nmap','dnsscan','dirseach', 'dnsscan']:
             self.channel.exchange_declare(
-                exchange="tasks.exchange",
-                exchange_type="direct",
+                exchange="amq.rabbitmq.trace",
+                internal=True,
+                exchange_type="topic",
                 durable=True)
             self.channel.queue_declare(queue=task_type + "_tasks", durable=True)
             self.channel.queue_bind(
                 queue=task_type + "_tasks",
-                exchange="tasks.exchange",
+                exchange="amq.rabbitmq.trace",
                 routing_key=task_type + "_tasks")
 
             self.channel.queue_declare(queue=task_type + "_notifications", durable=True)
             self.channel.queue_bind(
                 queue=task_type + "_notifications",
-                exchange="tasks.exchange",
+                exchange="amq.rabbitmq.trace",
                 routing_key=task_type + "_notifications")
 
     def check_finished_task_necessities(self, task):
