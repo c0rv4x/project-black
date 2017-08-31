@@ -110,7 +110,6 @@ class TaskManager(object):
         self.channel = connection.channel()
         self.channel.exchange_declare(
             exchange="tasks.exchange",
-            internal=True,
             exchange_type="direct",
             durable=True)
 
@@ -136,7 +135,6 @@ class TaskManager(object):
         for task_type in ['nmap','dnsscan','dirseach', 'dnsscan']:
             self.channel.exchange_declare(
                 exchange="tasks.exchange",
-                internal=True,
                 exchange_type="direct",
                 durable=True)
             self.channel.queue_declare(queue=task_type + "_tasks", durable=True)
