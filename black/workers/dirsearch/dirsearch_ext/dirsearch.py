@@ -26,4 +26,5 @@ class Program(object):
         self.arguments = ArgumentParser(url, **params_object)
         self.output = CLIOutput()
         self.saver = Saver(task_id, project_uuid)
-        self.controller = Controller("./black/workers/dirsearch/dirsearch_ext/", self.arguments, self.output, self.saver, set_status_function)
+        self.set_status_function("Finished", progress=100)
+        # self.controller = Controller("./black/workers/dirsearch/dirsearch_ext/", self.arguments, self.output, self.saver, set_status_function)

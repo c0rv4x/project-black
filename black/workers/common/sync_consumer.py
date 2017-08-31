@@ -24,7 +24,6 @@ class SyncConsumer(object):
                                      stop_ioloop_on_close=False)
 
     def on_connection_open(self, unused_connection):
-        print('opened consumer')
         self.add_on_connection_close_callback()
         self.open_channel()
 
