@@ -59,9 +59,6 @@ class FileManager(object):
                 files.sort(key=itemgetter("status_code"))
 
                 self.files[each_project_uuid][host] = files
-                if len(files) > 0:
-                    print(files)
-                    sleep(2)
 
 
         sessions.destroy_session(session)
