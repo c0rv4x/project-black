@@ -156,6 +156,7 @@ class Fuzzer(object):
                     self.timeouts += 1
 
                     if self.timeouts > 20:
+                        print("Too many timouts on url:", self.requester.url)
                         raise StopIteration()
                     for callback in self.errorCallbacks:
                         callback(path, e.args[0]['message'])
