@@ -93,6 +93,7 @@ class SyncConsumer(object):
             self._channel.close()
 
     def on_message(self, unused_channel, basic_deliver, properties, body):
+        print("Sync consumer:", body)
         self.acknowledge_message(basic_deliver.delivery_tag)
         self.handler(body)
 
