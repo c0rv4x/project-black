@@ -132,6 +132,8 @@ class Fuzzer(object):
         try:
             path = next(self.dictionary)
             while path is not None:
+                if self.counter % 100 == 0:
+                    print(self.requester.url)
                 if self.counter % 50 == 0 and self.counter / 50 > 0:
                     self.set_status_function('Working', progress=int(float(self.counter) / float(len(self.dictionary)) * 100))
                 try:
