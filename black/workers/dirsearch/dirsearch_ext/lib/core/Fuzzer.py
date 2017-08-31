@@ -133,7 +133,7 @@ class Fuzzer(object):
             path = next(self.dictionary)
             while path is not None:
                 if self.counter % 100 == 0 and self.counter > 0:
-                    print(thread_num, self.requester.url, self.counter)
+                    print(self.requester.url, int(float(self.counter) / float(len(self.dictionary)) * 100), self.counter)
                 if self.counter % 50 == 0 and self.counter / 50 > 0:
                     self.set_status_function('Working', progress=int(float(self.counter) / float(len(self.dictionary)) * 100))
                 try:
