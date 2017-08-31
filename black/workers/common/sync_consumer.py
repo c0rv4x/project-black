@@ -17,6 +17,7 @@ class SyncConsumer(object):
                                                     port=5672,
                                                     virtual_host='/',
                                                     credentials=credentials)
+        print("Inited syncconsumer")
 
     def connect(self):
         return pika.SelectConnection(self.parameters,
