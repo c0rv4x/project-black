@@ -15,11 +15,12 @@ class ShadowTask(object):
         self.target = target
         self.params = params
         self.project_uuid = project_uuid
-        print("ShadowTask", task_id)
         if task_id:
             self.task_id = task_id
+            print("ShadowTask old", self.task_id)
         else:
             self.task_id = str(uuid.uuid4())
+            print("ShadowTask new", self.task_id)
 
         self.status = status
         self.progress = progress
