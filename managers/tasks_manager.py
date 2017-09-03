@@ -120,6 +120,7 @@ class TaskManager(object):
             queue="tasks_statuses",
             exchange="tasks.exchange",
             routing_key="tasks_statuses")
+        self.channel.confirm_delivery()
 
         self.channel.basic_consume(
             consumer_callback=self.parse_new_status,
