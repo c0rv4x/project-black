@@ -47,8 +47,17 @@ class SyncConsumer(object):
     def open_channel(self):
         self._connection.channel(on_open_callback=self.on_channel_open)
 
+
+    def on_delivery_confirmation(frame):
+        global confirmed, errors
+        if isinstance(frame.method, spec.Basic.Ack):
+            print("confirmed")
+        else:
+            print("NACK")
+
     def on_channel_open(self, channel):
         self._channel = channel
+        self._channel.confirm_delivery(callback=on_delivery_confirmation)
         self.add_on_channel_close_callback()
         self.setup_exchange(self.EXCHANGE)        
 
