@@ -15,19 +15,19 @@ def register_project_handlers(socketio, project_manager):
             namespace='/projects')
 
     @socketio.on('projects:create', namespace='/projects')
-    async def handle_project_create(msg):
+    async def handle_project_create(sid, msg):
         """ When received this message, create a new projects """
         project_name = msg['project_name']
 
         # Create new project (and register it)
-        addition_result = project_manager.add_new_project(project_name)
+        addition_result = project_manager.create_project(project_name)
 
         if addition_result["status"] == "success":
             # Send the project back
             await socketio.emit(
                 'projects:create', {
                     'status': 'success',
-                    'new_project': addition_result["new_project"]
+                    'new_project': addition_result["project"]
                 },
                 broadcast=True,
                 namespace='/projects')
@@ -41,7 +41,7 @@ def register_project_handlers(socketio, project_manager):
                 namespace='/projects')
 
     @socketio.on('projects:delete:project_uuid', namespace='/projects')
-    async def handle_project_delete(msg):
+    async def handle_project_delete(sid, msg):
         """ When received this message, delete the project """
         project_uuid = msg['project_uuid']
 
@@ -68,7 +68,7 @@ def register_project_handlers(socketio, project_manager):
                 namespace='/projects')
 
     @socketio.on('projects:update', namespace='/projects')
-    async def handle_project_update(msg):
+    async def handle_project_update(sid, msg):
         """ When received this message, update the project """
         project_uuid = msg['project_uuid']
         project_name = msg['project_name']

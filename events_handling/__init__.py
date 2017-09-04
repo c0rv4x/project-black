@@ -1,3 +1,5 @@
+""" This module keeps a sexy class that initialises all the handlers and
+starts task_poller. """
 import queue
 
 from events_handling.projects_handlers import register_project_handlers
@@ -49,6 +51,6 @@ class Handlers(object):
                     self.data_updated_queue.task_done()
                 if task_type == "scope":
                     self.scopeHandlers.send_scopes_back(project_uuid)
-                    self.data_updated_queue.task_done()                                        
-            except queue.Empty as e:
+                    self.data_updated_queue.task_done()
+            except queue.Empty:
                 continue
