@@ -1,6 +1,6 @@
 import queue
 
-from events_handling.projects_handlers import ProjectHandlers
+from events_handling.projects_handlers import register_project_handlers
 from events_handling.scopes_handlers import ScopeHandlers
 from events_handling.tasks_handlers import TaskHandlers
 from events_handling.scans_handlers import ScanHandlers
@@ -10,6 +10,7 @@ from managers import ProjectManager, ScopeManager, TaskManager, ScanManager, Fil
 
 
 class Handlers(object):
+
     def __init__(self, socketio):
         self.socketio = socketio
 
@@ -22,7 +23,7 @@ class Handlers(object):
         self.scan_manager = ScanManager()
         self.file_manager = FileManager()
 
-        self.projectHandlers = ProjectHandlers(self.socketio, self.project_manager)
+        register_project_handlers(self.socketio, self.project_manager)
         # self.scopeHandlers = ScopeHandlers(self.socketio, self.scope_manager)
         # self.taskHandlers = TaskHandlers(self.socketio, self.task_manager)
         # self.scanHandlers = ScanHandlers(self.socketio, self.scan_manager)
