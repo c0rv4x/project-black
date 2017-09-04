@@ -24,7 +24,7 @@ class TasksButtonsTracked extends React.Component {
 				});
 			}
 
-			i += len(ports);
+			i += ports.length;
 			for (var each_port of [...ports]) {
 				var target = each_host.hostname;
 				this.tasksEmitter.requestCreateTask('dirsearch', 
