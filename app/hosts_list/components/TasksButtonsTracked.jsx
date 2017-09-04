@@ -14,7 +14,7 @@ class TasksButtonsTracked extends React.Component {
 	}
 
 	dirbusterStart(options) {
-		window.result = [];
+		var i = 0;
 		for (var each_host of this.props.scopes) {
 			var ports = new Set();
 
@@ -24,8 +24,7 @@ class TasksButtonsTracked extends React.Component {
 				});
 			}
 
-			console.log(ports);
-			window.result.push(ports);
+			i += ports.size;
 			for (var each_port of [...ports]) {
 				var target = each_host.hostname;
 				this.tasksEmitter.requestCreateTask('dirsearch', 
