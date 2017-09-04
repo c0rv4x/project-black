@@ -1,23 +1,22 @@
-import asyncio
+""" Main application, running on sanic """
 import socketio
 
 from sanic import Sanic
-from sanic.response import html
 
 from events_handling import Handlers
 
 
-socketio = socketio.AsyncServer(async_mode='sanic')
-app = Sanic()
+SOCKET_IO = socketio.AsyncServer(async_mode='sanic')
+APP = Sanic()
 
-socketio.attach(app)
+SOCKET_IO.attach(APP)
 
-app.static('/', './public/index.html')
-app.static('/bundle.js', './public/bundle.js')
+APP.static('/', './public/index.html')
+APP.static('/bundle.js', './public/bundle.js')
 
-Handlers(socketio)
+Handlers(SOCKET_IO)
 
-app.run(host='127.0.0.1', port=5000)
+APP.run(host='127.0.0.1', port=5000)
 
 
 
