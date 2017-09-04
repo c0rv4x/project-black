@@ -58,10 +58,5 @@ class FileManager(object):
 
                 self.files[each_project_uuid][host] = files
 
-                if len(targets) == 1:
-                    print(files)
-                    from time import sleep
-                    sleep(2)
-
 
         sessions.destroy_session(session)
