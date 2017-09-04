@@ -1,5 +1,4 @@
-flask
-flask-socketio
+aiohttp
 eventlet
 dnspython
 netaddr

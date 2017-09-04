@@ -23,12 +23,12 @@ class Handlers(object):
         self.file_manager = FileManager()
 
         self.projectHandlers = ProjectHandlers(self.socketio, self.project_manager)
-        self.scopeHandlers = ScopeHandlers(self.socketio, self.scope_manager)
-        self.taskHandlers = TaskHandlers(self.socketio, self.task_manager)
-        self.scanHandlers = ScanHandlers(self.socketio, self.scan_manager)
-        self.fileHandlers = FileHandlers(self.socketio, self.file_manager)
+        # self.scopeHandlers = ScopeHandlers(self.socketio, self.scope_manager)
+        # self.taskHandlers = TaskHandlers(self.socketio, self.task_manager)
+        # self.scanHandlers = ScanHandlers(self.socketio, self.scan_manager)
+        # self.fileHandlers = FileHandlers(self.socketio, self.file_manager)
 
-        self.thread = socketio.start_background_task(target=self.sender_loop)
+        # self.thread = socketio.start_background_task(target=self.sender_loop)
         # self.thread.start
 
     def sender_loop(self):
