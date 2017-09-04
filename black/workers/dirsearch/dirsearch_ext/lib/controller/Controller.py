@@ -72,7 +72,6 @@ class Controller(object):
                 self.currentUrl = url
                 # self.output.target(self.currentUrl)
                 try:
-
                     self.requester = Requester(url, cookie=self.arguments.cookie,
                                            user_agent=self.arguments.user_agent, maxPool=self.arguments.threads_count,
                                            max_retries=self.arguments.max_retries, delay=self.arguments.delay, timeout=self.arguments.timeout,
@@ -80,6 +79,7 @@ class Controller(object):
                                            redirect=self.arguments.redirect, 
                                            request_by_name=self.arguments.request_by_name,
                                            arguments_object=self.arguments)
+                    self.requester.protocolCheck()
                     self.requester.request("/")
 
                 except RequestException as e:
@@ -87,6 +87,7 @@ class Controller(object):
                     raise SkipTargetInterrupt
                 except ProtocolCheckException as e:
                     self.set_status_function("Finished", progress=-1)
+                    return
                 if self.arguments.use_random_agents:
                     self.requester.setRandomAgents(self.randomAgents)
                 for key, value in arguments.headers.items():
@@ -251,7 +252,7 @@ class Controller(object):
         while not self.directories.empty():
             self.index = 0
             self.currentDirectory = self.directories.get()
-            self.output.warning('[{2}] Starting: {0}'.format(self.currentDirectory, self.arguments.url, time.strftime('%H:%M:%S')))
+            self.output.warning('{1} {0}'.format(self.currentDirectory, self.arguments.url))
             self.fuzzer.requester.basePath = self.basePath + self.currentDirectory
             self.output.basePath = self.basePath + self.currentDirectory
             self.fuzzer.start()
