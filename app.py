@@ -7,7 +7,8 @@ from sanic import Sanic, response
 from events_handling import Handlers
 
 
-async def complex_handler(request, project_uuid):
+async def cb_complex_handler(request, project_uuid):
+    """ Simlpy returns index.html """
     return await response.file_stream(os.path.abspath('./public/index.html'))
 
 
@@ -18,7 +19,7 @@ SOCKET_IO.attach(APP)
 
 APP.static('/', './public/index.html')
 APP.static('/bundle.js', './public/bundle.js')
-APP.add_route(complex_handler, '/project/<project_uuid>')
+APP.add_route(cb_complex_handler, '/project/<project_uuid>')
 
 Handlers(SOCKET_IO)
 
