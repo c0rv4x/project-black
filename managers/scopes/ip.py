@@ -3,14 +3,18 @@ from black.black.db import Host as HostDB
 
 
 class IP(object):
-    def __init__(self, _id, ip_address, hostnames, comment, project_uuid):
-        self._id = _id
+    """ Class keeps data on a single IP. Related hostnames inside the project +
+    comment on the ip """
+
+    def __init__(self, ip_id, ip_address, project_uuid, hostnames=None, comment=""):
+        self._id = ip_id
         self.ip_address = ip_address
         self.hostnames = hostnames or list()
         self.comment = comment
-        self.project_uuid = project_uuid
+        self._project_uuid = project_uuid
 
     def get_id(self):
+        """ Returns id of ip (read-only) """
         return self._id
 
     def get_ip_address(self):
@@ -23,12 +27,13 @@ class IP(object):
         return self.comment
 
     def get_project_uuid(self):
-        return self.project_uuid
-
+        """ Returns project_uuid of ip (read-only) """
+        return self._project_uuid
+ 
     def set_hostnames(self, new_hostnames):
         self.hostnames = new_hostnames
 
-    def toJSON(self, recursive=True):
+    def to_json(self):
         return {
             'type': 'ip',
             '_id': self.get_id(),

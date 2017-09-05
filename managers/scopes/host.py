@@ -3,8 +3,8 @@ from black.black.db import Host as HostDB
 
 
 class Host(object):
-    def __init__(self, _id, hostname, ip_addresses, comment, project_uuid):
-        self._id = _id
+    def __init__(self, host_id, hostname, project_uuid, ip_addresses=None, comment=""):
+        self._id = host_id
         self.hostname = hostname
         self.ip_addresses = ip_addresses or list()
         self.comment = comment
@@ -28,7 +28,7 @@ class Host(object):
     def set_ip_addresses(self, new_ip_addresses):
         self.ip_addresses = new_ip_addresses
 
-    def toJSON(self):
+    def to_json(self):
         return {
             'type': 'host',
             '_id': self.get_id(),

@@ -26,7 +26,8 @@ class Handlers(object):
         self.file_manager = FileManager()
 
         register_project_handlers(self.socketio, self.project_manager)
-        # self.scopeHandlers = ScopeHandlers(self.socketio, self.scope_manager)
+        self.scope_handlers = ScopeHandlers(self.socketio, self.scope_manager)
+        self.scope_handlers.register_handlers()
         # self.taskHandlers = TaskHandlers(self.socketio, self.task_manager)
         # self.scanHandlers = ScanHandlers(self.socketio, self.scan_manager)
         # self.fileHandlers = FileHandlers(self.socketio, self.file_manager)
@@ -34,23 +35,23 @@ class Handlers(object):
         # self.thread = socketio.start_background_task(target=self.sender_loop)
         # self.thread.start
 
-    def sender_loop(self):
-        self.socketio.sleep(5)
-        while True:
-            self.socketio.sleep(0.7)
-            self.taskHandlers.send_tasks_back()
+    # def sender_loop(self):
+    #     self.socketio.sleep(5)
+    #     while True:
+    #         self.socketio.sleep(0.7)
+    #         self.taskHandlers.send_tasks_back()
 
-            try:
-                task_type, project_uuid = self.data_updated_queue.get_nowait()
+    #         try:
+    #             task_type, project_uuid = self.data_updated_queue.get_nowait()
 
-                if task_type == "scan":
-                    self.scanHandlers.send_scans_back(project_uuid)
-                    self.data_updated_queue.task_done()
-                if task_type == "file":
-                    self.fileHandlers.send_files_back(project_uuid)
-                    self.data_updated_queue.task_done()
-                if task_type == "scope":
-                    self.scopeHandlers.send_scopes_back(project_uuid)
-                    self.data_updated_queue.task_done()
-            except queue.Empty:
-                continue
+    #             if task_type == "scan":
+    #                 self.scanHandlers.send_scans_back(project_uuid)
+    #                 self.data_updated_queue.task_done()
+    #             if task_type == "file":
+    #                 self.fileHandlers.send_files_back(project_uuid)
+    #                 self.data_updated_queue.task_done()
+    #             if task_type == "scope":
+    #                 self.scopeHandlers.send_scopes_back(project_uuid)
+    #                 self.data_updated_queue.task_done()
+    #         except queue.Empty:
+    #             continue
