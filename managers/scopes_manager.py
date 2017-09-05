@@ -146,7 +146,7 @@ class ScopeManager(object):
             )
         )
 
-        return filtered
+        return filtered[0] if filtered else None
 
 
 # class ScopeManager(object):
