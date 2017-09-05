@@ -213,30 +213,6 @@ class ScopeManager(object):
 #     """ ScopeManager keeps track of all ips in the system,
 #     exposing some interfaces for public use. """
 
-#     def __init__(self):
-#         self.ips = []
-#         self.hosts = []
-#         self.update_from_db()
-
-#     def update_scope(self, scope_id, comment):
-#         """ Update scope by its id. Now we can update only comment.
-#         Some more features are comming next. """
-#         for ip_addr in self.ips:
-#             if ip_addr.get_id() == scope_id:
-#                 update_result = ip_addr.update_comment(comment)
-#                 update_result['updated_scope'] = ip_addr.toJSON()
-#                 update_result['type'] = 'ip'
-
-#                 return update_result
-
-#         for host in self.hosts:
-#             if host.get_id() == scope_id:
-#                 update_result = host.update_comment(comment)
-#                 update_result['updated_scope'] = host.toJSON()
-#                 update_result['type'] = 'host'
-
-#                 return update_result
-
 #     def resolve_scopes(self, scopes_ids, project_uuid):
 #         """ Using all the ids of scopes, resolve the hosts, now we
 #         resolve ALL the scopes, that are related to the project_uuid """
