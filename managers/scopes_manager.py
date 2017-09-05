@@ -169,6 +169,9 @@ class ScopeManager(object):
             if delete_result["status"] == "success":
                 self.hosts.remove(host)
 
+                for each_ip in self.ips:
+                    each_ip.remove_host(host)
+
             return delete_result
 
         else:
@@ -179,6 +182,9 @@ class ScopeManager(object):
 
                 if delete_result["status"] == "success":
                     self.ips.remove(ip_addr)
+
+                    for each_host in self.hosts:
+                        each_host.remove_ip_address(ip_addr)
 
                 return delete_result
 

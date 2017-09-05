@@ -107,3 +107,9 @@ class Host(object):
 
             session.commit()
             sessions.destroy_session(session)
+
+    def remove_ip_address(self, ip_object):
+        try:
+            self.ip_addresses.remove(ip_object)
+        except ValueError:
+            pass
