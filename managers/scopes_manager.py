@@ -191,6 +191,23 @@ class ScopeManager(object):
             else:
                 return {"status": "error", "text": "Host/IP does not exist"}
 
+    def update_scope(self, scope_id, comment):
+        """ Update scope by its id. Fow we can update only comment """
+        for ip_addr in self.ips:
+            if ip_addr.get_id() == scope_id:
+                update_result = ip_addr.update_comment(comment)
+                update_result['updated_scope'] = ip_addr.toJSON()
+                update_result['type'] = 'ip'
+
+                return update_result
+
+        for host in self.hosts:
+            if host.get_id() == scope_id:
+                update_result = host.update_comment(comment)
+                update_result['updated_scope'] = host.toJSON()
+                update_result['type'] = 'host'
+
+                return update_result
 
 # class ScopeManager(object):
 #     """ ScopeManager keeps track of all ips in the system,
@@ -200,35 +217,6 @@ class ScopeManager(object):
 #         self.ips = []
 #         self.hosts = []
 #         self.update_from_db()
-
-#     def delete_scope(self, scope_id):
-#         """ Delete a scope with a certain scope_id"""
-#         for ip_addr in self.ips:
-#             if ip_addr.get_id() == scope_id:
-#                 self.ips.remove(ip_addr)
-#                 del_result = ip_addr.delete()
-
-#                 # Remove references to the removed object from
-#                 # the hosts list
-#                 for each_host in self.hosts:
-#                     ips = each_host.get_ip_addresses()
-#                     each_host.set_ip_addresses(
-#                         list(
-#                             filter(
-#                                 lambda x: x.get_id() != scope_id,
-#                                 each_host.get_ip_addresses()
-#                             )
-#                         )
-#                     )
-
-#                 return del_result
-
-#         for host in self.hosts:
-#             if host.get_id() == scope_id:
-#                 self.hosts.remove(host)
-#                 del_result = host.delete()
-
-#                 return del_result
 
 #     def update_scope(self, scope_id, comment):
 #         """ Update scope by its id. Now we can update only comment.
