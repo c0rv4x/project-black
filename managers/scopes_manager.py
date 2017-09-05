@@ -26,7 +26,9 @@ class ScopeManager(object):
 
     def create_ip(self, ip_address, project_uuid):
         """ Create IP object, save and add that to the ips list """
-        if self.find_ip(ip_address, project_uuid) is not None:
+        if self.find_ip(
+            ip_address=ip_address, project_uuid=project_uuid
+        ) is not None:
             return {"status": "dupliacte"}
 
         new_ip = IP(str(uuid.uuid4()), ip_address, project_uuid)
@@ -45,7 +47,9 @@ class ScopeManager(object):
 
     def create_host(self, hostname, project_uuid):
         """ Create host object, save and add that to the hosts list """
-        if self.find_host(hostname, project_uuid) is not None:
+        if self.find_host(
+            hostname=hostname, project_uuid=project_uuid
+        ) is not None:
             return {"status": "dupliacte"}
 
         new_host = HostInstance(str(uuid.uuid4()), hostname, project_uuid)
@@ -124,29 +128,62 @@ class ScopeManager(object):
             )
             each_host.set_ip_addresses(nice_ips)
 
-    def find_ip(self, ip_address, project_uuid):
+    def find_ip(self, ip_address=None, project_uuid=None, ip_id=None):
         """ Checks whether ip object for a certain project already exitst """
         filtered = self.ips
         filtered = list(
             filter(
-                lambda x: x.get_project_uuid() == project_uuid and x.get_ip_address() == ip_address,
+                lambda x:
+                    (ip_address is None or x.get_ip_address() == ip_address)
+                and (project_uuid is None or x.get_project_uuid() == project_uuid)
+                and (ip_id is None or x.get_id() == ip_id),
                 filtered
             )
         )
 
         return filtered[0] if filtered else None
 
-    def find_host(self, hostname, project_uuid):
+    def find_host(self, hostname=None, project_uuid=None, host_id=None):
         """ Checks whether host object for a certain project already exitst """
         filtered = self.hosts
+
         filtered = list(
             filter(
-                lambda x: x.get_project_uuid() == project_uuid and x.get_hostname() == hostname,
+                lambda x:
+                    (hostname is None or x.get_hostname() == hostname)
+                and (project_uuid is None or x.get_project_uuid() == project_uuid)
+                and (host_id is None or x.get_id() == host_id),
                 filtered
             )
         )
 
         return filtered[0] if filtered else None
+
+    def delete_scope(self, scope_id):
+        """ Removes scope from the database and internal structures """
+        host = self.find_host(host_id=scope_id)
+
+        if host is not None:
+            delete_result = host.delete()
+
+            if delete_result["status"] == "success":
+                self.hosts.remove(host)
+
+            return delete_result
+
+        else:
+            ip_addr = self.find_ip(ip_id=scope_id)
+
+            if ip_addr is not None:
+                delete_result = ip_addr.delete()
+
+                if delete_result["status"] == "success":
+                    self.ips.remove(ip_addr)
+
+                return delete_result
+
+            else:
+                return {"status": "error", "text": "Host/IP does not exist"}
 
 
 # class ScopeManager(object):
