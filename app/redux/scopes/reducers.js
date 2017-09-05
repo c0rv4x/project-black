@@ -64,7 +64,7 @@ function delete_scope(state = initialState, action) {
 			return x["_id"] != message["_id"];
 		});
 
-		state_new = {
+		var state_new = {
 			'ips': ips_filtered,
 			'hosts': hosts_filtered
 		}
