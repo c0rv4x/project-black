@@ -138,7 +138,7 @@ class ScopeHandlers(object):
             scopes_ids = msg['scopes_ids']
             project_uuid = msg['project_uuid']
 
-            self.scope_manager.resolve_scopes(scopes_ids, project_uuid)
+            await self.scope_manager.resolve_scopes(scopes_ids, project_uuid)
             print(
                 "Sending after resolve:",
                 self.scope_manager.get_ips(project_uuid),
