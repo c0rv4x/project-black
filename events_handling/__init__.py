@@ -1,6 +1,7 @@
 """ This module keeps a sexy class that initialises all the handlers and
 starts task_poller. """
 import queue
+import asyncio
 
 from events_handling.projects_handlers import register_project_handlers
 from events_handling.scopes_handlers import ScopeHandlers
@@ -13,8 +14,9 @@ from managers import ProjectManager, ScopeManager, TaskManager, ScanManager, Fil
 
 class Handlers(object):
 
-    def __init__(self, socketio):
+    def __init__(self, socketio, app):
         self.socketio = socketio
+        self.app = app
 
         # This queue keeps messages that indicate, that scope should be updated
         self.data_updated_queue = queue.Queue()
@@ -39,26 +41,25 @@ class Handlers(object):
         self.task_handlers = TaskHandlers(self.socketio, self.task_manager)
         self.task_handlers.register_handlers()
 
-        # self.thread = socketio.start_background_task(target=self.sender_loop)
-        # self.thread.start
+        self.app.add_task(self.sender_loop())
 
-    # def sender_loop(self):
-    #     self.socketio.sleep(5)
-    #     while True:
-    #         self.socketio.sleep(0.7)
-    #         self.taskHandlers.send_tasks_back()
+    async def sender_loop(self):
+        await asyncio.sleep(1)
+        await self.task_handlers.send_tasks_back()
 
-    #         try:
-    #             task_type, project_uuid = self.data_updated_queue.get_nowait()
+        try:
+            task_type, project_uuid = self.data_updated_queue.get_nowait()
 
-    #             if task_type == "scan":
-    #                 self.scanHandlers.send_scans_back(project_uuid)
-    #                 self.data_updated_queue.task_done()
-    #             if task_type == "file":
-    #                 self.fileHandlers.send_files_back(project_uuid)
-    #                 self.data_updated_queue.task_done()
-    #             if task_type == "scope":
-    #                 self.scopeHandlers.send_scopes_back(project_uuid)
-    #                 self.data_updated_queue.task_done()
-    #         except queue.Empty:
-    #             continue
+            if task_type == "scan":
+                await self.scan_handlers.send_scans_back(project_uuid)
+                self.data_updated_queue.task_done()
+            if task_type == "file":
+                await self.file_handlers.send_files_back(project_uuid)
+                self.data_updated_queue.task_done()
+            if task_type == "scope":
+                await self.scope_handlers.send_scopes_back(project_uuid)
+                self.data_updated_queue.task_done()
+        except queue.Empty:
+            pass
+
+        await self.sender_loop()
