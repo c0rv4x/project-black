@@ -7,6 +7,7 @@ from black.black.db import sessions, Scan
 class ScanManager(object):
     """ ScanManager keeps track of all scans in the system,
     exposing some interfaces for public use. """
+
     def __init__(self):
         self.scans = []
         self.update_from_db()
@@ -15,9 +16,12 @@ class ScanManager(object):
         """ Returns the list of scans """
         self.update_from_db()
 
-        return list(filter(
-            lambda x: project_uuid is None or x['project_uuid'] == project_uuid,
-            self.scans))
+        return list(
+            filter(
+                lambda x: project_uuid is None or x['project_uuid'] == project_uuid,
+                self.scans
+            )
+        )
 
     def update_from_db(self):
         """ Extract all the scans from the DB """
