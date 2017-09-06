@@ -10,7 +10,7 @@ class FileHandlers(object):
         """ Register a single handler for files data """
 
         @self.socketio.on('files:all:get', namespace='/files')
-        async def handle_custom_event(msg):
+        async def _cb_handle_custom_event(sio, msg):
             """ When received this message, send back all the files """
             project_uuid = msg.get('project_uuid', None)
             hostname = msg.get('hostname', None)
