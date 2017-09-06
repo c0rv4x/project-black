@@ -33,8 +33,8 @@ class Handlers(object):
         self.scan_handlers = ScanHandlers(self.socketio, self.scan_manager)
         self.scan_handlers.register_handlers()
 
-        self.file_andlers = FileHandlers(self.socketio, self.file_manager)
-        self.file_andlers.register_handlers()
+        self.file_handlers = FileHandlers(self.socketio, self.file_manager)
+        self.file_handlers.register_handlers()
 
         # self.taskHandlers = TaskHandlers(self.socketio, self.task_manager)
 
