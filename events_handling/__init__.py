@@ -36,7 +36,8 @@ class Handlers(object):
         self.file_handlers = FileHandlers(self.socketio, self.file_manager)
         self.file_handlers.register_handlers()
 
-        # self.taskHandlers = TaskHandlers(self.socketio, self.task_manager)
+        self.task_handlers = TaskHandlers(self.socketio, self.task_manager)
+        self.task_handlers.register_handlers()
 
         # self.thread = socketio.start_background_task(target=self.sender_loop)
         # self.thread.start

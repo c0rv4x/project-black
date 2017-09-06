@@ -135,7 +135,7 @@ class TaskManager(object):
         thread.start()
 
     def spawn_all_channels_with_queues(self):
-        for task_type in ['nmap','dnsscan','dirseach', 'dnsscan']:
+        for task_type in ['nmap', 'dnsscan', 'dirseach', 'dnsscan']:
             self.channel.exchange_declare(
                 exchange="tasks.exchange",
                 exchange_type="direct",
