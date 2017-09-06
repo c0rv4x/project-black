@@ -249,7 +249,6 @@ class ScopeManager(object):
                 resolved_ip = each_result.host
                 found_ip = self.find_ip(resolved_ip, project_uuid)
 
-                print(found_ip)
                 if found_ip:
                     host.append_ip(found_ip)
                     found_ip.append_host(host)
@@ -262,26 +261,3 @@ class ScopeManager(object):
                         newly_created_ip = ip_create_result["new_scope"]
                         host.append_ip(newly_created_ip)
                         newly_created_ip.append_host(host)
-
-# class ScopeManager(object):
-#     """ ScopeManager keeps track of all ips in the system,
-#     exposing some interfaces for public use. """
-
-#         while not result_queue.empty():
-#             found_ips = self.find_ip(new_ip, project_uuid)
-
-#             if len(found_ips) == 0:
-#                 # Lets crete such ip
-#                 create_result = self.create_scope_internal(
-#                     new_ip, None, project_uuid
-#                 )
-
-#                 if create_result['status'] == 'success':
-#                     newly_created_ip = create_result['new_scope']
-#                     host.append_ip(newly_created_ip)
-#                     newly_created_ip.append_host(host)
-#             else:
-#                 # Such ip already exists
-#                 existing_ip = found_ips[0]
-#                 host.append_ip(existing_ip)
-#                 existing_ip.append_host(host)
