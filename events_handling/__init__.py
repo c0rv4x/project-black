@@ -24,6 +24,8 @@ class Handlers(object):
         self.project_manager = ProjectManager()
         self.scope_manager = ScopeManager()
         self.task_manager = TaskManager(self.data_updated_queue)
+        self.app.add_task(self.task_manager.spawn_asynqp())
+
         self.scan_manager = ScanManager()
         self.file_manager = FileManager()
 
@@ -41,6 +43,7 @@ class Handlers(object):
         self.task_handlers = TaskHandlers(self.socketio, self.task_manager)
         self.task_handlers.register_handlers()
 
+        # Spawnd tasks poller (pusher actually)
         self.app.add_task(self.sender_loop())
 
     async def sender_loop(self):
