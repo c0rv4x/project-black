@@ -111,10 +111,6 @@ class TaskManager(object):
 
         self.update_from_db()
 
-
-        # thread = threading.Thread(target=self.channel.start_consuming)
-        # thread.start()
-
     async def spawn_asynqp(self):
         """ Spawns all the necessary queues and launches a statuses parser """
         # connect to the RabbitMQ broker
