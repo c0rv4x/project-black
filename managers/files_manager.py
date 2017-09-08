@@ -17,10 +17,10 @@ class FileManager(object):
 
         if project_uuid is None:
             raise NotImplementedError
-        if hostname is None:
-            return self.files[project_uuid]
-        else:
-            return self.files[project_uuid].get(hostname, [])
+        # if hostname is None:
+        return self.files[project_uuid]
+        # else:
+            # return self.files[project_uuid].get(hostname, {})
 
     def update_from_db(self):
         """ Extract all the files from the DB.
