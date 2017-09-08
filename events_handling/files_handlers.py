@@ -15,38 +15,18 @@ class FileHandlers(object):
         async def _cb_handle_files_get(sio, msg):
             """ When received this message, send back all the files """
             project_uuid = msg.get('project_uuid', None)
-            # hostname = msg.get('hostname', None)
-            await self.send_files_back(project_uuid)
+            hostname = msg.get('hostname', None)
 
-        # @self.socketio.on('files:all:get:single', namespace='/files')
-        # async def _cb_handle_files_get_single_host(sio, msg):
-        #     """ When received this message, send back all the files """
-        #     project_uuid = msg.get('project_uuid', None)
-        #     hostname = msg.get('hostname', None)
-        #     await self.send_files_back(project_uuid, hostname, single=True)
+            await self.send_files_back(project_uuid, broadcast=hostname is None)
 
-    async def send_files_back(self, project_uuid=None):
+    async def send_files_back(self, project_uuid=None, broadcast=True):
         """ Get all files and send to all clients """
-        # if single:
-        #     await self.socketio.emit(
-        #         'files:all:get:single:back', {
-        #             'status':
-        #                 'success',
-        #             'project_uuid':
-        #                 project_uuid,
-        #             'files':
-        #                 self.file_manager.get_files(project_uuid)
-        #         },
-        #         broadcast=False,
-        #         namespace='/files'
-        #     )
-        # else:
         await self.socketio.emit(
             'files:all:get:back', {
                 'status': 'success',
                 'project_uuid': project_uuid,
                 'files': self.file_manager.get_files(project_uuid)
             },
-            broadcast=True,
+            broadcast=broadcast,
             namespace='/files'
         )
