@@ -8,12 +8,18 @@ class FilesSocketioEventsEmitter {
     }
 
     renewFiles(project_uuid, hostname) {
-        this.connector.emit('files:all:get:single', {
+        this.connector.emit('files:all:get', {
         	"project_uuid": project_uuid,
         	"hostname": hostname
         });
     }
 
+    renewSingleHost(project_uuid, hostname) {
+        this.connector.emit('files:all:get:single', {
+            "project_uuid": project_uuid,
+            "hostname": hostname
+        });
+    }
 }
 
 export default FilesSocketioEventsEmitter;
