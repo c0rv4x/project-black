@@ -43,11 +43,7 @@ class Handlers(object):
         self.task_handlers = TaskHandlers(self.socketio, self.task_manager)
         self.task_handlers.register_handlers()
 
-        # Spawnd tasks poller (pusher actually)
-        self.app.add_task(self.sender_loop())
-
     async def sender_loop(self):
-        await asyncio.sleep(1)
         await self.task_handlers.send_tasks_back()
 
         try:
@@ -64,5 +60,3 @@ class Handlers(object):
                 self.data_updated_queue.task_done()
         except queue.Empty:
             pass
-
-        await self.sender_loop()

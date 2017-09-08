@@ -5,6 +5,7 @@ from functools import wraps
 
 import socketio
 from sanic import Sanic, response
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from events_handling import Handlers
 
@@ -72,6 +73,13 @@ APP.add_route(cb_complex_handler, '/project/<project_uuid>/host/<host>')
 
 APP.add_route(cb_complex_handler_bundle, '/bundle.js')
 
-Handlers(SOCKET_IO, APP)
+HANDLERS = Handlers(SOCKET_IO, APP)
+
+@APP.listener('before_server_start')
+async def instantiate_scheduler(app, loop):
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(HANDLERS.sender_loop, 'interval', seconds=1)
+    scheduler.start()
+
 
 APP.run(host='127.0.0.1', port=5000)
