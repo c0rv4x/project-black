@@ -54,14 +54,14 @@ class TasksButtonsTracked extends React.Component {
 							{
 								"name": "ASP faggot",
 								"options": {
-									"extensions": "asp",
+									"extensions": "asp,aspx",
 									"path": "/"
 								}
 							},
 							{
 								"name": "Personal favourites",
 								"options": {
-									"extensions": "php,asp,txt,conf,log,bak",
+									"extensions": "php,asp,txt,conf,log,bak,sql",
 									"path": "/"
 								}
 							}
@@ -78,9 +78,14 @@ class TasksButtonsTracked extends React.Component {
 								"default_value": "txt,conf,log,bak"
 							},
 							{
+								"name": "cookie",
+								"type": "text",
+								"default_value": ""
+							},
+							{
 								"name": "recursive",
 								"type": "checkbox",
-								"default_value": true
+								"default_value": false
 							}
 						]
 					}
