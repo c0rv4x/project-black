@@ -76,10 +76,10 @@ APP.add_route(cb_complex_handler_bundle, '/bundle.js')
 HANDLERS = Handlers(SOCKET_IO, APP)
 
 @APP.listener('before_server_start')
-async def instantiate_scheduler(app, loop):
+async def cb_instantiate_scheduler(app, loop):
     scheduler = AsyncIOScheduler()
     scheduler.add_job(HANDLERS.sender_loop, 'interval', seconds=1)
     scheduler.start()
 
 
-APP.run(host='127.0.0.1', port=5000)
+APP.run(host='0.0.0.0', port=5000, debug=False)
