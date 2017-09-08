@@ -9,6 +9,7 @@ function renew_files(state = {}, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
+		console.log(message['files']);
 		return message['files'];
 	} else {
 		/* TODO: add error handling */
