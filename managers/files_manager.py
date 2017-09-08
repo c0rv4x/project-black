@@ -13,7 +13,7 @@ class FileManager(object):
 
     def get_files(self, project_uuid):
         """ Returns the list of files """
-        self.update_from_db()
+        # self.update_from_db()
 
         if project_uuid is None:
             raise NotImplementedError
