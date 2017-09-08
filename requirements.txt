@@ -4,3 +4,4 @@ dnspython
 netaddr
 sqlalchemy
 psycopg2
+sanic
