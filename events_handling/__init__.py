@@ -53,7 +53,7 @@ class Handlers(object):
                 await self.scan_handlers.send_scans_back(project_uuid)
                 self.data_updated_queue.task_done()
             if task_type == "file":
-                self.file_handlers.update_from_db()
+                self.file_manager.update_from_db()
                 await self.file_handlers.send_files_back(project_uuid)
                 self.data_updated_queue.task_done()
             if task_type == "scope":
