@@ -69,8 +69,6 @@ function mapStateToProps(state, ownProps){
     	}    	
     });
 
-    console.log(state.files,host);
-
     return {
     	project: project,
     	host: host,
