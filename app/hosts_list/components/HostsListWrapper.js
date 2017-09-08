@@ -28,7 +28,6 @@ function formHosts(hosts_list, project_uuid, scans, files) {
     	return 0
     });
 
-    console.log(files);
     for (var each_host of hosts) {
     	if (files.hasOwnProperty(each_host.hostname)) {
 	    	each_host.files = files[each_host.hostname];
