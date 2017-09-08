@@ -49,7 +49,7 @@ def authorized():
 
 
 @authorized()
-async def cb_complex_handler(request, project_uuid=None):
+async def cb_complex_handler(request, project_uuid=None, host=None):
     """ Simlpy returns index.html """
     return await response.file_stream(os.path.abspath('./public/index.html'))
 
@@ -67,8 +67,10 @@ APP = Sanic()
 SOCKET_IO.attach(APP)
 
 APP.add_route(cb_complex_handler, '/')
-APP.add_route(cb_complex_handler_bundle, '/bundle.js')
 APP.add_route(cb_complex_handler, '/project/<project_uuid>')
+APP.add_route(cb_complex_handler, '/project/<project_uuid>/host/<host>')
+
+APP.add_route(cb_complex_handler_bundle, '/bundle.js')
 
 Handlers(SOCKET_IO, APP)
 
