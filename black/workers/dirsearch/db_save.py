@@ -7,7 +7,11 @@ from black.db import sessions, FoundFile
 def save_file(url, status_code, content_length, task_id, project_uuid, special_note=None):
     try:
         parsed_url = urllib.parse.urlparse(url)
-        target = parsed_url.netloc
+        try:
+            target = parsed_url.netloc.split(':')[0]
+        except Exception as exc:
+            print(exc, 'during target parsing')
+            target = parsed_url.netloc
         scheme = parsed_url.scheme
 
         if scheme == 'https':
