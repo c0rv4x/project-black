@@ -27,6 +27,7 @@ class FilesEventsSubsriber {
 
         // Received all projects in one message
         this.register_socketio_handler('files:all:get:back', renewFiles);
+        this.register_socketio_handler('files:all:get:single:back', renewFiles);
     }
 
     register_socketio_handler(eventName, callback) {
