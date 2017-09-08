@@ -69,6 +69,8 @@ function mapStateToProps(state, ownProps){
     	}    	
     });
 
+    console.log(state.files,host);
+
     return {
     	project: project,
     	host: host,
@@ -77,7 +79,7 @@ function mapStateToProps(state, ownProps){
         tasks: _.filter(state.tasks.active, (x) => {
         	return x.project_uuid == project['project_uuid']
         }),
-        files: state.files
+        files: state.files[host.hostname]
     }
     // x['target'].split(':')[0] == host['hostname'])); is a shitty costil'
 }
