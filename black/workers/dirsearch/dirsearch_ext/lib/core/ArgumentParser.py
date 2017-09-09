@@ -28,7 +28,6 @@ class ArgumentParser(object):
     def __init__(self, url, wordlist="./black/workers/dirsearch/dirsearch_ext/db/dicc.txt", extensions=None, http_proxy=None, headers=None, user_agent=None, 
         user_random_agents=None, cookie=None, threads_count=10, exclude_status_codes=None, path="/",
         force_extensions=False, delay=1, timeout=1, ip_address=None, recursive=False, redirect=False):
-
         self.script_path = None
 
         self.url = url

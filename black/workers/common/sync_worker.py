@@ -1,5 +1,6 @@
 """ Basic worker """
 import json
+import pika
 import threading
 import multiprocessing
 from time import sleep
@@ -17,7 +18,7 @@ class SyncWorker(Worker):
 
     def __init__(self, worker_name, task_class):
         Worker.__init__(self, worker_name, task_class)
-        self.semaphore = threading.Semaphore(value=30)
+        self.semaphore = threading.Semaphore(value=3)
         self.channel = None
 
     def initialize(self):
@@ -36,10 +37,21 @@ class SyncWorker(Worker):
         """ Function that releases resources, now it is just a semaphore """
         self.semaphore.release()
 
+    def on_message(self, channel, method_frame, header_frame, body):
+        channel.basic_ack(delivery_tag=method_frame.delivery_tag)
+        self.schedule_task(body)
+
+    def costil(self):
+        connection = pika.BlockingConnection()
+        channel = connection.channel()
+        channel.basic_consume(self.on_message, self.name + "_tasks")
+        channel.start_consuming()
+
+
     def start_tasks_consumer(self):
         """ Check if tasks queue has any data.
         If any, launch the tasks execution """
-        p = multiprocessing.Process(target=self.tasks_consumer.run)
+        p = multiprocessing.Process(target=self.costil)
         p.start()
 
     def schedule_task(self, body):
