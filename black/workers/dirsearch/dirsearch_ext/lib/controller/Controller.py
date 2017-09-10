@@ -36,9 +36,9 @@ class SkipTargetInterrupt(Exception):
 
 
 class Controller(object):
-    def __init__(self, script_path, arguments, output, saver, set_status_function):
+    def __init__(self, script_path, arguments, output, saver, status_queue):
         self.saver = saver
-        self.set_status_function = set_status_function
+        self.status_queue = status_queue
         self.script_path = script_path
         self.exit = False
         self.arguments = arguments
@@ -86,7 +86,7 @@ class Controller(object):
                     # self.output.error(e.args[0]['message'])
                     raise SkipTargetInterrupt
                 except ProtocolCheckException as e:
-                    self.set_status_function("Finished", progress=-1)
+                    self.status_queue.put({"status":"Finished", "progress":-1})
                     return
                 if self.arguments.use_random_agents:
                     self.requester.setRandomAgents(self.randomAgents)
@@ -106,7 +106,7 @@ class Controller(object):
                 self.fuzzer = Fuzzer(self.requester, self.dictionary, testFailPath=self.arguments.test_fail_path,
                                      threads=self.arguments.threads_count, matchCallbacks=matchCallbacks,
                                      notFoundCallbacks=notFoundCallbacks, errorCallbacks=errorCallbacks,
-                                     set_status_function=self.set_status_function)
+                                     status_queue=self.status_queue)
                 self.wait()
             except SkipTargetInterrupt:
                 pass
@@ -258,7 +258,7 @@ class Controller(object):
             self.fuzzer.start()
             self.processPaths()
 
-        self.set_status_function('Finished', progress=100)
+        self.status_queue.put({"status":'Finished', "progress":100})
 
         return
 

@@ -26,7 +26,7 @@ from .Scanner import *
 
 class Fuzzer(object):
     def __init__(self, requester, dictionary, testFailPath=None, threads=1, matchCallbacks=[], notFoundCallbacks=[],
-                 errorCallbacks=[], set_status_function=None):
+                 errorCallbacks=[], status_queue=None):
 
         self.requester = requester
         self.dictionary = dictionary
@@ -40,7 +40,7 @@ class Fuzzer(object):
         self.matchCallbacks = matchCallbacks
         self.notFoundCallbacks = notFoundCallbacks
         self.errorCallbacks = errorCallbacks
-        self.set_status_function = set_status_function
+        self.status_queue = status_queue
         self.matches = []
         self.errors = []
         self.counter = 0
@@ -133,7 +133,7 @@ class Fuzzer(object):
             path = next(self.dictionary)
             while path is not None:
                 if self.counter % 50 == 0 and self.counter / 50 > 0:
-                    self.set_status_function('Working', progress=int(float(self.counter) / float(len(self.dictionary)) * 100))
+                    self.status_queue.put({"status":'Working', "progress":int(float(self.counter) / float(len(self.dictionary)) * 100)})
                 try:
                     status, response = self.scan(path)
                     result = Path(path=path, status=status, response=response)

@@ -22,8 +22,8 @@ from .lib.controller import Controller
 from .lib.output import CLIOutput
 
 class Program(object):
-    def __init__(self, url, task_id, project_uuid, set_status_function, params_object):
+    def __init__(self, url, task_id, project_uuid, status_queue, params_object):
         self.arguments = ArgumentParser(url, **params_object)
         self.output = CLIOutput()
         self.saver = Saver(task_id, project_uuid)
-        self.controller = Controller("./black/workers/dirsearch/dirsearch_ext/", self.arguments, self.output, self.saver, set_status_function)
+        self.controller = Controller("./black/workers/dirsearch/dirsearch_ext/", self.arguments, self.output, self.saver, status_queue)
