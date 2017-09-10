@@ -13,9 +13,9 @@ def get_new_session():
     engine = create_engine(
         'postgresql://black:black101@localhost/black')
 
-    Session_builder = sessionmaker(bind=engine)
+    session_builder = sessionmaker(bind=engine)
 
-    session = Session_builder()
+    session = session_builder()
     sessions_list.append(session)
 
     return session
