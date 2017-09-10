@@ -16,7 +16,8 @@ class SyncConsumer(object):
         self.parameters = pika.ConnectionParameters(host='localhost',
                                                     port=5672,
                                                     virtual_host='/',
-                                                    credentials=credentials)
+                                                    credentials=credentials,
+                                                    heartbeat_interval=0)
 
     def connect(self):
         return pika.SelectConnection(self.parameters,
