@@ -29,6 +29,7 @@ class Handlers(object):
         self.scan_manager = ScanManager()
         self.file_manager = FileManager()
 
+
         register_project_handlers(self.socketio, self.project_manager)
 
         self.scope_handlers = ScopeHandlers(self.socketio, self.scope_manager)
