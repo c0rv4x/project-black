@@ -4,16 +4,16 @@ from sqlalchemy import Column, Integer, String, ForeignKey, create_engine
 from sqlalchemy.orm import sessionmaker
 
 
-engine = create_engine(
-    'postgresql://black:black101@localhost/black')
-
-Session_builder = sessionmaker(bind=engine)
-
 sessions_list = list()
 
 def get_new_session():
     while len(sessions_list) == 5:
         sleep(random.random() / 3)
+
+    engine = create_engine(
+        'postgresql://black:black101@localhost/black')
+
+    Session_builder = sessionmaker(bind=engine)
 
     session = Session_builder()
     sessions_list.append(session)
