@@ -76,16 +76,13 @@ class SyncWorker(Worker):
         params = message['params']
         project_uuid = message['project_uuid']
 
-        # Spawn the process
-        proc = self.task_class(task_id, target, params, project_uuid)
-
-        # Store the object that points to the process
-        self.active_processes.append(proc)
-
         try:
-            # Launch
-            proc.start()
-        except Exception as e:
+            # Launch the process with polling
+            proc = self.start_process(task_id, target, params, project_uuid)
+
+            # Store the object that points to the process
+            self.active_processes.append(proc)
+        except Exception:
             pass
         finally:
             # Wait till finishing the task
@@ -93,6 +90,13 @@ class SyncWorker(Worker):
 
             # Do some finalization
             self.handle_finished_task(proc)
+
+    def start_process(self, task_id, target, params, project_uuid):
+        # Spawn the process
+        proc = self.task_class(task_id, target, params, project_uuid)
+        proc.start()
+
+        return proc
 
     def handle_finished_task(self, proc):
         """ After the task is finished, remove it from 'active' list """
