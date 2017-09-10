@@ -71,18 +71,18 @@ class AsyncWorker(Worker):
             project_uuid = message['project_uuid']
 
             # Spawn the process
-            proc = self.task_class(task_id, target, params, project_uuid)
-            await proc.initialize()
-            await proc.start()
+            async with self.task_class(task_id, target, params, project_uuid) as proc:
+                await proc.initialize()
+                await proc.start()
 
-            # Store the object that points to the process
-            self.active_processes.append(proc)
+                # Store the object that points to the process
+                self.active_processes.append(proc)
 
-            # Wait till finishing the task
-            await proc.wait_for_exit()
+                # Wait till finishing the task
+                await proc.wait_for_exit()
 
-            # Do some finalization
-            self.handle_finished_task(proc)
+                # Do some finalization
+                self.handle_finished_task(proc)
         except Exception as e:
             print("++++++++++++ Async_worker.py:execute_task ~ " + str(e))
 
