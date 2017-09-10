@@ -68,7 +68,7 @@ class SyncWorker(Worker):
         try:
             message = message.decode('utf-8')
             message = json.loads(message)
-        except Exception as e:
+        except Exception:
             message = json.loads(message)
 
         task_id = message['task_id']

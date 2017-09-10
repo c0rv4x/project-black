@@ -31,6 +31,8 @@ class AsyncTask(Task):
         queue = await self.channel.declare_queue('tasks_statuses')
         await queue.bind(self.exchange, routing_key='tasks_statuses')
 
+        return self
+
     async def __aexit__(self, exc_type, exc, tb):
         await self.channel.close()
         await self.connection.close()
