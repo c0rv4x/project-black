@@ -19,6 +19,7 @@ class SyncWorker(Worker):
     def __init__(self, worker_name, task_class):
         Worker.__init__(self, worker_name, task_class)
         self.semaphore = threading.Semaphore(value=3)
+        self.connection = None
         self.channel = None
 
     def initialize(self):
@@ -41,18 +42,20 @@ class SyncWorker(Worker):
         channel.basic_ack(delivery_tag=method_frame.delivery_tag)
         self.schedule_task(body)
 
-    def costil(self):
-        connection = pika.BlockingConnection()
-        channel = connection.channel()
+        while True:
+            self.connection.sleep(1)
+
+    def launch_consume(self):
+        self.connection = pika.BlockingConnection()
+        channel = self.connection.channel()
         channel.basic_consume(self.on_message, self.name + "_tasks")
         channel.start_consuming()
-
 
     def start_tasks_consumer(self):
         """ Check if tasks queue has any data.
         If any, launch the tasks execution """
-        p = multiprocessing.Process(target=self.costil)
-        p.start()
+        proc = multiprocessing.Process(target=self.launch_consume)
+        proc.start()
 
     def schedule_task(self, body):
         """ Wrapper of execute_task that puts the task to the event loop """
