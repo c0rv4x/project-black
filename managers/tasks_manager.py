@@ -108,9 +108,9 @@ class TaskManager(object):
         self.exchange = None
         self.tasks_queue = None
 
-        self.update_from_db()
-
         self.sessions = Sessions()
+
+        self.update_from_db()
 
     async def spawn_asynqp(self):
         """ Spawns all the necessary queues and launches a statuses parser """
