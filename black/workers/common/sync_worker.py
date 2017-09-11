@@ -33,6 +33,9 @@ class SyncWorker(Worker):
         self.notifications_consumer = SyncConsumer(self.name + "_notifications", self.name + "_notifications")
         self.notifications_consumer.add_consumer_handler(self.handle_notification)
 
+        heartbeat_thread = threading.Thread(target=self.start_connection_heartbeat, args=())
+        heartbeat_thread.start()        
+
     def acquire_resources(self):
         """ Function that captures resources, now it is just a semaphore """
         self.semaphore.acquire()
@@ -56,9 +59,6 @@ class SyncWorker(Worker):
         self.acquire_resources()
         executor_thread = threading.Thread(target=self.execute_task, args=(body,))
         executor_thread.start()
-
-        heartbeat_thread = threading.Thread(target=self.start_connection_heartbeat, args=())
-        heartbeat_thread.start()
 
     def start_connection_heartbeat(self):
         while True:
