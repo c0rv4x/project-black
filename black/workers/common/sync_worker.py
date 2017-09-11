@@ -19,7 +19,7 @@ class SyncWorker(Worker):
     def __init__(self, worker_name, task_class):
         Worker.__init__(self, worker_name, task_class)
         self.semaphore = threading.Semaphore(value=10)
-        self.connection = None
+        self.connection = pika.BlockingConnection()
         self.channel = None
 
     def initialize(self):
@@ -45,7 +45,6 @@ class SyncWorker(Worker):
         self.semaphore.release()
 
     def launch_consume(self):
-        self.connection = pika.BlockingConnection()
         channel = self.connection.channel()
         channel.basic_consume(self.on_message, self.name + "_tasks")
         channel.start_consuming()
