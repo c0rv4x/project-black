@@ -42,8 +42,6 @@ class SyncWorker(Worker):
         channel.basic_ack(delivery_tag=method_frame.delivery_tag)
         self.schedule_task(body)
 
-        # while True:
-        #     self.connection.sleep(1)
 
     def launch_consume(self):
         self.connection = pika.BlockingConnection()
@@ -60,8 +58,15 @@ class SyncWorker(Worker):
     def schedule_task(self, body):
         """ Wrapper of execute_task that puts the task to the event loop """
         self.acquire_resources()
-        thread = threading.Thread(target=self.execute_task, args=(body,))
-        thread.start()
+        executor_thread = threading.Thread(target=self.execute_task, args=(body,))
+        executor_thread.start()
+
+        heartbeat_thread = threading.Thread(target=self.start_connection_heartbeat, args=())
+        heartbeat_thread.start()
+
+    def start_connection_heartbeat(self):
+        while True:
+            self.connection.sleep(1)
 
     def execute_task(self, message):
         """ Method launches the task execution, remembering the
