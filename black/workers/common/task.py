@@ -1,4 +1,4 @@
- """ Basic class for Task (the isntance of a running scan
+""" Basic class for Task (the isntance of a running scan
 against 1 target) """
 import json
 from black.db import Sessions, models
