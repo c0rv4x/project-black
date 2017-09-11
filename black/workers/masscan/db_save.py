@@ -2,11 +2,12 @@
 import xmltodict
 from uuid import uuid4
 
-from black.db import sessions, Scan
+from black.db import Sessions, Scan
 
 
 def save_raw_output(task_id, output, project_uuid):
 	try:
+		sessions = Sessions()
 		concated = "".join(output)
 
 		if concated:

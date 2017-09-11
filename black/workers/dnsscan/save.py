@@ -1,6 +1,6 @@
 import uuid
 
-from black.db import sessions, Host, IP_addr
+from black.db import Sessions, Host, IP_addr
 
 
 def add_ip_address(session, ip_address, task_id, project_uuid):
@@ -70,6 +70,7 @@ def double_append(session, host_id, ip_id):
 
 
 def save(hostname, ip_address, task_id, project_uuid):
+    sessions = Sessions()
     session = sessions.get_new_session()
 
     ip_id = add_ip_address(session, ip_address, task_id, project_uuid)

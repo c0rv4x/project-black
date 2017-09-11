@@ -1,7 +1,7 @@
 """ Basic class for Task (the isntance of a running scan
 against 1 target) """
 import json
-from black.db import sessions, models
+from black.db import Sessions, models
 
 
 class Task(object):
@@ -35,7 +35,7 @@ class Task(object):
         # Tasks text
         self.text = None
 
-        # Points the the asyncio.Process object 
+        # Points the the asyncio.Process object
         #   (if the task is launched via Popen)
         # Otherwise nothing
         self.proc = None
@@ -43,9 +43,11 @@ class Task(object):
         # Keep track of the data
         self.stdout = None
         self.stderr = None
-        self.exit_code = None     
+        self.exit_code = None
 
-        self.exchange = None   
+        self.exchange = None
+
+        self.sessions = Sessions()
 
     def get_id(self):
         """ Return the id of the current task """
@@ -56,31 +58,31 @@ class Task(object):
         self.status = new_status
         self.progress = progress
 
-        session = sessions.get_new_session()
+        session = self.sessions.get_new_session()
         task_db_object = session.query(models.Task).filter_by(task_id=self.get_id()).first()
         task_db_object.status = new_status
         task_db_object.progress = progress
         task_db_object.text = text
         session.commit()
-        sessions.destroy_session(session)
+        self.sessions.destroy_session(session)
 
     def append_stdout(self, stdout=""):
         self.stdout.append(stdout)
 
-        session = sessions.get_new_session()
+        session = self.sessions.get_new_session()
         task_db_object = session.query(models.Task).filter_by(task_id=self.get_id()).first()
         task_db_object.stdout = task_db_object.stdout + stdout
         session.commit()
-        sessions.destroy_session(session)        
+        self.sessions.destroy_session(session)        
 
     def append_stderr(self, stderr=""):
         self.stderr.append(stderr)
 
-        session = sessions.get_new_session()
+        session = self.sessions.get_new_session()
         task_db_object = session.query(models.Task).filter_by(task_id=self.get_id()).first()
         task_db_object.stderr = task_db_object.stderr + stderr
         session.commit()
-        sessions.destroy_session(session)
+        self.sessions.destroy_session(session)
 
     def get_status(self):
         """ Return the status of the current task """
@@ -104,7 +106,7 @@ class Task(object):
 
     def create_db_record(self):
         """ Creates the record of the task in a special DB table """
-        session = sessions.get_new_session()
+        session = self.sessions.get_new_session()
 
         task_new_object = models.Task(
             task_id=self.get_id(),
@@ -117,4 +119,4 @@ class Task(object):
 
         session.add(task_new_object)
         session.commit()
-        sessions.destroy_session(session)
+        self.sessions.destroy_session(session)

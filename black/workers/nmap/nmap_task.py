@@ -5,7 +5,7 @@ import threading
 import asyncio
 from asyncio.subprocess import PIPE
 from libnmap.parser import NmapParser, NmapParserException
-from black.db import Project, Scan, get_new_session, destroy_session
+from black.db import Project, Scan, Sessions
 
 from black.workers.common.async_task import AsyncTask
 from uuid import uuid4
@@ -135,7 +135,7 @@ class NmapTask(AsyncTask):
 
     def parse_results(self):
         def save_scan(data):
-            session = get_new_session()
+            session = sessions.get_new_session()
 
             scans_ids = self.params["saver"].get('scans_ids', None)
             if scans_ids:
@@ -150,7 +150,7 @@ class NmapTask(AsyncTask):
                 session.add(new_scan)
 
             session.commit()
-            destroy_session(session)
+            sessions.destroy_session(session)
 
         stdout = "".join(self.stdout)
 
@@ -158,6 +158,8 @@ class NmapTask(AsyncTask):
             nmap_report = NmapParser.parse(stdout)
         except NmapParserException:
             nmap_report = NmapParser.parse(stdout, incomplete=True)
+
+        sessions = Sessions()
         for scanned_host in nmap_report.hosts:
             for service_of_host in scanned_host.services:
                 if service_of_host.open():
@@ -168,7 +170,7 @@ class NmapTask(AsyncTask):
                         'banner': str(service_of_host.banner),
                         'project_uuid': self.project_uuid
                     })
-                       
+
 '''
         scans = session.query(Scan).filter_by(
                 target=target["hostname"],
