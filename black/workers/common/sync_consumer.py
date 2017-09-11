@@ -97,10 +97,10 @@ class SyncConsumer(object):
     def on_message(self, unused_channel, basic_deliver, properties, body):
         self.acknowledge_message(basic_deliver.delivery_tag)
 
-        thread = Thread(target=self.handler, args=(body, ))
-        thread.start()
+        # thread = Thread(target=self.handler, args=(body, ))
+        # thread.start()
 
-        # self.handler(body)
+        self.handler(body)
 
     def acknowledge_message(self, delivery_tag):
         self._channel.basic_ack(delivery_tag)
