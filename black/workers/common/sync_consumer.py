@@ -26,15 +26,7 @@ class SyncConsumer(object):
 
     def on_connection_open(self, unused_connection):
         self.add_on_connection_close_callback()
-
-        thread = Thread(target=self.heartbeat_keeper, args=())
-        thread.start()
-
         self.open_channel()
-
-    def heartbeat_keeper(self):
-        while True:
-            self._connection.sleep(1)
 
     def add_on_connection_close_callback(self):
         self._connection.add_on_close_callback(self.on_connection_closed)
@@ -103,7 +95,10 @@ class SyncConsumer(object):
 
     def on_message(self, unused_channel, basic_deliver, properties, body):
         self.acknowledge_message(basic_deliver.delivery_tag)
-        self.handler(body)
+
+        thread = Thread(target=self.handler, args=(body, ))
+        thread.start()
+        # self.handler(body)
 
     def acknowledge_message(self, delivery_tag):
         self._channel.basic_ack(delivery_tag)
