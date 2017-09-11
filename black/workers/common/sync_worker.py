@@ -24,9 +24,12 @@ class SyncWorker(Worker):
 
     def initialize(self):
         """ Init variables """
+
+        # Main thread + thread for each handler
         self.tasks_consumer = SyncConsumer(self.name + "_tasks", self.name + "_tasks")
         self.tasks_consumer.add_consumer_handler(self.schedule_task)
 
+        # Main thread + thread for each handler
         self.notifications_consumer = SyncConsumer(self.name + "_notifications", self.name + "_notifications")
         self.notifications_consumer.add_consumer_handler(self.handle_notification)
 
@@ -38,22 +41,15 @@ class SyncWorker(Worker):
         """ Function that releases resources, now it is just a semaphore """
         self.semaphore.release()
 
-    def on_message(self, channel, method_frame, header_frame, body):
-        channel.basic_ack(delivery_tag=method_frame.delivery_tag)
-        self.schedule_task(body)
-
-
     def launch_consume(self):
         self.connection = pika.BlockingConnection()
         channel = self.connection.channel()
         channel.basic_consume(self.on_message, self.name + "_tasks")
         channel.start_consuming()
 
-    def start_tasks_consumer(self):
-        """ Check if tasks queue has any data.
-        If any, launch the tasks execution """
-        proc = multiprocessing.Process(target=self.launch_consume)
-        proc.start()
+    def on_message(self, channel, method_frame, header_frame, body):
+        channel.basic_ack(delivery_tag=method_frame.delivery_tag)
+        self.schedule_task(body)
 
     def schedule_task(self, body):
         """ Wrapper of execute_task that puts the task to the event loop """
@@ -66,7 +62,7 @@ class SyncWorker(Worker):
 
     def start_connection_heartbeat(self):
         while True:
-            self.connection.sleep(1)
+            self.connection.sleep(1.0)
 
     def execute_task(self, message):
         """ Method launches the task execution, remembering the
@@ -145,6 +141,12 @@ class SyncWorker(Worker):
                     sent = True
         if not sent:
             print("Mess with the queues: notification destination not found")
+
+    def start_tasks_consumer(self):
+        """ Check if tasks queue has any data.
+        If any, launch the tasks execution """
+        proc = multiprocessing.Process(target=self.launch_consume)
+        proc.start()
 
     def start_consuming(self):
         """ Launch both queues and start consuming """
