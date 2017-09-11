@@ -8,7 +8,7 @@ import aiodns
 import uuid
 
 from managers.resolver import Resolver, ResolverTimeoutException
-from black.black.db import sessions, IP_addr
+from black.black.db import Sessions, IP_addr
 from black.black.db import Host as HostDB
 from managers.scopes.ip import IP
 from managers.scopes.host import Host as HostInstance
@@ -21,6 +21,8 @@ class ScopeManager(object):
     def __init__(self):
         self.ips = []
         self.hosts = []
+
+        self.sessions = Sessions()
 
         self.update_from_db()
 
@@ -90,7 +92,7 @@ class ScopeManager(object):
 
     def update_from_db(self):
         """ Extract all the ips from the DB """
-        session = sessions.get_new_session()
+        session = self.sessions.get_new_session()
 
         ips_from_db = session.query(IP_addr).all()
         self.ips = list(map(lambda x: IP(x.ip_id,
@@ -108,7 +110,7 @@ class ScopeManager(object):
                                                      x.comment),
                               hosts_from_db))
 
-        sessions.destroy_session(session)
+        self.sessions.destroy_session(session)
 
         for each_ip in self.ips:
             nice_hostnames = list(

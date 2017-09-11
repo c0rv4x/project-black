@@ -5,7 +5,7 @@ import json
 import datetime
 import asynqp
 
-from black.black.db import sessions, Task
+from black.black.db import Sessions, Task
 
 
 class ShadowTask(object):
@@ -34,6 +34,8 @@ class ShadowTask(object):
         # This variable keeps information whether the corresponding task
         # should be sent back to the web.
         self.new_status_known = False
+
+        self.sessions = Sessions()
 
 
     def send_start_task(self):
@@ -176,7 +178,7 @@ class TaskManager(object):
 
     def update_from_db(self):
         """ Extract all the tasks from the DB """
-        session = sessions.get_new_session()
+        session = self.sessions.get_new_session()
         tasks_from_db = session.query(Task).all()
         tasks = list(map(lambda x:
                          ShadowTask(task_id=x.task_id,
@@ -192,7 +194,7 @@ class TaskManager(object):
                                     stderr=x.stderr,
                                     exchange=self.exchange),
                          tasks_from_db))
-        sessions.destroy_session(session)
+        self.sessions.destroy_session(session)
 
         for task in tasks:
             status = task.get_status()[0]

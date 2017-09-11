@@ -1,7 +1,7 @@
 """ Keeps FileManager, which is reponsible for working with File table """
 from operator import itemgetter
 
-from black.black.db import sessions, FoundFile, Project
+from black.black.db import Sessions, FoundFile, Project
 
 
 class FileManager(object):
@@ -10,6 +10,8 @@ class FileManager(object):
     def __init__(self):
         self.files = []
         self.update_from_db()
+
+        self.sessions = Sessions()
 
     def get_files(self, project_uuid):
         """ Returns the list of files """
@@ -25,7 +27,7 @@ class FileManager(object):
         The structure is a dict. First level keys are project_uuids,
         second level keys - hosts """
         self.files = {}
-        session = sessions.get_new_session()
+        session = self.sessions.get_new_session()
 
         project_uuids = session.query(Project.project_uuid).all()
 
@@ -57,4 +59,4 @@ class FileManager(object):
                 self.files[each_project_uuid][host] = files
 
 
-        sessions.destroy_session(session)
+        self.sessions.destroy_session(session)

@@ -3,7 +3,7 @@ update, add, update and delete the elements. """
 import uuid
 import json
 
-from black.black.db import sessions
+from black.black.db import Sessions
 from black.black.db import Project as ProjectDB
 
 
@@ -14,6 +14,8 @@ class ProjectInner(object):
         self._project_uuid = project_uuid
         self._project_name = project_name
         self.comment = comment
+
+        self.sessions = Sessions()
 
     def get_project_uuid(self):
         """ The name says for itself """
@@ -38,7 +40,7 @@ class ProjectInner(object):
     def save(self):
         """ Save the current state of object to the DB """
         try:
-            session = sessions.get_new_session()
+            session = self.sessions.get_new_session()
             project_db = ProjectDB(
                 project_uuid=self._project_uuid,
                 project_name=self._project_name,
@@ -46,7 +48,7 @@ class ProjectInner(object):
             )
             session.add(project_db)
             session.commit()
-            sessions.destroy_session(session)
+            self.sessions.destroy_session(session)
             return {"status": "success", "project": self.to_dict()}
         except Exception as exc:
             return {"status": "error", "text": str(exc)}
@@ -54,13 +56,13 @@ class ProjectInner(object):
     def delete(self):
         """ Delete this object from the DB """
         try:
-            session = sessions.get_new_session()
+            session = self.sessions.get_new_session()
             db_obj = session.query(ProjectDB).filter_by(
                 project_uuid=self._project_uuid
             ).first()
             session.delete(db_obj)
             session.commit()
-            sessions.destroy_session(session)
+            self.sessions.destroy_session(session)
 
             return {"status": "success"}
         except Exception as exc:
@@ -85,11 +87,11 @@ class ProjectManager(object):
 
     def update_from_db(self):
         """ Extract all the projects from the DB """
-        session = sessions.get_new_session()
+        session = self.sessions.get_new_session()
         projects_db = session.query(ProjectDB).all()
         self.projects = list(map(lambda x: ProjectInner(x.project_uuid, x.project_name, x.comment),
             projects_db))
-        sessions.destroy_session(session)
+        self.sessions.destroy_session(session)
 
     def find_project(self, project_name=None, project_uuid=None):
         """ Serach for a project with a specific name and project_uuid """

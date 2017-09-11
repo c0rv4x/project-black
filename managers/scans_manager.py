@@ -1,7 +1,7 @@
 """ Keeps ScanManager, which is reponsible for working with Scan table """
 from operator import itemgetter
 
-from black.black.db import sessions, Scan
+from black.black.db import Sessions, Scan
 
 
 class ScanManager(object):
@@ -11,6 +11,8 @@ class ScanManager(object):
     def __init__(self):
         self.scans = []
         self.update_from_db()
+
+        self.sessions = Sessions()
 
     def get_scans(self, project_uuid):
         """ Returns the list of scans """
@@ -26,7 +28,7 @@ class ScanManager(object):
     def update_from_db(self):
         """ Extract all the scans from the DB """
         self.scans = []
-        session = sessions.get_new_session()
+        session = self.sessions.get_new_session()
         scans_db = session.query(Scan).all()
         scans = list(map(lambda x: {
             "scan_id": x.scan_id,
@@ -48,4 +50,4 @@ class ScanManager(object):
                 unique_pairs.add(pair)
                 self.scans.append(scan)
 
-        sessions.destroy_session(session)
+        self.sessions.destroy_session(session)
