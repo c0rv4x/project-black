@@ -42,8 +42,8 @@ class SyncWorker(Worker):
         channel.basic_ack(delivery_tag=method_frame.delivery_tag)
         self.schedule_task(body)
 
-        while True:
-            self.connection.sleep(1)
+        # while True:
+        #     self.connection.sleep(1)
 
     def launch_consume(self):
         self.connection = pika.BlockingConnection()
