@@ -63,6 +63,8 @@ class SyncWorker(Worker):
 
     def schedule_task(self, body):
         """ Wrapper of execute_task that puts the task to the event loop """
+
+        # TODO: May be thread is not necessary here, as this is already a thread
         self.acquire_resources()
         executor_thread = threading.Thread(
             target=self.execute_task, args=(body, )
