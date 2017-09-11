@@ -79,6 +79,9 @@ class ProjectManager(object):
 
     def __init__(self):
         self.projects = []
+
+        self.sessions = Sessions()
+
         self.update_from_db()
 
     def get_projects(self):
