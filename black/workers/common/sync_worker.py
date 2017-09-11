@@ -66,10 +66,12 @@ class SyncWorker(Worker):
 
         # TODO: May be thread is not necessary here, as this is already a thread
         self.acquire_resources()
-        executor_thread = threading.Thread(
-            target=self.execute_task, args=(body, )
-        )
-        executor_thread.start()
+        # executor_thread = threading.Thread(
+        #     target=self.execute_task, args=(body, )
+        # )
+        # executor_thread.start()
+
+        self.execute_task(body)
 
     def start_connection_heartbeat(self):
         while True:
