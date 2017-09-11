@@ -35,9 +35,6 @@ class ShadowTask(object):
         # should be sent back to the web.
         self.new_status_known = False
 
-        self.sessions = Sessions()
-
-
     def send_start_task(self):
         """ Put a message to the queue, which says "start my task, please """
         print("Starting your task", self.task_id)
@@ -112,6 +109,8 @@ class TaskManager(object):
         self.tasks_queue = None
 
         self.update_from_db()
+
+        self.sessions = Sessions()
 
     async def spawn_asynqp(self):
         """ Spawns all the necessary queues and launches a statuses parser """
