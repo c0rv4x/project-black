@@ -36,8 +36,6 @@ class SyncWorker(Worker):
         heartbeat_thread = threading.Thread(target=self.start_connection_heartbeat, args=())
         heartbeat_thread.start()
 
-        print(1)
-
     def acquire_resources(self):
         """ Function that captures resources, now it is just a semaphore """
         self.semaphore.acquire()
@@ -151,8 +149,8 @@ class SyncWorker(Worker):
 
     def start_consuming(self):
         """ Launch both queues and start consuming """
-        self.start_tasks_consumer()
-        self.start_notifications_consumer()
+        # self.start_tasks_consumer()
+        # self.start_notifications_consumer()
 
         while True:
             sleep(2)
