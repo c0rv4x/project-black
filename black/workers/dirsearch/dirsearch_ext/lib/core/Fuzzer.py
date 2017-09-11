@@ -45,6 +45,8 @@ class Fuzzer(object):
         self.errors = []
         self.counter = 0
 
+        self.timeout_counter = 0
+
     def wait(self, timeout=None):
         for thread in self.threads:
             thread.join(timeout)
@@ -144,14 +146,21 @@ class Fuzzer(object):
                     else:
                         for callback in self.notFoundCallbacks:
                             callback(result)
+
+                    self.timeout_counter = 0
+
                     del status
                     del response
                 except RequestException as e:
                     self.counter += 1
+                    self.timeout_counter += 1
                     for callback in self.errorCallbacks:
                         callback(path, e.args[0]['message'])
                     continue
                 finally:
+                    if self.timeout_counter > 15:
+                        raise StopIteration()
+
                     self.counter += 1
                     if not self.playEvent.isSet():
                         self.pausedSemaphore.release()
