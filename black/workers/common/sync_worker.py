@@ -144,13 +144,15 @@ class SyncWorker(Worker):
     def start_tasks_consumer(self):
         """ Check if tasks queue has any data.
         If any, launch the tasks execution """
-        proc = multiprocessing.Process(target=self.launch_consume)
-        proc.start()
+        # proc = multiprocessing.Process(target=self.launch_consume)
+        # proc.start()
+        p = multiprocessing.Process(target=self.tasks_consumer.run)
+        p.start()        
 
     def start_consuming(self):
         """ Launch both queues and start consuming """
-        # self.start_tasks_consumer()
-        # self.start_notifications_consumer()
+        self.start_tasks_consumer()
+        self.start_notifications_consumer()
 
         while True:
             sleep(2)
