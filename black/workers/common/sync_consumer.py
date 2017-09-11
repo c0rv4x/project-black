@@ -1,4 +1,5 @@
 import pika
+from threading import Thread
 
 
 class SyncConsumer(object):
@@ -16,8 +17,7 @@ class SyncConsumer(object):
         self.parameters = pika.ConnectionParameters(host='localhost',
                                                     port=5672,
                                                     virtual_host='/',
-                                                    credentials=credentials,
-                                                    heartbeat_interval=0)
+                                                    credentials=credentials)
 
     def connect(self):
         return pika.SelectConnection(self.parameters,
@@ -25,9 +25,16 @@ class SyncConsumer(object):
                                      stop_ioloop_on_close=False)
 
     def on_connection_open(self, unused_connection):
-        print('opened consumer')
         self.add_on_connection_close_callback()
+
+        thread = Thread(target=self.heartbeat_keeper, args=())
+        thread.start()
+
         self.open_channel()
+
+    def heartbeat_keeper(self):
+        while True:
+            self._connection.sleep(1)
 
     def add_on_connection_close_callback(self):
         self._connection.add_on_close_callback(self.on_connection_closed)
