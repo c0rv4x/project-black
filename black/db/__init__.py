@@ -2,4 +2,5 @@ from .models import *
 from .sessions import Sessions
 
 
-Base.metadata.create_all(engine, checkfirst=True)
+sessions = Sessions()
+Base.metadata.create_all(sessions.engine, checkfirst=True)

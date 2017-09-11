@@ -7,9 +7,9 @@ from sqlalchemy.orm import sessionmaker
 class Sessions(object):
 
     def __init__(self):
-        engine = create_engine('postgresql://black:black101@localhost/black', pool_size=3)
+        self.engine = create_engine('postgresql://black:black101@localhost/black', pool_size=3)
 
-        self.session_builder = sessionmaker(bind=engine)
+        self.session_builder = sessionmaker(bind=self.engine)
 
         self.sessions_list = list()
 
