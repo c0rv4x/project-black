@@ -86,7 +86,7 @@ class Controller(object):
                     # self.output.error(e.args[0]['message'])
                     raise SkipTargetInterrupt
                 except ProtocolCheckException as e:
-                    self.status_queue.put({"status":"Finished", "progress":-1})
+                    self.status_queue.put({"status":"Finished", "progress":100})
                     return
                 if self.arguments.use_random_agents:
                     self.requester.setRandomAgents(self.randomAgents)
@@ -109,7 +109,7 @@ class Controller(object):
                                      status_queue=self.status_queue)
                 self.wait()
             except SkipTargetInterrupt:
-                pass
+                self.status_queue.put({"status":"Finished", "progress":100})
             finally:
                 self.reportManager.save()
 

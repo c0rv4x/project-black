@@ -39,10 +39,10 @@ class SyncWorker(Worker):
             self.handle_notification
         )
 
-        heartbeat_thread = threading.Thread(
-            target=self.start_connection_heartbeat, args=()
-        )
-        heartbeat_thread.start()
+        # heartbeat_thread = threading.Thread(
+        #     target=self.start_connection_heartbeat, args=()
+        # )
+        # heartbeat_thread.start()
 
     def acquire_resources(self):
         """ Function that captures resources, now it is just a semaphore """
