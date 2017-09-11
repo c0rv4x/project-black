@@ -1,4 +1,5 @@
 import pika
+from time import sleep
 from threading import Thread
 
 
@@ -98,6 +99,9 @@ class SyncConsumer(object):
 
         thread = Thread(target=self.handler, args=(body, ))
         thread.start()
+
+        while True:
+            sleep(1)
         # self.handler(body)
 
     def acknowledge_message(self, delivery_tag):
