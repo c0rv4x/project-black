@@ -18,7 +18,7 @@ class SyncWorker(Worker):
 
     def __init__(self, worker_name, task_class):
         Worker.__init__(self, worker_name, task_class)
-        self.semaphore = threading.Semaphore(value=10)
+        self.semaphore = threading.Semaphore(value=4)
         self.connection = pika.BlockingConnection()
         self.channel = None
 
