@@ -10,9 +10,10 @@ class ScanManager(object):
 
     def __init__(self):
         self.scans = []
-        self.update_from_db()
 
         self.sessions = Sessions()
+
+        self.update_from_db()
 
     def get_scans(self, project_uuid):
         """ Returns the list of scans """
