@@ -1,16 +1,16 @@
 """ Basic worker """
 import json
-import pika
 import threading
 import multiprocessing
 from time import sleep
+
+import pika
 
 from .worker import Worker
 from .sync_consumer import SyncConsumer
 
 
 class SyncWorker(Worker):
-
     """Worker keeps track of new tasks on the redis channel and
     launches them in the background.
     Another redis channel is monitored for all notifications.
@@ -26,14 +26,22 @@ class SyncWorker(Worker):
         """ Init variables """
 
         # Main thread + thread for each handler
-        self.tasks_consumer = SyncConsumer(self.name + "_tasks", self.name + "_tasks")
+        self.tasks_consumer = SyncConsumer(
+            self.name + "_tasks", self.name + "_tasks"
+        )
         self.tasks_consumer.add_consumer_handler(self.schedule_task)
 
         # Main thread + thread for each handler
-        self.notifications_consumer = SyncConsumer(self.name + "_notifications", self.name + "_notifications")
-        self.notifications_consumer.add_consumer_handler(self.handle_notification)
+        self.notifications_consumer = SyncConsumer(
+            self.name + "_notifications", self.name + "_notifications"
+        )
+        self.notifications_consumer.add_consumer_handler(
+            self.handle_notification
+        )
 
-        heartbeat_thread = threading.Thread(target=self.start_connection_heartbeat, args=())
+        heartbeat_thread = threading.Thread(
+            target=self.start_connection_heartbeat, args=()
+        )
         heartbeat_thread.start()
 
     def acquire_resources(self):
@@ -56,7 +64,9 @@ class SyncWorker(Worker):
     def schedule_task(self, body):
         """ Wrapper of execute_task that puts the task to the event loop """
         self.acquire_resources()
-        executor_thread = threading.Thread(target=self.execute_task, args=(body,))
+        executor_thread = threading.Thread(
+            target=self.execute_task, args=(body, )
+        )
         executor_thread.start()
 
     def start_connection_heartbeat(self):
@@ -109,13 +119,11 @@ class SyncWorker(Worker):
 
         self.release_resources()
 
-
     def start_notifications_consumer(self):
         """ Check if tasks queue has any data.
         If any, launch the tasks execution """
         p = multiprocessing.Process(target=self.notifications_consumer.run)
         p.start()
-
 
     def handle_notification(self, body):
         """ Handle the notification, just received. """
@@ -147,7 +155,7 @@ class SyncWorker(Worker):
         # proc = multiprocessing.Process(target=self.launch_consume)
         # proc.start()
         p = multiprocessing.Process(target=self.tasks_consumer.run)
-        p.start()        
+        p.start()
 
     def start_consuming(self):
         """ Launch both queues and start consuming """

@@ -6,7 +6,6 @@ from .worker import Worker
 
 
 class AsyncWorker(Worker):
-
     """Worker keeps track of new tasks on the redis channel and
     launches them in the background.
     Another redis channel is monitored for all notifications.
@@ -19,7 +18,9 @@ class AsyncWorker(Worker):
     async def initialize(self):
         """ Init variables """
         # connect to the RabbitMQ broker
-        connection = await asynqp.connect('localhost', 5672, username='guest', password='guest')
+        connection = await asynqp.connect(
+            'localhost', 5672, username='guest', password='guest'
+        )
 
         # Open a communications channel
         channel = await connection.open_channel()
@@ -29,11 +30,15 @@ class AsyncWorker(Worker):
 
         # Create two queues on the exchange
         self.tasks_queue = await channel.declare_queue(self.name + '_tasks')
-        self.notifications_queue = await channel.declare_queue(self.name + '_notifications')
+        self.notifications_queue = await channel.declare_queue(
+            self.name + '_notifications'
+        )
 
         # Bind the queue to the exchange, so the queue will get messages published to the exchange
         await self.tasks_queue.bind(exchange, routing_key=self.name + '_tasks')
-        await self.notifications_queue.bind(exchange, routing_key=self.name + '_notifications')
+        await self.notifications_queue.bind(
+            exchange, routing_key=self.name + '_notifications'
+        )
 
     async def acquire_resources(self):
         """ Function that captures resources, now it is just a semaphore """
@@ -42,7 +47,6 @@ class AsyncWorker(Worker):
     def release_resources(self):
         """ Function that releases resources, now it is just a semaphore """
         self.semaphore.release()
-
 
     async def start_tasks_consumer(self):
         """ Check if tasks queue has any data.
@@ -71,7 +75,9 @@ class AsyncWorker(Worker):
             project_uuid = message['project_uuid']
 
             # Spawn the process
-            async with self.task_class(task_id, target, params, project_uuid) as proc:
+            async with self.task_class(
+                task_id, target, params, project_uuid
+            ) as proc:
                 await proc.initialize()
                 await proc.start()
 
@@ -88,14 +94,12 @@ class AsyncWorker(Worker):
 
             self.release_resources()
 
-
     def handle_finished_task(self, proc):
         """ After the task is finished, remove it from 'active' list """
         self.active_processes.remove(proc)
         self.finished_processes.append(proc)
 
         self.release_resources()
-
 
     async def start_notifications_consumer(self):
         """ Check if tasks queue has any data.

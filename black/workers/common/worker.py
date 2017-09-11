@@ -2,7 +2,6 @@
 
 
 class Worker(object):
-
     """Worker keeps track of new tasks on the redis channel and
     launches them in the background.
     Another redis channel is monitored for all notifications.

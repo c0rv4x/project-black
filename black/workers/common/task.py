@@ -47,7 +47,7 @@ class Task(object):
         self.sessions = Sessions()
 
         # Point to the object of ORM
-        self.create_db_record()        
+        self.create_db_record()
 
     def get_id(self):
         """ Return the id of the current task """
@@ -59,7 +59,9 @@ class Task(object):
         self.progress = progress
 
         session = self.sessions.get_new_session()
-        task_db_object = session.query(models.Task).filter_by(task_id=self.get_id()).first()
+        task_db_object = session.query(models.Task).filter_by(
+            task_id=self.get_id()
+        ).first()
         task_db_object.status = new_status
         task_db_object.progress = progress
         task_db_object.text = text
@@ -70,16 +72,20 @@ class Task(object):
         self.stdout.append(stdout)
 
         session = self.sessions.get_new_session()
-        task_db_object = session.query(models.Task).filter_by(task_id=self.get_id()).first()
+        task_db_object = session.query(models.Task).filter_by(
+            task_id=self.get_id()
+        ).first()
         task_db_object.stdout = task_db_object.stdout + stdout
         session.commit()
-        self.sessions.destroy_session(session)        
+        self.sessions.destroy_session(session)
 
     def append_stderr(self, stderr=""):
         self.stderr.append(stderr)
 
         session = self.sessions.get_new_session()
-        task_db_object = session.query(models.Task).filter_by(task_id=self.get_id()).first()
+        task_db_object = session.query(models.Task).filter_by(
+            task_id=self.get_id()
+        ).first()
         task_db_object.stderr = task_db_object.stderr + stderr
         session.commit()
         self.sessions.destroy_session(session)
@@ -115,7 +121,8 @@ class Task(object):
             params=json.dumps(self.params),
             project_uuid=self.project_uuid,
             stdout="",
-            stderr="")
+            stderr=""
+        )
 
         session.add(task_new_object)
         session.commit()
