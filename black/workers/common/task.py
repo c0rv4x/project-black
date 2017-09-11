@@ -1,4 +1,4 @@
-""" Basic class for Task (the isntance of a running scan
+ """ Basic class for Task (the isntance of a running scan
 against 1 target) """
 import json
 from black.db import Sessions, models
@@ -23,9 +23,6 @@ class Task(object):
         # Project, on which the task has been launched
         self.project_uuid = project_uuid
 
-        # Point to the object of ORM
-        self.create_db_record()
-
         # Task's status
         self.status = None
 
@@ -48,6 +45,9 @@ class Task(object):
         self.exchange = None
 
         self.sessions = Sessions()
+
+        # Point to the object of ORM
+        self.create_db_record()        
 
     def get_id(self):
         """ Return the id of the current task """
