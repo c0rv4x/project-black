@@ -33,7 +33,7 @@ class ScopeManager(object):
         ) is not None:
             return {"status": "dupliacte"}
 
-        new_ip = IP(str(uuid.uuid4()), ip_address, project_uuid)
+        new_ip = IP(str(uuid.uuid4()), ip_address, project_uuid, sessions=self.sessions)
         save_result = new_ip.save()
 
         if save_result["status"] == "success":
@@ -54,7 +54,7 @@ class ScopeManager(object):
         ) is not None:
             return {"status": "dupliacte"}
 
-        new_host = HostInstance(str(uuid.uuid4()), hostname, project_uuid)
+        new_host = HostInstance(str(uuid.uuid4()), hostname, project_uuid, sessions=self.sessions)
         save_result = new_host.save()
 
         if save_result["status"] == "success":
@@ -99,7 +99,8 @@ class ScopeManager(object):
                                          x.ip_address,
                                          x.project_uuid,
                                          list(map(lambda x: x.hostname, x.hostnames)),
-                                         x.comment),
+                                         x.comment,
+                                        sessions=self.sessions),
                             ips_from_db))
 
         hosts_from_db = session.query(HostDB).all()
@@ -107,7 +108,8 @@ class ScopeManager(object):
                                                      x.hostname,
                                                      x.project_uuid,
                                                      list(map(lambda x: x.ip_address, x.ip_addresses)),
-                                                     x.comment),
+                                                     x.comment,
+                                                     sessions=self.sessions),
                               hosts_from_db))
 
         self.sessions.destroy_session(session)

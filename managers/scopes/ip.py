@@ -1,4 +1,4 @@
-from black.black.db import sessions, IP_addr
+from black.black.db import IP_addr
 from black.black.db import Host as HostDB
 
 
@@ -7,13 +7,15 @@ class IP(object):
     comment on the ip """
 
     def __init__(
-        self, ip_id, ip_address, project_uuid, hostnames=None, comment=""
+        self, ip_id, ip_address, project_uuid, hostnames=None, comment="", sessions=None
     ):
         self._id = ip_id
         self.ip_address = ip_address
         self.hostnames = hostnames or list()
         self.comment = comment
         self._project_uuid = project_uuid
+
+        self.sessions = sessions
 
     def get_id(self):
         """ Returns id of ip (read-only) """
@@ -53,7 +55,7 @@ class IP(object):
 
     def save(self):
         try:
-            session = sessions.get_new_session()
+            session = self.sessions.get_new_session()
 
             db_object = IP_addr(
                 ip_id=self.get_id(),
@@ -63,7 +65,7 @@ class IP(object):
             )
             session.add(db_object)
             session.commit()
-            sessions.destroy_session(session)
+            self.sessions.destroy_session(session)
         except Exception as e:
             print("error during savin ip")
             return {'status': 'error', 'text': str(e)}
@@ -73,12 +75,12 @@ class IP(object):
 
     def delete(self):
         try:
-            session = sessions.get_new_session()
+            session = self.sessions.get_new_session()
             db_object = session.query(IP_addr).filter_by(ip_id=self._id
                                                          ).first()
             session.delete(db_object)
             session.commit()
-            sessions.destroy_session(session)
+            self.sessions.destroy_session(session)
         except Exception as e:
             return {'status': 'error', 'text': str(e)}
 
@@ -87,12 +89,12 @@ class IP(object):
 
     def update_comment(self, comment):
         try:
-            session = sessions.get_new_session()
+            session = self.sessions.get_new_session()
             db_object = session.query(IP_addr).filter_by(ip_id=self._id
                                                          ).first()
             db_object.comment = comment
             session.commit()
-            sessions.destroy_session(session)
+            self.sessions.destroy_session(session)
         except Exception as e:
             return {'status': 'error', 'text': str(e)}
 
@@ -104,7 +106,7 @@ class IP(object):
     def append_host(self, host_object):
         if host_object not in self.hostnames:
             self.hostnames.append(host_object)
-            session = sessions.get_new_session()
+            session = self.sessions.get_new_session()
             ip_from_db = session.query(IP_addr).filter_by(ip_id=self.get_id()
                                                           ).first()
             host_from_db = session.query(HostDB).filter_by(
@@ -113,7 +115,7 @@ class IP(object):
             ip_from_db.hostnames.append(host_from_db)
 
             session.commit()
-            sessions.destroy_session(session)
+            self.sessions.destroy_session(session)
 
     def remove_host(self, host_object):
         try:
