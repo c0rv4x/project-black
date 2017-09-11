@@ -9,9 +9,10 @@ class FileManager(object):
     exposing some interfaces for public use. """
     def __init__(self):
         self.files = []
-        self.update_from_db()
 
         self.sessions = Sessions()
+
+        self.update_from_db()
 
     def get_files(self, project_uuid):
         """ Returns the list of files """
