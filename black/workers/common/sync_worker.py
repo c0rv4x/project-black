@@ -18,7 +18,7 @@ class SyncWorker(Worker):
 
     def __init__(self, worker_name, task_class):
         Worker.__init__(self, worker_name, task_class)
-        self.semaphore = threading.Semaphore(value=3)
+        self.semaphore = threading.Semaphore(value=10)
         self.connection = None
         self.channel = None
 
