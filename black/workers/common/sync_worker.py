@@ -85,8 +85,8 @@ class SyncWorker(Worker):
 
             # Store the object that points to the process
             self.active_processes.append(proc)
-        except Exception:
-            pass
+        except Exception as e:
+            print(e)
         finally:
             # Wait till finishing the task
             proc.wait_for_exit()
