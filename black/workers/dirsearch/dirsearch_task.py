@@ -46,6 +46,7 @@ class DirsearchTask(SyncTask):
     def poll_status(self, progress_queue):
         while True:
             message = progress_queue.get()
+            print(self.target, message['progress'], message['status'])
             status = message['status']
             self.set_status(status, progress=message['progress'])
 
