@@ -2,21 +2,20 @@ import random
 from time import sleep
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
 
 
 class Sessions(object):
 
     def __init__(self):
-        self.engine = create_engine('postgresql://black:black101@localhost/black', pool_size=3)
+        self.engine = create_engine('postgresql://black:black101@localhost:5433/black', poolclass=NullPool)
 
         self.session_builder = sessionmaker(bind=self.engine)
 
         self.sessions_list = list()
 
-    def get_new_session(self):
-        while len(self.sessions_list) == 3:
-            sleep(random.random() / 3)
 
+    def get_new_session(self):
         session = self.session_builder()
         self.sessions_list.append(session)
 
