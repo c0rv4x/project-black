@@ -1,16 +1,25 @@
 """ DirsearchTask, that's it """
-from black.workers.common.sync_task import SyncTask
+import os
+import json
+import asyncio
+import asyncio.streams
+from concurrent.futures import ProcessPoolExecutor
+
+from black.workers.common.async_task import AsyncTask
 from .dirsearch_ext.dirsearch import Program
 
-from multiprocessing import Process, Queue
-from threading import Thread
+
+def start_program(*args):
+    """ A tiny wrapper which is passed to multiprocessing.Process. We cant pass
+    a Program, as some locks cannot be serialized """
+    Program(*args)
 
 
-class DirsearchTask(SyncTask):
-    """ Instance of running dirsearch """
+class DirsearchTask(AsyncTask):
+    """ Class which is responsible for a single dirsearch task """
 
     def __init__(self, task_id, target, params, project_uuid):
-        SyncTask.__init__(
+        AsyncTask.__init__(
             self, task_id, 'dirsearch', target, params, project_uuid
         )
 
@@ -18,52 +27,59 @@ class DirsearchTask(SyncTask):
         self.params_object = program_params
 
         self.dirsearch_proc = None
-        self.polling_thread = None
+        self.socket_path = None
 
-    def start(self):
-        """ Launch the task and readers of stdout, stderr """
+        self.loop = asyncio.get_event_loop()
+
+        self.all_done = asyncio.Lock()
+
+    async def start(self):
+        await self.all_done.acquire()
+
+        socket_name = '{}.sock'.format(self.task_id)
+        self.socket_path = os.path.join(os.getcwd(), socket_name)
+
+        if os.path.exists(self.socket_path):
+            os.remove(self.socket_path)
+
+        server = await asyncio.streams.start_unix_server(self.client_connected_cb, path=self.socket_path, loop=self.loop)
+
         try:
-            print("Starting {}".format(self.target[0]))
-            queue = Queue()
-            self.start_background_process(queue)
-        except Exception:
-            self.set_status("Aborted", progress=0)
-
-    def start_background_process(self, progress_queue):
-        self.dirsearch_proc = Process(
-            target=Program,
-            args=(
-                self.target[0], self.task_id, self.project_uuid,
-                progress_queue, self.params_object
+            self.dirsearch_proc = self.loop.run_in_executor(
+                ProcessPoolExecutor(), start_program, self.target[0],
+                self.task_id, self.project_uuid, self.socket_path,
+                self.params_object
             )
-        )
+        except Exception as exc:
+            print("Exception starting ProcessPoolExecutor", exc)
 
-        self.dirsearch_proc.start()
+    def client_connected_cb(self, reader, writer):
+        """ Callback which is called, after unix socket (the socket which is responsible
+        for transporting socket data) receives a new connection """
+        self.loop.create_task(self.poll_status(reader))
 
-        self.polling_thread = Thread(target=self.poll_status, args=(progress_queue,))
-        self.polling_thread.start()
+    async def poll_status(self, reader):
+        """ Getting a reader, tries to asynchronously read some data
+        from that socket and parse it """
+        data = await reader.read(1000)
 
-    def poll_status(self, progress_queue):
-        while True:
-            message = progress_queue.get()
-            print(self.target, message['progress'], message['status'])
-            status = message['status']
-            self.set_status(status, progress=message['progress'])
+        if data:
+            decoded_data = json.loads(data.decode('utf-8'))
+            status = decoded_data['status']
+            progress = decoded_data['progress']
+            await self.set_status(status, progress=progress)
 
-            if status == 'Aborted' or status == 'Finished':
+            if status == 'Finished' or status == 'Aborted':
+                print(self.target[0], "exited poller")
+                self.all_done.release()
                 return
 
-    def send_notification(self, command):
-        """ Sends 'command' notification to the current process. """
-        # if command == 'pause':
-        #     self.proc.send_signal(signal.SIGSTOP.value)  # SIGSTOP
-        # elif command == 'stop':
-        #     self.proc.terminate()  # SIGTERM
-        # elif command == 'unpause':
-        #     self.proc.send_signal(signal.SIGCONT.value)  # SIGCONT
+        self.loop.create_task(self.poll_status(reader))
 
-    def wait_for_exit(self):
-        """ Check if the process exited. If so,
-        save stdout, stderr, exit_code and update the status. """
-        self.dirsearch_proc.join()
-        self.polling_thread.join()
+    async def wait_for_exit(self):
+        """ Asyncronously waits for a process to exit """
+        await self.dirsearch_proc
+
+        await self.all_done.acquire()
+        if os.path.exists(self.socket_path):
+            os.remove(self.socket_path)

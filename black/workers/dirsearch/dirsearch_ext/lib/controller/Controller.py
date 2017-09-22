@@ -20,7 +20,9 @@ import os
 from queue import Queue
 import time
 import sys
+import json
 import gc
+import socket
 import urllib
 from threading import Lock
 from urllib.parse import urljoin
@@ -36,9 +38,21 @@ class SkipTargetInterrupt(Exception):
 
 
 class Controller(object):
-    def __init__(self, script_path, arguments, output, saver, status_queue):
+    def __init__(self, script_path, arguments, output, saver, socket_path):
         self.saver = saver
-        self.status_queue = status_queue
+        self.socket_path = socket_path
+
+        failed_local_attempts = 0
+        while failed_local_attempts < 3 and not os.path.exists(self.socket_path):
+            failed_local_attempts += 1
+            time.sleep(0.3)
+
+        if failed_local_attempts == 3:
+            raise Exception("Socket not found")
+
+        self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        self.socket.connect(socket_path)
+
         self.script_path = script_path
         self.exit = False
         self.arguments = arguments
@@ -82,12 +96,9 @@ class Controller(object):
                     self.requester.protocolCheck()
                     self.requester.request("/")
 
-                except RequestException as e:
+                except (RequestException, ProtocolCheckException) as e:
                     # self.output.error(e.args[0]['message'])
                     raise SkipTargetInterrupt
-                except ProtocolCheckException as e:
-                    self.status_queue.put({"status":"Finished", "progress":100})
-                    return
                 if self.arguments.use_random_agents:
                     self.requester.setRandomAgents(self.randomAgents)
                 for key, value in arguments.headers.items():
@@ -106,10 +117,10 @@ class Controller(object):
                 self.fuzzer = Fuzzer(self.requester, self.dictionary, testFailPath=self.arguments.test_fail_path,
                                      threads=self.arguments.threads_count, matchCallbacks=matchCallbacks,
                                      notFoundCallbacks=notFoundCallbacks, errorCallbacks=errorCallbacks,
-                                     status_queue=self.status_queue)
+                                     socket=self.socket)
                 self.wait()
             except SkipTargetInterrupt:
-                self.status_queue.put({"status":"Finished", "progress":100})
+                self.socket.sendall(bytes(json.dumps({"status":"Finished", "progress":100}), 'utf-8'))
             finally:
                 self.reportManager.save()
 
@@ -258,7 +269,7 @@ class Controller(object):
             self.fuzzer.start()
             self.processPaths()
 
-        self.status_queue.put({"status":'Finished', "progress":100})
+        self.socket.sendall(bytes(json.dumps({"status":'Finished', "progress":100}), 'utf-8'))
 
         return
 

@@ -48,6 +48,7 @@ class Requester(object):
         if not url.endswith('/'):
             url = url + '/'
 
+        self.url = url
         # try:
         #     url.index('://') 
         # except ValueError as e:
