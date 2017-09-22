@@ -102,18 +102,12 @@ class Task(object):
         """ Sends 'command' notification to the current process """
         raise NotImplementedError
 
-    async def check_if_exited(self):
-        """ Check if the process exited. If so,
-        save stdout, stderr, exit_code and update the status """
-        raise NotImplementedError
-
     def wait_for_exit(self):
         raise NotImplementedError
 
     def create_db_record(self):
         """ Creates the record of the task in a special DB table """
         session = self.sessions.get_new_session()
-
         task_new_object = models.Task(
             task_id=self.get_id(),
             task_type=self.task_type,
@@ -123,7 +117,6 @@ class Task(object):
             stdout="",
             stderr=""
         )
-
         session.add(task_new_object)
         session.commit()
         self.sessions.destroy_session(session)
