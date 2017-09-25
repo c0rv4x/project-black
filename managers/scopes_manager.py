@@ -241,9 +241,12 @@ class ScopeManager(object):
         while done_futures:
             each_future = done_futures.pop()
 
-            exc = each_future.exception()
-            result = each_future.result()
-            host = each_future.internal_host
+            try:
+                exc = each_future.exception()
+                result = each_future.result()
+                host = each_future.internal_host
+            except Exception as e:
+                continue
 
             if exc:
                 print("RESOLVE EXCEPTION", each_future, exc)
