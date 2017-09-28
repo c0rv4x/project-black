@@ -29,24 +29,14 @@ class ScopesSocketioEventsSubscriber {
 		// Received all scopes in one message
 		this.register_socketio_handler('scopes:all:get:back', renewScopes);
 		this.register_socketio_handler('scopes:update:back', updateScope);
-		this.register_project_new_scope();
-		this.register_project_delete_scope();
-	}
-
-	register_project_new_scope() {
-		/* Check new scope */
 		this.register_socketio_handler('scopes:create', createScope);
-	}
-
-	register_project_delete_scope() {
-		/* Check deleted scope */
 		this.register_socketio_handler('scopes:delete', deleteScope);
 	}
 
 	register_socketio_handler(eventName, callback) {
 		/* Just a wrapper for connector.listen */
 		this.connector.listen(eventName, (x) => {
-			this.store.dispatch(callback(x));
+			this.store.dispatch(callback(x, this.project_uuid));
 		});
 	}
 
