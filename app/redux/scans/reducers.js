@@ -23,7 +23,7 @@ function scan_reduce(state = [], action) {
 	}
 	else {
 		if (action.current_project_uuid !== action.message.project_uuid) { 
-
+			console.log(action);
 		console.log("Not corret uuid");
 			return state; }
 		else {	
