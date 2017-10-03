@@ -146,17 +146,20 @@ function update_tasks(state = {'active': [], 'finished': []}, action) {
 }
 
 function task_reduce(state = {'active': [], 'finished': []}, action) {
-	switch (action.type) {
-		case NEW_TASK:
-			return new_task(state, action);
-		case CHANGE_STATUS_TASK:
-			return change_status_task(state, action);
-		case RENEW_TASKS:
-			return renew_tasks(state, action);
-		case UPDATE_TASKS:
-			return update_tasks(state, action);			
-		default:
-			return state;
+	if (action.current_project_uuid !== action.message.project_uuid) { return state; }
+	else {		
+		switch (action.type) {
+			case NEW_TASK:
+				return new_task(state, action);
+			case CHANGE_STATUS_TASK:
+				return change_status_task(state, action);
+			case RENEW_TASKS:
+				return renew_tasks(state, action);
+			case UPDATE_TASKS:
+				return update_tasks(state, action);			
+			default:
+				return state;
+		}
 	}
 }
 

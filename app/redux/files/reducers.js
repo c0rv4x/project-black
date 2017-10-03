@@ -9,7 +9,6 @@ function renew_files(state = {}, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
-		console.log(message['files']);
 		return message['files'];
 	} else {
 		/* TODO: add error handling */
@@ -17,11 +16,14 @@ function renew_files(state = {}, action) {
 }
 
 function file_reduce(state = {}, action) {
-	switch (action.type) {
-		case RENEW_FILES:
-			return renew_files(state, action);
-		default:
-			return state;
+	if (action.current_project_uuid !== action.message.project_uuid) { return state; }
+	else {	
+		switch (action.type) {
+			case RENEW_FILES:
+				return renew_files(state, action);
+			default:
+				return state;
+		}
 	}
 }
 
