@@ -22,9 +22,8 @@ function scan_reduce(state = [], action) {
 	}
 	else {
 		if (action.current_project_uuid !== action.message.project_uuid) { 
-			console.log(action);
-		console.log("Not corret uuid");
-			return state; }
+			return state;
+		}
 		else {	
 			switch (action.type) {
 				case RENEW_SCANS:

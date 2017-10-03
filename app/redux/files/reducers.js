@@ -20,6 +20,7 @@ function file_reduce(state = {}, action) {
 		return state
 	}
 	else {	
+		console.log("files", action);
 		if (action.current_project_uuid !== action.message.project_uuid) { return state; }
 		else {	
 			switch (action.type) {
