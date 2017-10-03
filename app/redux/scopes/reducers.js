@@ -144,6 +144,7 @@ function update_scope(state = initialState, action) {
 }
 
 function scope_reduce(state = initialState, action) {
+	console.log(action);
 	if (action.current_project_uuid !== action.message.project_uuid) { return state; }
 	else {
 		switch (action.type) {
