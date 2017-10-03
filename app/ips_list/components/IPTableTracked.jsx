@@ -15,12 +15,13 @@ class IPTableTracked extends React.Component {
 	}
 
 	deleteScope(scope_id) {
-		this.scopesEmitter.requestDeleteScope(scope_id);
+		this.scopesEmitter.requestDeleteScope(scope_id, this.props.project_uuid);
 	}
 
 	render() {
 		return (
 				<IPTable ips={this.props.scopes}
+						 project_uuid={this.props.project_uuid}
 						 deleteScope={this.deleteScope}
 						 onFilterChange={this.props.onFilterChange} />
 		)

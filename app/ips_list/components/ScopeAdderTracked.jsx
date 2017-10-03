@@ -24,7 +24,7 @@ class ScopeAdderTracked extends React.Component {
 	}
 
 	submitNewScope(scopes) {
-		this.scopesEmitter.requestCreateScope(this.props.project.project_uuid, scopes);
+		this.scopesEmitter.requestCreateScope(scopes, this.props.project.project_uuid);
 	}
 
 	render() {

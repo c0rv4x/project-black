@@ -15,7 +15,7 @@ class HostsTableTracked extends React.Component {
 	}
 
 	deleteScope(scope_id) {
-		this.scopesEmitter.requestDeleteScope(scope_id);
+		this.scopesEmitter.requestDeleteScope(scope_id, this.props.project.project_uuid);
 	}
 
 	render() {

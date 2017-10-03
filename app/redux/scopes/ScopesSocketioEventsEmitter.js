@@ -36,7 +36,7 @@ class ScopesSocketioEventsEmitter {
         this.connector = new Connector('scopes');
 	}
 
-	requestCreateScope(project_uuid, scopes) {
+	requestCreateScope(scopes, project_uuid) {
 		this.connector.emit('scopes:create', {
 			'project_uuid': project_uuid,
 			'scopes': _.map(scopes.split(','), (x) => {
@@ -50,9 +50,10 @@ class ScopesSocketioEventsEmitter {
 		});
 	}
 
-	requestDeleteScope(scope_id) {
+	requestDeleteScope(scope_id, project_uuid) {
 		this.connector.emit('scopes:delete:scope_id', {
-			'scope_id': scope_id
+			'scope_id': scope_id,
+			'project_uuid': project_uuid
 		});
 	}
 
@@ -69,10 +70,11 @@ class ScopesSocketioEventsEmitter {
 		});
 	}
 
-	requestUpdateScope(comment, scope_id) {
+	requestUpdateScope(comment, scope_id, project_uuid) {
 		this.connector.emit('scopes:update', {
 			'scope_id': scope_id,
-			'comment': comment
+			'comment': comment,
+			'project_uuid': project_uuid
 		});
 	}
 
