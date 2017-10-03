@@ -18,7 +18,6 @@ function renew_scans(state = [], action) {
 
 function scan_reduce(state = [], action) {
 	if (!action.hasOwnProperty('message')) {
-		console.log("No msg");
 		return state
 	}
 	else {

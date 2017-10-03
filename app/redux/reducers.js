@@ -9,9 +9,9 @@ import filter_reduce from './filters/reducers';
 
 
 const all_reducers = combineReducers({
+	tasks: task_reduce,
 	projects: project_reduce,
 	scopes: scope_reduce,
-	tasks: task_reduce,
 	scans: scan_reduce,
 	files: file_reduce,
 	filters: filter_reduce
