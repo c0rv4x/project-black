@@ -34,7 +34,6 @@ class FilesEventsSubsriber {
     register_socketio_handler(eventName, callback) {
         /* Just a wrapper for connector.listen */
         this.connector.listen(eventName, (x) => {
-            console.log(this.project_uuid);
             this.store.dispatch(callback(x, this.project_uuid));
         });
     }
