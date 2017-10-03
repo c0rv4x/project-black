@@ -83,6 +83,8 @@ function delete_scope(state = initialState, action) {
 function renew_scopes(state = initialState, action) {
 	const message = action.message;
 
+	console.log('renew_scopes', action, message);
+
 	if (action.current_project_uuid !== message.project_uuid) { return state; }
 	else {
 		if (message["status"] == 'success') {
