@@ -19,6 +19,7 @@ class ScanHandlers(object):
 
     async def send_scans_back(self, project_uuid=None):
         """ Finds all scans for the project and sends them back """
+        print(project_uuid)
         await self.socketio.emit(
             'scans:all:get:back', {
                 'status': 'success',
