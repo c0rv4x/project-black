@@ -100,6 +100,7 @@ class ScopeHandlers(object):
         async def _cb_handle_scope_delete(sio, msg):
             """ When received this message, delete the scope """
             scope_id = msg['scope_id']
+            project_uuid = msg['project_uuid']
 
             # Delete new scope (and register it)
             delete_result = self.scope_manager.delete_scope(scope_id=scope_id)
@@ -108,7 +109,8 @@ class ScopeHandlers(object):
                 # Send the success result
                 await self.socketio.emit(
                     'scopes:delete', {'status': 'success',
-                                      '_id': scope_id},
+                                      '_id': scope_id,
+                                      'project_uuid': project_uuid},
                     broadcast=True,
                     namespace='/scopes'
                 )
@@ -117,7 +119,8 @@ class ScopeHandlers(object):
                     'scopes:all:get:back', {
                         'status': 'success',
                         'ips': self.scope_manager.get_ips(),
-                        'hosts': self.scope_manager.get_hosts()
+                        'hosts': self.scope_manager.get_hosts(),
+                        'project_uuid': project_uuid
                     },
                     broadcast=True,
                     namespace='/scopes'
@@ -127,7 +130,8 @@ class ScopeHandlers(object):
                 await self.socketio.emit(
                     'scopes:delete',
                     {'status': 'error',
-                     'text': delete_result["text"]},
+                     'text': delete_result["text"],
+                     'project_uuid': project_uuid},
                     broadcast=True,
                     namespace='/scopes'
                 )
@@ -148,7 +152,8 @@ class ScopeHandlers(object):
                 'scopes:all:get:back', {
                     'status': 'success',
                     'ips': self.scope_manager.get_ips(project_uuid),
-                    'hosts': self.scope_manager.get_hosts(project_uuid)
+                    'hosts': self.scope_manager.get_hosts(project_uuid),
+                    'project_uuid': project_uuid
                 },
                 broadcast=True,
                 namespace='/scopes'
@@ -159,6 +164,7 @@ class ScopeHandlers(object):
             """ Update the scope (now only used for comment). """
             scope_id = msg['scope_id']
             comment = msg['comment']
+            project_uuid = msg['project_uuid']
 
             result = self.scope_manager.update_scope(
                 scope_id=scope_id, comment=comment
@@ -168,12 +174,15 @@ class ScopeHandlers(object):
 
                 await self.socketio.emit(
                     'scopes:update:back',
-                    {"status": "success",
-                     "updated_scope": updated_scope},
+                    {
+                     "status": "success",
+                     "updated_scope": updated_scope,
+                     "project_uuid": project_uuid},
                     broadcast=True,
                     namespace='/scopes'
                 )
             else:
+                result['project_uuid'] = project_uuid
                 await self.socketio.emit(
                     'scopes:update:back',
                     result,
