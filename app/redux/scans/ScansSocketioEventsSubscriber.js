@@ -38,7 +38,7 @@ class ScansEventsSubsriber {
 	register_socketio_handler(eventName, callback) {
 		/* Just a wrapper for connector.listen */
 		this.connector.listen(eventName, (x) => {
-			this.store.dispatch(callback(x));
+			this.store.dispatch(callback(x, this.project_uuid));
 		});
 	}
 
