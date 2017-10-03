@@ -31,11 +31,16 @@ function update_filters(state = initialState, action) {
 }
 
 function filter_reduce(state = initialState, action) {
-	switch (action.type) {
-		case UPDATE_FILTERS:
-			return update_filters(state, action);
-		default:
-			return state;
+	if (!action.hasOwnProperty('message')) {
+		return state
+	}
+	else {	
+		switch (action.type) {
+			case UPDATE_FILTERS:
+				return update_filters(state, action);
+			default:
+				return state;
+		}
 	}
 }
 
