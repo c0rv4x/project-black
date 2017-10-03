@@ -83,14 +83,17 @@ function delete_scope(state = initialState, action) {
 function renew_scopes(state = initialState, action) {
 	const message = action.message;
 
-	if (message["status"] == 'success') {
-		return {
-			'ips': message['ips'],
-			'hosts': message['hosts']
-		}
-	} else {
-		/* TODO: add error handling */
-	}		
+	if (action.current_project_uuid !== message.project_uuid) { return state; }
+	else {
+		if (message["status"] == 'success') {
+			return {
+				'ips': message['ips'],
+				'hosts': message['hosts']
+			}
+		} else {
+			/* TODO: add error handling */
+		}		
+	}
 }
 
 function update_comment(state = initialState, action) {
