@@ -14,7 +14,6 @@ class TasksButtonsTracked extends React.Component {
 	}
 
 	dirbusterStart(options) {
-		var i = 0;
 		for (var each_host of this.props.scopes) {
 			var ports = new Set();
 
@@ -24,16 +23,22 @@ class TasksButtonsTracked extends React.Component {
 				});
 			}
 
-			i += ports.size;
 			for (var each_port of [...ports]) {
-				var target = each_host.hostname;
-				this.tasksEmitter.requestCreateTask('dirsearch', 
-													[target + ":" + each_port], 
-													{'program': options}, 
-													this.props.project.project_uuid)
+				let target = each_host.hostname;
+				// this.tasksEmitter.requestCreateTask('dirsearch', 
+				// 									[target + ":" + each_port], 
+				// 									{'program': options}, 
+				// 									this.props.project.project_uuid)
+
+				for (var ip_address of each_host.ip_addresses) {
+					console.log(ip_address);
+					// this.tasksEmitter.requestCreateTask('dirsearch', 
+					// 									[target + ":" + each_port], 
+					// 									{'program': options}, 
+					// 									this.props.project.project_uuid)
+				}
 			}
 		}
-		console.log(i);
 	}
 
 	render() {
