@@ -92,6 +92,7 @@ function update_tasks(state = {'active': [], 'finished': []}, action) {
 		const active_tasks = message['tasks']['active'].filter((x) => {
 			return x.project_uuid === action.current_project_uuid;
 		});
+		console.log(active_tasks);
 		var updated_active_task_ids = [];
 
 		var parsed_active_tasks = _.map(active_tasks, (x) => {
