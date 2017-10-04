@@ -62,6 +62,7 @@ class TaskHandlers(object):
             tasks = self.task_manager.get_tasks_native_objects(
                 project_uuid, get_all=False
             )
+            print("Sending tasks", tasks)
             await self.socketio.emit(
                 'tasks:all:get:back:updated', {
                     "status": "success",
