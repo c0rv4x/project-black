@@ -44,6 +44,7 @@ function renew_tasks(state = {'active': [], 'finished': []}, action) {
 		const active_tasks = message['tasks']['active'].filter((x) => {
 			return x.project_uuid === action.current_project_uuid;
 		});
+		console.log(active_tasks);
 		var parsed_active_tasks = _.map(_.uniq(active_tasks), (x) => {
 			return {
 				"task_id": x["task_id"],
