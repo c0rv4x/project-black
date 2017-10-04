@@ -37,7 +37,7 @@ class AdaptiveOption extends React.Component {
 		else {
 			return (
 				<div>
-					<ControlLabel>{_.capitalize(this.props.objectKey)}</ControlLabel>
+					<ControlLabel>{this.props.value.text || _.capitalize(this.props.objectKey)}</ControlLabel>
 					<FormGroup controlId="formInlineName">
 						<FormControl type={this.props.value.type}
 									 placeholder={this.props.objectKey}
