@@ -30,7 +30,7 @@ class AdaptiveOption extends React.Component {
 		if (this.props.value.type === 'checkbox') {
 			return (
 				<Checkbox checked={this.props.value.value} onChange={this.triggerBool}>
-					{_.capitalize(this.props.objectKey)}
+					{this.props.value.text || _.capitalize(this.props.objectKey)}
 				</Checkbox>
 			)				
 		}

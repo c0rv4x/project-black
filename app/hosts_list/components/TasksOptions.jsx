@@ -41,6 +41,7 @@ class TasksOptions extends React.Component {
 				type: x.type,
 				value: x.default_value,
 				default_value: x.default_value,
+				text: x.text
 			};				
 		});
 

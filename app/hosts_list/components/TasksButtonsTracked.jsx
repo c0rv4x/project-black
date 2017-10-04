@@ -108,11 +108,13 @@ class TasksButtonsTracked extends React.Component {
 							{
 								"name": "dirsearch_all_ips",
 								"type": "checkbox",
+								"text": "Add all current ips to dirsearch queue",
 								"default_value": false
 							},
 							{
 								"name": "dirsearch_single_ip",
 								"type": "checkbox",
+								"text": "Add one ip from each host to dirsearch queue",
 								"default_value": false
 							}					
 						]
