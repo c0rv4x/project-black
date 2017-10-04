@@ -89,7 +89,9 @@ function update_tasks(state = {'active': [], 'finished': []}, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
-		const active_tasks = message['tasks']['active'];
+		const active_tasks = message['tasks']['active'].filter((x) => {
+			return x.project_uuid === action.current_project_uuid;
+		});
 		var updated_active_task_ids = [];
 
 		var parsed_active_tasks = _.map(active_tasks, (x) => {
@@ -110,7 +112,9 @@ function update_tasks(state = {'active': [], 'finished': []}, action) {
 			}
 		});
 
-		const finished_tasks = message['tasks']['finished'];
+		const finished_tasks = message['tasks']['finished'].filter((x) => {
+			return x.project_uuid === action.current_project_uuid;
+		});
 		var updated_finished_task_ids = [];
 
 		var parsed_finished_tasks = _.map(finished_tasks, (x) => {
