@@ -150,10 +150,10 @@ function task_reduce(state = {'active': [], 'finished': []}, action) {
 		return state
 	}
 	else {
-		if (action.type == RENEW_TASKS) {
+		if (action.type == UPDATE_TASKS) {
 			console.log(action);
 		}
-		if (action.current_project_uuid !== action.message.project_uuid) { return state; }
+		if (action.message.project_uuid && (action.current_project_uuid !== action.message.project_uuid)) { return state; }
 		else {		
 			switch (action.type) {
 				case NEW_TASK:
