@@ -62,6 +62,10 @@ class TaskHandlers(object):
             tasks = self.task_manager.get_tasks_native_objects(
                 project_uuid, get_all=False
             )
+
+            if len(task['finished']) == 0 and len(tasks['active']) == 0:
+                return
+
             await self.socketio.emit(
                 'tasks:all:get:back:updated', {
                     "status": "success",
