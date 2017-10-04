@@ -63,7 +63,7 @@ class TaskHandlers(object):
                 project_uuid, get_all=False
             )
 
-            if len(task['finished']) == 0 and len(tasks['active']) == 0:
+            if len(tasks['finished']) == 0 and len(tasks['active']) == 0:
                 return
 
             await self.socketio.emit(
