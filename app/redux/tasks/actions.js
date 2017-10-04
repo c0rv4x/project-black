@@ -4,18 +4,30 @@ export const RENEW_TASKS = 'RENEW_TASKS'
 export const UPDATE_TASKS = 'UPDATE_TASKS'
 
 
-export function newTask(message) {
-	return { type: NEW_TASK, message }
+export function newTask(message, current_project_uuid) {
+	return { type: NEW_TASK,
+		current_project_uuid: current_project_uuid
+		message
+	}
 }
 
-export function changeStatusTask(message) {
-	return { type: CHANGE_STATUS_TASK, message }
+export function changeStatusTask(message, current_project_uuid) {
+	return { type: CHANGE_STATUS_TASK,
+		current_project_uuid: current_project_uuid
+		message
+	}
 }
 
-export function renewTasks(message) {
-	return { type: RENEW_TASKS, message }
+export function renewTasks(message, current_project_uuid) {
+	return { type: RENEW_TASKS,
+		current_project_uuid: current_project_uuid
+		message
+	}
 }
 
-export function updateTasks(message) {
-	return { type: UPDATE_TASKS, message }
+export function updateTasks(message, current_project_uuid) {
+	return { type: UPDATE_TASKS,
+		current_project_uuid: current_project_uuid
+		message
+	}
 }
