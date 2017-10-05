@@ -26,9 +26,11 @@ class TitleButtonsWithHandlers extends React.Component {
 			return x.ip_address || x.hostname
 		});
 
+		console.log(params);
+
 		this.tasksEmitter.requestCreateTask('masscan', 
 											targets, 
-											{'program': params}, 
+											{'program': [params["argv"]]},
 											this.props.project.project_uuid)
 	}
 
@@ -43,7 +45,7 @@ class TitleButtonsWithHandlers extends React.Component {
 			setTimeout(() => {
 				this.tasksEmitter.requestCreateTask('nmap', 
 													[target], 
-													{'program': params}, 
+													{'program': [params["argv"]]},
 													this.props.project.project_uuid)
 			}, startTime);
 
@@ -104,48 +106,16 @@ class TitleButtonsWithHandlers extends React.Component {
 	dirbusterStart(options) {
 		for (var each_scope of this.props.scopes) {
 			let ip_address = each_scope.ip_address;
-			var ports = each_scope.scans.map((x) => {
+			let ports = each_scope.scans.map((x) => {
 				return x.port_number;
 			});
 
-			console.log(ip_address, ports);
-
-			// var ports = new Set();
-
-			// for (var ip_address of each_host.ip_addresses) {
-			// 	ip_address.scans.map((x) => {
-			// 		ports.add(x.port_number);
-			// 	});
-			// }
-
-			// for (var each_port of [...ports]) {
-			// 	let target = each_host.hostname;
-			// 	this.tasksEmitter.requestCreateTask('dirsearch', 
-			// 										[target + ":" + each_port], 
-			// 										{'program': options}, 
-			// 										this.props.project.project_uuid);
-
-			// 	if (options.dirsearch_all_ips) {
-			// 		for (var ip_address of each_host.ip_addresses) {
-			// 			let target = ip_address.ip_address;
-			// 			this.tasksEmitter.requestCreateTask('dirsearch', 
-			// 												[target + ":" + each_port], 
-			// 												{'program': options}, 
-			// 												this.props.project.project_uuid);
-			// 		}
-			// 	}
-			// 	else if (options.dirsearch_single_ip) {
-			// 		for (var ip_address of each_host.ip_addresses) {
-			// 			let target = ip_address.ip_address;
-			// 			this.tasksEmitter.requestCreateTask('dirsearch', 
-			// 												[target + ":" + each_port], 
-			// 												{'program': options}, 
-			// 												this.props.project.project_uuid);
-
-			// 			break;
-			// 		}
-			// 	}
-			// }
+			for (var each_port of ports) {
+				this.tasksEmitter.requestCreateTask('dirsearch', 
+													[ip_address + ":" + each_port], 
+													{'program': options}, 
+													this.props.project.project_uuid);				
+			}
 		}
 	}
 
@@ -155,20 +125,33 @@ class TitleButtonsWithHandlers extends React.Component {
 						  tasks={
 						  	[
 						  		{
-						  			'name': 'Masscan',
-						  			'handler': this.runMasscan,
+						  			"name": "Masscan",
+						  			"handler": this.runMasscan,
 									"preformed_options": [
 										{
 											"name": "All Ports",
-											"options": "--rate 10000 -p1-65535"
+											"options": {
+												"argv": "--rate 10000 -p1-65535"
+											}
 										},
 										{
 											"name": "10k Ports",
-											"options": "--rate 10000 -p1-10000"
+											"options": {
+												"argv": "--rate 10000 -p1-10000"
+											}
 										},										
 										{
 											"name": "Top N ports",
-											"options": "--rate 10000 -p80,23,443,21,22,25,3389,110,445,139,143,53,135,3306,8080,1723,111,995,993,5900,1025,587,8888,199,1720,113,554,256"
+											"options": {
+												"argv": "--rate 10000 -p80,23,443,21,22,25,3389,110,445,139,143,53,135,3306,8080,1723,111,995,993,5900,1025,587,8888,199,1720,113,554,256"
+											}
+										}
+									],
+									"available_options": [
+										{
+											"name": "argv",
+											"type": "text",
+											"default_value": ""
 										}
 									]
 						  		},
@@ -187,12 +170,21 @@ class TitleButtonsWithHandlers extends React.Component {
 									// ]
 						  	// 	},
 						  		{
-						  			'name': 'Nmap Only Open Ports',
-						  			'handler': this.runNmapOnlyOpen,
+						  			"name": "Nmap Only Open Ports",
+						  			"handler": this.runNmapOnlyOpen,
 									"preformed_options": [
 										{
 											"name": "Banner",
-											"options": "-sV"
+											"options": {
+												"argv": "-sV"
+											}
+										}
+									],
+									"available_options": [
+										{
+											"name": "argv",
+											"type": "text",
+											"default_value": ""
 										}
 									]
 						  		},
