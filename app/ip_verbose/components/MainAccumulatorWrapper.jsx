@@ -32,6 +32,8 @@ function mapStateToProps(state, ownProps){
     	ip_object = ip_objects[0];
     }
 
+	ip_object = ip_object || { "ip_address": null, "comment": "" };
+
 
     // Ports filter
     let ports_filtered = _.filter(state.scans, (x) => {
@@ -50,14 +52,20 @@ function mapStateToProps(state, ownProps){
     	}
     });
 
+    // Get files
+    let files = [];
+    if (ip_object.ip_address) {
+		files = state.files[ip_object.ip_address];
+    }
+
     return {
     	project: project,
-    	ip: ip_object || { "ip_address": null, "comment": "" },
-        ports: ports_sorted
+    	ip: ip_object,
+        ports: ports_sorted,
         // tasks: _.filter(state.tasks.active, (x) => {
         // 	return x.project_uuid == project['project_uuid']
         // })
-        // files: state.files[host.hostname]
+        files: files
     }
 }
 

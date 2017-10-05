@@ -59,5 +59,4 @@ class FileManager(object):
 
                 self.files[each_project_uuid][host] = files
 
-
         self.sessions.destroy_session(session)
