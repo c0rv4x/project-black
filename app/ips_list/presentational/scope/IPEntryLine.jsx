@@ -20,10 +20,18 @@ class IPEntryLine extends React.Component {
 	render() {
 		var rendered_ip_address = null;
 		if (this.props.ip.ip_address) {
+			const verbose_host_link = '/project/' + this.props.project_uuid + '/ip/' + this.props.ip.ip_address;
+
 			rendered_ip_address = (
 				<div>
 					<span><b>{this.props.ip.ip_address}</b></span>
 					<div className="pull-right">
+	                    <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
+							<Button bsStyle="default" bsSize="small">
+								<Glyphicon glyph="zoom-in"/>
+							</Button>					
+	                    </a>
+
 						<Button bsStyle="danger" bsSize="small" onClick={this.props.deleteScope}>
 							<Glyphicon glyph="remove"/>
 						</Button>

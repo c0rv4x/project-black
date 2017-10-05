@@ -23,6 +23,7 @@ import ProjectsDetailsWrapper from '../../ips_list/components/ProjectDetailsWrap
 
 import NavigationTabs from './NavigationTabs.jsx'
 import HostPage from '../../host_verbose/components/MainAccumulatorWrapper.jsx'
+import IPPage from '../../ip_verbose/components/MainAccumulatorWrapper.jsx'
 
 
 var mainStore = createStore(rdcs);
@@ -106,6 +107,38 @@ class Host extends React.Component {
     }       
 }
 
+class IP extends React.Component {
+    constructor(props) {
+        super(props);
+
+        const project_uuid = this.props.match.params.project_uuid;
+        const ip_address = this.props.match.params.ip_address;
+
+        this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
+        this.scopesSubscriber = new ScopesSocketioEventsSubsriber(mainStore, project_uuid);
+        this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
+        this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
+        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid, ip_address); 
+    }
+
+    render() {
+        return (
+            <Provider store={mainStore}>
+                <IPPage {...this.props} />
+            </Provider>
+        )
+    } 
+    componentWillUnmount() {
+        this.projectsSubscriber.close();
+        this.scopesSubscriber.close();
+        this.tasksSubscriber.close();
+        this.scansSubscriber.close();
+        this.filesSubscriber.close();        
+    }       
+}
+
+
+
 
 class Routing extends React.Component {
     constructor(props) {
@@ -121,7 +154,9 @@ class Routing extends React.Component {
                     <Route exact path="/project/:project_uuid" 
                            component={NavigationTabsWrapper} />
                     <Route exact path="/project/:project_uuid/host/:hostname" 
-                           component={Host} />                           
+                           component={Host} />  
+                    <Route exact path="/project/:project_uuid/ip/:ip_address" 
+                           component={IP} />                                                      
                 </div>
             </Router> 
         )
