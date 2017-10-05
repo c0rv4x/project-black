@@ -103,7 +103,13 @@ class TitleButtonsWithHandlers extends React.Component {
 
 	dirbusterStart(options) {
 		for (var each_scope of this.props.scopes) {
-			console.log(each_scope);
+			let ip_address = each_scope.ip_address;
+			var ports = each_scope.scans.map((x) => {
+				return x.port_number;
+			});
+
+			console.log(ip_address, ports);
+
 			// var ports = new Set();
 
 			// for (var ip_address of each_host.ip_addresses) {
