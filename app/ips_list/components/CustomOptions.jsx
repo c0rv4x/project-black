@@ -9,6 +9,8 @@ import {
 	FormControl
 } from 'react-bootstrap'
 
+import AdaptiveOption from '../presentational/AdaptiveOption.jsx'
+
 
 class CustomOptions extends React.Component {
 	constructor(props) {
@@ -16,14 +18,20 @@ class CustomOptions extends React.Component {
 	}
 
 	render() {
+		var options = [];
+
+		_.forOwn(this.props.inputs, (value, key) => {
+			options.push(
+				<AdaptiveOption key={key}
+								objectKey={key}
+								value={value}
+								onInputChange={this.props.onInputChange} />
+			);
+		});
+
 		return (
 			<div>
-				<FormGroup controlId="formInlineName">
-					<FormControl type="text"
-								 placeholder="Flags and parameters"
-								 value={this.props.inputValue} 
-								 onChange={(x) => this.props.onOptionsInputChange(x.target.value)} />
-				</FormGroup>
+				{options}
 				<Button bsStyle="primary" onClick={this.props.startTaskHandler}>Start Task</Button>
 			</div>
 		)

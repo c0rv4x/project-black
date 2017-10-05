@@ -16,6 +16,9 @@ class TitleButtonsWithHandlers extends React.Component {
 		this.runNmap = this.runNmap.bind(this);
 		this.runNmapOnlyOpen = this.runNmapOnlyOpen.bind(this);
 		this.doSetTimeout = this.doSetTimeout.bind(this);
+
+		this.dirbusterStart = this.dirbusterStart.bind(this);
+
 	}
 
 	runMasscan(params) {
@@ -23,9 +26,11 @@ class TitleButtonsWithHandlers extends React.Component {
 			return x.ip_address || x.hostname
 		});
 
+		console.log(params);
+
 		this.tasksEmitter.requestCreateTask('masscan', 
 											targets, 
-											{'program': params}, 
+											{'program': [params["argv"]]},
 											this.props.project.project_uuid)
 	}
 
@@ -40,7 +45,7 @@ class TitleButtonsWithHandlers extends React.Component {
 			setTimeout(() => {
 				this.tasksEmitter.requestCreateTask('nmap', 
 													[target], 
-													{'program': params}, 
+													{'program': [params["argv"]]},
 													this.props.project.project_uuid)
 			}, startTime);
 
@@ -98,26 +103,55 @@ class TitleButtonsWithHandlers extends React.Component {
 
 	}	
 
+	dirbusterStart(options) {
+		for (var each_scope of this.props.scopes) {
+			let ip_address = each_scope.ip_address;
+			let ports = each_scope.scans.map((x) => {
+				return x.port_number;
+			});
+
+			for (var each_port of ports) {
+				this.tasksEmitter.requestCreateTask('dirsearch', 
+													[ip_address + ":" + each_port], 
+													{'program': options}, 
+													this.props.project.project_uuid);				
+			}
+		}
+	}
+
 	render() {
 		return (
 			<ButtonsTasks project={this.props.project}
 						  tasks={
 						  	[
 						  		{
-						  			'name': 'Masscan',
-						  			'handler': this.runMasscan,
+						  			"name": "Masscan",
+						  			"handler": this.runMasscan,
 									"preformed_options": [
 										{
 											"name": "All Ports",
-											"options": "--rate 10000 -p1-65535"
+											"options": {
+												"argv": "--rate 10000 -p1-65535"
+											}
 										},
 										{
 											"name": "10k Ports",
-											"options": "--rate 10000 -p1-10000"
+											"options": {
+												"argv": "--rate 10000 -p1-10000"
+											}
 										},										
 										{
 											"name": "Top N ports",
-											"options": "--rate 10000 -p80,23,443,21,22,25,3389,110,445,139,143,53,135,3306,8080,1723,111,995,993,5900,1025,587,8888,199,1720,113,554,256"
+											"options": {
+												"argv": "--rate 10000 -p80,23,443,21,22,25,3389,110,445,139,143,53,135,3306,8080,1723,111,995,993,5900,1025,587,8888,199,1720,113,554,256"
+											}
+										}
+									],
+									"available_options": [
+										{
+											"name": "argv",
+											"type": "text",
+											"default_value": ""
 										}
 									]
 						  		},
@@ -136,15 +170,85 @@ class TitleButtonsWithHandlers extends React.Component {
 									// ]
 						  	// 	},
 						  		{
-						  			'name': 'Nmap Only Open Ports',
-						  			'handler': this.runNmapOnlyOpen,
+						  			"name": "Nmap Only Open Ports",
+						  			"handler": this.runNmapOnlyOpen,
 									"preformed_options": [
 										{
 											"name": "Banner",
-											"options": "-sV"
+											"options": {
+												"argv": "-sV"
+											}
+										}
+									],
+									"available_options": [
+										{
+											"name": "argv",
+											"type": "text",
+											"default_value": ""
 										}
 									]
-						  		}
+						  		},
+								{
+									"name": "Dirbuter",
+									"handler": this.dirbusterStart,
+									"preformed_options": [
+										{
+											"name": "PHP fanboy",
+											"options": {
+												"extensions": "php,php5,phps,php.bak",
+												"path": "/"
+											}
+										},
+										{
+											"name": "ASP faggot",
+											"options": {
+												"extensions": "asp,aspx",
+												"path": "/"
+											}
+										},
+										{
+											"name": "Personal favourites",
+											"options": {
+												"extensions": "php,asp,txt,conf,log,bak,sql",
+												"path": "/"
+											}
+										}
+									],
+									"available_options": [
+										{
+											"name": "path",
+											"type": "text",
+											"default_value": "/"
+										},						
+										{
+											"name": "extensions",
+											"type": "text",
+											"default_value": "txt,conf,log,bak"
+										},
+										{
+											"name": "cookie",
+											"type": "text",
+											"default_value": ""
+										},
+										{
+											"name": "recursive",
+											"type": "checkbox",
+											"default_value": false
+										},
+										{
+											"name": "dirsearch_all_ips",
+											"type": "checkbox",
+											"text": "Add all current ips to dirsearch queue",
+											"default_value": false
+										},
+										{
+											"name": "dirsearch_single_ip",
+											"type": "checkbox",
+											"text": "Add one ip from each host to dirsearch queue",
+											"default_value": false
+										}					
+									]
+								}						  		
 						  	]
 						  } />
 		)
