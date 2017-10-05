@@ -14,6 +14,9 @@ class TasksButtonsTracked extends React.Component {
 	}
 
 	dirbusterStart(options) {
+		// This is a set of pairs: ip + port, which should be scanned.
+		var all_ips = Set();
+
 		for (var each_host of this.props.scopes) {
 			var ports = new Set();
 
@@ -32,25 +35,23 @@ class TasksButtonsTracked extends React.Component {
 
 				if (options.dirsearch_all_ips) {
 					for (var ip_address of each_host.ip_addresses) {
-						let target = ip_address.ip_address;
-						this.tasksEmitter.requestCreateTask('dirsearch', 
-															[target + ":" + each_port], 
-															{'program': options}, 
-															this.props.project.project_uuid);
+						all_ips.add(ip_address.ip_address + ":" + each_port);
 					}
 				}
 				else if (options.dirsearch_single_ip) {
 					for (var ip_address of each_host.ip_addresses) {
-						let target = ip_address.ip_address;
-						this.tasksEmitter.requestCreateTask('dirsearch', 
-															[target + ":" + each_port], 
-															{'program': options}, 
-															this.props.project.project_uuid);
-
+						all_ips.add(ip_address.ip_address + ":" + each_port)
 						break;
 					}
 				}
 			}
+		}
+
+		for (var each_target of [...all_ips]) {
+			this.tasksEmitter.requestCreateTask('dirsearch', 
+												[each_target], 
+												{'program': options}, 
+												this.props.project.project_uuid);			
 		}
 	}
 
