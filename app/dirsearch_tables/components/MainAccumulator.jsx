@@ -7,6 +7,8 @@ class MainAccumulator extends React.Component {
 	constructor(props) {
 		super(props);
 
+	}
+
 componentWillMount() {
   setTimeout(() => {
     window.Perf.start();
@@ -19,9 +21,6 @@ componentWillMount() {
     }, 30000);
   }, 5000);
 }	
-		
-	}
-
 	render() {
 		return (
 			<div>
