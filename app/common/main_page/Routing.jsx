@@ -24,6 +24,7 @@ import ProjectsDetailsWrapper from '../../ips_list/components/ProjectDetailsWrap
 import NavigationTabs from './NavigationTabs.jsx'
 import HostPage from '../../host_verbose/components/MainAccumulatorWrapper.jsx'
 import IPPage from '../../ip_verbose/components/MainAccumulatorWrapper.jsx'
+import DirsaerchPage from '../../dirsearch_tables/components/MainAccumulatorWrapper.jsx'
 
 
 var mainStore = createStore(rdcs);
@@ -128,6 +129,7 @@ class IP extends React.Component {
             </Provider>
         )
     } 
+
     componentWillUnmount() {
         this.projectsSubscriber.close();
         this.scopesSubscriber.close();
@@ -137,7 +139,35 @@ class IP extends React.Component {
     }       
 }
 
+class DirsearchWrapper extends React.Component {
+    constructor(props) {
+        super(props);
 
+        const project_uuid = this.props.match.params.project_uuid;
+
+        this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
+        this.scopesSubscriber = new ScopesSocketioEventsSubsriber(mainStore, project_uuid);
+        this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
+        this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
+        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid); 
+    }
+
+    render() {
+        return (
+            <Provider store={mainStore}>
+                <DirsaerchPage {...this.props} />
+            </Provider>
+        )
+    }
+
+    componentWillUnmount() {
+        this.projectsSubscriber.close();
+        this.scopesSubscriber.close();
+        this.tasksSubscriber.close();
+        this.scansSubscriber.close();
+        this.filesSubscriber.close();        
+    }     
+}
 
 
 class Routing extends React.Component {
@@ -153,6 +183,8 @@ class Routing extends React.Component {
                            component={Projects} />
                     <Route exact path="/project/:project_uuid" 
                            component={NavigationTabsWrapper} />
+                    <Route exact path="/project/:project_uuid/dirsearch"
+                           component={DirsearchWrapper} />
                     <Route exact path="/project/:project_uuid/host/:hostname" 
                            component={Host} />  
                     <Route exact path="/project/:project_uuid/ip/:ip_address" 

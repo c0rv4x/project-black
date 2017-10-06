@@ -6,6 +6,7 @@ import Tasks from '../../common/tasks/Tasks.jsx'
 import HostsTableTracked from './HostsTableTracked.jsx'
 import TasksButtonsTracked from './TasksButtonsTracked.jsx'
 
+import { Button } from 'react-bootstrap'
 
 
 class HostsList extends React.Component {
@@ -193,12 +194,20 @@ class HostsList extends React.Component {
 	}
 
 	render() {
+		const dirsearch_link = '/project/' + this.props.project.project_uuid + '/dirsearch';
+
+
 		const scopes = this.reworkHostsList(this.props.scopes.hosts, this.props.scans);
 		const filtered_scopes = this.filter(scopes);
 
 		return (
 			<div>
 				<HostsListHead />
+                <a onClick={() => window.open(dirsearch_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
+					<Button bsStyle="default">
+						Dirsearch tables
+					</Button>					
+                </a>				
 				<Tasks tasks={this.props.tasks} />
 
 				<hr />

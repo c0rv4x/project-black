@@ -69,6 +69,7 @@ SOCKET_IO.attach(APP)
 
 APP.add_route(cb_complex_handler, '/')
 APP.add_route(cb_complex_handler, '/project/<project_uuid>')
+APP.add_route(cb_complex_handler, '/project/<project_uuid>/dirsearch')
 APP.add_route(cb_complex_handler, '/project/<project_uuid>/host/<host>')
 APP.add_route(cb_complex_handler, '/project/<project_uuid>/ip/<host>')
 
