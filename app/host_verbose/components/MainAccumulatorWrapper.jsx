@@ -4,6 +4,7 @@ import MainAccumulator from './MainAccumulator.jsx';
 
 
 function mapStateToProps(state, ownProps){
+    console.log("started mapping");
     // Extract project
     let project_uuid = ownProps.match.params.project_uuid;
     let filtered_projects = _.filter(state.projects, (x) => {
@@ -72,6 +73,7 @@ function mapStateToProps(state, ownProps){
         var ports_sorted = [];
     }
 
+    console.log("finished mapping");
 
 
     return {
