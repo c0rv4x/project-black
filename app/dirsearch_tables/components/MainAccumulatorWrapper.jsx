@@ -23,8 +23,8 @@ function mapStateToProps(state, ownProps){
 	}
 
 	// Extract scopes
-	let filtered_ips = state.scopes;
-	let filtered_hosts = state.scopes;
+	let filtered_ips = state.scopes.ips;
+	let filtered_hosts = state.scopes.hosts;
 
 	// Extract ports
 	let filtered_ports = state.scans;
@@ -36,7 +36,8 @@ function mapStateToProps(state, ownProps){
     	project: project,
     	ips: filtered_ips,
     	hosts: filtered_hosts,
-    	ports: filtered_ports
+    	ports: filtered_ports,
+    	files: filtered_files
     }
 }
 
