@@ -44,7 +44,7 @@ class PortsTabs extends React.Component {
 										var result = Math.floor(x.status_code / 100)
 										if (result == 2) {
 											return <tr key={x.file_id}>
-														<td style={{'color': '#5cb16c'}}>{x.status_code}</td>
+														<td style={{'color': '#22CF22'}}>{x.status_code}</td>
 														<td>{x.content_length}</td>
 														<td><a href={x.file_path} target="_blank">{x.file_name}</a></td>
 														<td></td>
