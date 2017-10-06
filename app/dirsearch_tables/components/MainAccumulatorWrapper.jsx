@@ -5,7 +5,6 @@ import MainAccumulator from './MainAccumulator.jsx';
 
 function mapStateToProps(state, ownProps){
 	// Extract project
-	console.log("Started mapping");
 	let project_uuid = ownProps.match.params.project_uuid;
 	let filtered_projects = _.filter(state.projects, (x) => {
 		return x.project_uuid == project_uuid
@@ -32,7 +31,6 @@ function mapStateToProps(state, ownProps){
 
 	// Extract files
 	let filtered_files = state.files;
-	console.log("finished mapping");
 
     return {
     	project: project,

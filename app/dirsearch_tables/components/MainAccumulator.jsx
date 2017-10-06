@@ -6,6 +6,20 @@ import MainTable from './MainTable.jsx'
 class MainAccumulator extends React.Component {
 	constructor(props) {
 		super(props);
+
+componentWillMount() {
+  setTimeout(() => {
+    window.Perf.start();
+    setTimeout(() => {
+      window.Perf.stop();
+      window.measurements = window.Perf.getLastMeasurements();
+      window.Perf.printWasted(window.measurements);
+      window.Perf.printInclusive(window.measurements);
+      window.Perf.printExclusive(window.measurements);
+    }, 30000);
+  }, 5000);
+}	
+		
 	}
 
 	render() {
