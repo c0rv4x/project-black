@@ -1,6 +1,7 @@
 import React from 'react'
 
 import Filtering from './Filtering.jsx'
+import TablesAccumulator from './TablesAccumulator.jsx'
 
 
 class MainTable extends React.Component {
@@ -10,10 +11,12 @@ class MainTable extends React.Component {
 
 	render() {
 		return (
-
 			<div>
 				This is the main table
 				<Filtering />
+				<br />
+
+				<TablesAccumulator />
 			</div>
 		)
 	}

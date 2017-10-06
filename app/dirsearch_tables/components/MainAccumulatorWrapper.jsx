@@ -23,21 +23,14 @@ function mapStateToProps(state, ownProps){
 	}
 
 	// Extract scopes
-	let filtered_ips = _.filter(state.scopes.ips, (x) => {
-		return x.project_uuid == project_uuid
-	});
-
-	let filtered_hosts = _.filter(state.scopes.hosts, (x) => {
-		return x.project_uuid == project_uuid
-	});	
-
+	let filtered_ips = state.scopes;
+	let filtered_hosts = state.scopes;
 
 	// Extract ports
-	let filtered_ports = _.filter(state.scans, (x) => {
-		return x.project_uuid == project_uuid
-	});
+	let filtered_ports = state.scans;
 
-	console.log(filtered_ports);
+	// Extract files
+	let filtered_files = state.files;
 
     return {
     	project: project,

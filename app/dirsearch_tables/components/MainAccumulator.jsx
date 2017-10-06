@@ -12,7 +12,9 @@ class MainAccumulator extends React.Component {
 		return (
 			<div>
 				<h2>{this.props.project.project_name}</h2>
-				<MainTable />
+				<MainTable ips={this.props.ips}
+						   hosts={this.props.hosts}
+						   files={this.props.files} />
 			</div>
 		)
 	}
