@@ -9,7 +9,6 @@ function renew_scans(state = [], action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
-		console.log("renew_scans", message.scans.length);
 		return message['scans'];
 	} else {
 		/* TODO: add error handling */
