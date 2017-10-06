@@ -25,18 +25,18 @@ class NavigationTabs extends React.Component {
 		return (!_.isEqual(nextProps, this.props));
 	}
 
-// componentWillMount() {
-//   setTimeout(() => {
-//     window.Perf.start();
-//     setTimeout(() => {
-//       window.Perf.stop();
-//       window.measurements = window.Perf.getLastMeasurements();
-//       window.Perf.printWasted(window.measurements);
-//       window.Perf.printInclusive(window.measurements);
-//       window.Perf.printExclusive(window.measurements);
-//     }, 30000);
-//   }, 5000);
-// }		
+componentWillMount() {
+  setTimeout(() => {
+    window.Perf.start();
+    setTimeout(() => {
+      window.Perf.stop();
+      window.measurements = window.Perf.getLastMeasurements();
+      window.Perf.printWasted(window.measurements);
+      window.Perf.printInclusive(window.measurements);
+      window.Perf.printExclusive(window.measurements);
+    }, 30000);
+  }, 5000);
+}		
 
 	render() {
 		return (
