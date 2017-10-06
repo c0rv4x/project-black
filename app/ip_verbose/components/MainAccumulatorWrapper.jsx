@@ -36,9 +36,7 @@ function mapStateToProps(state, ownProps){
 
 
     // Ports filter
-    let ports_filtered = _.filter(state.scans, (x) => {
-    	return ((x.project_uuid == project['project_uuid']) && (ip_object.ip_address == x.target))
-    });
+    let ports_filtered = _.get(state.scans, ip_object.ip_address, [])
 
     let ports_sorted = ports_filtered.sort((a, b) => {
     	if (a['port_number'] < b['port_number']) {

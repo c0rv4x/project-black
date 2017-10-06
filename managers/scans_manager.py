@@ -18,7 +18,7 @@ class ScanManager(object):
         """ Returns the list of scans """
         self.update_from_db()
 
-        return self.scans.get(project_uuid, [])
+        return self.scans.get(project_uuid, {})
 
     def update_from_db(self):
         """ Extract all the scans from the DB """
@@ -32,22 +32,29 @@ class ScanManager(object):
             each_project_uuid = each_project_uuid_tupled[0]
             self.scans[each_project_uuid] = {}
 
-            scans_found = session.query(Scan).filter(
-                Scan.project_uuid == each_project_uuid
-            ).distinct(Scan.target, Scan.port_number).all()
-            scans = list(map(lambda x: {
-                "scan_id": x.scan_id,
-                "target": x.target,
-                "port_number": x.port_number,
-                "protocol": x.protocol,
-                "banner": x.banner,
-                "task_id": x.task_id,
-                "project_uuid": x.project_uuid,
-                "date_added": str(x.date_added)
-            }, scans_found))
+            # Find all targets which have open ports
+            targets = session.query(Scan.target).filter(Scan.project_uuid == each_project_uuid).distinct().all()
 
-            scans.sort(key=itemgetter("port_number"))
+            for each_target in targets:
+                target = each_target[0]
 
-            self.scans[each_project_uuid] = scans
+                scans_found = session.query(Scan).filter(
+                    Scan.target == target,
+                    Scan.project_uuid == each_project_uuid
+                ).distinct(Scan.target, Scan.port_number).all()
+                scans = list(map(lambda x: {
+                    "scan_id": x.scan_id,
+                    "target": x.target,
+                    "port_number": x.port_number,
+                    "protocol": x.protocol,
+                    "banner": x.banner,
+                    "task_id": x.task_id,
+                    "project_uuid": x.project_uuid,
+                    "date_added": str(x.date_added)
+                }, scans_found))
+
+                scans.sort(key=itemgetter("port_number"))
+
+                self.scans[each_project_uuid][target] = scans
 
         self.sessions.destroy_session(session)

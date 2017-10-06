@@ -8,9 +8,7 @@ import { updateFilters } from '../../redux/filters/actions'
 
 
 function formIPs(ips_list, project_uuid) {
-	var ips = _.filter(ips_list, (x) => {
-    	return x.project_uuid == project_uuid
-    }).sort((a, b) => {
+	var ips = ips_list.sort((a, b) => {
     	if (a.ip_address < b.ip_address) return -1
     	if (a.ip_address > b.ip_address) return 1
     	return 0
@@ -19,32 +17,18 @@ function formIPs(ips_list, project_uuid) {
     return ips;
 }
 
-function formHosts(hosts_list, project_uuid, scans, files) {
-	var hosts = _.filter(hosts_list, (x) => {
-    	return x.project_uuid == project_uuid
-    }).sort((a, b) => {
+function formHosts(hosts_list, project_uuid, files) {
+	var hosts = hosts_list.sort((a, b) => {
     	if (a.hostname < b.hostname) return -1
     	if (a.hostname > b.hostname) return 1
     	return 0
     });
 
     for (var each_host of hosts) {
-    	if (files.hasOwnProperty(each_host.hostname)) {
-	    	each_host.files = files[each_host.hostname];
-    		// console.log(each_host, files[each_host.hostname]);
-    	}
-    	else {
-	    	each_host.files = [];
-    	}
+    	each_host.files = _.get(files, each_host.hostname, []);
     }
 
     return hosts;
-}
-
-function formScans(scans, project_uuid) {
-	return _.filter(scans, (x) => {
-    	return x.project_uuid == project_uuid
-    });	
 }
 
 function mapStateToProps(state, ownProps) {
@@ -65,13 +49,13 @@ function mapStateToProps(state, ownProps) {
 		}
 	}
 
-	let scans = formScans(state.scans, project['project_uuid']);
+	let scans = state.scans;
 
     return {
     	project: project,
         scopes: {
         	'ips': formIPs(JSON.parse(JSON.stringify(state.scopes.ips)), project['project_uuid']),
-        	'hosts': formHosts(JSON.parse(JSON.stringify(state.scopes.hosts)), project['project_uuid'], scans, state.files)
+        	'hosts': formHosts(JSON.parse(JSON.stringify(state.scopes.hosts)), project['project_uuid'], state.files)
         },
         tasks: _.filter(state.tasks.active, (x) => {
         	return x.project_uuid == project['project_uuid']
