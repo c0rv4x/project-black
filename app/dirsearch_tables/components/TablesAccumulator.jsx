@@ -19,7 +19,7 @@ class TablesAccumulator extends React.Component {
 				});
 
 				tables.push(
-					<DirsearchTable key={each_ip._id} 
+					<DirsearchTable key={each_ip._id + "_" + each_port.scan_id} 
 									target={each_ip.ip_address}
 									port_number={each_port.port_number}
 									files={files}/>
