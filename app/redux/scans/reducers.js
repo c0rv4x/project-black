@@ -5,7 +5,7 @@ import {
 } from './actions.js'
 
 
-function renew_scans(state = [], action) {
+function renew_scans(state = {}, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
@@ -15,7 +15,7 @@ function renew_scans(state = [], action) {
 	}
 }
 
-function scan_reduce(state = [], action) {
+function scan_reduce(state = {}, action) {
 	if (!action.hasOwnProperty('message')) {
 		return state
 	}

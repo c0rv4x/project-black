@@ -178,9 +178,7 @@ class HostsList extends React.Component {
 	    for (var each_host of hosts) {
 			for (var ip_index = 0; ip_index < each_host.ip_addresses.length; ip_index++) {
 				let ip_address = each_host.ip_addresses[ip_index];
-				let filtered_scans = scans.filter((x) => {
-					return x.target === ip_address;
-				});
+				let filtered_scans = _.get(scans, ip_address, []);
 
 				each_host.ip_addresses[ip_index] = {
 					'ip_address': ip_address,

@@ -138,9 +138,7 @@ class ProjectDetails extends React.Component {
 		var ips = JSON.parse(JSON.stringify(ips_input));
 
 	    for (var each_ip of ips) {
-	    	each_ip['scans'] = scans.filter((x) => {
-	    		return x.target == each_ip.ip_address;
-	    	});
+	    	each_ip['scans'] = _.get(scans, each_ip.ip_address, []);
 	    }
 
 	    return ips
