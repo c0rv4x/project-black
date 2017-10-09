@@ -26,6 +26,8 @@ class IPTable extends React.Component {
 
 		this.commentSubmitted = this.commentSubmitted.bind(this);
 		this.handlePageClick = this.handlePageClick.bind(this);
+
+		this.page_inited = false;
 	}
 
 	commentSubmitted(comment, _id) {
@@ -34,29 +36,41 @@ class IPTable extends React.Component {
 
 	shouldComponentUpdate(nextProps, nextState) {
 		if (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState)) {
-			if (this.props.ips.length !== nextProps.ips.length) {
-				var diff = nextProps.ips.length - this.props.ips.length;
+			if (this.page_inited) {
+				if (this.props.ips.length !== nextProps.ips.length) {
+					var diff = nextProps.ips.length - this.props.ips.length;
 
-				if (diff > 0) {
-					this.context.store.dispatch(Notifications.info({
-						title: 'New IPs',
-						message: 'Added ' + String(nextProps.ips.length - this.props.ips.length) + ' IPs.'
-					}));					
-				}
-				else {
-					this.context.store.dispatch(Notifications.info({
-						title: 'IPs deleted',
-						message: 'Deleted ' + String(this.props.ips.length - nextProps.ips.length) + ' IPs.'
-					}));					
+					if (diff > 0) {
+						this.context.store.dispatch(Notifications.info({
+							title: 'New IPs',
+							message: 'Added ' + String(nextProps.ips.length - this.props.ips.length) + ' IPs.'
+						}));					
+					}
+					else {
+						this.context.store.dispatch(Notifications.info({
+							title: 'IPs deleted',
+							message: 'Deleted ' + String(this.props.ips.length - nextProps.ips.length) + ' IPs.'
+						}));					
+					}
+
 				}
 
+				return true;
 			}
+			else {
+				if ((this.props.project_uuid === null) && (nextProps.project_uuid !== null)) {
+					this.page_inited = true;
+				}
 
-			return true;
+				return true
+			}			
 		}
 		else {
 			return false;
 		}
+		
+
+
 	}
 
 	componentWillReceiveProps(nextProps) {
