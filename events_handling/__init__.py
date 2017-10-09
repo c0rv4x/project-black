@@ -51,6 +51,7 @@ class Handlers(object):
             task_type, project_uuid = self.data_updated_queue.get_nowait()
 
             if task_type == "scan":
+                self.scan_manager.update_from_db()
                 await self.scan_handlers.send_scans_back(project_uuid)
                 self.data_updated_queue.task_done()
             if task_type == "file":

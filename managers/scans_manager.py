@@ -16,7 +16,7 @@ class ScanManager(object):
 
     def get_scans(self, project_uuid):
         """ Returns the list of scans """
-        self.update_from_db()
+        # self.update_from_db()
 
         return self.scans.get(project_uuid, {})
 
