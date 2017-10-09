@@ -12,14 +12,19 @@ class Connector {
         else {
             this.name = name;
             this.socketio = io("http://" + location.host + "/" + name);  
-            connections[name] = this.socketio;
+            connections[name] = this;
         }
     }
 
     after_connected(callback) {
-        this.socketio.on('connect', () => {
+        if (!this.socketio.connected) {
+            this.socketio.on('connect', () => {
+                callback();
+            });            
+        }
+        else {
             callback();
-        });
+        }
     }
 
     listen(eventName, callback) {
@@ -37,7 +42,7 @@ class Connector {
 
     close() {
         console.log("closing connetor:", this.name)
-        connections[this.name].close();
+        connections[this.name].socketio.close();
         delete connections[this.name];
     }
 
