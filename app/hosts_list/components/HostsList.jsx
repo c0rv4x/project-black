@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
+import Notifications from 'react-notification-system-redux'
 
 import HostsListHead from '../presentational/HostsListHead.jsx'
 import Tasks from '../../common/tasks/Tasks.jsx'
@@ -21,10 +22,35 @@ class HostsList extends React.Component {
 
 		this.filter = this.filter.bind(this);
 		this.reworkHostsList = this.reworkHostsList.bind(this);
+
+		this.page_inited = false;
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-		return ((JSON.stringify(nextProps) !== JSON.stringify(this.props)) || ((JSON.stringify(nextState) !== JSON.stringify(this.state))));
+		if (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState)) {
+				if (this.props.scopes.hosts.length !== nextProps.scopes.hosts.length) {
+					var diff = nextProps.scopes.hosts.length - this.props.scopes.hosts.length;
+
+					if (diff > 0) {
+						this.context.store.dispatch(Notifications.info({
+							title: 'New hosts',
+							message: 'Added ' + String(nextProps.scopes.hosts.length - this.props.scopes.hosts.length) + ' hosts.'
+						}));					
+					}
+					else {
+						this.context.store.dispatch(Notifications.info({
+							title: 'Hosts deleted',
+							message: 'Deleted ' + String(this.props.scopes.hosts.length - nextProps.scopes.hosts.length) + ' hosts.'
+						}));					
+					}
+
+				}
+
+				return true;
+		}
+		else {
+			return false;
+		}		
 	}
 
 	filter(data, name) {
@@ -222,6 +248,10 @@ class HostsList extends React.Component {
 			</div>
 		)
 	}
+}
+
+HostsList.contextTypes = {
+	store: React.PropTypes.object
 }
 
 export default HostsList;

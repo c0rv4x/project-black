@@ -36,7 +36,6 @@ class IPTable extends React.Component {
 
 	shouldComponentUpdate(nextProps, nextState) {
 		if (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState)) {
-			if (this.page_inited) {
 				if (this.props.ips.length !== nextProps.ips.length) {
 					var diff = nextProps.ips.length - this.props.ips.length;
 
@@ -56,21 +55,10 @@ class IPTable extends React.Component {
 				}
 
 				return true;
-			}
-			else {
-				if ((this.props.project_uuid === null) && (nextProps.project_uuid !== null)) {
-					this.page_inited = true;
-				}
-
-				return true
-			}			
 		}
 		else {
 			return false;
 		}
-		
-
-
 	}
 
 	componentWillReceiveProps(nextProps) {
