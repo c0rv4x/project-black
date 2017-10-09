@@ -38,6 +38,8 @@
     "react-addons-perf": "^15.4.2",
     "react-bootstrap": "^0.30.8",
     "react-dom": "^15.4.2",
+    "react-notification-system": "^0.2.15",
+    "react-notification-system-redux": "^1.1.6",
     "react-paginate": "^4.4.2",
     "react-redux": "^5.0.3",
     "react-router": "latest",

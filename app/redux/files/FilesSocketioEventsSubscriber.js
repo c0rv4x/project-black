@@ -1,3 +1,5 @@
+import Notifications from 'react-notification-system-redux'
+
 import { 
     renewFiles, 
 } from './actions';
@@ -34,7 +36,15 @@ class FilesEventsSubsriber {
     register_socketio_handler(eventName, callback) {
         /* Just a wrapper for connector.listen */
         this.connector.listen(eventName, (x) => {
-            this.store.dispatch(callback(x, this.project_uuid));
+            if (x.status == 'success') {
+                this.store.dispatch(callback(x, this.project_uuid));
+            }
+            else {
+                this.store.dispatch(Notifications.error({
+                    title: 'Error with files updating',
+                    message: x.text
+                }));
+            }
         });
     }
 

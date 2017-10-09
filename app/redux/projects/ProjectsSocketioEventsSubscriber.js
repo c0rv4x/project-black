@@ -1,3 +1,5 @@
+import Notifications from 'react-notification-system-redux'
+
 import { 
 	createProject, 
 	deleteProject,
@@ -14,8 +16,6 @@ class ProjectsSocketioEventsSubscriber {
 	constructor(store) {
         this.store = store;
         this.connector = new Connector('projects');
-
-        console.log(this.connector.after_connected);
 
         this.connector.after_connected((x) => {
         	this.emitter = new ProjectsSocketioEventsEmitter();
@@ -44,7 +44,15 @@ class ProjectsSocketioEventsSubscriber {
 	register_socketio_handler(eventName, callback) {
 		/* Just a wrapper for connector.listen */
 		this.connector.listen(eventName, (x) => {
-			this.store.dispatch(callback(x));
+			if (x.status == 'success') {
+				this.store.dispatch(callback(x));
+			}
+			else {
+				this.store.dispatch(Notifications.error({
+					title: 'Error with project',
+					message: x.text
+				}));
+			}
 		});
 	}
 

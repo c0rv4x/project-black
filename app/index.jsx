@@ -1,9 +1,13 @@
 import React from 'react'
 import {render} from 'react-dom'
+import { Provider, connect } from 'react-redux'
+import { createStore } from 'redux'
 
+import rdcs from './redux/reducers.js'
 import Routing from './common/main_page/Routing.jsx'
 
-import Perf from 'react-addons-perf';
+
+var mainStore = createStore(rdcs);
 
 class App extends React.Component {
     constructor(props) {
@@ -13,11 +17,13 @@ class App extends React.Component {
     render () {
         return (
             <div className="container">
-                <Routing />
+                <Provider store={mainStore}>
+                    <Routing />
+                </Provider>
             </div>
         );
     }
 }
 
-window.Perf = Perf;
 render(<App/>, document.getElementById('app'));
+

@@ -4,13 +4,10 @@ import {
     Route
 } from 'react-router-dom'
 
-import { Provider } from 'react-redux'
+import { connect } from 'react-redux'
 
-import { createStore } from 'redux'
-import { combineReducers } from 'redux'
+import Notifications from 'react-notification-system-redux'
 
-import rdcs from '../../redux/reducers.js'
-import project_reduce from '../../redux/projects/reducers';
 
 import ProjectsSocketioEventsSubscriber from '../../redux/projects/ProjectsSocketioEventsSubscriber'
 import ScopesSocketioEventsSubsriber from '../../redux/scopes/ScopesSocketioEventsSubscriber'
@@ -27,26 +24,25 @@ import IPPage from '../../ip_verbose/components/MainAccumulatorWrapper.jsx'
 import DirsaerchPage from '../../dirsearch_tables/components/MainAccumulatorWrapper.jsx'
 
 
-var mainStore = createStore(rdcs);
-
 class NavigationTabsWrapper extends React.Component {
     constructor(props) {
         super(props);
+    }
 
+    componentDidMount() {
         const project_uuid = this.props.match.params.project_uuid;
+        var mainStore = this.context.store;
 
         this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
         this.scopesSubscriber = new ScopesSocketioEventsSubsriber(mainStore, project_uuid);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
-        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);        
+        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);         
     }
 
     render() {
         return (
-            <Provider store={mainStore}>
-                <NavigationTabs {...this.props} />
-            </Provider>
+            <NavigationTabs {...this.props} />
         )
     }
 
@@ -59,44 +55,55 @@ class NavigationTabsWrapper extends React.Component {
     }
 }
 
+NavigationTabsWrapper.contextTypes = {
+    store: React.PropTypes.object
+}
+
 class Projects extends React.Component {
     constructor(props) {
         super(props);
+    }
+
+    componentDidMount() {
+        var mainStore = this.context.store;
 
         this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore);        
     }
 
     render() {
         return (
-            <Provider store={mainStore}>
-                <ProjectsMainComponentWrapper {...this.props} />
-            </Provider>
+            <ProjectsMainComponentWrapper {...this.props} />
         )
     } 
     componentWillUnmount() {
         this.projectsSubscriber.close();
     }       
+}
+
+Projects.contextTypes = {
+    store: React.PropTypes.object
 }
 
 class Host extends React.Component {
     constructor(props) {
         super(props);
+    }
 
+    componentWillMount() {
         const project_uuid = this.props.match.params.project_uuid;
-        const hostname = this.props.match.params.hostname;
+        const hostname = this.props.match.params.hostname;        
+        var mainStore = this.context.store;
 
         this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
         this.scopesSubscriber = new ScopesSocketioEventsSubsriber(mainStore, project_uuid);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
-        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid, hostname); 
+        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid, hostname);        
     }
 
     render() {
         return (
-            <Provider store={mainStore}>
-                <HostPage {...this.props} />
-            </Provider>
+            <HostPage {...this.props} />
         )
     } 
     componentWillUnmount() {
@@ -106,27 +113,32 @@ class Host extends React.Component {
         this.scansSubscriber.close();
         this.filesSubscriber.close();        
     }       
+}
+
+Host.contextTypes = {
+    store: React.PropTypes.object
 }
 
 class IP extends React.Component {
     constructor(props) {
         super(props);
+    }
 
+    componentWillMount() {
         const project_uuid = this.props.match.params.project_uuid;
         const ip_address = this.props.match.params.ip_address;
+        var mainStore = this.context.store;
 
         this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
         this.scopesSubscriber = new ScopesSocketioEventsSubsriber(mainStore, project_uuid);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
-        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid, ip_address); 
+        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid, ip_address);        
     }
 
     render() {
         return (
-            <Provider store={mainStore}>
-                <IPPage {...this.props} />
-            </Provider>
+            <IPPage {...this.props} />
         )
     } 
 
@@ -139,24 +151,29 @@ class IP extends React.Component {
     }       
 }
 
+IP.contextTypes = {
+    store: React.PropTypes.object
+}
+
 class DirsearchWrapper extends React.Component {
     constructor(props) {
         super(props);
+    }
 
+    componentWillMount() {
         const project_uuid = this.props.match.params.project_uuid;
+        var mainStore = this.context.store;
 
         this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
         this.scopesSubscriber = new ScopesSocketioEventsSubsriber(mainStore, project_uuid);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
-        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid); 
+        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);        
     }
 
     render() {
         return (
-            <Provider store={mainStore}>
-                <DirsaerchPage {...this.props} />
-            </Provider>
+            <DirsaerchPage {...this.props} />
         )
     }
 
@@ -169,6 +186,9 @@ class DirsearchWrapper extends React.Component {
     }     
 }
 
+DirsearchWrapper.contextTypes = {
+    store: React.PropTypes.object
+}
 
 class Routing extends React.Component {
     constructor(props) {
@@ -176,9 +196,14 @@ class Routing extends React.Component {
     }
 
     render() {
+        const {notifications} = this.props;
+
         return (
-            <Router>
+            <Router>           
                 <div>
+                    <Notifications
+                        notifications={notifications}
+                    />                 
                     <Route exact path="/"
                            component={Projects} />
                     <Route exact path="/project/:project_uuid" 
@@ -190,9 +215,15 @@ class Routing extends React.Component {
                     <Route exact path="/project/:project_uuid/ip/:ip_address" 
                            component={IP} />                                                      
                 </div>
-            </Router> 
+            </Router>
         )
     }
 }
 
-export default Routing;
+Routing.contextTypes = {
+    store: React.PropTypes.object
+}
+
+export default connect(
+  state => ({ notifications: state.notifications })
+)(Routing);

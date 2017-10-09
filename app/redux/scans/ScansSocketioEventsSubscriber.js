@@ -1,3 +1,5 @@
+import Notifications from 'react-notification-system-redux'
+
 import { 
 	renewScans, 
 } from './actions';
@@ -38,7 +40,15 @@ class ScansEventsSubsriber {
 	register_socketio_handler(eventName, callback) {
 		/* Just a wrapper for connector.listen */
 		this.connector.listen(eventName, (x) => {
-			this.store.dispatch(callback(x, this.project_uuid));
+			if (x.status == 'success') {
+				this.store.dispatch(callback(x, this.project_uuid));
+			}
+			else {
+				this.store.dispatch(Notifications.error({
+					title: 'Error with updating scans',
+					message: x.text
+				}));
+			}
 		});
 	}
 

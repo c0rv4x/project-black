@@ -6,7 +6,6 @@ import MainTable from './MainTable.jsx'
 class MainAccumulator extends React.Component {
 	constructor(props) {
 		super(props);
-
 	}
 
 	render() {
