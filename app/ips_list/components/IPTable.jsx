@@ -2,6 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import { Table, Button } from 'react-bootstrap'
 import ReactPaginate from 'react-paginate'
+import Notifications from 'react-notification-system-redux'
 
 import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
 import IPEntryLine from '../presentational/scope/IPEntryLine.jsx'
@@ -32,7 +33,30 @@ class IPTable extends React.Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-		return (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState));
+		if (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState)) {
+			if (this.props.ips.length !== nextProps.ips.length) {
+				var diff = nextProps.ips.length - this.props.ips.length;
+
+				if (diff > 0) {
+					this.context.store.dispatch(Notifications.info({
+						title: 'New IPs',
+						message: 'Added ' + String(nextProps.ips.length - this.props.ips.length) + ' IPs.'
+					}));					
+				}
+				else {
+					this.context.store.dispatch(Notifications.info({
+						title: 'IPs deleted',
+						message: 'Deleted ' + String(this.props.ips.length - nextProps.ips.length) + ' IPs.'
+					}));					
+				}
+
+			}
+
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -78,7 +102,10 @@ class IPTable extends React.Component {
 			</div>
 		)
 	}
+}
 
+IPTable.contextTypes = {
+	store: React.PropTypes.object
 }
 
 export default IPTable;

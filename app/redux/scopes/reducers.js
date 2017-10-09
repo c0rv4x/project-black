@@ -144,7 +144,6 @@ function update_scope(state = initialState, action) {
 }
 
 function scope_reduce(state = initialState, action) {
-	console.log(action);
 	if (!action.hasOwnProperty('message')) {
 		return state
 	}
