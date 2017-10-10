@@ -11,7 +11,7 @@ class DirsearchTable extends React.Component {
 	render() {
 		var files = [];
 
-		if (this.props.files)
+		if (this.props.files) {
 			for (var each_file of this.props.files) {
 				var status_code_style = {
 					color: null
@@ -29,6 +29,7 @@ class DirsearchTable extends React.Component {
 					</tr>
 				);
 			}
+		}
 
 		if (this.props.files && this.props.files.length) {
 			return (
