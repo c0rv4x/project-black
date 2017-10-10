@@ -15,7 +15,7 @@ class TasksButtonsTracked extends React.Component {
 
 	dirbusterStart(options) {
 		// This is a set of pairs: ip + port, which should be scanned.
-		var all_ips = Set();
+		var all_ips = new Set();
 
 		for (var each_host of this.props.scopes) {
 			var ports = new Set();
