@@ -14,7 +14,7 @@ class Filtering extends React.Component {
 	render() {
 		var buttons = [];
 		_.forOwn(this.props.filters, (value, key) => {
-			buttons.push(<Button key={key} onClick={() => this.props.triggerFilter(key)}>{value.name}</Button>);
+			buttons.push(<Button key={key} active={value.active} onClick={() => this.props.triggerFilter(key)}>{value.name}</Button>);
 		});
 
 		return (

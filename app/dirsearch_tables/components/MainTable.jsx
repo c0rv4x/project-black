@@ -16,16 +16,19 @@ class MainTable extends React.Component {
 		this.filters = {
 			"only_200": {
 				"name" : "Only 200",
-				"filter_function" :((x) => { return Math.floor(x.status_code / 100) === 2 } )
+				"filter_function": ((x) => { return Math.floor(x.status_code / 100) === 2 } ),
+				"active": false
 			},
 			"only_400": {
 				"name" : "Only 400",
-				"filter_function" :((x) => { return x.status_code === 400 } )
+				"filter_function": ((x) => { return x.status_code === 400 } ),
+				"active": false
 			},
 			"only_401": {
 				"name" : "Only 401",
-				"filter_function" :((x) => { return x.status_code === 401 } )
-			}			
+				"filter_function": ((x) => { return x.status_code === 401 } ),
+				"active": false
+			}
 		}
 	}
 
@@ -39,6 +42,8 @@ class MainTable extends React.Component {
 
 	triggerFilter(filterName) {
 		if (this.state.filters.indexOf(filterName) !== -1) {
+			this.filters[filterName].active = !this.filters[filterName].active;
+
 			var index = this.state.filters.indexOf(filterName);
 			var new_filters = JSON.parse(JSON.stringify(this.state.filters));
 			new_filters.splice(index, 1);
@@ -48,8 +53,8 @@ class MainTable extends React.Component {
 			});
 		}
 		else {
-			console.log("new filter", filterName);
-			console.log([...this.state.filters, filterName]);
+			this.filters[filterName].active = !this.filters[filterName].active;
+
 			this.setState({
 				filters: [...this.state.filters, filterName]
 			});
