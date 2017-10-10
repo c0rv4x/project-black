@@ -28,12 +28,18 @@ class TablesAccumulator extends React.Component {
 		}
 
 		for (var each_host of this.props.hosts) {
+			let files_by_host = _.get(this.props.files, each_host.hostname, []);
 			for (var each_ip_address of each_host.ip_addresses) {				
 				for (var each_port of _.get(this.props.ports, each_ip_address, [])) {
+					let files = files_by_host.filter((x) => {
+						return x.port_number == each_port.port_number;
+					});
+
 					tables.push(
 						<DirsearchTable key={each_host._id + "_" + each_port.scan_id} 
 										target={each_host.hostname}
-										port_number={each_port.port_number} />
+										port_number={each_port.port_number}
+										files={files}/>
 					);
 				}
 			}
