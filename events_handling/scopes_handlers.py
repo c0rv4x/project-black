@@ -118,8 +118,8 @@ class ScopeHandlers(object):
                 await self.socketio.emit(
                     'scopes:all:get:back', {
                         'status': 'success',
-                        'ips': self.scope_manager.get_ips(),
-                        'hosts': self.scope_manager.get_hosts(),
+                        'ips': self.scope_manager.get_ips(project_uuid),
+                        'hosts': self.scope_manager.get_hosts(project_uuid),
                         'project_uuid': project_uuid
                     },
                     broadcast=True,
