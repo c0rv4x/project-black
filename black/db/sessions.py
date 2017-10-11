@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 engine = create_engine(
-    'postgresql://black:black101@localhost/black')
+    'postgresql://black:black101@127.0.0.1/black')
 
 Session_builder = sessionmaker(bind=engine)
 
