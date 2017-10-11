@@ -27,15 +27,27 @@ from .Scanner import *
 
 
 class Fuzzer(object):
-    def __init__(self, requester, dictionary, testFailPath=None, threads=1, matchCallbacks=[], notFoundCallbacks=[],
-                 errorCallbacks=[], socket=None):
+
+    def __init__(
+        self,
+        requester,
+        dictionary,
+        testFailPath=None,
+        threads=1,
+        matchCallbacks=[],
+        notFoundCallbacks=[],
+        errorCallbacks=[],
+        socket=None
+    ):
 
         self.requester = requester
         self.dictionary = dictionary
         self.testFailPath = testFailPath
         self.basePath = self.requester.basePath
         self.threads = []
-        self.threads_count = threads if len(self.dictionary) >= threads else len(self.dictionary)
+        self.threads_count = threads if len(
+            self.dictionary
+        ) >= threads else len(self.dictionary)
         self.running = False
         self.scanners = {}
         self.defaultScanner = None
@@ -63,7 +75,9 @@ class Fuzzer(object):
         self.defaultScanner = Scanner(self.requester, self.testFailPath, "")
         self.scanners['/'] = Scanner(self.requester, self.testFailPath, "/")
         for extension in self.dictionary.extensions:
-            self.scanners[extension] = Scanner(self.requester, self.testFailPath, "." + extension)
+            self.scanners[extension] = Scanner(
+                self.requester, self.testFailPath, "." + extension
+            )
 
     def setupThreads(self):
         if len(self.threads) != 0:
@@ -137,18 +151,36 @@ class Fuzzer(object):
         self.runningThreadsCount -= 1
 
     def thread_proc(self):
+        found_data = False
         self.playEvent.wait()
         try:
             path = next(self.dictionary)
             while path is not None:
                 if self.counter % 50 == 0 and self.counter / 50 > 0:
                     # print(self.requester.url, "progress= ", int(float(self.counter) / float(len(self.dictionary)) * 100),self.socket,bytes(json.dumps({"status":'Working', "progress":int(float(self.counter) / float(len(self.dictionary)) * 100)}), 'utf-8'))
-                    self.socket.sendall(bytes(json.dumps({"status":'Working', "progress":int(float(self.counter) / float(len(self.dictionary)) * 100)}), 'utf-8'))
+                    self.socket.sendall(
+                        bytes(
+                            json.dumps(
+                                {
+                                    "status":
+                                        'Working',
+                                    "progress":
+                                        int(
+                                            float(self.counter) /
+                                            float(len(self.dictionary)) * 100
+                                        ),
+                                    "new_data": found_data
+                                }
+                            ), 'utf-8'
+                        )
+                    )
+                    found_data = False
                 try:
                     status, response = self.scan(path)
                     result = Path(path=path, status=status, response=response)
                     if status is not None:
                         self.matches.append(result)
+                        found_data = True
                         for callback in self.matchCallbacks:
                             callback(result)
                     else:
@@ -174,7 +206,9 @@ class Fuzzer(object):
                     if not self.playEvent.isSet():
                         self.pausedSemaphore.release()
                         self.playEvent.wait()
-                    path = next(self.dictionary)  # Raises StopIteration when finishes
+                    path = next(
+                        self.dictionary
+                    )  # Raises StopIteration when finishes
                     if not self.running:
                         break
         except StopIteration:
