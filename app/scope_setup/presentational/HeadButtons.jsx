@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Button } from 'react-bootstrap'
+import { Button } from 'reactstrap'
 
 
 class HeadButtons extends React.Component {
@@ -11,7 +11,7 @@ class HeadButtons extends React.Component {
 	render() {
 		return (
 			<Button onClick={() => this.props.resolveScopes(null, this.props.project.project_uuid)}
-					bsStyle="primary">
+					color="primary">
 				Resolve Scopes
 			</Button>
 		)

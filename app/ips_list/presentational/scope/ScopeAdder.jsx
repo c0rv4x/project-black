@@ -2,9 +2,9 @@ import React from 'react'
 import { 
 	Button,
 	FormGroup,
-	ControlLabel,
-	FormControl
-} from 'react-bootstrap'
+	Input,
+	Label
+} from 'reactstrap'
 
 
 class ScopeAdder extends React.Component {
@@ -50,28 +50,24 @@ class ScopeAdder extends React.Component {
 
 	render() {
 		return (
+			<div>
 
-			<form>
-				<FormGroup controlId="formBasicText">
-
-					<ControlLabel>Add new scope</ControlLabel>
-
-					<FormControl type="text" 
-								 placeholder="Enter hostname or IP address." 
-								 value={this.props.newScopeInput}
-								 onChange={this.props.handleNewScopeChange}/>
-  		            <FormControl.Feedback />
-
+				<FormGroup>
+					<Label>Add new scope</Label>
+					<Input type="text" 
+						   placeholder="Enter hostname or IP address." 
+						   value={this.props.newScopeInput}
+						   onChange={this.props.handleNewScopeChange} />
 				</FormGroup>
 
-				<Button bsStyle="default" 
+				<Button color="default" 
 						onClick={() => {
 							this.props.onNewScopeClick(this.props.newScopeInput);
 							
 						}}>
 						Add to scope
 				</Button>
-			</form>
+			</div>
 		)
 	}
 }

@@ -26,6 +26,8 @@ class ScopeSetup extends React.Component {
 	deleteScope(scope_id) {
 		this.scopesEmitter.requestDeleteScope(scope_id, this.props.project_uuid);
 	}
+				// <Tasks tasks={this.props.tasks} />
+
 
 	render() {
 		return (
@@ -33,7 +35,6 @@ class ScopeSetup extends React.Component {
 				<h4>Here you can add, delete, modify and work with initial scope of the project.</h4>
 				<HeadButtonsTracked project={this.props.project}
 									hosts={this.props.scopes.hosts} />
-				<Tasks tasks={this.props.tasks} />
 
 				<ScopeAdderTracked project={this.props.project} />
 				<hr />
@@ -45,6 +46,7 @@ class ScopeSetup extends React.Component {
 				<HostTable hosts={this.props.scopes.hosts}
 						   delete={this.deleteScope} />
 				<hr />
+
 			</div>
 		)
 	}
