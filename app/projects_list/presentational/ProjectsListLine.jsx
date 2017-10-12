@@ -2,7 +2,7 @@ import _  from 'lodash'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { Button } from 'react-bootstrap'
+import { Button } from 'reactstrap'
 
 
 class ProjectsListLine extends React.Component
@@ -12,6 +12,12 @@ class ProjectsListLine extends React.Component
         super(props);
     }
 
+    delete_project(project_uuid) {
+        if (confirm("Are you sure you want to delete?")) {
+            this.props.onDelete(project_uuid);
+        }
+    }
+
     render() {
         return (
             <tr>
@@ -19,10 +25,14 @@ class ProjectsListLine extends React.Component
                 <td>{this.props.project.project_name}</td>
                 <td>
                     <Link to={"/project/" + this.props.project.project_uuid}>
-                        <Button bsStyle="default">Details</Button>
+                        <Button color="default">Details</Button>
                     </Link>
-                    <Button bsStyle="danger" 
-                            onClick={() => this.props.onDelete(this.props.project.project_uuid)}>
+                    <Button color="danger" 
+                            onClick={
+                                () => {
+                                    this.delete_project(this.props.project.project_uuid);
+                                }
+                            }>
                         Delete
                     </Button>
                     </td>

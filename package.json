@@ -34,10 +34,10 @@
     "babel-preset-react": "^6.23.0",
     "classnames": "^2.2.5",
     "history": "1.13.x",
-    "react": "^15.4.2",
+    "react": "^15.6.2",
     "react-addons-perf": "^15.4.2",
     "react-bootstrap": "^0.30.8",
-    "react-dom": "^15.4.2",
+    "react-dom": "^15.6.2",
     "react-notification-system": "^0.2.15",
     "react-notification-system-redux": "^1.1.6",
     "react-paginate": "^4.4.2",
@@ -45,6 +45,7 @@
     "react-router": "latest",
     "react-router-dom": "^4.0.0-beta.7",
     "react-select": "^1.0.0-rc.5",
+    "reactstrap": "^5.0.0-alpha.3",
     "redux": "^3.6.0",
     "socket.io-client": "^1.7.3"
   }
