@@ -155,17 +155,19 @@ class TaskManager(object):
                 new_stdout = body['new_stdout']
                 new_stderr = body['new_stderr']
 
+                new_data = body.get('new_data', None)
+
                 if new_status != task.status or new_progress != task.progress:
                     task.new_status_known = False
 
                 task.set_status(new_status, new_progress, new_text, new_stdout, new_stderr)
 
+                if new_data or new_status == 'Finished' or new_status == 'Aborted':
+                    self.check_finished_task_necessities(task)                    
+
                 if new_status == 'Finished' or new_status == 'Aborted':
                     self.active_tasks.remove(task)
                     self.finished_tasks.append(task)
-
-                    # TODO: make more granular update request
-                    self.check_finished_task_necessities(task)
 
                 break
 
