@@ -6,6 +6,7 @@ import { createStore } from 'redux'
 import rdcs from './redux/reducers.js'
 import Routing from './common/main_page/Routing.jsx'
 
+import 'bootstrap/dist/css/bootstrap.css';
 
 var mainStore = createStore(rdcs);
 

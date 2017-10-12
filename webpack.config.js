@@ -11,7 +11,8 @@ var config = {
 			test : /\.jsx?/,
 			include : APP_DIR,
 			loader : 'babel-loader'
-		}]
+		},
+		{ test: /\.css$/, loader: 'style-loader!css-loader' }]
 	},
 	output: {
 		path: BUILD_DIR,
