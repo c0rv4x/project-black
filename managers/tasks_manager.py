@@ -17,10 +17,8 @@ class ShadowTask(object):
         self.project_uuid = project_uuid
         if task_id:
             self.task_id = task_id
-            print("ShadowTask old", self.task_id)
         else:
             self.task_id = str(uuid.uuid4())
-            print("ShadowTask new", self.task_id)
 
         self.status = status
         self.progress = progress
@@ -37,7 +35,6 @@ class ShadowTask(object):
 
     def send_start_task(self):
         """ Put a message to the queue, which says "start my task, please """
-        print("Starting your task", self.task_id)
         self.exchange.publish(
             routing_key=self.task_type + "_tasks",
             message=asynqp.Message(
