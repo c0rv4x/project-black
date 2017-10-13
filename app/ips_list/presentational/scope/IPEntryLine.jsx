@@ -15,6 +15,7 @@ import {
 
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
 
+
 class IPEntryLine extends React.Component {
 
 	constructor(props) {
@@ -61,7 +62,8 @@ class IPEntryLine extends React.Component {
 			<Card>
 				<CardHeader color="primary">{header}</CardHeader>
 				<CardBody>
-					<CardText>Some Text</CardText>
+						<ScopeComment comment={this.props.ip.comment}
+									  onCommentSubmit={this.props.onCommentSubmit} />
 				</CardBody>
 				<ListGroup className="list-group-flush">
 					{ports}
