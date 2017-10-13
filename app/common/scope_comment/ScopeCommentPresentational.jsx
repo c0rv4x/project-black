@@ -3,36 +3,37 @@ import {
 	Button, 
 	FormControl,
 	FormGroup,
-	ControlLabel,
-	Glyphicon
-} from 'react-bootstrap'
+	Label,
+	Collapse,
+	Input
+} from 'reactstrap'
 
 
 class ScopeCommentPresentational extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.toggle = this.toggle.bind(this);
+		this.state = { collapse: false };
+	}
+
+	toggle() {
+		this.setState({ collapse: !this.state.collapse });
 	}
 
 	render() {
-		var triggerGlyph = <Glyphicon glyph={this.props.commentShown ? "chevron-up" : "chevron-down"}/>;
-
 		return (
 			<div>
-				<FormGroup controlId="formBasicText">
-					<ControlLabel><div><Button bsSize="small" onClick={this.props.triggerCommentShown}>{triggerGlyph}</Button></div></ControlLabel>
-
-					{this.props.commentShown && 
-						<FormControl placeholder="Enter anything, that would help you in future. After moving focus out, the data will be saved."
-					                 type="text" 
-					                 componentClass="textarea"
-					                 value={this.props.scopeComment} 
-					                 onChange={this.props.onChange}
-					                 onBlur={this.props.onBlur}
-					                 onFocus={this.props.onFocus}
-					                 disabled={this.props.commentDisabled}/>	
-					}
-				</FormGroup>
+				<Button size="sm" onClick={this.toggle} style={{ marginBottom: '1rem' }}>Comment</Button>
+				<Collapse isOpen={this.state.collapse}>
+					<Input placeholder="Enter anything, that would help you in future. After moving focus out, the data will be saved."
+				                 type="textarea" 
+				                 value={this.props.scopeComment} 
+				                 onChange={this.props.onChange}
+				                 onBlur={this.props.onBlur}
+				                 onFocus={this.props.onFocus}
+				                 disabled={this.props.commentDisabled}/>	
+				</Collapse>
 			</div>
 		)
 	}
