@@ -90,6 +90,7 @@ class IPTable extends React.Component {
 		return (
 			<div>
 				<Search onFilterChange={this.props.onFilterChange} />
+				<br />
 				{ips}
 				<ReactPaginate previousLabel={"prev"}
 							   nextLabel={"next"} 

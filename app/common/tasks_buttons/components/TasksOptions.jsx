@@ -60,6 +60,7 @@ class TasksOptions extends React.Component {
 		this.props.task.handler(formedOptions);
 		this.close();
 	}
+
 	toggle_tooltip() {
 		this.setState({
 			tooltipOpen: !this.state.tooltipOpen

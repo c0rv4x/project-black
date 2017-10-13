@@ -7,7 +7,10 @@ import {
 	ListGroupItem,
 	Row,
 	Col
-} from 'react-bootstrap'
+} from 'reactstrap'
+
+import { Card, CardHeader, CardFooter, CardBody,
+  CardTitle, CardText } from 'reactstrap'
 
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
 
@@ -18,27 +21,24 @@ class IPEntryLine extends React.Component {
 	}
 
 	render() {
-		var rendered_ip_address = null;
-		if (this.props.ip.ip_address) {
-			const verbose_host_link = '/project/' + this.props.project_uuid + '/ip/' + this.props.ip.ip_address;
+		const header = (
+			<span><b>{this.props.ip.ip_address}</b></span>
+		);
 
-			rendered_ip_address = (
-				<div>
-					<span><b>{this.props.ip.ip_address}</b></span>
-					<div className="pull-right">
-	                    <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
-							<Button bsStyle="default" bsSize="small">
-								<Glyphicon glyph="zoom-in"/>
-							</Button>					
-	                    </a>
+		const footer = (
+			<div>
+	            <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
+					<Button>
+						Verbose
+					</Button>
+	            </a>
 
-						<Button bsStyle="danger" bsSize="small" onClick={this.props.deleteScope}>
-							<Glyphicon glyph="remove"/>
-						</Button>
-					</div>	
-				</div>			
-			)
-		}
+				<Button color="danger" onClick={this.props.deleteScope}>
+					Delete
+				</Button>
+			</div>
+		);
+
 
 		const ports = _.map(this.props.ip.scans.sort((a, b) => {
 			if (a["port_number"] > b["port_number"]) return 1;
@@ -56,21 +56,21 @@ class IPEntryLine extends React.Component {
 			)
 		});
 
+
 		return (
-			<Panel defaultExpanded header={rendered_ip_address || this.props.ip.hostname} bsStyle="primary">
-				<ListGroup fill>
-					<ListGroupItem>
-						<ul>
-							<li>Hosts: <strong>{this.props.ip.hostnames.join(', ')}</strong></li>
-							<li>Comment: <ScopeComment comment={this.props.ip.comment}
-									  				   onCommentSubmit={this.props.onCommentSubmit}/>
-							</li>
-						</ul>				
-					</ListGroupItem>
+			<Card>
+				<CardHeader color="primary">{header}</CardHeader>
+				<CardBody>
+					<CardText>Some Text</CardText>
+				</CardBody>
+				<ListGroup className="list-group-flush">
 					{ports}
-				</ListGroup>		
-			</Panel>
-		)
+				</ListGroup>
+				<CardFooter>
+					{footer}
+				</CardFooter>
+			</Card>
+		)	
 	}
 }
 

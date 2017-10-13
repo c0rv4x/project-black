@@ -163,7 +163,7 @@ class ProjectDetails extends React.Component {
 
 				<TitleButtonsWithHandlers scopes={filtered_scopes}
 									      project={this.props.project} 
-									      scans={this.props.scans} />				
+									      scans={this.props.scans} />			
 				<IPTableTracked scopes={filtered_scopes}
 								scans={this.props.scans}
 								project_uuid={this.props.project.project_uuid}

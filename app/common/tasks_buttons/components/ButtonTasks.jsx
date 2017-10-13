@@ -1,9 +1,10 @@
 import _ from 'lodash'
 import React from 'react'
-import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { ButtonDropdown, DropdownToggle } from 'reactstrap';
 
 
 import TasksOptions from './TasksOptions.jsx'
+import Menu from './Menu.jsx'
 
 
 class ButtonsTasks extends React.Component {
@@ -25,20 +26,12 @@ class ButtonsTasks extends React.Component {
 	}
 
 	render() {
-		var i = 0;
-		const menu_items = _.map(this.props.tasks, (x) => {
-			i++;
-			return <TasksOptions key={i} number={i} task={x} />
-		});
-
 		return (
 			<ButtonDropdown color="default" isOpen={this.state.dropdownOpen} toggle={this.toggle_dropdown} >
 				<DropdownToggle caret>
 					Start Task
 				</DropdownToggle>
-				<DropdownMenu>
-					{menu_items}
-				</DropdownMenu>
+				<Menu tasks={this.props.tasks} />
 			</ButtonDropdown>
 		)
 	}
