@@ -23,10 +23,10 @@ class IPEntryLine extends React.Component {
 
 	render() {
 		const header = (
-			<div>
-				<span className="align-middle"><b>{this.props.ip.ip_address}</b></span>
+			<div className="d-flex justify-content-between">
+				<div className="align-self-center"><b>{this.props.ip.ip_address}</b></div>
 
-				<span style={{float: 'right'}}>
+				<div>
 		            <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
 						<Button outline size="sm">
 							Verbose
@@ -36,7 +36,7 @@ class IPEntryLine extends React.Component {
 					<Button outline color="danger" size="sm" onClick={this.props.deleteScope}>
 						Delete
 					</Button>
-				</span>
+				</div>
 			</div>
 		);
 
