@@ -14,7 +14,7 @@ class ButtonsTasks extends React.Component {
 		this.toggle = this.toggle.bind(this);
 		this.state = {
 			dropdownOpen: false
-		};		
+		};
 	}
 
 	toggle() {
@@ -25,18 +25,19 @@ class ButtonsTasks extends React.Component {
 
 	render() {
 		var i = 0;
-		// const menu_items = _.map(this.props.tasks, (x) => {
-		// 	i++;
-		// 	return <TasksOptions key={i} number={i} task={x} />
-		// });
-		const menu_items = [];
+		const menu_items = _.map(this.props.tasks, (x) => {
+			i++;
+			return <TasksOptions key={i} number={i} task={x} />
+		});
 
 		return (
 			<ButtonDropdown color="default" isOpen={this.state.dropdownOpen} toggle={this.toggle} >
 				<DropdownToggle caret>
 					Start Task
-				</DropdownToggle>			
-				{menu_items}
+				</DropdownToggle>
+				<DropdownMenu>
+					{menu_items}
+				</DropdownMenu>
 			</ButtonDropdown>
 		)
 	}

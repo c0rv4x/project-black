@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import { ButtonDropdown, DropdownToggle, DropdownMenu } from 'reactstrap'
+import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 
 import TasksOptions from './TasksOptions.jsx'
 
@@ -11,8 +11,10 @@ class ButtonsTasks extends React.Component {
 		super(props);
 
 		this.toggle = this.toggle.bind(this);
+		this._toggle = this._toggle.bind(this);
 		this.state = {
-			dropdownOpen: false
+			dropdownOpen: false,
+			test: false
 		};
 	}
 
@@ -21,6 +23,13 @@ class ButtonsTasks extends React.Component {
 			dropdownOpen: !this.state.dropdownOpen
 		});
 	}
+
+	_toggle() {
+		console.log(this.state.test);
+		this.setState({
+			test: !this.state.test
+		});
+	}	
 
 	render() {
 		var i = 0;
@@ -36,7 +45,7 @@ class ButtonsTasks extends React.Component {
 						Start Task
 			        </DropdownToggle>
 			        <DropdownMenu>
-						{menu_items}
+						<DropdownItem onClick={this._toggle}>Test</DropdownItem>
 					</DropdownMenu>
 				</ButtonDropdown>
 			</div>
