@@ -24,17 +24,18 @@ class HostsEntryLine extends React.Component {
 		if (this.props.host.hostname) {
 			const verbose_host_link = '/project/' + this.props.project.project_uuid + '/host/' + this.props.host.hostname;
 			rendered_hostname = (
-				<div>
-					<span><b>{this.props.host.hostname}</b></span>
-					<div className="pull-right">
-	                    <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
-							<Button bsStyle="default" bsSize="small">
-								<Glyphicon glyph="zoom-in"/>
-							</Button>					
-	                    </a>
+				<div className="d-flex justify-content-between">
+					<div className="align-self-center"><b>{this.props.host.hostname}</b></div>
 
-						<Button bsStyle="danger" bsSize="small" onClick={this.props.deleteScope}>
-							<Glyphicon glyph="remove"/>
+					<div>
+			            <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
+							<Button outline size="sm">
+								Verbose
+							</Button>
+			            </a>
+
+						<Button outline color="danger" size="sm" onClick={this.props.deleteScope}>
+							Delete
 						</Button>
 					</div>
 				</div>
