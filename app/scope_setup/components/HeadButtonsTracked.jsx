@@ -3,7 +3,8 @@ import React from 'react'
 import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
 import HeadButtons from '../presentational/HeadButtons.jsx'
-import ButtonTasks from './ButtonTasks.jsx'
+import ButtonTasks from '../../common/tasks_buttons/components/ButtonTasks.jsx'
+
 
 class HeadButtonsTracked extends React.Component {
 	constructor(props) {

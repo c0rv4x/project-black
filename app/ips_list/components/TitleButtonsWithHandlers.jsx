@@ -1,7 +1,7 @@
 import React from 'react'
 
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
-import ButtonsTasks from './ButtonsTasks.jsx'
+import ButtonTasks from '../../common/tasks_buttons/components/ButtonTasks.jsx'
 
 
 class TitleButtonsWithHandlers extends React.Component {
@@ -120,7 +120,7 @@ class TitleButtonsWithHandlers extends React.Component {
 
 	render() {
 		return (
-			<ButtonsTasks project={this.props.project}
+			<ButtonTasks project={this.props.project}
 						  tasks={
 						  	[
 						  		{
