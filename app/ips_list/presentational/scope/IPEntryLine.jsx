@@ -1,16 +1,17 @@
 import React from 'react'
 import { 
 	Button, 
-	Panel, 
-	Glyphicon,
+	Card,
+	CardBody,
+	CardFooter,
+	CardHeader,
+	CardText,
+	CardTitle,
+	Col,
 	ListGroup,
 	ListGroupItem,
-	Row,
-	Col
+	Row
 } from 'reactstrap'
-
-import { Card, CardHeader, CardFooter, CardBody,
-  CardTitle, CardText } from 'reactstrap'
 
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
 
@@ -22,23 +23,22 @@ class IPEntryLine extends React.Component {
 
 	render() {
 		const header = (
-			<span><b>{this.props.ip.ip_address}</b></span>
-		);
-
-		const footer = (
 			<div>
-	            <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
-					<Button>
-						Verbose
-					</Button>
-	            </a>
+				<span className="align-middle"><b>{this.props.ip.ip_address}</b></span>
 
-				<Button color="danger" onClick={this.props.deleteScope}>
-					Delete
-				</Button>
+				<span style={{float: 'right'}}>
+		            <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
+						<Button outline size="sm">
+							Verbose
+						</Button>
+		            </a>
+
+					<Button outline color="danger" size="sm" onClick={this.props.deleteScope}>
+						Delete
+					</Button>
+				</span>
 			</div>
 		);
-
 
 		const ports = _.map(this.props.ip.scans.sort((a, b) => {
 			if (a["port_number"] > b["port_number"]) return 1;
@@ -66,9 +66,6 @@ class IPEntryLine extends React.Component {
 				<ListGroup className="list-group-flush">
 					{ports}
 				</ListGroup>
-				<CardFooter>
-					{footer}
-				</CardFooter>
 			</Card>
 		)	
 	}

@@ -51,8 +51,14 @@ class NavigationTabs extends React.Component {
 						<NavLink className={classnames({ active: this.state.activeTab === '2' })}
 								 onClick={() => { this.toggle('2'); }} >
 							IPs
-						</NavLink>						
+						</NavLink>
 					</NavItem>
+					<NavItem>
+						<NavLink className={classnames({ active: this.state.activeTab === '3' })}
+								 onClick={() => { this.toggle('3'); }} >
+							Hosts
+						</NavLink>
+					</NavItem>					
 		        </Nav>
 				<TabContent activeTab={this.state.activeTab}>
 					<TabPane tabId="1">
@@ -62,7 +68,10 @@ class NavigationTabs extends React.Component {
 					<TabPane tabId="2">
 						<br/>
 						<ProjectDetailsWrapper project_uuid={this.project_uuid} />
-					</TabPane>						
+					</TabPane>
+					<TabPane tabId="3">
+						<br/>
+					</TabPane>
 				</TabContent>
 			</div>
 
@@ -71,11 +80,6 @@ class NavigationTabs extends React.Component {
 	}
 }
 
-
-			
-			// 	<Tab eventKey={3} title="Hostnames">
-			// 		<HostsListWrapper project_uuid={this.project_uuid} />
-			// 	</Tab>
 			// 	<Tab eventKey={4} title="All Tasks">
 			// 		<TasksTabWrapper project_uuid={this.project_uuid} />
 			// 	</Tab>				

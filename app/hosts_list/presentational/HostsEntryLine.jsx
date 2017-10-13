@@ -7,7 +7,7 @@ import {
 	ListGroupItem,
 	Row,
 	Col
-} from 'react-bootstrap'
+} from 'reactstrap'
 import { Link } from 'react-router-dom'
 
 import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'

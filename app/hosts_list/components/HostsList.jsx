@@ -7,7 +7,7 @@ import Tasks from '../../common/tasks/Tasks.jsx'
 import HostsTableTracked from './HostsTableTracked.jsx'
 import TasksButtonsTracked from './TasksButtonsTracked.jsx'
 
-import { Button } from 'react-bootstrap'
+import { Button } from 'reactstrap'
 
 
 class HostsList extends React.Component {
@@ -228,10 +228,12 @@ class HostsList extends React.Component {
 			<div>
 				<HostsListHead />
                 <a onClick={() => window.open(dirsearch_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
-					<Button bsStyle="default">
+					<Button outline color="success">
 						Dirsearch tables
-					</Button>					
-                </a>				
+					</Button>
+                </a>
+                <br />
+                <br />
 				<Tasks tasks={this.props.tasks} />
 
 				<hr />

@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import React from 'react'
-import { Table, Button } from 'react-bootstrap'
 import ReactPaginate from 'react-paginate'
 
 import Search from './Search.jsx'
@@ -67,15 +66,22 @@ class HostsTable extends React.Component {
 				<Search onFilterChange={this.props.onFilterChange} />
 				<br />
 				{scopes}
+				<br />
 				<ReactPaginate previousLabel={"prev"}
 							   nextLabel={"next"} 
 							   pageCount={this.state.pageCount}
 		                       breakLabel={<a href="#">...</a>}
-							   onPageChange={this.handlePageClick}		                       
-		                       breakClassName={"break-me"}							   
+							   onPageChange={this.handlePageClick}
+		                       breakClassName={"break-me"}
 		                       containerClassName={"pagination"}
+		                       pageClassName={"page-item"}
+		                       pageLinkClassName={"page-link"}
 		                       subContainerClassName={"pages pagination"}
-		                       activeClassName={"active"} />				
+		                       nextClassName={"page-item"}
+		                       nextLinkClassName={"page-link"}
+		                       previousClassName={"page-item"}
+		                       previousLinkClassName={"page-link"}
+		                       activeClassName={"active"} />
 			</div>
 		)
 	}
