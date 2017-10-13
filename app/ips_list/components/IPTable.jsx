@@ -92,6 +92,7 @@ class IPTable extends React.Component {
 				<Search onFilterChange={this.props.onFilterChange} />
 				<br />
 				{ips}
+				<br />
 				<ReactPaginate previousLabel={"prev"}
 							   nextLabel={"next"} 
 							   pageCount={this.state.pageCount}
@@ -99,7 +100,13 @@ class IPTable extends React.Component {
 							   onPageChange={this.handlePageClick}		                       
 		                       breakClassName={"break-me"}							   
 		                       containerClassName={"pagination"}
+		                       pageClassName={"page-item"}
+		                       pageLinkClassName={"page-link"}
 		                       subContainerClassName={"pages pagination"}
+		                       nextClassName={"page-item"}
+		                       nextLinkClassName={"page-link"}
+		                       previousClassName={"page-item"}
+		                       previousLinkClassName={"page-link"}		                       
 		                       activeClassName={"active"} />							   			
 			</div>
 		)
