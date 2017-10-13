@@ -24,12 +24,8 @@ class Saver(object):
             except Exception as exc:
                 print(exc, 'during target parsing')
                 target = parsed_url.netloc
-            scheme = parsed_url.scheme
 
-            if scheme == 'https':
-                port_number = 443
-            else:
-                port_number = 80
+            port_number = int(parsed_url.netloc.split(':')[1])
 
             file_name = parsed_url.path
 
