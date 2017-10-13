@@ -60,8 +60,7 @@ class ScopeAdder extends React.Component {
 						   onChange={this.props.handleNewScopeChange} />
 				</FormGroup>
 
-				<Button color="default" 
-						onClick={() => {
+				<Button outline onClick={() => {
 							this.props.onNewScopeClick(this.props.newScopeInput);
 							
 						}}>
