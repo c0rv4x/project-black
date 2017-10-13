@@ -1,5 +1,4 @@
 import React from 'react'
-import { Button, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap'
 
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
 import ButtonsTasks from './ButtonsTasks.jsx'

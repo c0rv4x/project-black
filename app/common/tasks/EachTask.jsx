@@ -1,5 +1,5 @@
 import React from 'react'
-import { Badge } from 'react-bootstrap'
+import { Badge } from 'reactstrap'
 
 
 class EachTask extends React.Component {

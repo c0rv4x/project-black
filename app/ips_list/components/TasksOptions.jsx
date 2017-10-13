@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import { Button, Modal, MenuItem, OverlayTrigger, Popover } from 'react-bootstrap'
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, DropdownItem } from 'reactstrap'
 
 import CustomOptions from "./CustomOptions.jsx"
 
@@ -10,12 +10,11 @@ class TasksOptions extends React.Component {
 		super(props);
 
 		this.state = {
-			showModal: false,
+			modal: false,
 			inputs: {}
 		}
 
-		this.open = this.open.bind(this);
-		this.close = this.close.bind(this);
+		this.toggle = this.toggle.bind(this);
 
 		this.startTask = this.startTask.bind(this);
 
@@ -61,13 +60,15 @@ class TasksOptions extends React.Component {
 		this.close();
 	}
 
-	close() {
-		this.setState({ showModal: false });
-	}	
+	toggle() {
+		console.log(this.state.modal, !this.state.modal);
+		this.setState({
+			modal: true
+	    }, function () {
+	    	console.log("updated",this.state);
+	    });
 
-	open() {
-		this.setState({ showModal: true });
-	}
+	}	
 
 	loadOptions(options) {
 		// TODO make change only on setState
@@ -93,48 +94,50 @@ class TasksOptions extends React.Component {
 	}
 
 	render() {
-		const startButtons = _.map(this.props.task.preformed_options, (x) => {
-			var options = [];
-			_.forOwn(x.options, (value, key) => {
-				options.push(<div key={key}><strong>{key}:</strong> {value}</div>);
-			});
+		console.log(this.state.modal);
+		// const startButtons = _.map(this.props.task.preformed_options, (x) => {
+		// 	var options = [];
+		// 	_.forOwn(x.options, (value, key) => {
+		// 		options.push(<div key={key}><strong>{key}:</strong> {value}</div>);
+		// 	});
 
-			const popover = (
-				<Popover id="popover-trigger-hover-focus" title="Options">
-					{options}
-				</Popover>
-			);
+		// 	const popover = (
+		// 		<Popover id="popover-trigger-hover-focus" title="Options">
+		// 			{options}
+		// 		</Popover>
+		// 	);
 
-			return (
-			    <OverlayTrigger key={x.name} trigger={['hover', 'focus']} placement="bottom" overlay={popover}>
-					<Button onClick={() => this.loadOptions(x.options)}>{x.name}</Button>
-			    </OverlayTrigger>
-			)
-		});
+		// 	return (
+		// 	    <OverlayTrigger key={x.name} trigger={['hover', 'focus']} placement="bottom" overlay={popover}>
+		// 			<Button onClick={() => this.loadOptions(x.options)}>{x.name}</Button>
+		// 	    </OverlayTrigger>
+		// 	)
+
+		// 				{startButtons}
+		// 				<hr />
+		// 				<CustomOptions inputs={this.state.inputs}
+		// 							   startTaskHandler={this.startTask}
+		// 							   onInputChange={this.onInputChange} />			
+		// });
 
 		return ( 
-			<MenuItem key={this.props.number}
-					  eventKey={this.props.number}
-					  onClick={this.open} >
+			<DropdownItem key={this.props.number}
+						  onClick={this.toggle} >
 
 				{this.props.task.name}
-				<Modal show={this.state.showModal} onHide={this.close} >
-					<Modal.Header closeButton>
-						<Modal.Title>Prepared settings</Modal.Title>
-					</Modal.Header>
-					<Modal.Body>
+				<Modal isOpen={this.state.modal} toggle={this.toggle} >
+					<ModalHeader toggle={this.toggle}>
+						Prepared settings
+					</ModalHeader>
+					<ModalBody>
 						<h4>Choose one of the prepared options or create your own</h4>
-						{startButtons}
-						<hr />
-						<CustomOptions inputs={this.state.inputs}
-									   startTaskHandler={this.startTask}
-									   onInputChange={this.onInputChange} />
-					</Modal.Body>
-					<Modal.Footer>
-						<Button onClick={this.close}>Close</Button>
-					</Modal.Footer>
+
+					</ModalBody>
+					<ModalFooter>
+						<Button onClick={this.toggle}>Close</Button>
+					</ModalFooter>
 				</Modal>
-			</MenuItem>
+			</DropdownItem>
 		)
 	}
 }

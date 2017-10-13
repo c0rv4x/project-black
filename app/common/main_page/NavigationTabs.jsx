@@ -32,8 +32,8 @@ class NavigationTabs extends React.Component {
 		}
 	}	
 
-	shouldComponentUpdate(nextProps) {
-		return (!_.isEqual(nextProps, this.props));
+	shouldComponentUpdate(nextProps, nextState) {
+		return ((!_.isEqual(nextProps, this.props)) || (!_.isEqual(nextState, this.state)));
 	}
 	
 
@@ -47,12 +47,22 @@ class NavigationTabs extends React.Component {
 							Scope Setup
 						</NavLink>
 					</NavItem>
+					<NavItem>
+						<NavLink className={classnames({ active: this.state.activeTab === '2' })}
+								 onClick={() => { this.toggle('2'); }} >
+							IPs
+						</NavLink>						
+					</NavItem>
 		        </Nav>
 				<TabContent activeTab={this.state.activeTab}>
 					<TabPane tabId="1">
 						<br/>
 						<ScopeSetupWrapper project_uuid={this.project_uuid} />
 					</TabPane>
+					<TabPane tabId="2">
+						<br/>
+						<ProjectDetailsWrapper project_uuid={this.project_uuid} />
+					</TabPane>						
 				</TabContent>
 			</div>
 
@@ -61,19 +71,13 @@ class NavigationTabs extends React.Component {
 	}
 }
 
-			// <Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
-			// 	<Tab eventKey={1} title="Scope Setup">
-			// 		<ScopeSetupWrapper project_uuid={this.project_uuid} />
-			// 	</Tab>
-			// 	<Tab eventKey={2} title="IPs">
-			// 		<ProjectDetailsWrapper project_uuid={this.project_uuid} />
-			// 	</Tab>				
+
+			
 			// 	<Tab eventKey={3} title="Hostnames">
 			// 		<HostsListWrapper project_uuid={this.project_uuid} />
 			// 	</Tab>
 			// 	<Tab eventKey={4} title="All Tasks">
 			// 		<TasksTabWrapper project_uuid={this.project_uuid} />
 			// 	</Tab>				
-			// </Tabs>
 
 export default NavigationTabs;

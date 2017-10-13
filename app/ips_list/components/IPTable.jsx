@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import React from 'react'
-import { Table, Button } from 'react-bootstrap'
 import ReactPaginate from 'react-paginate'
 import Notifications from 'react-notification-system-redux'
 

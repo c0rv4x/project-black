@@ -3,11 +3,7 @@ import React from 'react'
 
 import { 
 	Button,
-	Form,
-	FormGroup,
-	ControlLabel,
-	FormControl
-} from 'react-bootstrap'
+} from 'reactstrap'
 
 import AdaptiveOption from '../presentational/AdaptiveOption.jsx'
 
@@ -32,7 +28,7 @@ class CustomOptions extends React.Component {
 		return (
 			<div>
 				{options}
-				<Button bsStyle="primary" onClick={this.props.startTaskHandler}>Start Task</Button>
+				<Button color="primary" onClick={this.props.startTaskHandler}>Start Task</Button>
 			</div>
 		)
 	}

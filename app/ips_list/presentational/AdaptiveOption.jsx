@@ -4,10 +4,10 @@ import React from 'react'
 import { 
 	Button,
 	FormGroup,
-	ControlLabel,
-	FormControl,
+	Label,
+	Input,
 	Checkbox
-} from 'react-bootstrap'
+} from 'reactstrap'
 
 
 class AdaptiveOption extends React.Component {
@@ -37,13 +37,12 @@ class AdaptiveOption extends React.Component {
 		else {
 			return (
 				<div>
-					<ControlLabel>{this.props.value.text || _.capitalize(this.props.objectKey)}</ControlLabel>
-					<FormGroup controlId="formInlineName">
-						<FormControl type={this.props.value.type}
-									 placeholder={this.props.objectKey}
-									 value={this.props.value.value}
-									 onChange={this.changeInput}
-									 />
+					<Label for="formInlineName">{this.props.value.text || _.capitalize(this.props.objectKey)}</Label>
+					<FormGroup id="formInlineName">
+						<Input type={this.props.value.type}
+							   placeholder={this.props.objectKey}
+							   value={this.props.value.value}
+							   onChange={this.changeInput} />
 					</FormGroup>
 				</div>
 			)

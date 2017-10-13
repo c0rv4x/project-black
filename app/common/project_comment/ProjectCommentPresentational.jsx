@@ -1,11 +1,10 @@
 import React from 'react'
 import { 
-	Button,
+	Form,
 	FormGroup,
-	ControlLabel,
-	FormControl,
-	HelpBlock 
-} from 'react-bootstrap'
+	Label,
+	Input
+} from 'reactstrap'
 
 
 class ProjectComment extends React.Component {
@@ -16,20 +15,18 @@ class ProjectComment extends React.Component {
 
 	render() {
 		return (
-			<form>
+			<Form>
 				<FormGroup>
-					<FormGroup>
-						<ControlLabel>Comment</ControlLabel>
+					<Label for="projectComment">Comment</Label>
 
-						<FormControl componentClass="textarea" 
-									 placeholder="
-						Enter some data to help yourself in further." 
-									 value={this.props.commentInput}
-								     onChange={this.props.onCommentInputChange}
-								     onBlur={this.props.commentSubmitted} />
-					</FormGroup>
+					<Input type="textarea"
+						   id="projectComment"
+						   placeholder="Enter some data to help yourself in further." 
+						   value={this.props.commentInput}
+					       onChange={this.props.onCommentInputChange}
+					       onBlur={this.props.commentSubmitted} />
 				</FormGroup>
-			</form>
+			</Form>
 		)
 	}
 

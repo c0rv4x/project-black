@@ -5,7 +5,7 @@ import {
 	ControlLabel,
 	FormControl,
 	HelpBlock 
-} from 'react-bootstrap'
+} from 'reactstrap'
 
 
 class ProjectComment extends React.Component {

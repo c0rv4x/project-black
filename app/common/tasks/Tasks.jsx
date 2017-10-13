@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import { Table, Button } from 'react-bootstrap'
+import { Table } from 'reactstrap'
 
 import EachTask from './EachTask.jsx'
 
