@@ -154,10 +154,8 @@ class ProjectDetails extends React.Component {
 
 		return (
 			<div>
-				<h4>Working with ips (usually, network level utilities are run here)</h4>
+				<h4>{this.props.project.project_name}</h4>
 				<hr/>
-
-				<h3>{this.props.project.project_name}</h3>
 				<Tasks tasks={this.props.tasks} />
 				<ProjectCommentTracked project={this.props.project} />
 
