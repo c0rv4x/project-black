@@ -71,6 +71,7 @@ class NavigationTabs extends React.Component {
 					</TabPane>
 					<TabPane tabId="3">
 						<br/>
+						<HostsListWrapper project_uuid={this.project_uuid}/>
 					</TabPane>
 				</TabContent>
 			</div>

@@ -6,7 +6,10 @@ import {
 	ListGroup,
 	ListGroupItem,
 	Row,
-	Col
+	Col,
+	Card,
+	CardHeader,
+	CardBody
 } from 'reactstrap'
 import { Link } from 'react-router-dom'
 
@@ -20,10 +23,10 @@ class HostsEntryLine extends React.Component {
 	}
 
 	render() {
-		var rendered_hostname = null;
+		var header = null;
 		if (this.props.host.hostname) {
 			const verbose_host_link = '/project/' + this.props.project.project_uuid + '/host/' + this.props.host.hostname;
-			rendered_hostname = (
+			header = (
 				<div className="d-flex justify-content-between">
 					<div className="align-self-center"><b>{this.props.host.hostname}</b></div>
 
@@ -58,29 +61,24 @@ class HostsEntryLine extends React.Component {
 		};
 
 		return (
-			<Panel defaultExpanded header={rendered_hostname} bsStyle="primary">
-				<ListGroup fill>
-					<ListGroupItem key={this.props.project.project_uuid + "_" + this.props.host.hostname}>
-						<ul>
-							<li>Dirsearch: 
-								<ul>
-									<li>2xx: <strong>{files_by_statuses['2xx']}</strong></li> 
-									<li>3xx: {files_by_statuses['3xx']}</li>
-									<li>4xx: {files_by_statuses['4xx']}</li>
-									<li>5xx: {files_by_statuses['5xx']}</li>
-								</ul>
-							</li>
-							<li>Comment: <ScopeComment comment={this.props.host.comment}
-									  				   onCommentSubmit={this.props.onCommentSubmit}/></li>
-						</ul>
-						
-					</ListGroupItem>
-					
-					<HostsEntryLinePorts host={this.props.host} 
-									     deleteScope={this.props.deleteScope} />
 
-				</ListGroup>		
-			</Panel>
+
+			<Card>
+				<CardHeader color="primary">{header}</CardHeader>
+				<CardBody>
+						<ScopeComment comment={this.props.host.comment}
+									  onCommentSubmit={this.props.onCommentSubmit} />
+						Dirsearch: 
+						<ul>
+							<li>2xx: <strong>{files_by_statuses['2xx']}</strong></li> 
+							<li>3xx: {files_by_statuses['3xx']}</li>
+							<li>4xx: {files_by_statuses['4xx']}</li>
+							<li>5xx: {files_by_statuses['5xx']}</li>
+						</ul>
+				</CardBody>
+				<HostsEntryLinePorts host={this.props.host} />
+
+			</Card>			
 		)
 	}
 }

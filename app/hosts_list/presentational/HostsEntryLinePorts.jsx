@@ -7,7 +7,7 @@ import {
 	ListGroupItem,
 	Row,
 	Col
-} from 'react-bootstrap'
+} from 'reactstrap'
 
 
 class HostsEntryLinePorts extends React.Component {
@@ -17,20 +17,6 @@ class HostsEntryLinePorts extends React.Component {
 	}
 
 	render() {
-		var rendered_hostname = null;
-		if (this.props.host.hostname) {
-			rendered_hostname = (
-				<span>{this.props.host.hostname}
-				<Glyphicon glyph="remove-circle" onClick={this.props.deleteScope} /></span>
-			)
-		}
-
-		const header = ( 
-			<h3>
-				{rendered_hostname}
-			</h3>
-		)
-
 		var ports = [];
 		for (var ip_address of this.props.host.ip_addresses) {
 			const ports_filtered = ip_address.scans;
@@ -58,9 +44,9 @@ class HostsEntryLinePorts extends React.Component {
 		}
 
 		return (
-			<div>
+			<ListGroup className="list-group-flush">
 				{ports}
-			</div>
+			</ListGroup>
 		)
 	}
 }
