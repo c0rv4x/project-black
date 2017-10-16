@@ -59,16 +59,18 @@ class IPEntryLine extends React.Component {
 
 
 		return (
-			<Card>
-				<CardHeader color="primary">{header}</CardHeader>
-				<CardBody>
-						<ScopeComment comment={this.props.ip.comment}
-									  onCommentSubmit={this.props.onCommentSubmit} />
-				</CardBody>
-				<ListGroup className="list-group-flush">
-					{ports}
-				</ListGroup>
-			</Card>
+			<div>
+				<Card>
+					<CardHeader color="primary">{header}</CardHeader>
+					<CardBody>
+							<ScopeComment comment={this.props.ip.comment}
+										  onCommentSubmit={this.props.onCommentSubmit} />
+					</CardBody>
+					<ListGroup className="list-group-flush">
+						{ports}
+					</ListGroup>
+				</Card>
+			</div>
 		)	
 	}
 }
