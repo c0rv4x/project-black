@@ -17,8 +17,6 @@ class NavigationTabs extends React.Component {
 		super(props);
 
 		this.project_uuid = this.props.match.params.project_uuid;
-
-		this.toggle = this.toggle.bind(this);
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
