@@ -155,8 +155,6 @@ class ProjectDetails extends React.Component {
 		return (
 			<div>
 				<h4>{this.props.project.project_name}</h4>
-				<hr/>
-				<Tasks tasks={this.props.tasks} />
 				<ProjectCommentTracked project={this.props.project} />
 
 				<TitleButtonsWithHandlers scopes={filtered_scopes}

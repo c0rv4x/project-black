@@ -12,6 +12,7 @@ import ProjectDetailsWrapper from '../../ips_list/components/ProjectDetailsWrapp
 import HostsListWrapper from '../../hosts_list/components/HostsListWrapper.js'
 import TasksTabWrapper from '../../tasks_tab/components/TasksTabWrapper.js'
 
+
 class NavigationTabs extends React.Component {
 	constructor(props) {
 		super(props);
@@ -24,10 +25,16 @@ class NavigationTabs extends React.Component {
 	}
 	
 	render() {
-		const panes = [{
+		const panes = [
+		{
 			menuItem: 'Scope Setup',
 			render: (() => <ScopeSetupWrapper project_uuid={this.project_uuid} />)
-		}]
+		},
+		{
+			menuItem: 'IP List',
+			render: (() => <ProjectDetailsWrapper project_uuid={this.project_uuid} />)
+		}
+		]
 
 		return (
 			<Tab panes={panes}/>
@@ -37,31 +44,6 @@ class NavigationTabs extends React.Component {
 	// render() {
 	// 	return (
 	// 		<div>
-	// 	        <Nav tabs>
-	// 				<NavItem>
-	// 					<NavLink className={classnames({ active: this.state.activeTab === '1' })}
-	// 							 onClick={() => { this.toggle('1'); }} >
-	// 						Scope Setup
-	// 					</NavLink>
-	// 				</NavItem>
-	// 				<NavItem>
-	// 					<NavLink className={classnames({ active: this.state.activeTab === '2' })}
-	// 							 onClick={() => { this.toggle('2'); }} >
-	// 						IPs
-	// 					</NavLink>
-	// 				</NavItem>
-	// 				<NavItem>
-	// 					<NavLink className={classnames({ active: this.state.activeTab === '3' })}
-	// 							 onClick={() => { this.toggle('3'); }} >
-	// 						Hosts
-	// 					</NavLink>
-	// 				</NavItem>					
-	// 	        </Nav>
-	// 			<TabContent activeTab={this.state.activeTab}>
-	// 				<TabPane tabId="1">
-	// 					<br/>
-	// 					<ScopeSetupWrapper project_uuid={this.project_uuid} />
-	// 				</TabPane>
 	// 				<TabPane tabId="2">
 	// 					<br/>
 	// 					<ProjectDetailsWrapper project_uuid={this.project_uuid} />
@@ -70,10 +52,7 @@ class NavigationTabs extends React.Component {
 	// 					<br/>
 	// 					<HostsListWrapper project_uuid={this.project_uuid}/>
 	// 				</TabPane>
-	// 			</TabContent>
 	// 		</div>
-
-
 	// 	);
 	// }
 }

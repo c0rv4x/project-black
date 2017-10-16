@@ -33,6 +33,7 @@ class ScopeSetup extends React.Component {
 	render() {
 		return (
 			<div>
+				<br/>
 				<HeadButtonsTracked project={this.props.project}
 									hosts={this.props.scopes.hosts} />
 

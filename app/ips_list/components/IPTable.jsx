@@ -7,19 +7,25 @@ import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEvents
 import IPEntryLine from '../presentational/scope/IPEntryLine.jsx'
 import Search from './Search.jsx'
 
+import { Card } from 'semantic-ui-react'
+
 
 class IPTable extends React.Component {
 
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			shownData: [],
-			offsetPage: 0,
-			pageCount: 0
-		}
-
 		this.limitPerPage = 10;
+
+		if (this.props.ips) {
+			let pageCount = Math.ceil(this.props.ips.length / this.limitPerPage);
+
+			this.state = {
+				shownData: this.props.ips.slice(0, 0 + this.limitPerPage),
+				offsetPage: 0,
+				pageCount: pageCount
+			}
+		}
 
 		this.scopesEmitter = new ScopesSocketioEventsEmitter();
 
@@ -34,6 +40,7 @@ class IPTable extends React.Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
+		console.log(nextProps, nextState);
 		if (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState)) {
 				if (this.props.ips.length !== nextProps.ips.length) {
 					var diff = nextProps.ips.length - this.props.ips.length;
@@ -61,6 +68,7 @@ class IPTable extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
+		console.log(nextProps);
 		var start = this.limitPerPage * this.state.offsetPage;
 
 		this.setState({
@@ -89,9 +97,10 @@ class IPTable extends React.Component {
 
 		return (
 			<div>
-				<Search onFilterChange={this.props.onFilterChange} />
 				<br />
-				{ips}
+				<Card.Group>
+					{ips}
+				</Card.Group>
 				<br />
 				<ReactPaginate previousLabel={"prev"}
 							   nextLabel={"next"} 

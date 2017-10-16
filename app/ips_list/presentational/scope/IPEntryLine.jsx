@@ -1,17 +1,24 @@
 import React from 'react'
-import { 
-	Button, 
+// import { 
+// 	Button, 
+// 	Card,
+// 	CardBody,
+// 	CardFooter,
+// 	CardHeader,
+// 	CardText,
+// 	CardTitle,
+// 	Col,
+// 	ListGroup,
+// 	ListGroupItem,
+// 	Row
+// } from 'reactstrap'
+
+import {
+	Button,
 	Card,
-	CardBody,
-	CardFooter,
-	CardHeader,
-	CardText,
-	CardTitle,
-	Col,
-	ListGroup,
-	ListGroupItem,
-	Row
-} from 'reactstrap'
+	Grid,
+	Segment
+} from 'semantic-ui-react'
 
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
 
@@ -24,20 +31,20 @@ class IPEntryLine extends React.Component {
 
 	render() {
 		const header = (
-			<div className="d-flex justify-content-between">
-				<div className="align-self-center"><b>{this.props.ip.ip_address}</b></div>
+			<b>{this.props.ip.ip_address}</b>
+		);
 
-				<div>
-		            <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
-						<Button outline size="sm">
-							Verbose
-						</Button>
-		            </a>
-
-					<Button outline color="danger" size="sm" onClick={this.props.deleteScope}>
-						Delete
+		const footer = (
+			<div>
+	            <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
+					<Button basic size="tiny">
+						Verbose
 					</Button>
-				</div>
+	            </a>
+
+				<Button basic color="red" size="tiny" onClick={this.props.deleteScope}>
+					Delete
+				</Button>
 			</div>
 		);
 
@@ -47,30 +54,40 @@ class IPEntryLine extends React.Component {
 			return 0;
 		}), (x) => {
 			return (
-				<ListGroupItem key={x.scan_id + '_' + x.port_number}>
-					<Row>
-						<Col md={1}>{x.port_number}</Col>
-						<Col md={1}>{x.protocol}</Col>
-						<Col md={10}>{x.banner}</Col>
-					</Row>
-				</ListGroupItem>
+				<Grid.Row key={x.scan_id + '_' + x.port_number}>
+					<Grid.Column>{x.port_number}</Grid.Column>
+					<Grid.Column>{x.protocol}</Grid.Column>
+					<Grid.Column></Grid.Column>
+					<Grid.Column></Grid.Column>
+					<Grid.Column></Grid.Column>
+					<Grid.Column></Grid.Column>
+					<Grid.Column></Grid.Column>
+					<Grid.Column></Grid.Column>
+					<Grid.Column></Grid.Column>
+					<Grid.Column></Grid.Column>
+					<Grid.Column></Grid.Column>
+					<Grid.Column>{x.banner}</Grid.Column>
+				</Grid.Row>
 			)
 		});
 
+		const description = (
+			<div>			
+				<ScopeComment comment={this.props.ip.comment}
+						  	  onCommentSubmit={this.props.onCommentSubmit} />
+				<Grid columns={12}>
+					{ports}
+				</Grid>				
+			</div>
+		)
 
 		return (
-			<div>
-				<Card>
-					<CardHeader color="primary">{header}</CardHeader>
-					<CardBody>
-							<ScopeComment comment={this.props.ip.comment}
-										  onCommentSubmit={this.props.onCommentSubmit} />
-					</CardBody>
-					<ListGroup className="list-group-flush">
-						{ports}
-					</ListGroup>
-				</Card>
-			</div>
+			<Card fluid>
+				<Card.Content header={header} />
+				<Card.Content description={description} />
+				<Card.Content extra>{footer}</Card.Content>
+			</Card>			
+
 		)	
 	}
 }
