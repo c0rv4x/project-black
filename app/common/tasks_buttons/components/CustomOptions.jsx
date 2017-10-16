@@ -2,8 +2,9 @@ import _ from 'lodash'
 import React from 'react'
 
 import { 
-	Button
-} from 'reactstrap'
+	Button,
+	Form
+} from 'semantic-ui-react'
 
 import AdaptiveOption from '../presentational/AdaptiveOption.jsx'
 
@@ -26,8 +27,10 @@ class CustomOptions extends React.Component {
 		});
 		return (
 			<div>
-				{options}
-				<Button color="primary" onClick={() => {console.log('starting');this.props.startTaskHandler();}}>Start Task</Button>
+				<Form>		
+					{options}
+					<Button color="blue" onClick={() => {console.log('starting');this.props.startTaskHandler();}}>Start Task</Button>
+				</Form>
 			</div>
 		)
 	}

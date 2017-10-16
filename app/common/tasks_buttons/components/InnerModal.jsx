@@ -19,9 +19,10 @@ class InnerModal extends React.Component {
 		this.startTask = this.startTask.bind(this);
 	}
 
-	componentDidMount() {
+	componentWillReceiveProps(nextProps) {
+		console.log('componentDidMount', nextProps);
 		var inputs = {};
-		_.map(this.props.task.available_options, (x) => {
+		_.map(nextProps.task.available_options, (x) => {
 			inputs[x.name] = {
 				type: x.type,
 				value: x.default_value,
@@ -92,13 +93,13 @@ class InnerModal extends React.Component {
 				    // 	{options}
 				    // </Tooltip>
 			return (
-				<div key={x.name}>
+				<span key={x.name}>
 					<Button size="small"
 					        id={"button_" + x.name}
 					        onClick={() => this.loadOptions(x.options)}>
 					        {x.name}
 			        </Button>
-				</div>
+				</span>
 			)
 		});
 
@@ -111,6 +112,7 @@ class InnerModal extends React.Component {
 				<Modal.Content>
 					{startButtons}
 
+					<br/>
 					<br/>
 					<CustomOptions inputs={this.state.inputs}
 								   startTaskHandler={this.startTask}

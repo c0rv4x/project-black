@@ -3,12 +3,9 @@ import React from 'react'
 
 import { 
 	Button,
-	Form,
-	FormGroup,
-	Label,
-	Input,
-	Checkbox
-} from 'reactstrap'
+	Checkbox,
+	Form
+} from 'semantic-ui-react'
 
 
 class AdaptiveOption extends React.Component {
@@ -16,7 +13,6 @@ class AdaptiveOption extends React.Component {
 		super(props);
 
 		this.changeInput = this.changeInput.bind(this);
-		this.triggerBool = this.triggerBool.bind(this);
 	}
 
 	changeInput(e) {
@@ -30,23 +26,22 @@ class AdaptiveOption extends React.Component {
 	render() {
 		if (this.props.value.type === 'checkbox') {
 			return (
-				<Checkbox checked={this.props.value.value} onChange={this.triggerBool}>
-					{_.capitalize(this.props.objectKey)}
-				</Checkbox>
+				<Form.Field>
+					<Checkbox checked={this.props.value.value}
+							  onChange={this.triggerBool.bind(this)}
+							  label={this.props.objectKey && _.capitalize(this.props.objectKey)} />
+				</Form.Field>
 			)				
 		}
 		else {
 			return (
-				<Form>
-					<Label for="formInlineName">{_.capitalize(this.props.objectKey)}</Label>
-					<FormGroup id="formInlineName">
-						<Input type={this.props.value.type}
-									 placeholder={this.props.objectKey}
-									 value={this.props.value.value}
-									 onChange={this.changeInput}
-									 />
-					</FormGroup>
-				</Form>
+				<Form.Field>
+					<label>{_.capitalize(this.props.objectKey)}</label>
+					<input type={this.props.value.type}
+						   placeholder={this.props.objectKey}
+						   value={this.props.value.value}
+					   	   onChange={this.changeInput} />
+				</Form.Field>
 			)
 		}
 	}
