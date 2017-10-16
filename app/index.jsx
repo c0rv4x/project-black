@@ -6,7 +6,8 @@ import { createStore } from 'redux'
 import rdcs from './redux/reducers.js'
 import Routing from './common/main_page/Routing.jsx'
 
-import 'bootstrap/dist/css/bootstrap.css';
+import { Container } from 'semantic-ui-react'
+
 
 var mainStore = createStore(rdcs);
 
@@ -17,11 +18,11 @@ class App extends React.Component {
 
     render () {
         return (
-            <div className="container">
+            <Container>
                 <Provider store={mainStore}>
                     <Routing />
                 </Provider>
-            </div>
+            </Container>
         );
     }
 }

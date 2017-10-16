@@ -1,6 +1,6 @@
 import _  from 'lodash'
 import React from 'react'
-import { Table } from 'reactstrap'
+import { Table, Header } from 'semantic-ui-react'
 
 import ProjectsListLine from "./ProjectsListLine.jsx"
 
@@ -21,20 +21,19 @@ class ProjectsList extends React.Component
 
         return (
             <div>
-                <hr />
-                <h2>Your projects:</h2>
+                <Header as="h2">Your projects:</Header>
 
-                <Table bordered>
-                    <thead>
-                        <tr>
-                            <td>UUID</td>
-                            <td>Project Name</td>
-                            <td>Control</td>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <Table>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell>UUID</Table.HeaderCell>
+                            <Table.HeaderCell>Project Name</Table.HeaderCell>
+                            <Table.HeaderCell>Control</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
                         {projectsLines}
-                    </tbody>
+                    </Table.Body>
                 </Table>
             </div>
         )
