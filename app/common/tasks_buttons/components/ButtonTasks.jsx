@@ -19,7 +19,6 @@ class ButtonsTasks extends React.Component {
 	}
 
 	toggle_dropdown() {
-		console.log('toggle_dropdown');
 		this.setState({
 			dropdownOpen: !this.state.dropdownOpen
 		});
