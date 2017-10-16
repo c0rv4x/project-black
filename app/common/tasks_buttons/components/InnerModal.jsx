@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import { Modal, ModalBody, Tooltip, Button } from 'reactstrap';
+import { Modal, Button } from 'semantic-ui-react'
 
 
 import CustomOptions from './CustomOptions.jsx'
@@ -12,7 +12,6 @@ class InnerModal extends React.Component {
 		super(props);
 
 		this.state = {
-			showModal: false,
 			inputs: {}
 		}
 
@@ -36,7 +35,6 @@ class InnerModal extends React.Component {
 	}
 
 	startTask() {
-		console.log('starting task');
 		var formedOptions = {};
 
 		_.forOwn(this.state.inputs, (value, key) => {
@@ -95,7 +93,7 @@ class InnerModal extends React.Component {
 				    // </Tooltip>
 			return (
 				<div key={x.name}>
-					<Button size="sm"
+					<Button size="small"
 					        id={"button_" + x.name}
 					        onClick={() => this.loadOptions(x.options)}>
 					        {x.name}
@@ -105,18 +103,19 @@ class InnerModal extends React.Component {
 		});
 
 		return (
-			<Modal isOpen={this.props.isOpen} toggle={this.props.toggle} >
+			<Modal open={this.props.open} onOpen={this.props.openModal} onClose={this.props.closeModal} >
+				<Modal.Header>
+					Choose one of the prepared options or create your own
+				</Modal.Header>
 
-				<ModalBody>
-					<h6>Choose one of the prepared options or create your own</h6>
-					<hr />
+				<Modal.Content>
 					{startButtons}
 
 					<br/>
 					<CustomOptions inputs={this.state.inputs}
 								   startTaskHandler={this.startTask}
 								   onInputChange={this.onInputChange} />					
-				</ModalBody>
+				</Modal.Content>
 			</Modal>
 		)
 	}

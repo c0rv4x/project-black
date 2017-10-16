@@ -1,10 +1,10 @@
 import _ from 'lodash'
 import React from 'react'
-import { ButtonDropdown, DropdownToggle } from 'reactstrap';
+import { Dropdown } from 'semantic-ui-react';
 
 
 import TasksOptions from './TasksOptions.jsx'
-import Menu from './Menu.jsx'
+import InnerModal from './InnerModal.jsx'
 
 
 class ButtonsTasks extends React.Component {
@@ -12,26 +12,62 @@ class ButtonsTasks extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.toggle_dropdown = this.toggle_dropdown.bind(this);
 		this.state = {
-			dropdownOpen: false
+			current_task: {
+				name: "",
+				preformedOptions: [],
+				availableOptions: [],
+				handler: (() => {})
+			},
+			modalOpen: false
 		};
+
+		this.change_current_task.bind(this);	
 	}
 
-	toggle_dropdown() {
+	change_current_task(number) {
 		this.setState({
-			dropdownOpen: !this.state.dropdownOpen
+			current_task: this.props.tasks[number]
+		});
+
+		this.openModal();
+	}
+
+	openModal() {
+		this.setState({
+			modalOpen: true
+		});
+	}
+
+	closeModal() {
+		this.setState({
+			modalOpen: false
 		});
 	}
 
 	render() {
+		var i = -1;
+		const items = this.props.tasks.map((task) => {
+			i++;
+			return (
+				<Dropdown.Item key={i} onClick={() => { this.change_current_task(i)}} >
+					{task.name}
+				</Dropdown.Item>
+			)
+		});
+
 		return (
-			<ButtonDropdown color="default" isOpen={this.state.dropdownOpen} toggle={this.toggle_dropdown} >
-				<DropdownToggle caret>
-					Start Task
-				</DropdownToggle>
-				<Menu tasks={this.props.tasks} />
-			</ButtonDropdown>
+			<span>
+				<Dropdown text="Start Task">
+					<Dropdown.Menu>
+						{items}
+					</Dropdown.Menu>
+				</Dropdown>
+				<InnerModal open={this.state.modalOpen}
+				            task={this.state.current_task}
+				            openModal={this.openModal.bind(this)}
+				            closeModal={this.closeModal.bind(this)}/>
+			</span>
 		)
 	}
 
