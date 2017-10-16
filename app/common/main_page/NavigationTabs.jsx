@@ -19,21 +19,10 @@ class NavigationTabs extends React.Component {
 		this.project_uuid = this.props.match.params.project_uuid;
 
 		this.toggle = this.toggle.bind(this);
-		this.state = {
-			activeTab: '1'
-		};
 	}
 
-	toggle(tab) {
-		if (this.state.activeTab !== tab) {
-			this.setState({
-				activeTab: tab
-			});
-		}
-	}	
-
 	shouldComponentUpdate(nextProps, nextState) {
-		return ((!_.isEqual(nextProps, this.props)) || (!_.isEqual(nextState, this.state)));
+		return !_.isEqual(nextProps, this.props);
 	}
 	
 	render() {
