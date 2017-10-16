@@ -10,7 +10,7 @@ class HeadButtons extends React.Component {
 
 	render() {
 		return (
-			<Button onClick={() => this.props.resolveScopes(null, this.props.project.project_uuid)}
+			<Button onClick={this.props.resolveScopes}
 					color="primary">
 				Resolve Scopes
 			</Button>

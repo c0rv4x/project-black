@@ -14,7 +14,7 @@ class HostTable extends React.Component {
 				<tr key={x._id}> 
 					<td>{x.hostname}</td>
 					<td>{x.ip_addresses.join(", ")}</td>
-					<td><Button color="danger" onClick={() => this.props.delete(x._id)}>Delete</Button></td>
+					<td><Button color="danger" onClick={() => {this.props.delete(x._id)}}>Delete</Button></td>
 				</tr>
 			)
 		});
