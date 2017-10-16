@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Table, Button } from 'reactstrap'
+import { Table, Button } from 'semantic-ui-react'
 
 
 class HostTable extends React.Component {
@@ -11,26 +11,26 @@ class HostTable extends React.Component {
 	render() {
 		const hosts_rendered = _.map(this.props.hosts, (x) => {
 			return (
-				<tr key={x._id}> 
-					<td>{x.hostname}</td>
-					<td>{x.ip_addresses.join(", ")}</td>
-					<td><Button color="danger" onClick={() => {this.props.delete(x._id)}}>Delete</Button></td>
-				</tr>
+				<Table.Row key={x._id}> 
+					<Table.Cell>{x.hostname}</Table.Cell>
+					<Table.Cell>{x.ip_addresses.join(", ")}</Table.Cell>
+					<Table.Cell><Button color="red" onClick={() => {this.props.delete(x._id)}}>Delete</Button></Table.Cell>
+				</Table.Row>
 			)
 		});
 
 		return (
-			<Table bordered>
-				<thead>
-					<tr>
-						<td>Hostname</td>
-						<td>Resolved to </td>
-						<td>Control</td>
-					</tr>
-				</thead>
-				<tbody>
+			<Table>
+				<Table.Header>
+					<Table.Row>
+						<Table.HeaderCell>Hostname</Table.HeaderCell>
+						<Table.HeaderCell>Resolved to </Table.HeaderCell>
+						<Table.HeaderCell>Control</Table.HeaderCell>
+					</Table.Row>
+				</Table.Header>
+				<Table.Body>
 					{hosts_rendered}
-				</tbody>
+				</Table.Body>
 			</Table>
 		)
 	}

@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 
-import { Table, Button } from 'reactstrap'
+import { Table, Button } from 'semantic-ui-react'
 
 
 class IPTable extends React.Component {
@@ -12,25 +12,25 @@ class IPTable extends React.Component {
 	render() {
 		const ips_rendered = _.map(this.props.ips, (x) => {
 			return (
-				<tr key={x._id}> 
-					<td>{x.ip_address}</td>
-					<td><Button color="danger" onClick={() => this.props.delete(x._id)}>Delete</Button></td>
-				</tr>
+				<Table.Row key={x._id}> 
+					<Table.Cell>{x.ip_address}</Table.Cell>
+					<Table.Cell><Button color="red" onClick={() => this.props.delete(x._id)}>Delete</Button></Table.Cell>
+				</Table.Row>
 			)
 		});
 
 		return (
-			<Table bordered>
-				<thead>
-					<tr>
-						<td>IP address</td>
-						<td>Control</td>
-					</tr>
-				</thead>
-				<tbody>
+			<Table>
+				<Table.Header>
+					<Table.Row>
+						<Table.HeaderCell>IP address</Table.HeaderCell>
+						<Table.HeaderCell>Control</Table.HeaderCell>
+					</Table.Row>
+				</Table.Header>
+				<Table.Body>
 					{ips_rendered}
-				</tbody>
-			</Table>
+				</Table.Body>
+			</Table>			
 		)
 	}
 }

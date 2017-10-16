@@ -8,6 +8,7 @@ import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEvents
 import Tasks from '../../common/tasks/Tasks.jsx'
 import IPTable from '../presentational/IPTable.jsx'
 import HostTable from '../presentational/HostTable.jsx'
+import ProjectComment from '../../common/project_comment/ProjectComment.jsx'
 
 
 class ScopeSetup extends React.Component {
@@ -32,20 +33,18 @@ class ScopeSetup extends React.Component {
 	render() {
 		return (
 			<div>
-				<h4>Here you can add, delete, modify and work with initial scope of the project.</h4>
 				<HeadButtonsTracked project={this.props.project}
 									hosts={this.props.scopes.hosts} />
 
 				<ScopeAdderTracked project={this.props.project} />
-				<hr />
+
+				<ProjectComment project={this.props.project}/>
 
 				<IPTable ips={this.props.scopes.ips}
 						 delete={this.deleteScope} />
-				<hr />
 
 				<HostTable hosts={this.props.scopes.hosts}
 						   delete={this.deleteScope} />
-				<hr />
 
 			</div>
 		)

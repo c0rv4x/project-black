@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Button } from 'reactstrap'
+import { Button } from 'semantic-ui-react'
 
 
 class HeadButtons extends React.Component {
@@ -11,7 +11,7 @@ class HeadButtons extends React.Component {
 	render() {
 		return (
 			<Button onClick={this.props.resolveScopes}
-					color="primary">
+					color="blue">
 				Resolve Scopes
 			</Button>
 		)

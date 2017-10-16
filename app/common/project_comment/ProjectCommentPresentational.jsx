@@ -1,12 +1,6 @@
 import React from 'react'
-import { 
-	Form,
-	FormGroup,
-	Label,
-	Input,
-	Button,
-	Collapse
-} from 'reactstrap'
+
+import { Transition, Button, TextArea, Form } from 'semantic-ui-react'
 
 
 class ProjectComment extends React.Component {
@@ -22,28 +16,22 @@ class ProjectComment extends React.Component {
 	}	
 
 	render() {
+		const { collapse } = this.state;
+
 		return (
-			<div>
-				<Button outline
-				        onClick={this.toggle}
+			<Form>
+				<Button onClick={this.toggle}
 				        style={{ marginBottom: '1rem' }}>
 				        Toggle Comment
 		        </Button>
-		        <Collapse isOpen={this.state.collapse}>
-					<Form>
-						<FormGroup>
-							<Label for="projectComment">Comment</Label>
-
-							<Input type="textarea"
-								   id="projectComment"
-								   placeholder="Enter some data to help yourself in further." 
-								   value={this.props.commentInput}
-							       onChange={this.props.onCommentInputChange}
-							       onBlur={this.props.commentSubmitted} />
-						</FormGroup>
-					</Form>
-				</Collapse>
-			</div>
+		        <Transition.Group animation="fade down" duration={500}>
+					{collapse && <TextArea id="projectComment"
+									       placeholder="Enter some data to help yourself in further." 
+									       value={this.props.commentInput}
+								           onChange={this.props.onCommentInputChange}
+								           onBlur={this.props.commentSubmitted} /> }
+				</Transition.Group>
+			</Form>
 		)
 	}
 

@@ -1,10 +1,6 @@
 import React from 'react'
-import { 
-	Button,
-	FormGroup,
-	Input,
-	Label
-} from 'reactstrap'
+
+import { Form, Button } from 'semantic-ui-react'
 
 
 class ScopeAdder extends React.Component {
@@ -50,23 +46,22 @@ class ScopeAdder extends React.Component {
 
 	render() {
 		return (
-			<div>
-
-				<FormGroup>
-					<Label>Add new scope</Label>
-					<Input type="text" 
+			<Form>
+				<Form.Field>
+					<label>Add new scope</label>
+					<input type="text" 
 						   placeholder="Enter hostname or IP address." 
 						   value={this.props.newScopeInput}
 						   onChange={this.props.handleNewScopeChange} />
-				</FormGroup>
+				</Form.Field>
 
-				<Button outline onClick={() => {
+				<Button onClick={() => {
 							this.props.onNewScopeClick(this.props.newScopeInput);
 							
 						}}>
 						Add to scope
 				</Button>
-			</div>
+			</Form>
 		)
 	}
 }
