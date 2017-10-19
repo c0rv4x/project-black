@@ -203,7 +203,7 @@ class Routing extends React.Component {
                 <div>
                     <Notifications
                         notifications={notifications}
-                    />                 
+                    />
                     <Route exact path="/"
                            component={Projects} />
                     <Route exact path="/project/:project_uuid" 

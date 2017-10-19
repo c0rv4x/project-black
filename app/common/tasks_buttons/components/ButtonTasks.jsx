@@ -25,9 +25,9 @@ class ButtonsTasks extends React.Component {
 		this.change_current_task.bind(this);	
 	}
 
-	change_current_task(number) {
+	change_current_task(task) {
 		this.setState({
-			current_task: this.props.tasks[number]
+			current_task: task
 		});
 
 		this.openModal();
@@ -50,7 +50,7 @@ class ButtonsTasks extends React.Component {
 		const items = this.props.tasks.map((task) => {
 			i++;
 			return (
-				<Dropdown.Item key={i} onClick={() => { this.change_current_task(i)}} >
+				<Dropdown.Item key={i} onClick={() => { this.change_current_task(task)}} >
 					{task.name}
 				</Dropdown.Item>
 			)

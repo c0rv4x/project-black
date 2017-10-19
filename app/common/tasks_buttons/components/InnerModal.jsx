@@ -20,7 +20,6 @@ class InnerModal extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		console.log('componentDidMount', nextProps);
 		var inputs = {};
 		_.map(nextProps.task.available_options, (x) => {
 			inputs[x.name] = {
