@@ -33,28 +33,13 @@ class NavigationTabs extends React.Component {
 		{
 			menuItem: 'IP List',
 			render: (() => <ProjectDetailsWrapper project_uuid={this.project_uuid} />)
-		}
+		}	
 		]
 
 		return (
 			<Tab panes={panes}/>
 		)
 	}
-
-	// render() {
-	// 	return (
-	// 		<div>
-	// 				<TabPane tabId="2">
-	// 					<br/>
-	// 					<ProjectDetailsWrapper project_uuid={this.project_uuid} />
-	// 				</TabPane>
-	// 				<TabPane tabId="3">
-	// 					<br/>
-	// 					<HostsListWrapper project_uuid={this.project_uuid}/>
-	// 				</TabPane>
-	// 		</div>
-	// 	);
-	// }
 }
 
 			// 	<Tab eventKey={4} title="All Tasks">

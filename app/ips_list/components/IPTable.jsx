@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import ReactPaginate from 'react-paginate'
+import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
 import Notifications from 'react-notification-system-redux'
 
 import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
@@ -78,10 +78,11 @@ class IPTable extends React.Component {
 	}
 
 	handlePageClick(data) {
-		var start = this.limitPerPage * data.selected;
+		console.log(data);
+		var start = this.limitPerPage * data;
 
 		this.setState({
-			offsetPage: data.selected,
+			offsetPage: data,
 			shownData: this.props.ips.slice(start, start + this.limitPerPage),
 		});
 	}
@@ -102,21 +103,8 @@ class IPTable extends React.Component {
 					{ips}
 				</Card.Group>
 				<br />
-				<ReactPaginate previousLabel={"prev"}
-							   nextLabel={"next"} 
-							   pageCount={this.state.pageCount}
-		                       breakLabel={<a href="#">...</a>}
-							   onPageChange={this.handlePageClick}		                       
-		                       breakClassName={"break-me"}							   
-		                       containerClassName={"pagination"}
-		                       pageClassName={"page-item"}
-		                       pageLinkClassName={"page-link"}
-		                       subContainerClassName={"pages pagination"}
-		                       nextClassName={"page-item"}
-		                       nextLinkClassName={"page-link"}
-		                       previousClassName={"page-item"}
-		                       previousLinkClassName={"page-link"}		                       
-		                       activeClassName={"active"} />							   			
+				<ReactPaginate pageCount={this.state.pageCount}
+							   clickHandler={this.handlePageClick} />							   			
 			</div>
 		)
 	}
