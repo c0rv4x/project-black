@@ -55,31 +55,27 @@ class ReactPaginate extends React.Component {
 			default:
 				if (activeItem > 3) {
 					pages.push(this.createItem(1))
-					pages.push(<Menu.Item disabled>...</Menu.Item>);
+					pages.push(<Menu.Item key={0} disabled>...</Menu.Item>);
 					pages.push(this.createItem(activeItem - 1))
-					pages.push(this.createItem(activeItem))
 				}
 				else if (activeItem == 3) {
 					pages.push(this.createItem(1))
 					pages.push(this.createItem(activeItem - 1))
-					pages.push(this.createItem(activeItem))
 				}				
 				else if (activeItem == 2) {
 					pages.push(this.createItem(1))
-					pages.push(this.createItem(activeItem))
 				}
 				else if (activeItem == 1) {
-					pages.push(this.createItem(1))
 				}
-
+				
+				pages.push(this.createItem(activeItem))
 
 				if (activeItem < pageCount - 2) {
 					pages.push(this.createItem(activeItem + 1))
-					pages.push(<Menu.Item disabled>...</Menu.Item>);
+					pages.push(<Menu.Item key={pageCount + 1} disabled>...</Menu.Item>);
 					pages.push(this.createItem(pageCount))
 				}
 				else if (activeItem == pageCount - 2) {
-					pages.push(this.createItem(activeItem))
 					pages.push(this.createItem(activeItem + 1))
 					pages.push(this.createItem(pageCount))
 				}
@@ -87,7 +83,6 @@ class ReactPaginate extends React.Component {
 					pages.push(this.createItem(pageCount))
 				}
 				else if (activeItem == pageCount) {
-					pages.push(this.createItem(pageCount))
 
 				}
 

@@ -68,7 +68,6 @@ class IPTable extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		console.log(nextProps);
 		var start = this.limitPerPage * this.state.offsetPage;
 
 		this.setState({
