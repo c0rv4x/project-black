@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import { Modal, Button } from 'semantic-ui-react'
+import { Modal, Button, Popup } from 'semantic-ui-react'
 
 
 import CustomOptions from './CustomOptions.jsx'
@@ -85,20 +85,21 @@ class InnerModal extends React.Component {
 			_.forOwn(x.options, (value, key) => {
 				options.push(<div key={key}><strong>{key}:</strong> {value}</div>);
 			});
-				    // <Tooltip placement="top"
-				    //          target={"button_" + x.name}
-				    //          isOpen={this.state.tooltipOpen}
-				    //          toggle={this.toggle_tooltip}>
-				    // 	{options}
-				    // </Tooltip>
-			return (
-				<span key={x.name}>
+
+			var button = (
+				<span>
 					<Button size="small"
 					        id={"button_" + x.name}
 					        onClick={() => this.loadOptions(x.options)}>
 					        {x.name}
 			        </Button>
 				</span>
+			);
+
+			return (
+				<Popup key={x.name} trigger={button}>
+					{options}
+				</Popup>
 			)
 		});
 
