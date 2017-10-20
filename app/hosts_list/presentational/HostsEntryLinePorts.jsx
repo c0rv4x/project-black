@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-	Grid,
+	Table,
 	Header,
 	Divider
 } from 'semantic-ui-react'
@@ -24,18 +24,24 @@ class HostsEntryLinePorts extends React.Component {
 
 			const ports_nice = _.map(ports_sorted, (x) => {
 				return (
-					<Grid.Row key={x.scan_id + '_' + x.port_number}>
-						<Grid.Column>{x.port_number}</Grid.Column>
-						<Grid.Column>{x.protocol}</Grid.Column>
-						<Grid.Column width={10}>{x.banner}</Grid.Column>
-					</Grid.Row>
+					<Table.Row key={x.scan_id + '_' + x.port_number}>
+						<Table.Cell>{x.port_number}</Table.Cell>
+						<Table.Cell>{x.protocol}</Table.Cell>
+						<Table.Cell width={10}>{x.banner}</Table.Cell>
+					</Table.Row>
 				)
 			});
 
 			return (
-				<Grid columns={12} key={this.props.host._id} >
-					<Header>{ip_address.ip_address}</Header>{ports_nice}
-				</Grid>
+				<div key={this.props.host._id + ip_address.ip_address} >
+					<Header>{ip_address.ip_address}</Header>
+					<Table basic="very">
+						<Table.Body>
+							{ports_nice}
+						</Table.Body>
+					</Table>
+					{this.props.host.ip_addresses.indexOf(ip_address) < this.props.host.ip_addresses.length - 1 && <br />}
+				</div>
 			);
 		});
 

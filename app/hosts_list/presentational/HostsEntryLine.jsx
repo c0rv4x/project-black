@@ -18,7 +18,8 @@ import {
 	Grid,
 	Segment,
 	List,
-	Header
+	Header,
+	Divider
 } from 'semantic-ui-react'
 
 import { Link } from 'react-router-dom'
@@ -34,7 +35,7 @@ class HostsEntryLine extends React.Component {
 
 	render() {
 		const header = (
-			<div>{this.props.host.hostname}</div>
+			<Header as="h3">{this.props.host.hostname}</Header>
 		);
 
 		const footer = (
@@ -68,6 +69,8 @@ class HostsEntryLine extends React.Component {
 
 		const description = (
 			<div>
+				<Header>{this.props.host.hostname}</Header>
+				<Divider/>
 				<ScopeComment comment={this.props.host.comment}
 							  onCommentSubmit={this.props.onCommentSubmit} />
 				Dirsearch: 
@@ -83,7 +86,6 @@ class HostsEntryLine extends React.Component {
 
 		return (
 			<Card color="blue">
-				<Card.Content header={header} />
 				<Card.Content description={description} />
 				<Card.Content extra>{footer}</Card.Content>
 			</Card>			

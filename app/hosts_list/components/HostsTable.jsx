@@ -13,7 +13,7 @@ class HostsTable extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.limitPerPage = 10;
+		this.limitPerPage = 12;
 
 		if (this.props.hosts) {
 			let pageCount = Math.ceil(this.props.hosts.length / this.limitPerPage);
@@ -65,6 +65,7 @@ class HostsTable extends React.Component {
 	}
 
 	render() {
+		console.log(this.state);
 		const scopes = _.map(this.state.shownData, (x) => {
 			return <HostsEntryLine key={x._id}
 								   project={this.props.project}
