@@ -7,7 +7,7 @@ import Tasks from '../../common/tasks/Tasks.jsx'
 import HostsTableTracked from './HostsTableTracked.jsx'
 import TasksButtonsTracked from './TasksButtonsTracked.jsx'
 
-import { Button } from 'reactstrap'
+import { Button } from 'semantic-ui-react'
 
 
 class HostsList extends React.Component {

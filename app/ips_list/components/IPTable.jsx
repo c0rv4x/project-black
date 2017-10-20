@@ -1,8 +1,8 @@
 import _ from 'lodash'
 import React from 'react'
-import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
 import Notifications from 'react-notification-system-redux'
 
+import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
 import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
 import IPEntryLine from '../presentational/scope/IPEntryLine.jsx'
 import Search from './Search.jsx'
@@ -77,7 +77,6 @@ class IPTable extends React.Component {
 	}
 
 	handlePageClick(data) {
-		console.log(data);
 		var start = this.limitPerPage * (data - 1);
 
 		this.setState({

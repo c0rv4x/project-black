@@ -21,7 +21,7 @@ class HostsTableTracked extends React.Component {
 	render() {
 		return (
 			<HostsTable project={this.props.project}
-						scopes={this.props.scopes}
+						hosts={this.props.scopes}
 						onFilterChange={this.props.onFilterChange}
 						deleteScope={this.deleteScope}
 

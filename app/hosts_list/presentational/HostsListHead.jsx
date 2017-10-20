@@ -1,4 +1,5 @@
 import React from 'react'
+import { Header } from 'semantic-ui-react'
 
 
 class HostsListHead extends React.Component {
@@ -8,7 +9,7 @@ class HostsListHead extends React.Component {
 
 	render() {
 		return (
-			<h4>Here you can manipulate with hosts. Scan them, pwn them, DDoS them.</h4>
+			<Header as="h4">Here you can manipulate with hosts. Scan them, pwn them, DDoS them.</Header>
 		)
 	}
 }

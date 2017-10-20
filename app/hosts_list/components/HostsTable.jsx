@@ -1,24 +1,36 @@
 import _ from 'lodash'
 import React from 'react'
-import ReactPaginate from 'react-paginate'
 
 import Search from './Search.jsx'
+import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
 import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
 import HostsEntryLine from '../presentational/HostsEntryLine.jsx'
 
+import { Card } from 'semantic-ui-react'
 
 class HostsTable extends React.Component {
 
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			shownData: [],
-			offsetPage: 0,
-			pageCount: 0
-		}
-
 		this.limitPerPage = 10;
+
+		if (this.props.hosts) {
+			let pageCount = Math.ceil(this.props.hosts.length / this.limitPerPage);
+
+			this.state = {
+				shownData: this.props.hosts.slice(0, 0 + this.limitPerPage),
+				offsetPage: 0,
+				pageCount: pageCount
+			}
+		}
+		else {
+			this.state = {
+				shownData: [],
+				offsetPage: 0,
+				pageCount: 0
+			}			
+		}
 
 		this.scopesEmitter = new ScopesSocketioEventsEmitter();
 
@@ -65,23 +77,12 @@ class HostsTable extends React.Component {
 			<div>
 				<Search onFilterChange={this.props.onFilterChange} />
 				<br />
-				{scopes}
+				<Card.Group>
+					{scopes}
+				</Card.Group>
 				<br />
-				<ReactPaginate previousLabel={"prev"}
-							   nextLabel={"next"} 
-							   pageCount={this.state.pageCount}
-		                       breakLabel={<a href="#">...</a>}
-							   onPageChange={this.handlePageClick}
-		                       breakClassName={"break-me"}
-		                       containerClassName={"pagination"}
-		                       pageClassName={"page-item"}
-		                       pageLinkClassName={"page-link"}
-		                       subContainerClassName={"pages pagination"}
-		                       nextClassName={"page-item"}
-		                       nextLinkClassName={"page-link"}
-		                       previousClassName={"page-item"}
-		                       previousLinkClassName={"page-link"}
-		                       activeClassName={"active"} />
+				<ReactPaginate pageCount={this.state.pageCount}
+							   clickHandler={this.handlePageClick} />	
 			</div>
 		)
 	}

@@ -1,16 +1,26 @@
  import React from 'react'
-import { 
-	Button, 
-	Panel, 
-	Glyphicon,
-	ListGroup,
-	ListGroupItem,
-	Row,
-	Col,
+// import { 
+// 	Button, 
+// 	Panel, 
+// 	Glyphicon,
+// 	ListGroup,
+// 	ListGroupItem,
+// 	Row,
+// 	Col,
+// 	Card,
+// 	CardHeader,
+// 	CardBody
+// } from 'reactstrap'
+
+import {
+	Button,
 	Card,
-	CardHeader,
-	CardBody
-} from 'reactstrap'
+	Grid,
+	Segment,
+	List,
+	Header
+} from 'semantic-ui-react'
+
 import { Link } from 'react-router-dom'
 
 import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
@@ -23,27 +33,23 @@ class HostsEntryLine extends React.Component {
 	}
 
 	render() {
-		var header = null;
-		if (this.props.host.hostname) {
-			const verbose_host_link = '/project/' + this.props.project.project_uuid + '/host/' + this.props.host.hostname;
-			header = (
-				<div className="d-flex justify-content-between">
-					<div className="align-self-center"><b>{this.props.host.hostname}</b></div>
+		const header = (
+			<div>{this.props.host.hostname}</div>
+		);
 
-					<div>
-			            <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
-							<Button outline size="sm">
-								Verbose
-							</Button>
-			            </a>
+		const footer = (
+			<div>
+	            <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
+					<Button basic size="tiny">
+						Verbose
+					</Button>
+	            </a>
 
-						<Button outline color="danger" size="sm" onClick={this.props.deleteScope}>
-							Delete
-						</Button>
-					</div>
-				</div>
-			)
-		}
+				<Button basic color="red" size="tiny" onClick={this.props.deleteScope}>
+					Delete
+				</Button>
+			</div>
+		);
 
 		var files_by_statuses = {
 			'2xx': this.props.host.files.filter((x) => {
@@ -60,24 +66,26 @@ class HostsEntryLine extends React.Component {
 			}).length						
 		};
 
-		return (
-
-
-			<Card>
-				<CardHeader color="primary">{header}</CardHeader>
-				<CardBody>
-						<ScopeComment comment={this.props.host.comment}
-									  onCommentSubmit={this.props.onCommentSubmit} />
-						Dirsearch: 
-						<ul>
-							<li>2xx: <strong>{files_by_statuses['2xx']}</strong></li> 
-							<li>3xx: {files_by_statuses['3xx']}</li>
-							<li>4xx: {files_by_statuses['4xx']}</li>
-							<li>5xx: {files_by_statuses['5xx']}</li>
-						</ul>
-				</CardBody>
+		const description = (
+			<div>
+				<ScopeComment comment={this.props.host.comment}
+							  onCommentSubmit={this.props.onCommentSubmit} />
+				Dirsearch: 
+				<List bulleted>
+					<List.Item>2xx: <strong>{files_by_statuses['2xx']}</strong></List.Item> 
+					<List.Item>3xx: {files_by_statuses['3xx']}</List.Item>
+					<List.Item>4xx: {files_by_statuses['4xx']}</List.Item>
+					<List.Item>5xx: {files_by_statuses['5xx']}</List.Item>
+				</List>
 				<HostsEntryLinePorts host={this.props.host} />
+			</div>
+		);
 
+		return (
+			<Card color="blue">
+				<Card.Content header={header} />
+				<Card.Content description={description} />
+				<Card.Content extra>{footer}</Card.Content>
 			</Card>			
 		)
 	}

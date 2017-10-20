@@ -1,13 +1,9 @@
 import React from 'react'
-import { 
-	Button, 
-	Panel, 
-	Glyphicon,
-	ListGroup,
-	ListGroupItem,
-	Row,
-	Col
-} from 'reactstrap'
+import {
+	Grid,
+	Header,
+	Divider
+} from 'semantic-ui-react'
 
 
 class HostsEntryLinePorts extends React.Component {
@@ -17,8 +13,7 @@ class HostsEntryLinePorts extends React.Component {
 	}
 
 	render() {
-		var ports = [];
-		for (var ip_address of this.props.host.ip_addresses) {
+		const ports = _.map(this.props.host.ip_addresses, (ip_address) => {
 			const ports_filtered = ip_address.scans;
 
 			const ports_sorted = ports_filtered.sort((a, b) => {
@@ -27,26 +22,29 @@ class HostsEntryLinePorts extends React.Component {
 				return 0;
 			});
 
-			var ports_nice = _.map(ports_sorted, (x) => {
+			const ports_nice = _.map(ports_sorted, (x) => {
 				return (
-						<Row key={x.scan_id + '_' + x.port_number}>
-							<Col md={1}>{x.port_number}</Col>
-							<Col md={1}>{x.protocol}</Col>
-							<Col md={10}>{x.banner}</Col>
-						</Row>
+					<Grid.Row key={x.scan_id + '_' + x.port_number}>
+						<Grid.Column>{x.port_number}</Grid.Column>
+						<Grid.Column>{x.protocol}</Grid.Column>
+						<Grid.Column width={10}>{x.banner}</Grid.Column>
+					</Grid.Row>
 				)
 			});
 
-			ports.push(
-				<ListGroupItem key={this.props.host._id + "_" + ip_address.ip_address}>
-					<h5>{ip_address.ip_address}</h5>{ports_nice}
-				</ListGroupItem>);
-		}
+			return (
+				<Grid columns={12} key={this.props.host._id} >
+					<Header>{ip_address.ip_address}</Header>{ports_nice}
+				</Grid>
+			);
+		});
 
 		return (
-			<ListGroup className="list-group-flush">
+			<div>
+				{ports.length !== 0 && <Divider />}
+				{ports.length !== 0 && <br />}
 				{ports}
-			</ListGroup>
+			</div>
 		)
 	}
 }
