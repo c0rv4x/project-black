@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Table } from 'react-bootstrap'
+import { Table } from 'semantic-ui-react'
 
 
 class DirsearchTable extends React.Component {
@@ -21,12 +21,12 @@ class DirsearchTable extends React.Component {
 				else status_code_style.color = '#333333';
 
 				files.push(
-					<tr key={each_file.file_id}>
-						<td style={status_code_style}>{each_file.status_code}</td>
-						<td><a href={each_file.file_path} target="_blank">{each_file.file_name}</a></td>
-						<td>{each_file.content_length}</td>
-						<td>{each_file.special_note}</td>
-					</tr>
+					<Table.Row key={each_file.file_id}>
+						<Table.Cell style={status_code_style}>{each_file.status_code}</Table.Cell>
+						<Table.Cell><a href={each_file.file_path} target="_blank">{each_file.file_name}</a></Table.Cell>
+						<Table.Cell>{each_file.content_length}</Table.Cell>
+						<Table.Cell>{each_file.special_note}</Table.Cell>
+					</Table.Row>
 				);
 			}
 		}
@@ -35,18 +35,18 @@ class DirsearchTable extends React.Component {
 			return (
 				<div>
 					<h3>{this.props.target + ':' + this.props.port_number}</h3>
-					<Table bordered hover>
-						<thead>
-							<tr>
-								<td>Code</td>
-								<td>File Name</td>
-								<td>Length</td>
-								<td>Special Note</td>
-							</tr>
-						</thead>
-						<tbody>
+					<Table>
+						<Table.Header>
+							<Table.Row>
+								<Table.HeaderCell>Code</Table.HeaderCell>
+								<Table.HeaderCell>File Name</Table.HeaderCell>
+								<Table.HeaderCell>Length</Table.HeaderCell>
+								<Table.HeaderCell>Special Note</Table.HeaderCell>
+							</Table.Row>
+						</Table.Header>
+						<Table.Body>
 							{files}
-						</tbody>
+						</Table.Body>
 					</Table>
 				</div>
 			)

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Button } from 'react-bootstrap'
+import { Button } from 'semantic-ui-react'
 
 
 class FilteringButtons extends React.Component {

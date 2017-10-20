@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 
-import { Button } from 'react-bootstrap'
+import { Button } from 'semantic-ui-react'
 
 import FilteringButtons from '../presentational/FilteringButtons.jsx'
 
