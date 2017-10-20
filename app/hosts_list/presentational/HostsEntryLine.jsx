@@ -34,9 +34,7 @@ class HostsEntryLine extends React.Component {
 	}
 
 	render() {
-		const header = (
-			<Header as="h3">{this.props.host.hostname}</Header>
-		);
+		const verbose_host_link = '/project/' + this.props.project.project_uuid + '/host/' + this.props.host.hostname;
 
 		const footer = (
 			<div>
