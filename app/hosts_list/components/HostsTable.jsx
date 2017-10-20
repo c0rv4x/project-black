@@ -42,8 +42,8 @@ class HostsTable extends React.Component {
 		var start = this.limitPerPage * this.state.offsetPage;
 
 		this.setState({
-			shownData: nextProps.scopes.slice(start, start + this.limitPerPage),
-			pageCount: Math.ceil(nextProps.scopes.length / this.limitPerPage)
+			shownData: nextProps.hosts.slice(start, start + this.limitPerPage),
+			pageCount: Math.ceil(nextProps.hosts.length / this.limitPerPage)
 		});
 	}	
 
@@ -52,7 +52,7 @@ class HostsTable extends React.Component {
 
 		this.setState({
 			offsetPage: data.selected,
-			shownData: this.props.scopes.slice(start, start + this.limitPerPage),
+			shownData: this.props.hosts.slice(start, start + this.limitPerPage),
 		});
 	}
 

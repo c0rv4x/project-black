@@ -102,7 +102,7 @@ class IPTable extends React.Component {
 				</Card.Group>
 				<br />
 				<ReactPaginate pageCount={this.state.pageCount}
-							   clickHandler={this.handlePageClick} />							   			
+							   clickHandler={this.handlePageClick} />
 			</div>
 		)
 	}
