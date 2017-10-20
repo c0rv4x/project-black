@@ -15,7 +15,7 @@ class IPTable extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.limitPerPage = 10;
+		this.limitPerPage = 12;
 
 		if (this.props.ips) {
 			let pageCount = Math.ceil(this.props.ips.length / this.limitPerPage);

@@ -1,23 +1,11 @@
 import React from 'react'
-// import { 
-// 	Button, 
-// 	Card,
-// 	CardBody,
-// 	CardFooter,
-// 	CardHeader,
-// 	CardText,
-// 	CardTitle,
-// 	Col,
-// 	ListGroup,
-// 	ListGroupItem,
-// 	Row
-// } from 'reactstrap'
 
 import {
 	Button,
 	Card,
-	Grid,
-	Segment
+	Table,
+	Header,
+	Divider
 } from 'semantic-ui-react'
 
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
@@ -30,10 +18,6 @@ class IPEntryLine extends React.Component {
 	}
 
 	render() {
-		const header = (
-			<b>{this.props.ip.ip_address}</b>
-		);
-
 		const footer = (
 			<div>
 	            <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
@@ -54,40 +38,34 @@ class IPEntryLine extends React.Component {
 			return 0;
 		}), (x) => {
 			return (
-				<Grid.Row key={x.scan_id + '_' + x.port_number}>
-					<Grid.Column>{x.port_number}</Grid.Column>
-					<Grid.Column>{x.protocol}</Grid.Column>
-					<Grid.Column></Grid.Column>
-					<Grid.Column></Grid.Column>
-					<Grid.Column></Grid.Column>
-					<Grid.Column></Grid.Column>
-					<Grid.Column></Grid.Column>
-					<Grid.Column></Grid.Column>
-					<Grid.Column></Grid.Column>
-					<Grid.Column></Grid.Column>
-					<Grid.Column></Grid.Column>
-					<Grid.Column>{x.banner}</Grid.Column>
-				</Grid.Row>
+				<Table.Row key={x.scan_id + '_' + x.port_number}>
+					<Table.Cell>{x.port_number}</Table.Cell>
+					<Table.Cell>{x.protocol}</Table.Cell>
+					<Table.Cell>{x.banner}</Table.Cell>
+				</Table.Row>
 			)
 		});
 
 		const description = (
-			<div>			
+			<div>
+				<Header>{this.props.ip.ip_address}</Header>
+				<Divider/>
 				<ScopeComment comment={this.props.ip.comment}
 						  	  onCommentSubmit={this.props.onCommentSubmit} />
-				<Grid columns={12}>
-					{ports}
-				</Grid>				
+
+				<Table basic="very">
+					<Table.Body>
+						{ports}
+					</Table.Body>
+				</Table>
 			</div>
 		)
 
 		return (
-			<Card fluid>
-				<Card.Content header={header} />
+			<Card color="blue">
 				<Card.Content description={description} />
 				<Card.Content extra>{footer}</Card.Content>
-			</Card>			
-
+			</Card>	
 		)	
 	}
 }
