@@ -1,7 +1,7 @@
 import React from 'react'
 
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
-import ButtonsTasks from './ButtonsTasks.jsx'
+import ButtonTasks from '../../common/tasks_buttons/components/ButtonTasks.jsx'
 
 
 class TasksButtonsTracked extends React.Component {
@@ -24,7 +24,7 @@ class TasksButtonsTracked extends React.Component {
 
 	render() {
 		return (
-			<ButtonsTasks tasks={
+			<ButtonTasks tasks={
 				[
 					{
 						"name": "Dirbuter",

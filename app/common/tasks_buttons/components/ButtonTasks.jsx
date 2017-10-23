@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import { Dropdown } from 'semantic-ui-react';
+import { Dropdown, Button } from 'semantic-ui-react';
 
 
 import TasksOptions from './TasksOptions.jsx'
@@ -58,7 +58,7 @@ class ButtonsTasks extends React.Component {
 
 		return (
 			<span>
-				<Dropdown text="Start Task">
+				<Dropdown text="Start Task" as={Button}>
 					<Dropdown.Menu>
 						{items}
 					</Dropdown.Menu>
