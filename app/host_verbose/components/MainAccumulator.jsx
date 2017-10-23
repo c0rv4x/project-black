@@ -42,10 +42,8 @@ class MainAccumulator extends React.Component {
 				<h2>{this.props.host.hostname}</h2>
 				<TasksButtonsTracked project={this.props.project}
 									 host={this.props.host}
-									 activePortNumber={this.state.activePortNumber} />				
-				<Tasks tasks={this.props.tasks} />
-				<hr />
-				<ScopeComment commentValue={this.props.host.comment} />
+									 activePortNumber={this.state.activePortNumber} />					
+				<ScopeComment comment={this.props.host.comment} />
 
 				<PortsTabs ports={this.props.ports}
 					   	   activeTabNumber={this.state.activeTabNumber}

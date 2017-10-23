@@ -18,7 +18,7 @@ class ScopeComment extends React.Component {
 
 		this.commentChange = this.commentChange.bind(this);
 		this.onFocus = this.onFocus.bind(this);
-		this.onBlur = this.onBlur.bind(this);
+		this.commentSubmitted = this.commentSubmitted.bind(this);
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -55,7 +55,7 @@ class ScopeComment extends React.Component {
 		})
 	}
 
-	onBlur(e) {
+	commentSubmitted(e) {
 		this.props.onCommentSubmit(e);
 
 		var scopeComment = this.state.scopeComment;
@@ -74,7 +74,7 @@ class ScopeComment extends React.Component {
 			<ScopeCommentPresentational scopeComment={this.state.scopeComment}
 										onChange={this.commentChange}
 										onFocus={this.onFocus}
-										onBlur={this.onBlur}
+										commentSubmitted={this.commentSubmitted}
 										commentDisabled={this.props.disabled} 
 
 										commentShown={this.state.commentShown} />
