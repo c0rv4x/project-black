@@ -42,7 +42,7 @@ class InnerModal extends React.Component {
 		});
 
 		this.props.task.handler(formedOptions);
-		this.props.toggle();
+		this.props.closeModal();
 	}
 
 
