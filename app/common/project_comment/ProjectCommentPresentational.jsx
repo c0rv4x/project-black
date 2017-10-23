@@ -19,19 +19,21 @@ class ProjectComment extends React.Component {
 		const { collapse } = this.state;
 
 		return (
-			<Form>
+			<span>
 				<Button onClick={this.toggle}
 				        style={{ marginBottom: '1rem' }}>
 				        Toggle Comment
-		        </Button>
-		        <Transition.Group animation="fade down" duration={500}>
-					{collapse && <TextArea id="projectComment"
-									       placeholder="Enter some data to help yourself in further." 
-									       value={this.props.commentInput}
-								           onChange={this.props.onCommentInputChange}
-								           onBlur={this.props.commentSubmitted} /> }
-				</Transition.Group>
-			</Form>
+		        </Button>			
+				<Form>
+			        <Transition.Group animation="fade down" duration={500}>
+						{collapse && <TextArea id="projectComment"
+										       placeholder="Enter some data to help yourself in further." 
+										       value={this.props.commentInput}
+									           onChange={this.props.onCommentInputChange}
+									           onBlur={this.props.commentSubmitted} /> }
+					</Transition.Group>
+				</Form>
+			</span>
 		)
 	}
 
