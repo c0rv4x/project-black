@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
-import { Tab, Col, Row, Nav, NavItem, Table } from 'react-bootstrap'
+// import { Tab, Col, Row, Nav, NavItem, Table } from 'react-bootstrap'
+import { Tab, Table } from 'semantic-ui-react'
 
 
 class PortsTabs extends React.Component {

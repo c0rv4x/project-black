@@ -5,6 +5,8 @@ import PortsTabs from '../presentational/PortsTabs.jsx'
 import TasksButtonsTracked from './TasksButtonsTracked.jsx'
 import Tasks from '../../common/tasks/Tasks.jsx'
 
+import { Header, Divider } from 'semantic-ui-react'
+
 
 class MainAccumulator extends React.Component {
 	constructor(props) {
@@ -39,7 +41,11 @@ class MainAccumulator extends React.Component {
 	render() {
 		return (
 			<div>
-				<h2>{this.props.host.hostname}</h2>
+				<br/>
+				<Header as="h2">{this.props.host.hostname}</Header>
+			
+				<Tasks tasks={this.props.tasks} />
+				<Divider />
 				<TasksButtonsTracked project={this.props.project}
 									 host={this.props.host}
 									 activePortNumber={this.state.activePortNumber} />					

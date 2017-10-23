@@ -2,9 +2,9 @@ import _ from 'lodash'
 import React from 'react'
 
 import TitleButtonsWithHandlers from './TitleButtonsWithHandlers.jsx'
-import ProjectCommentTracked from '../../common/project_comment/ProjectComment.jsx'
 import IPTableTracked from './IPTableTracked.jsx'
 import Tasks from '../../common/tasks/Tasks.jsx'
+
 
 class ProjectDetails extends React.Component {
 	constructor(props) {
@@ -154,8 +154,7 @@ class ProjectDetails extends React.Component {
 
 		return (
 			<div>
-				<h4>{this.props.project.project_name}</h4>
-				<ProjectCommentTracked project={this.props.project} />
+				<br/>
 
 				<TitleButtonsWithHandlers scopes={filtered_scopes}
 									      project={this.props.project} 

@@ -227,7 +227,7 @@ class HostsList extends React.Component {
 		return (
 			<div>
 				<Tasks tasks={this.props.tasks} />
-
+				<br/>
 				<TasksButtonsTracked scopes={filtered_scopes}
 									 scans={this.props.scans} 
 									 project={this.props.project} />
