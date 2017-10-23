@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import React from 'react'
-// import { Tab, Col, Row, Nav, NavItem, Table } from 'react-bootstrap'
 import { Tab, Table } from 'semantic-ui-react'
 
 
@@ -15,18 +14,12 @@ class PortsTabs extends React.Component {
 
 	render() {
 		var i = 0;
-		const navItems = _.map(this.props.ports, (x) => {
-			return (
-				<NavItem eventKey={i++} key={x.port_number}>
-					{x.port_number}
-				</NavItem>
-			);
-		});
 
-		i = 0;
-		const tabPanes = _.map(this.props.ports, (x) => {
+		var panes = [];
+
+		for (var port of this.props.ports) {
 			var filtered_files = _.filter(this.props.files, (y) => {
-				return x.port_number == y.port_number;
+				return port.port_number == y.port_number;
 			});
 
 			filtered_files = filtered_files.sort((a, b) => {
@@ -35,59 +28,42 @@ class PortsTabs extends React.Component {
 				return 0;
 			});
 
-			return (
-				<Tab.Pane eventKey={i++} key={x.port_number}>
-					{
-						<Table bordered condensed hover>
-							<tbody>
-								{
-									_.map(filtered_files, (x) => {
-										var result = Math.floor(x.status_code / 100)
-										if (result == 2) {
-											return <tr key={x.file_id}>
-														<td style={{'color': '#22CF22'}}>{x.status_code}</td>
-														<td>{x.content_length}</td>
-														<td><a href={x.file_path} target="_blank">{x.file_name}</a></td>
-														<td></td>
-												   </tr>
-										}
-										else {
-											return <tr key={x.file_id}>
-														<td>{x.status_code}</td>
-														<td>{x.content_length}</td>
-														<td><a href={x.file_path} target="_blank">{x.file_name}</a></td>
-														<td>{x.special_note &&x.special_note}</td>
-												   </tr>
-										}
-									})
-								}
-							</tbody>
+			var files = _.map(filtered_files, (port) => {
+				var result = Math.floor(port.status_code / 100)
+				if (result == 2) {
+					return <Table.Row key={port.file_id}>
+								<Table.Cell style={{'color': '#22CF22'}}>{port.status_code}</Table.Cell>
+								<Table.Cell>{port.content_length}</Table.Cell>
+								<Table.Cell><a href={port.file_path} target="_blank">{port.file_name}</a></Table.Cell>
+								<Table.Cell></Table.Cell>
+						   </Table.Row>
+				}
+				else {
+					return <Table.Row key={port.file_id}>
+								<Table.Cell>{port.status_code}</Table.Cell>
+								<Table.Cell>{port.content_length}</Table.Cell>
+								<Table.Cell><a href={port.file_path} target="_blank">{port.file_name}</a></Table.Cell>
+								<Table.Cell>{port.special_note &&port.special_note}</Table.Cell>
+						   </Table.Row>
+				}
+			});
+
+			panes.push({
+				menuItem: String(port.port_number),
+				render: () => (
+					<Tab.Pane>
+						<Table>
+							<Table.Body>
+								{files}
+							</Table.Body>
 						</Table>
-					}
-				</Tab.Pane>
-			)
-		});
+					</Tab.Pane>
+				)
+			});		
+		}
 
 		return (
-			<Tab.Container id="ports_tab_container"
-						   activeKey={this.props.activeTabNumber}
-						   onSelect={(newTabNumber) => {
-							   	this.props.tabChange(newTabNumber, this.props.ports[newTabNumber].port_number);
-							 }
-						   } >
-				<Row className="clearfix">
-					<Col md={2} sm={2}>
-						<Nav bsStyle="pills" stacked>
-							{navItems}
-						</Nav>
-					</Col>
-					<Col md={10} sm={10}>
-						<Tab.Content animation>
-							{tabPanes}
-						</Tab.Content>
-					</Col>
-				</Row>
-			</Tab.Container>
+			<Tab panes={panes} />
 		)
 	}
 }
