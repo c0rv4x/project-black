@@ -200,7 +200,7 @@ class ScopeManager(object):
         for ip_addr in self.ips:
             if ip_addr.get_id() == scope_id:
                 update_result = ip_addr.update_comment(comment)
-                update_result['updated_scope'] = ip_addr.toJSON()
+                update_result['updated_scope'] = ip_addr.to_json()
                 update_result['type'] = 'ip'
 
                 return update_result
@@ -208,7 +208,7 @@ class ScopeManager(object):
         for host in self.hosts:
             if host.get_id() == scope_id:
                 update_result = host.update_comment(comment)
-                update_result['updated_scope'] = host.toJSON()
+                update_result['updated_scope'] = host.to_json()
                 update_result['type'] = 'host'
 
                 return update_result

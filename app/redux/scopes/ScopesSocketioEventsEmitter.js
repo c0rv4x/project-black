@@ -78,6 +78,14 @@ class ScopesSocketioEventsEmitter {
 		});
 	}
 
+	requestUpdateComment(comment, scope_id, project_uuid) {
+		this.connector.emit('scopes:update:comment', {
+			'scope_id': scope_id,
+			'comment': comment,
+			'project_uuid': project_uuid
+		});
+	}	
+
 }
 
 export default ScopesSocketioEventsEmitter;
