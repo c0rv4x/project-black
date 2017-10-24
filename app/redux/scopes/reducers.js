@@ -89,10 +89,11 @@ function renew_scopes(state = initialState, action) {
 }
 
 function update_comment(state = initialState, action) {
-	const _id = action.message['_id'];
-	const new_comment = action.message['comment'];
+	const _id = action.message.updated_scope['_id'];
+	const new_comment = action.message.updated_scope['comment'];
 
 	var new_state = JSON.parse(JSON.stringify(state));
+
 	for (var scope of new_state['ips']) {
 		if (scope._id == _id) {
 			scope.comment = new_comment;
