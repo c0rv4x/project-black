@@ -40,7 +40,6 @@ class IPTable extends React.Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-		console.log(nextProps, nextState);
 		if (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState)) {
 				if (this.props.ips.length !== nextProps.ips.length) {
 					var diff = nextProps.ips.length - this.props.ips.length;

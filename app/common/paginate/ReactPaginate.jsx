@@ -48,7 +48,7 @@ class ReactPaginate extends React.Component {
 			case 4:
 			case 5:
 				for (var i = 1; i < pageCount; i++) {
-					pages.push(this.createItem({i}));
+					pages.push(this.createItem(i));
 				}
 
 				break;
