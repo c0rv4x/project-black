@@ -70,7 +70,7 @@ class HostsTable extends React.Component {
 			return <HostsEntryLine key={x._id}
 								   project={this.props.project}
 								   host={x} 
-								   onCommentSubmit={(event) => this.commentSubmitted(event.target.value, x._id)}
+								   onCommentSubmit={(value) => this.commentSubmitted(value, x._id)}
 								   deleteScope={() => this.props.deleteScope(x._id)} />
 		});
 
