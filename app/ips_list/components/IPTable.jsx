@@ -89,7 +89,7 @@ class IPTable extends React.Component {
 			return <IPEntryLine key={x._id} 
 								ip={x}
 								project_uuid={this.props.project_uuid}
-								onCommentSubmit={(event) => this.commentSubmitted(event.target.value, x._id)}
+								onCommentSubmit={(value) => this.commentSubmitted(value, x._id)}
 								deleteScope={() => this.props.deleteScope(x._id)} />
 		});
 
