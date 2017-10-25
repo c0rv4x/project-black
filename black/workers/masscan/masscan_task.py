@@ -156,7 +156,7 @@ class MasscanTask(AsyncTask):
 
         if self.status != "Finished" and self.status != "Aborted":
             await asyncio.sleep(1)
-            await self.progress_poller()
+            loop.create_task(self.spawn_status_poller())
 
     async def wait_for_exit(self):
         """ Check if the process exited. If so,
