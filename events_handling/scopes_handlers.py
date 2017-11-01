@@ -221,7 +221,7 @@ class ScopeHandlers(object):
                     namespace='/scopes'
                 )                
 
-    async def send_scopes_back(self, project_uuid=None):
+    async def send_scopes_back(self, project_uuid=None, broadcast=False):
         """ Collects all relative hosts and ips from the manager and sends them back """
         await self.socketio.emit(
             'scopes:all:get:back', {
@@ -230,6 +230,6 @@ class ScopeHandlers(object):
                 'ips': self.scope_manager.get_ips(project_uuid),
                 'hosts': self.scope_manager.get_hosts(project_uuid)
             },
-            broadcast=True,
+            broadcast=broadcast,
             namespace='/scopes'
         )

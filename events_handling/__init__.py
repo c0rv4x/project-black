@@ -50,16 +50,18 @@ class Handlers(object):
         try:
             task_type, project_uuid = self.data_updated_queue.get_nowait()
 
+            if task_type == "scope":
+                self.scope_manager.update_from_db()
+                await self.scope_handlers.send_scopes_back(project_uuid, broadcast=True)
+                self.data_updated_queue.task_done()
             if task_type == "scan":
                 self.scan_manager.update_from_db()
-                await self.scan_handlers.send_scans_back(project_uuid)
+                await self.scan_handlers.send_scans_back(project_uuid, broadcast=True)
                 self.data_updated_queue.task_done()
             if task_type == "file":
                 self.file_manager.update_from_db()
-                await self.file_handlers.send_files_back(project_uuid)
+                await self.file_handlers.send_files_back(project_uuid, broadcast=True)
                 self.data_updated_queue.task_done()
-            if task_type == "scope":
-                await self.scope_handlers.send_scopes_back(project_uuid)
-                self.data_updated_queue.task_done()
+
         except queue.Empty:
             pass

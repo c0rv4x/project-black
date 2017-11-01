@@ -17,7 +17,7 @@ class ScanHandlers(object):
             project_uuid = msg.get('project_uuid', None)
             await self.send_scans_back(project_uuid)
 
-    async def send_scans_back(self, project_uuid=None):
+    async def send_scans_back(self, project_uuid=None, broadcast=False):
         """ Finds all scans for the project and sends them back """
         await self.socketio.emit(
             'scans:all:get:back', {
@@ -25,6 +25,6 @@ class ScanHandlers(object):
                 'project_uuid': project_uuid,
                 'scans': self.scan_manager.get_scans(project_uuid)
             },
-            broadcast=True,
+            broadcast=broadcast,
             namespace='/scans'
         )
