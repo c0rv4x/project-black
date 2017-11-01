@@ -48,10 +48,10 @@ class HostsTable extends React.Component {
 	}	
 
 	handlePageClick(data) {
-		var start = this.limitPerPage * data.selected;
+		var start = this.limitPerPage * data;
 
 		this.setState({
-			offsetPage: data.selected,
+			offsetPage: data,
 			shownData: this.props.hosts.slice(start, start + this.limitPerPage),
 		});
 	}
