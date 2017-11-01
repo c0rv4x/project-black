@@ -62,6 +62,9 @@ class Fuzzer(object):
 
         self.timeout_counter = 0
 
+
+        self.found_data = False
+
     def wait(self, timeout=None):
         for thread in self.threads:
             thread.join(timeout)
@@ -151,7 +154,6 @@ class Fuzzer(object):
         self.runningThreadsCount -= 1
 
     def thread_proc(self):
-        found_data = False
         self.playEvent.wait()
         try:
             path = next(self.dictionary)
@@ -169,18 +171,18 @@ class Fuzzer(object):
                                             float(self.counter) /
                                             float(len(self.dictionary)) * 100
                                         ),
-                                    "new_data": found_data
+                                    "new_data": self.found_data
                                 }
                             ), 'utf-8'
                         )
                     )
-                    found_data = False
+                    self.found_data = False
                 try:
                     status, response = self.scan(path)
                     result = Path(path=path, status=status, response=response)
                     if status is not None:
                         self.matches.append(result)
-                        found_data = True
+                        self.found_data = True
                         for callback in self.matchCallbacks:
                             callback(result)
                     else:
