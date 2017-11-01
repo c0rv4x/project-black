@@ -9,14 +9,9 @@ class ScopeComment extends React.Component {
 		super(props);
 
 		this.state = {
-			scopeComment: this.props.comment,
-			beforeModification: this.props.comment,
-			disabled: false,
-			focused: false,
-			receivedText: null
+			scopeComment: this.props.comment
 		};
 
-		this.onFocus = this.onFocus.bind(this);
 		this.commentSubmitted = this.commentSubmitted.bind(this);
 	}
 
@@ -39,13 +34,6 @@ class ScopeComment extends React.Component {
 				})
 			}
 		}
-	}
-
-	onFocus() {
-		this.setState({
-			focused: true,
-			beforeModification: this.state.scopeComment
-		})
 	}
 
 	commentSubmitted(e) {
