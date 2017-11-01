@@ -65,7 +65,6 @@ class HostsTable extends React.Component {
 	}
 
 	render() {
-		console.log(this.state);
 		const scopes = _.map(this.state.shownData, (x) => {
 			return <HostsEntryLine key={x._id}
 								   project={this.props.project}

@@ -21,7 +21,7 @@ class FileManager(object):
         if project_uuid is None:
             raise NotImplementedError
 
-        return self.files[project_uuid]
+        return self.files.get(project_uuid, [])
 
     def update_from_db(self):
         """ Extract all the files from the DB.

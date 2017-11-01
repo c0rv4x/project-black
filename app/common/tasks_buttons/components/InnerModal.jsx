@@ -17,6 +17,7 @@ class InnerModal extends React.Component {
 
 		this.loadOptions = this.loadOptions.bind(this);
 		this.startTask = this.startTask.bind(this);
+		this.onInputChange = this.onInputChange.bind(this);
 	}
 
 	componentWillReceiveProps(nextProps) {
