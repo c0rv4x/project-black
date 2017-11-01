@@ -50,26 +50,12 @@ class ScopeComment extends React.Component {
 
 	commentSubmitted(e) {
 		this.props.onCommentSubmit(e);
-
-		// var scopeComment = this.state.scopeComment;
-		// if ((this.state.receivedText !== null) && (this.state.receivedText.length > 0)) {
-		// 	scopeComment += "  ---------  " + this.state.receivedText
-		// }
-		// this.setState({
-		// 	scopeComment: scopeComment,
-		// 	focused: false,
-		// 	receivedText: ''
-		// })
-	}
+	}	
 
 	render() {
 		return (
 			<ScopeCommentPresentational scopeComment={this.state.scopeComment}
-										onFocus={this.onFocus}
-										commentSubmitted={this.commentSubmitted}
-										commentDisabled={this.props.disabled} 
-
-										commentShown={this.state.commentShown} />
+										commentSubmitted={this.commentSubmitted} />
 		)
 	}
 }

@@ -27,8 +27,6 @@ class ScopeSetup extends React.Component {
 	deleteScope(scope_id) {
 		this.scopesEmitter.requestDeleteScope(scope_id, this.props.project_uuid);
 	}
-				// <Tasks tasks={this.props.tasks} />
-
 
 	render() {
 		return (

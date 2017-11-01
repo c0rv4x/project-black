@@ -25,7 +25,7 @@ class ProjectInner(object):
         """ The name says for itself """
         return self._project_name
 
-    def set_project_uuid(self, project_name):
+    def set_project_name(self, project_name):
         """ The name says for itself """
         self._project_name = project_name
 
@@ -53,6 +53,22 @@ class ProjectInner(object):
         except Exception as exc:
             return {"status": "error", "text": str(exc)}
 
+    def update(self):
+        """ Update the current state of object to the DB """
+        try:
+            session = self.sessions.get_new_session()
+            db_obj = session.query(ProjectDB).filter_by(
+                project_uuid=self._project_uuid
+            ).first()
+            db_obj.project_name = self._project_name
+            db_obj.comment = self.comment
+
+            session.commit()
+            self.sessions.destroy_session(session)
+            return {"status": "success", "project": self.to_dict()}
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}
+
     def delete(self):
         """ Delete this object from the DB """
         try:
@@ -67,10 +83,6 @@ class ProjectInner(object):
             return {"status": "success"}
         except Exception as exc:
             return {"status": "error", "text": str(exc)}
-
-    def update(self):
-        """ Update fields of this object and save to the DB """
-        pass
 
 
 class ProjectManager(object):
@@ -161,8 +173,8 @@ class ProjectManager(object):
             if comment:
                 found_project.comment = comment
 
-            save_result = found_project.save()
+            update_result = found_project.update()
 
-            return save_result
+            return update_result
 
         return {"status": "error", "text": "Such project does not exist"}

@@ -1,43 +1,28 @@
 import React from 'react'
 
-import { Transition, Button, TextArea, Form } from 'semantic-ui-react'
+import { TextArea, Form, Segment } from 'semantic-ui-react'
+
+import EditableElement from '../editable/EditableElement.jsx'
 
 
-class ProjectComment extends React.Component {
+class ProjectCommentPresentational extends React.Component {
 
 	constructor(props) {
 		super(props);
-	    this.toggle = this.toggle.bind(this);
-	    this.state = { collapse: false };		
 	}
 
-	toggle() {
-		this.setState({ collapse: !this.state.collapse });
-	}	
-
 	render() {
-		const { collapse } = this.state;
-
 		return (
-			<span>
-				<Button onClick={this.toggle}
-				        style={{ marginBottom: '1rem' }}>
-				        Toggle Comment
-		        </Button>			
-				<Form>
-			        <Transition.Group animation="fade down" duration={500}>
-						{collapse && <TextArea id="projectComment"
-										       placeholder="Enter some data to help yourself in further." 
-										       value={this.props.commentInput}
-									           onChange={this.props.onCommentInputChange}
-									           onBlur={this.props.commentSubmitted} /> }
-					</Transition.Group>
-				</Form>
-			</span>
+			<Form>
+		        <EditableElement value={this.props.projectComment}
+		        				 onBlur={this.props.commentSubmitted}
+		        				 inputElement={TextArea}
+		        				 element={Segment} />
+	        </Form>
 		)
 	}
 
 }
 
 
-export default ProjectComment;
+export default ProjectCommentPresentational;
