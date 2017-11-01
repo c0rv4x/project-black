@@ -17,7 +17,8 @@ class ProjectCommentPresentational extends React.Component {
 		        <EditableElement value={this.props.projectComment}
 		        				 onBlur={this.props.commentSubmitted}
 		        				 inputElement={TextArea}
-		        				 element={Segment} />
+		        				 element={Segment}
+		        				 placeholder="Project comment" />
 	        </Form>
 		)
 	}
