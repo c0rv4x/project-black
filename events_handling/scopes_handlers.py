@@ -43,17 +43,25 @@ class ScopeHandlers(object):
                 elif scope['type'] == 'network':
                     ips = IPNetwork(scope['target'])
 
-                    for ip_address in ips:
-                        create_result = self.scope_manager.create_ip(
-                            str(ip_address), project_uuid
-                        )
+                    create_result = self.scope_manager.create_batch_ips(
+                        list(map(str, ips)), project_uuid
+                    )
 
-                        if create_result["status"] == "success":
-                            new_scope = create_result["new_scope"]
+                    added = True
+                    new_scopes = create_result["new_scopes"]
 
-                            if new_scope:
-                                added = True
-                                new_scopes.append(new_scope)
+                    # for ip_address in ips:
+                    #     print("Adding ip {}".format(ip_address))
+                    #     create_result = self.scope_manager.create_ip(
+                    #         str(ip_address), project_uuid
+                    #     )
+
+                    #     if create_result["status"] == "success":
+                    #         new_scope = create_result["new_scope"]
+
+                    #         if new_scope:
+                    #             added = True
+                    #             new_scopes.append(new_scope)
                 else:
                     create_result = {
                         "status": 'error',

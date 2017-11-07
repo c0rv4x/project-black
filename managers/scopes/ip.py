@@ -53,25 +53,33 @@ class IP(object):
                 self.get_project_uuid()
         }
 
-    def save(self):
-        try:
-            session = self.sessions.get_new_session()
+    def save(self, commit=True):
+        if commit:
+            try:
+                session = self.sessions.get_new_session()
 
-            db_object = IP_addr(
+                db_object = IP_addr(
+                    ip_id=self.get_id(),
+                    ip_address=self.ip_address,
+                    comment=self.comment,
+                    project_uuid=self.get_project_uuid()
+                )
+                session.add(db_object)
+                session.commit()
+                self.sessions.destroy_session(session)
+            except Exception as e:
+                print("error during savin ip")
+                return {'status': 'error', 'text': str(e)}
+
+            else:
+                return {'status': 'success'}
+        else:
+            return IP_addr(
                 ip_id=self.get_id(),
                 ip_address=self.ip_address,
                 comment=self.comment,
                 project_uuid=self.get_project_uuid()
             )
-            session.add(db_object)
-            session.commit()
-            self.sessions.destroy_session(session)
-        except Exception as e:
-            print("error during savin ip")
-            return {'status': 'error', 'text': str(e)}
-
-        else:
-            return {'status': 'success'}
 
     def delete(self):
         try:
