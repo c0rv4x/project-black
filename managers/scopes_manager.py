@@ -51,9 +51,7 @@ class ScopeManager(object):
 
     def create_batch_ips(self, ip_addresses, project_uuid, result_jsoned=True):
         """ Creates a lot of ips """
-        print(ip_addresses)
         new_ip_addresses = filter(lambda ip_address: self.find_ip(ip_address=ip_address, project_uuid=project_uuid) is None, ip_addresses)
-        print(list(new_ip_addresses))
 
         ips_objects = map(lambda ip_address: IP(str(uuid.uuid4()), ip_address, project_uuid), new_ip_addresses)
         db_objects = map(lambda ip_object: ip_object.save(commit=False), ips_objects)
@@ -87,7 +85,7 @@ class ScopeManager(object):
         save_result = new_host.save()
 
         if save_result["status"] == "success":
-            self.hosts.append(new_host)
+            self.hosts[project_uuid].append(new_host)
 
             return {
                 "status": "success",
