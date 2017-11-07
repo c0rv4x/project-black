@@ -14,7 +14,7 @@ class FileManager(object):
 
         self.sessions = Sessions()
 
-        self.update_from_db()
+        # self.update_from_db()
 
     def get_files(self, project_uuid):
         """ Returns the list of files """
