@@ -101,7 +101,10 @@ class ScopeManager(object):
             self.update_from_db(project_uuid)
             self.inited[project_uuid] = True
 
-        ips_filtered = self.ips.get(project_uuid, [])
+        if self.ips.get(project_uuid, False) is False:
+            self.ips[project_uuid] = []
+
+        ips_filtered = self.ips[project_uuid]
 
         return list(map(lambda x: x.to_json(), ips_filtered))
 
@@ -111,7 +114,10 @@ class ScopeManager(object):
             self.update_from_db(project_uuid)
             self.inited[project_uuid] = True
 
-        hosts_filtered = self.hosts.get(project_uuid, [])
+        if self.hosts.get(project_uuid, False) is False:
+            self.hosts[project_uuid] = []
+
+        hosts_filtered = self.hosts[project_uuid]
 
         return list(map(lambda x: x.to_json(), hosts_filtered))
 
