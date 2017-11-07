@@ -98,7 +98,7 @@ class IP_addr(Base):
     ip_address = Column(String)
 
     # The hostnames that point to this IP
-    hostnames = relationship("Host", secondary=association_table, back_populates="ip_addresses")
+    hostnames = relationship("Host", secondary=association_table, back_populates="ip_addresses", lazy="subquery", cascade="expunge")
 
     # Comment field, as requested by VI
     comment = Column(String)
@@ -131,7 +131,7 @@ class Host(Base):
     hostname = Column(String)
 
     # IP addresses of that host
-    ip_addresses = relationship("IP_addr", secondary=association_table, back_populates="hostnames")
+    ip_addresses = relationship("IP_addr", secondary=association_table, back_populates="hostnames", lazy="subquery", cascade="expunge")
 
     # Some text comment
     comment = Column(String)

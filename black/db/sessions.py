@@ -8,12 +8,9 @@ from sqlalchemy.pool import NullPool
 class Sessions(object):
 
     def __init__(self):
-        self.engine = create_engine('postgresql://black:black101@127.0.0.1:5433/black', poolclass=NullPool)
-
-        self.session_builder = sessionmaker(bind=self.engine)
-
+        self.engine = create_engine('postgresql://black:black101@127.0.0.1:5433/black', poolclass=NullPool, echo=True)
+        self.session_builder = sessionmaker(bind=self.engine, expire_on_commit=False)
         self.sessions_list = list()
-
 
     def get_new_session(self):
         session = self.session_builder()
