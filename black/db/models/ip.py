@@ -3,7 +3,7 @@ from black.black.db.models.base import Base
 from sqlalchemy import Column, String, DateTime, ForeignKey
 
 
-class IP_addr(Base):
+class IPDatabase(Base):
     """ Kepps the data on scope:
     * Hostnames
     * IPs

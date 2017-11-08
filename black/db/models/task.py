@@ -3,7 +3,7 @@ from black.black.db.models.base import Base
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
 
 
-class Task(Base):
+class TaskDatabase(Base):
     """ Keeps the data of all the tasks that ever existed
     in the system (though not the deleted ones) """
     __tablename__ = 'tasks'

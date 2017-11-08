@@ -1,5 +1,6 @@
 from black.black.db.sessions import Sessions
 from black.black.db.models.base import Base
+from black.black.db.models.task import TaskDatabase
 from managers.projects.project_inner import ProjectInner
 
 # from black.black.db.models.host import HostInternal

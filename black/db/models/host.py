@@ -3,7 +3,7 @@ from black.black.db.models.base import Base
 from sqlalchemy import Column, String, DateTime, ForeignKey
 
 
-class Host(Base):
+class HostDatabase(Base):
     """ Keeps hosts that point to relative IPs """
     __tablename__ = "hosts"
 
