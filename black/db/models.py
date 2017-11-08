@@ -1,11 +1,12 @@
 """ Models for SQLAlchemy ORM """
+import uuid
 import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
-
 Base = declarative_base()
+
 
 class Project(Base):
     """ Kepps the names of all the projects that exist
@@ -31,8 +32,7 @@ class Project(Base):
     scans_relationship = relationship('Scan', cascade="all, delete-orphan")
 
     def __repr__(self):
-       return "<Project(project_name='%s'>" % (
-                            self.project_name)
+        return "<Project(project_name='%s'>" % (self.project_name)
 
 
 class Task(Base):
@@ -46,7 +46,7 @@ class Task(Base):
     # Literal name of the task: dnsscan, nmap etc.
     task_type = Column(String)
 
-    # Target can be: hostname, ip, URL 
+    # Target can be: hostname, ip, URL
     #    (depending on the task_type)
     target = Column(String)
 
@@ -72,16 +72,26 @@ class Task(Base):
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
 
     # The name of the related project
-    project_uuid = Column(String, ForeignKey('projects.project_uuid', ondelete='CASCADE'))
+    project_uuid = Column(
+        String, ForeignKey('projects.project_uuid', ondelete='CASCADE')
+    )
 
     # def __repr__(self):
     #    return "<Task(task_id='%s', task_type='%s',)>" % (
     #                         self.project_uuid)
 
-association_table = Table('association', Base.metadata,
+
+association_table = Table(
+    'association', Base.metadata,
     Column('ip_id', String, ForeignKey('ips.ip_id')),
     Column('host_id', String, ForeignKey('hosts.host_id'))
 )
+
+
+def get_new_uuid():
+    print("Getting new uuid")
+    return str(uuid.uuid4())
+
 
 class IP_addr(Base):
     """ Kepps the data on scope:
@@ -91,34 +101,45 @@ class IP_addr(Base):
     __tablename__ = 'ips'
 
     # Primary key (probably uuid4)
-    ip_id = Column(String, primary_key=True)
+    ip_id = Column(String, primary_key=True, default=get_new_uuid)
 
     # IP address is a string (probably None, but not sure if
     #    is needed)
     ip_address = Column(String)
 
     # The hostnames that point to this IP
-    hostnames = relationship("Host", secondary=association_table, back_populates="ip_addresses", lazy="subquery", cascade="expunge")
+    hostnames = relationship(
+        "Host",
+        secondary=association_table,
+        back_populates="ip_addresses",
+        lazy="subquery",
+        cascade="expunge",
+        enable_typechecks=False
+    )
 
     # Comment field, as requested by VI
-    comment = Column(String)
+    comment = Column(String, default="")
 
     # The name of the related project
-    project_uuid = Column(String, ForeignKey('projects.project_uuid', ondelete="CASCADE"))
+    project_uuid = Column(
+        String, ForeignKey('projects.project_uuid', ondelete="CASCADE")
+    )
 
     # References the task that got this record
     # Default is None, as scope can be given by the user manually.
-    task_id = Column(String, ForeignKey('tasks.task_id', ondelete='SET NULL'), default=None)
+    task_id = Column(
+        String, ForeignKey('tasks.task_id', ondelete='SET NULL'), default=None
+    )
 
     # Date of adding
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
 
-
     def __repr__(self):
-       return """<IP_addr(ip_id='%s', hostname='%s',
+        return """<IP_addr(ip_id='%s', hostname='%s',
                         ip_address='%s', project_uuid='%s')>""" % (
-                        self.ip_id, self.hostnames,
-                        self.ip_address, self.project_uuid)
+            self.ip_id, self.hostnames, self.ip_address, self.project_uuid
+        )
+
 
 class Host(Base):
     """ Keeps hosts that point to relative IPs """
@@ -131,7 +152,14 @@ class Host(Base):
     hostname = Column(String)
 
     # IP addresses of that host
-    ip_addresses = relationship("IP_addr", secondary=association_table, back_populates="hostnames", lazy="subquery", cascade="expunge")
+    ip_addresses = relationship(
+        "IP_addr",
+        secondary=association_table,
+        back_populates="hostnames",
+        lazy="subquery",
+        cascade="expunge",
+        enable_typechecks=False
+    )
 
     # Some text comment
     comment = Column(String)
@@ -140,10 +168,13 @@ class Host(Base):
     task_id = Column(String, ForeignKey('tasks.task_id'))
 
     # The name of the related project
-    project_uuid = Column(String, ForeignKey('projects.project_uuid', ondelete='CASCADE'))
+    project_uuid = Column(
+        String, ForeignKey('projects.project_uuid', ondelete='CASCADE')
+    )
 
     # Date of added
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
+
     # def __repr__(self):
     #    return "<Scan(project_uuid='%s'>" % (
     #                         self.project_uuid)
@@ -176,7 +207,9 @@ class Scan(Base):
     task_id = Column(String, ForeignKey('tasks.task_id'))
 
     # The name of the related project
-    project_uuid = Column(String, ForeignKey('projects.project_uuid', ondelete='CASCADE'))
+    project_uuid = Column(
+        String, ForeignKey('projects.project_uuid', ondelete='CASCADE')
+    )
 
     # Date of added
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
@@ -217,10 +250,13 @@ class FoundFile(Base):
     task_id = Column(String, ForeignKey('tasks.task_id'))
 
     # The name of the related project
-    project_uuid = Column(String, ForeignKey('projects.project_uuid', ondelete='CASCADE'))
+    project_uuid = Column(
+        String, ForeignKey('projects.project_uuid', ondelete='CASCADE')
+    )
 
     # Date of added
-    date_added = Column(DateTime, default=datetime.datetime.utcnow)    
+    date_added = Column(DateTime, default=datetime.datetime.utcnow)
+
 
 # class Screenshot(Base):
 #     """ Keeps the data on the screenshots. Referneces to IP"""
