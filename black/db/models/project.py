@@ -29,4 +29,4 @@ class ProjectDatabase(Base):
     # scans_relationship = relationship('Scan', cascade="all, delete-orphan")
 
     def __repr__(self):
-        return "<Project(project_name='%s'>" % (self.project_name)
+        return "<Project(project_name='%s')>" % (self.project_name)
