@@ -56,7 +56,10 @@ class HostInternal(object):
                 self.get_hostname(),
             'ip_addresses':
                 list(
-                    map(lambda x: x.get_ip_address(), self.get_ip_addresses())
+                        map(
+                            lambda ip_address: ip_address.get_ip_address(),
+                            self.get_ip_addresses()
+                        )
                 ),
             'comment':
                 self.comment,
@@ -114,18 +117,26 @@ class HostInternal(object):
 
     def append_ip(self, ip_object):
         if ip_object not in self.ip_addresses:
-            self.ip_addresses.append(ip_object)
             session = self.session_spawner.get_new_session()
+
+            # Find the corresponding host
             host_from_db = session.query(HostDatabase).filter_by(
                 host_id=self.get_id()
             ).first()
+
+            # Find the corresponding ip
             ip_from_db = session.query(IPDatabase).filter_by(
                 ip_id=ip_object.get_id()
             ).first()
+
+            # Append ip to host
             host_from_db.ip_addresses.append(ip_from_db)
 
             session.commit()
             self.session_spawner.destroy_session(session)
+
+            # If everything is ok, add that locally
+            self.ip_addresses.append(ip_object)
 
     def remove_ip_address(self, ip_object):
         try:

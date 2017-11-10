@@ -47,13 +47,15 @@ class ScopeManager(object):
 
     def create_batch_ips(self, ip_addresses, project_uuid):
         """ Creates a lot of ips """
-        new_ip_addresses = filter(lambda ip_address: self.find_ip(ip_address=ip_address, project_uuid=project_uuid) is None, ip_addresses)
+        new_ip_addresses = filter(lambda ip_address: self.find_ip(
+            ip_address=ip_address, project_uuid=project_uuid) is None, ip_addresses)
 
         ips_objects = list(map(lambda ip_address: IPInternal(ip_address=ip_address,
                                                              project_uuid=project_uuid),
-                          new_ip_addresses))
+                               new_ip_addresses))
 
-        db_objects = map(lambda ip_object: ip_object.save(commit=False), ips_objects)
+        db_objects = map(lambda ip_object: ip_object.save(
+            commit=False), ips_objects)
 
         try:
             session = self.sessions_spawner.get_new_session()
@@ -70,7 +72,6 @@ class ScopeManager(object):
                 'status': 'success',
                 'new_scopes': list(map(lambda x: x.to_json(), ips_objects))
             }
-
 
     def create_host(self, hostname, project_uuid, result_jsoned=True):
         """ Create host object, save and add that to the hosts list """
@@ -134,12 +135,17 @@ class ScopeManager(object):
         for each_project_uuid_tupled in project_uuids:
             each_project_uuid = each_project_uuid_tupled[0]
             self.ips[each_project_uuid] = {}
+            self.hosts[each_project_uuid] = {}
 
+            # IPS
             # Remember a link to the dict which we are filling now
             ips_dict = self.ips[each_project_uuid]
 
             # Iterate over all ips from the db and put the to the special dict
-            ips_from_db = session.query(IPDatabase).filter(IPDatabase.project_uuid == each_project_uuid).distinct().all()
+            ips_from_db = session.query(IPDatabase).filter(
+                IPDatabase.project_uuid == each_project_uuid).distinct().all()
+
+            # Transform ips from db to our internal representation
             for each_value in ips_from_db:
                 db_dict = each_value.__dict__
 
@@ -154,6 +160,31 @@ class ScopeManager(object):
                                                   project_uuid=project_uuid,
                                                   comment=comment,
                                                   hostnames=hostnames)
+
+            # Hosts
+            # Remember a link to the dict which we are filling now
+            hosts_dict = self.hosts[each_project_uuid]
+
+            # Iterate over all hosts from the db and put the to the special
+            # dict
+            hosts_from_db = session.query(HostDatabase).filter(
+                HostDatabase.project_uuid == each_project_uuid).distinct().all()
+
+            # Transform ips from db to our internal representation
+            for each_value in hosts_from_db:
+                db_dict = each_value.__dict__
+
+                host_id = db_dict['host_id']
+                hostname = db_dict['hostname']
+                project_uuid = db_dict['project_uuid']
+                comment = db_dict['comment']
+                ip_addresses = db_dict.get('ip_addresses', [])
+
+                hosts_dict[hostname] = HostInternal(host_id=host_id,
+                                                    hostname=hostname,
+                                                    project_uuid=project_uuid,
+                                                    comment=comment,
+                                                    ip_addresses=ip_addresses)
 
             # self.ips[each_project_uuid] = list(map(lambda x: IP(x.ip_id,
             #                                                     x.ip_address,
@@ -174,28 +205,28 @@ class ScopeManager(object):
 
         self.sessions_spawner.destroy_session(session)
 
-            # for each_ip in self.ips[each_project_uuid]:
-            #     nice_hostnames = list(
-            #         filter(
-            #             lambda y: y.get_hostname() in each_ip.get_hostnames(),
-            #             self.hosts.get(each_project_uuid, [])
-            #         )
-            #     )
-            #     each_ip.set_hostnames(nice_hostnames)
+        # for each_ip in self.ips[each_project_uuid]:
+        #     nice_hostnames = list(
+        #         filter(
+        #             lambda y: y.get_hostname() in each_ip.get_hostnames(),
+        #             self.hosts.get(each_project_uuid, [])
+        #         )
+        #     )
+        #     each_ip.set_hostnames(nice_hostnames)
 
-            # for each_host in self.hosts[each_project_uuid]:
-            #     nice_ips = list(
-            #         filter(
-            #             lambda y: y.get_ip_address() in each_host.get_ip_addresses(),
-            #             self.ips.get(each_project_uuid, [])
-            #         )
-            #     )
-            #     each_host.set_ip_addresses(nice_ips)
+        # for each_host in self.hosts[each_project_uuid]:
+        #     nice_ips = list(
+        #         filter(
+        #             lambda y: y.get_ip_address() in each_host.get_ip_addresses(),
+        #             self.ips.get(each_project_uuid, [])
+        #         )
+        #     )
+        #     each_host.set_ip_addresses(nice_ips)
 
     def find_ip(self, ip_address=None, project_uuid=None, ip_id=None):
         """ Checks whether ip object for a certain project already exitst """
         project_ips = self.ips.get(project_uuid, [])
-        
+
         if ip_address is not None:
             return project_ips.get(ip_address, None)
 
@@ -210,7 +241,7 @@ class ScopeManager(object):
     def find_host(self, hostname=None, project_uuid=None, host_id=None):
         """ Checks whether host object for a certain project already exitst """
         project_hosts = self.hosts.get(project_uuid, [])
-        
+
         if hostname is not None:
             return project_hosts.get(hostname, None)
 
@@ -221,7 +252,6 @@ class ScopeManager(object):
                     return host
 
         return None
-
 
     def delete_scope(self, scope_id, project_uuid):
         """ Removes scope from the database and internal structures """
@@ -235,8 +265,7 @@ class ScopeManager(object):
                 self.hosts[project_uuid].pop(hostname, None)
 
                 for each_ip in host.get_ip_addresses():
-                    print(each_ip)
-                    # each_ip.remove_host(host)
+                    each_ip.remove_host(host)
 
             return delete_result
 
@@ -251,8 +280,7 @@ class ScopeManager(object):
                     self.ips[project_uuid].pop(ip_address, None)
 
                     for each_host in ip_addr.get_hostnames():
-                        print(each_host)
-                        # each_host.remove_ip_address(ip_addr)
+                        each_host.remove_ip_address(ip_addr)
 
                 return delete_result
 
@@ -280,12 +308,13 @@ class ScopeManager(object):
     async def resolve_scopes(self, scopes_ids, project_uuid):
         """ Using all the ids of scopes, resolve the hosts, now we
         resolve ALL the scopes, that are related to the project_uuid """
-        filtered_hosts = self.hosts.get(project_uuid, [])
+        project_hosts = self.hosts.get(project_uuid, [])
         if scopes_ids is None:
-            to_resolve = filtered_hosts
+            to_resolve = project_hosts.values()
         else:
+            # This should not work for now, but TODO: make it actually work
             to_resolve = list(
-                filter(lambda x: x.get_id() in scopes_ids, filtered_hosts)
+                filter(lambda x: x.get_id() in scopes_ids, project_hosts)
             )
 
         resolver = aiodns.DNSResolver(loop=asyncio.get_event_loop())
@@ -307,14 +336,15 @@ class ScopeManager(object):
                 exc = each_future.exception()
                 result = each_future.result()
                 host = each_future.internal_host
-            except Exception as e:
+            except Exception:
                 continue
 
             if exc:
                 print("RESOLVE EXCEPTION", each_future, exc)
 
             for each_result in result:
-                # Well, this is strange, but ip in aiodns is returned in 'host' field
+                # Well, this is strange, but ip in aiodns is returned in 'host'
+                # field
                 resolved_ip = each_result.host
                 found_ip = self.find_ip(resolved_ip, project_uuid)
 
