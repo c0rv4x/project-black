@@ -49,7 +49,10 @@ class ScopeManager(object):
         """ Creates a lot of ips """
         new_ip_addresses = filter(lambda ip_address: self.find_ip(ip_address=ip_address, project_uuid=project_uuid) is None, ip_addresses)
 
-        ips_objects = map(lambda ip_address: IP(str(uuid.uuid4()), ip_address, project_uuid), new_ip_addresses)
+        ips_objects = list(map(lambda ip_address: IPInternal(ip_address=ip_address,
+                                                        project_uuid=project_uuid),
+                          new_ip_addresses))
+
         db_objects = map(lambda ip_object: ip_object.save(commit=False), ips_objects)
 
         try:
@@ -59,11 +62,10 @@ class ScopeManager(object):
 
             session.commit()
             self.sessions_spawner.destroy_session(session)
-        except Exception as e:
-            print("error during savin ip", e)
-            return {'status': 'error', 'text': str(e)}
+        except Exception as exc:
+            print("Error when saving ip", exc)
+            return {'status': 'error', 'text': str(exc)}
         else:
-            print("I created {} new scopes".format(len(list(ips_objects))))
             return {
                 'status': 'success',
                 'new_scopes': list(map(lambda x: x.to_json(), ips_objects))
@@ -77,7 +79,8 @@ class ScopeManager(object):
         ) is not None:
             return {"status": "dupliacte"}
 
-        new_host = HostInstance(str(uuid.uuid4()), hostname, project_uuid, sessions=self.sessions)
+        new_host = HostInternal(hostname=hostname,
+                                project_uuid=project_uuid)
         save_result = new_host.save()
 
         if save_result["status"] == "success":
@@ -191,32 +194,34 @@ class ScopeManager(object):
 
     def find_ip(self, ip_address=None, project_uuid=None, ip_id=None):
         """ Checks whether ip object for a certain project already exitst """
-        filtered = self.ips.get(project_uuid, [])
-        filtered = list(
-            filter(
-                lambda x:
-                    (ip_address is None or x.get_ip_address() == ip_address)
-                and (ip_id is None or x.get_id() == ip_id),
-                filtered
-            )
-        )
+        project_ips = self.ips.get(project_uuid, [])
+        
+        if ip_address is not None:
+            return project_ips.get(ip_address, None)
 
-        return filtered[0] if filtered else None
+        if ip_id is not None:
+            for key in project_ips.keys():
+                each_ip = project_ips[key]
+                if each_ip.get_id() == ip_id:
+                    return each_ip
+
+        return None
 
     def find_host(self, hostname=None, project_uuid=None, host_id=None):
         """ Checks whether host object for a certain project already exitst """
-        filtered = self.hosts.get(project_uuid, [])
+        project_hosts = self.hosts.get(project_uuid, [])
+        
+        if hostname is not None:
+            return project_hosts.get(hostname, None)
 
-        filtered = list(
-            filter(
-                lambda x:
-                    (hostname is None or x.get_hostname() == hostname)
-                and (host_id is None or x.get_id() == host_id),
-                filtered
-            )
-        )
+        if host_id is not None:
+            for key in project_hosts.keys():
+                host = project_hosts[key]
+                if host.get_id() == host_id:
+                    return host
 
-        return filtered[0] if filtered else None
+        return None
+
 
     def delete_scope(self, scope_id):
         """ Removes scope from the database and internal structures """
