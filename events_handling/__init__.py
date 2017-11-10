@@ -6,10 +6,10 @@ import asyncio
 from events_handling.projects_handlers import register_project_handlers
 from events_handling.scopes_handlers import ScopeHandlers
 from events_handling.tasks_handlers import TaskHandlers
-from events_handling.scans_handlers import ScanHandlers
-from events_handling.files_handlers import FileHandlers
+# from events_handling.scans_handlers import ScanHandlers
+# from events_handling.files_handlers import FileHandlers
 
-from managers import ProjectManager, ScopeManager, TaskManager, ScanManager, FileManager
+from managers import ProjectManager, ScopeManager, TaskManager#, ScanManager, FileManager
 
 
 class Handlers(object):
@@ -26,8 +26,8 @@ class Handlers(object):
         self.task_manager = TaskManager(self.data_updated_queue)
         self.app.add_task(self.task_manager.spawn_asynqp())
 
-        self.scan_manager = ScanManager()
-        self.file_manager = FileManager()
+        # self.scan_manager = ScanManager()
+        # self.file_manager = FileManager()
 
 
         register_project_handlers(self.socketio, self.project_manager)
@@ -35,11 +35,11 @@ class Handlers(object):
         self.scope_handlers = ScopeHandlers(self.socketio, self.scope_manager)
         self.scope_handlers.register_handlers()
 
-        self.scan_handlers = ScanHandlers(self.socketio, self.scan_manager)
-        self.scan_handlers.register_handlers()
+        # self.scan_handlers = ScanHandlers(self.socketio, self.scan_manager)
+        # self.scan_handlers.register_handlers()
 
-        self.file_handlers = FileHandlers(self.socketio, self.file_manager)
-        self.file_handlers.register_handlers()
+        # self.file_handlers = FileHandlers(self.socketio, self.file_manager)
+        # self.file_handlers.register_handlers()
 
         self.task_handlers = TaskHandlers(self.socketio, self.task_manager)
         self.task_handlers.register_handlers()
