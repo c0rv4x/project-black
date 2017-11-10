@@ -35,7 +35,7 @@ class ScopeManager(object):
         save_result = new_ip.save()
 
         if save_result["status"] == "success":
-            self.ips[project_uuid].append(new_ip)
+            self.ips[project_uuid][ip_address] = new_ip
 
             return {
                 "status": "success",
@@ -45,7 +45,7 @@ class ScopeManager(object):
 
         return save_result
 
-    def create_batch_ips(self, ip_addresses, project_uuid, result_jsoned=True):
+    def create_batch_ips(self, ip_addresses, project_uuid):
         """ Creates a lot of ips """
         new_ip_addresses = filter(lambda ip_address: self.find_ip(ip_address=ip_address, project_uuid=project_uuid) is None, ip_addresses)
 
@@ -84,7 +84,7 @@ class ScopeManager(object):
         save_result = new_host.save()
 
         if save_result["status"] == "success":
-            self.hosts[project_uuid].append(new_host)
+            self.hosts[project_uuid][hostname] = new_host
 
             return {
                 "status": "success",
@@ -223,32 +223,36 @@ class ScopeManager(object):
         return None
 
 
-    def delete_scope(self, scope_id):
+    def delete_scope(self, scope_id, project_uuid):
         """ Removes scope from the database and internal structures """
-        host = self.find_host(host_id=scope_id)
+        host = self.find_host(host_id=scope_id, project_uuid=project_uuid)
 
         if host is not None:
+            hostname = host.get_hostname()
             delete_result = host.delete()
 
             if delete_result["status"] == "success":
-                self.hosts.remove(host)
+                self.hosts[project_uuid].pop(hostname, None)
 
-                for each_ip in self.ips:
-                    each_ip.remove_host(host)
+                for each_ip in host.get_ip_addresses():
+                    print(each_ip)
+                    # each_ip.remove_host(host)
 
             return delete_result
 
         else:
-            ip_addr = self.find_ip(ip_id=scope_id)
+            ip_addr = self.find_ip(ip_id=scope_id, project_uuid=project_uuid)
 
             if ip_addr is not None:
+                ip_address = ip_addr.get_ip_address()
                 delete_result = ip_addr.delete()
 
                 if delete_result["status"] == "success":
-                    self.ips.remove(ip_addr)
+                    self.ips[project_uuid].pop(ip_address, None)
 
-                    for each_host in self.hosts:
-                        each_host.remove_ip_address(ip_addr)
+                    for each_host in ip_addr.get_hostnames():
+                        print(each_host)
+                        # each_host.remove_ip_address(ip_addr)
 
                 return delete_result
 

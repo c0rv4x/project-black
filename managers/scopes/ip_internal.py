@@ -7,7 +7,9 @@ class IPInternal(object):
     """ Class keeps data on a single IP. Related hostnames inside the project +
     comment on the ip """
 
-    def __init__(self, ip_address, project_uuid, hostnames=None, comment="", ip_id=None):
+    def __init__(
+        self, ip_address, project_uuid, hostnames=None, comment="", ip_id=None
+    ):
         self.ip_address = ip_address
         self.hostnames = hostnames or list()
         self.comment = comment

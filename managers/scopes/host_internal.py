@@ -1,114 +1,131 @@
-from black.black.db import association_table, IPDatabase
-from black.black.db import HostDatabase
+import uuid
+
+from black.black.db import Sessions, HostDatabase, IPDatabase
 
 
 class HostInternal(object):
-    def __init__(self, host_id, hostname, project_uuid, ip_addresses=None, comment="", sessions=None):
-        self._id = host_id
+    """ Class keeps data on a single Host. Related ips inside the project +
+    comment on the hsot """
+
+    def __init__(
+        self,
+        hostname,
+        project_uuid,
+        ip_addresses=None,
+        comment="",
+        host_id=None
+    ):
         self.hostname = hostname
         self.ip_addresses = ip_addresses or list()
         self.comment = comment
         self.project_uuid = project_uuid
 
-        self.sessions = sessions
+        self._id = host_id or str(uuid.uuid4())
+
+        self.session_spawner = Sessions()
 
     def get_id(self):
+        """ Returns current id """
         return self._id
 
     def get_hostname(self):
+        """ Returns the hostname of this host """
         return self.hostname
 
     def get_ip_addresses(self):
+        """ Returns ip addresses which current host resolves
+        to """
         return self.ip_addresses
 
-    def get_comment(self):
-        return self.comment
-
     def get_project_uuid(self):
+        """ Returns the project uuid """
         return self.project_uuid
 
     def set_ip_addresses(self, new_ip_addresses):
+        """ Sets ip addresses to which the current host resolves to """
         self.ip_addresses = new_ip_addresses
 
     def to_json(self):
+        """ Serializes the object to json """
         return {
-            'type': 'host',
-            '_id': self.get_id(),
-            'hostname': self.get_hostname(),
-            'ip_addresses': list(map(lambda x: x.get_ip_address(), self.get_ip_addresses())),
-            'comment': self.get_comment(),
-            'project_uuid': self.get_project_uuid()
+            'type':
+                'host',
+            '_id':
+                self.get_id(),
+            'hostname':
+                self.get_hostname(),
+            'ip_addresses':
+                list(
+                    map(lambda x: x.get_ip_address(), self.get_ip_addresses())
+                ),
+            'comment':
+                self.comment,
+            'project_uuid':
+                self.get_project_uuid()
         }
 
     def save(self):
         try:
-            session = self.sessions.get_new_session()
-            db_object = HostDatabase(host_id=self.get_id(),
-                               hostname=self.get_hostname(),
-                               comment=self.get_comment(),
-                               project_uuid=self.get_project_uuid())
+            session = self.session_spawner.get_new_session()
+            db_object = HostDatabase(
+                host_id=self.get_id(),
+                hostname=self.get_hostname(),
+                comment=self.comment,
+                project_uuid=self.get_project_uuid()
+            )
             session.add(db_object)
             session.commit()
-            self.sessions.destroy_session(session)
-        except Exception as e:
-            return {
-                'status': 'error',
-                'text': str(e)
-            }
+            self.session_spawner.destroy_session(session)
+        except Exception as exc:
+            return {'status': 'error', 'text': str(exc)}
 
         else:
-            return {
-                'status': 'success'
-            }
+            return {'status': 'success'}
 
     def delete(self):
         try:
-            session = self.sessions.get_new_session()
-            db_object = session.query(HostDatabase).filter_by(host_id=self._id).first()
+            session = self.session_spawner.get_new_session()
+            db_object = session.query(HostDatabase).filter_by(host_id=self._id
+                                                             ).first()
             session.delete(db_object)
             session.commit()
-            self.sessions.destroy_session(session)
-        except Exception as e:
-            return {
-                'status': 'error',
-                'text': str(e)
-            }
+            self.session_spawner.destroy_session(session)
+        except Exception as exc:
+            return {'status': 'error', 'text': str(exc)}
 
         else:
-            return {
-                'status': 'success'
-            }
+            return {'status': 'success'}
 
     def update_comment(self, comment):
         try:
-            session = self.sessions.get_new_session()
-            db_object = session.query(HostDatabase).filter_by(host_id=self._id).first()
+            session = self.session_spawner.get_new_session()
+            db_object = session.query(HostDatabase).filter_by(host_id=self._id
+                                                             ).first()
             db_object.comment = comment
             session.commit()
-            self.sessions.destroy_session(session)
-        except Exception as e:
-            return {
-                'status': 'error',
-                'text': str(e)
-            }
+            self.session_spawner.destroy_session(session)
+        except Exception as exc:
+            return {'status': 'error', 'text': str(exc)}
 
         else:
             self.comment = comment
 
-            return {
-                'status': 'success'
-            }
+            return {'status': 'success'}
 
     def append_ip(self, ip_object):
         if ip_object not in self.ip_addresses:
             self.ip_addresses.append(ip_object)
-            session = self.sessions.get_new_session()
-            host_from_db = session.query(HostDatabase).filter_by(host_id=self.get_id()).first()
-            ip_from_db = session.query(IPDatabase).filter_by(ip_id=ip_object.get_id()).first()
+            session = self.session_spawner.get_new_session()
+            host_from_db = session.query(HostDatabase).filter_by(
+                host_id=self.get_id()
+            ).first()
+            ip_from_db = session.query(IPDatabase).filter_by(
+                ip_id=ip_object.get_id()
+            ).first()
             host_from_db.ip_addresses.append(ip_from_db)
 
             session.commit()
-            self.sessions.destroy_session(session)
+            self.session_spawner.destroy_session(session)
 
     def remove_ip_address(self, ip_object):
         try:

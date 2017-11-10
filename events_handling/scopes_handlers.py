@@ -111,7 +111,8 @@ class ScopeHandlers(object):
             project_uuid = msg['project_uuid']
 
             # Delete new scope (and register it)
-            delete_result = self.scope_manager.delete_scope(scope_id=scope_id)
+            delete_result = self.scope_manager.delete_scope(scope_id=scope_id,
+                                                            project_uuid=project_uuid)
 
             if delete_result["status"] == "success":
                 # Send the success result
