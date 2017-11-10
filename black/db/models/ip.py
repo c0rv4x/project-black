@@ -1,6 +1,8 @@
 import datetime
-from black.black.db.models.base import Base
 from sqlalchemy import Column, String, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
+
+from black.black.db.models.base import Base, association_table
 
 
 class IPDatabase(Base):
@@ -8,7 +10,7 @@ class IPDatabase(Base):
     * Hostnames
     * IPs
     * Related data (like, 'scope_id' and the project name)  """
-    __tablename__ = "ips"
+    __tablename__ = 'ips'
 
     # Primary key (probably uuid4)
     ip_id = Column(String, primary_key=True)
@@ -17,8 +19,15 @@ class IPDatabase(Base):
     #    is needed)
     ip_address = Column(String)
 
+    # The hostnames that point to this IP
+    hostnames = relationship(
+        "HostDatabase",
+        secondary=association_table,
+        back_populates="ip_addresses"
+    )
+
     # Comment field, as requested by VI
-    comment = Column(String, default="")
+    comment = Column(String)
 
     # The name of the related project
     project_uuid = Column(
@@ -35,7 +44,6 @@ class IPDatabase(Base):
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
 
     def __repr__(self):
-        return """<IP_addr(ip_id='%s', hostname='%s',
-                        ip_address='%s', project_uuid='%s')>""" % (
+        return """<IPDatabase(ip_id='%s', hostnames='%s', ip_address='%s', project_uuid='%s')>""" % (
             self.ip_id, self.hostnames, self.ip_address, self.project_uuid
         )

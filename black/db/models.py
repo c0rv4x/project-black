@@ -8,12 +8,6 @@ from managers.scopes.host import HostInternal
 from managers.scopes.ip import IP_addr
 
 
-association_table = Table(
-    'association', Base.metadata,
-    Column('ip_id', String, ForeignKey('ips.ip_id')),
-    Column('host_id', String, ForeignKey('hosts.host_id'))
-)
-
 
 class IP_addr(Base):
     """ Kepps the data on scope:

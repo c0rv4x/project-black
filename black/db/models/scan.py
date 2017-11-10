@@ -3,7 +3,7 @@ from black.black.db.models.base import Base
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
 
 
-class Scan(Base):
+class ScanDatabase(Base):
     """ Keep the major part of data: everything that has been
     found during the scan """
     __tablename__ = 'scans'

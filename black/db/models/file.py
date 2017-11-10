@@ -3,7 +3,7 @@ from black.black.db.models.base import Base
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
 
 
-class FoundFile(Base):
+class FileDatabase(Base):
     """ Keeps data on the found file """
     __tablename__ = "files"
 
