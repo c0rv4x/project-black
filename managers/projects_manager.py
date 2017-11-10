@@ -4,7 +4,7 @@ import uuid
 import json
 
 from black.black.db import Sessions
-from black.black.db import Project as ProjectDB
+from black.black.db import ProjectDatabase
 
 
 class ProjectInner(object):
@@ -41,7 +41,7 @@ class ProjectInner(object):
         """ Save the current state of object to the DB """
         try:
             session = self.sessions.get_new_session()
-            project_db = ProjectDB(
+            project_db = ProjectDatabase(
                 project_uuid=self._project_uuid,
                 project_name=self._project_name,
                 comment=self.comment
@@ -57,7 +57,7 @@ class ProjectInner(object):
         """ Update the current state of object to the DB """
         try:
             session = self.sessions.get_new_session()
-            db_obj = session.query(ProjectDB).filter_by(
+            db_obj = session.query(ProjectDatabase).filter_by(
                 project_uuid=self._project_uuid
             ).first()
             db_obj.project_name = self._project_name
@@ -73,7 +73,7 @@ class ProjectInner(object):
         """ Delete this object from the DB """
         try:
             session = self.sessions.get_new_session()
-            db_obj = session.query(ProjectDB).filter_by(
+            db_obj = session.query(ProjectDatabase).filter_by(
                 project_uuid=self._project_uuid
             ).first()
             session.delete(db_obj)
@@ -103,7 +103,7 @@ class ProjectManager(object):
     def update_from_db(self):
         """ Extract all the projects from the DB """
         session = self.sessions.get_new_session()
-        projects_db = session.query(ProjectDB).all()
+        projects_db = session.query(ProjectDatabase).all()
         self.projects = list(map(lambda x: ProjectInner(x.project_uuid, x.project_name, x.comment),
             projects_db))
         self.sessions.destroy_session(session)

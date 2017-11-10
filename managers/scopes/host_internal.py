@@ -1,8 +1,8 @@
-from black.black.db import association_table, IP_addr
-from black.black.db import Host as HostDB
+from black.black.db import association_table, IPDatabase
+from black.black.db import HostDatabase
 
 
-class Host(object):
+class HostInternal(object):
     def __init__(self, host_id, hostname, project_uuid, ip_addresses=None, comment="", sessions=None):
         self._id = host_id
         self.hostname = hostname
@@ -43,7 +43,7 @@ class Host(object):
     def save(self):
         try:
             session = self.sessions.get_new_session()
-            db_object = HostDB(host_id=self.get_id(),
+            db_object = HostDatabase(host_id=self.get_id(),
                                hostname=self.get_hostname(),
                                comment=self.get_comment(),
                                project_uuid=self.get_project_uuid())
@@ -64,7 +64,7 @@ class Host(object):
     def delete(self):
         try:
             session = self.sessions.get_new_session()
-            db_object = session.query(HostDB).filter_by(host_id=self._id).first()
+            db_object = session.query(HostDatabase).filter_by(host_id=self._id).first()
             session.delete(db_object)
             session.commit()
             self.sessions.destroy_session(session)
@@ -82,7 +82,7 @@ class Host(object):
     def update_comment(self, comment):
         try:
             session = self.sessions.get_new_session()
-            db_object = session.query(HostDB).filter_by(host_id=self._id).first()
+            db_object = session.query(HostDatabase).filter_by(host_id=self._id).first()
             db_object.comment = comment
             session.commit()
             self.sessions.destroy_session(session)
@@ -103,8 +103,8 @@ class Host(object):
         if ip_object not in self.ip_addresses:
             self.ip_addresses.append(ip_object)
             session = self.sessions.get_new_session()
-            host_from_db = session.query(HostDB).filter_by(host_id=self.get_id()).first()
-            ip_from_db = session.query(IP_addr).filter_by(ip_id=ip_object.get_id()).first()
+            host_from_db = session.query(HostDatabase).filter_by(host_id=self.get_id()).first()
+            ip_from_db = session.query(IPDatabase).filter_by(ip_id=ip_object.get_id()).first()
             host_from_db.ip_addresses.append(ip_from_db)
 
             session.commit()

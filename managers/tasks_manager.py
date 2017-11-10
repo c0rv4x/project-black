@@ -5,7 +5,7 @@ import json
 import datetime
 import asynqp
 
-from black.black.db import Sessions, Task
+from black.black.db import Sessions, TaskDatabase
 
 
 class ShadowTask(object):
@@ -177,7 +177,7 @@ class TaskManager(object):
     def update_from_db(self):
         """ Extract all the tasks from the DB """
         session = self.sessions.get_new_session()
-        tasks_from_db = session.query(Task).all()
+        tasks_from_db = session.query(TaskDatabase).all()
         tasks = list(map(lambda x:
                          ShadowTask(task_id=x.task_id,
                                     task_type=x.task_type,

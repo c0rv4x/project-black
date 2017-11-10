@@ -8,10 +8,9 @@ import aiodns
 import uuid
 
 from managers.resolver import Resolver, ResolverTimeoutException
-from black.black.db import Sessions, IP_addr, Project
-from black.black.db import Host as HostDB
-from managers.scopes.ip import IP
-from managers.scopes.host import Host as HostInstance
+from black.black.db import Sessions, IPDatabase, ProjectDatabase, HostDatabase
+from managers.scopes.ip_internal import IPInternal
+from managers.scopes.host_internal import HostInternal
 
 
 class ScopeManager(object):
@@ -23,19 +22,16 @@ class ScopeManager(object):
         self.hosts = {}
 
         self.inited = {}
-
-        self.sessions = Sessions()
-
-        # self.update_from_db()
+        self.sessions_spawner = Sessions()
 
     def create_ip(self, ip_address, project_uuid, result_jsoned=True):
         """ Create IP object, save and add that to the ips list """
         if self.find_ip(
             ip_address=ip_address, project_uuid=project_uuid
         ) is not None:
-            return {"status": "dupliacte"}
+            return { "status": "dupliacte" }
 
-        new_ip = IP(str(uuid.uuid4()), ip_address, project_uuid, sessions=self.sessions)
+        new_ip = IPInternal(ip_address, project_uuid)
         save_result = new_ip.save()
 
         if save_result["status"] == "success":
@@ -57,12 +53,12 @@ class ScopeManager(object):
         db_objects = map(lambda ip_object: ip_object.save(commit=False), ips_objects)
 
         try:
-            session = self.sessions.get_new_session()
+            session = self.sessions_spawner.get_new_session()
             for db_object in db_objects:
                 session.add(db_object)
 
             session.commit()
-            self.sessions.destroy_session(session)
+            self.sessions_spawner.destroy_session(session)
         except Exception as e:
             print("error during savin ip", e)
             return {'status': 'error', 'text': str(e)}
@@ -102,11 +98,11 @@ class ScopeManager(object):
             self.inited[project_uuid] = True
 
         if self.ips.get(project_uuid, False) is False:
-            self.ips[project_uuid] = []
+            self.ips[project_uuid] = {}
 
         ips_filtered = self.ips[project_uuid]
 
-        return list(map(lambda x: x.to_json(), ips_filtered))
+        return list(map(lambda x: x.to_json(), ips_filtered.values()))
 
     def get_hosts(self, project_uuid):
         """ Returns a formatted list of known hosts, filtered by project_uuid """
@@ -115,11 +111,11 @@ class ScopeManager(object):
             self.inited[project_uuid] = True
 
         if self.hosts.get(project_uuid, False) is False:
-            self.hosts[project_uuid] = []
+            self.hosts[project_uuid] = {}
 
         hosts_filtered = self.hosts[project_uuid]
 
-        return list(map(lambda x: x.to_json(), hosts_filtered))
+        return list(map(lambda x: x.to_json(), hosts_filtered.values()))
 
     def update_from_db(self, project_uuid=None):
         """ Extract all the ips from the DB """
@@ -127,53 +123,71 @@ class ScopeManager(object):
         self.hosts = {}
 
         # If no project_uuid was specified, find data for all projects
-        session = self.sessions.get_new_session()
-        project_uuids = session.query(Project.project_uuid).all()
+        session = self.sessions_spawner.get_new_session()
+        project_uuids = session.query(ProjectDatabase.project_uuid).all()
         if project_uuid is not None:
             project_uuids = [(project_uuid, )]
 
-        for each_project_uuid_tupled in project_uuids:    
+        for each_project_uuid_tupled in project_uuids:
             each_project_uuid = each_project_uuid_tupled[0]
-            self.ips[each_project_uuid] = []
+            self.ips[each_project_uuid] = {}
 
-            # session = self.sessions.get_new_session()
-            ips_from_db = session.query(IP_addr).filter(IP_addr.project_uuid == each_project_uuid).distinct().all()
-            self.ips[each_project_uuid] = list(map(lambda x: IP(x.ip_id,
-                                                                x.ip_address,
-                                                                x.project_uuid,
-                                                                list(map(lambda x: x.hostname, x.hostnames)),
-                                                                x.comment,
-                                                                sessions=self.sessions),
-                                                    ips_from_db))
+            # Remember a link to the dict which we are filling now
+            ips_dict = self.ips[each_project_uuid]
 
-            hosts_from_db = session.query(HostDB).filter(HostDB.project_uuid == each_project_uuid).distinct().all()
-            self.hosts[each_project_uuid] = list(map(lambda x: HostInstance(x.host_id,
-                                                                            x.hostname,
-                                                                            x.project_uuid,
-                                                                            list(map(lambda x: x.ip_address, x.ip_addresses)),
-                                                                            x.comment,
-                                                                            sessions=self.sessions),
-                                                      hosts_from_db))
+            # Iterate over all ips from the db and put the to the special dict
+            ips_from_db = session.query(IPDatabase).filter(IPDatabase.project_uuid == each_project_uuid).distinct().all()
+            for each_value in ips_from_db:
+                db_dict = each_value.__dict__
 
-            self.sessions.destroy_session(session)
+                ip_id = db_dict['ip_id']
+                ip_address = db_dict['ip_address']
+                project_uuid = db_dict['project_uuid']
+                comment = db_dict['comment']
+                hostnames = db_dict.get('hostnames', [])
 
-            for each_ip in self.ips[each_project_uuid]:
-                nice_hostnames = list(
-                    filter(
-                        lambda y: y.get_hostname() in each_ip.get_hostnames(),
-                        self.hosts.get(each_project_uuid, [])
-                    )
-                )
-                each_ip.set_hostnames(nice_hostnames)
+                ips_dict[ip_address] = IPInternal(ip_id=ip_id,
+                                                  ip_address=ip_address,
+                                                  project_uuid=project_uuid,
+                                                  comment=comment,
+                                                  hostnames=hostnames)
 
-            for each_host in self.hosts[each_project_uuid]:
-                nice_ips = list(
-                    filter(
-                        lambda y: y.get_ip_address() in each_host.get_ip_addresses(),
-                        self.ips.get(each_project_uuid, [])
-                    )
-                )
-                each_host.set_ip_addresses(nice_ips)
+            # self.ips[each_project_uuid] = list(map(lambda x: IP(x.ip_id,
+            #                                                     x.ip_address,
+            #                                                     x.project_uuid,
+            #                                                     list(map(lambda x: x.hostname, x.hostnames)),
+            #                                                     x.comment,
+            #                                                     sessions=self.sessions),
+            #                                         ips_from_db))
+
+            # hosts_from_db = session.query(HostDatabase).filter(HostDatabase.project_uuid == each_project_uuid).distinct().all()
+            # self.hosts[each_project_uuid] = list(map(lambda x: HostInstance(x.host_id,
+            #                                                                 x.hostname,
+            #                                                                 x.project_uuid,
+            #                                                                 list(map(lambda x: x.ip_address, x.ip_addresses)),
+            #                                                                 x.comment,
+            #                                                                 sessions=self.sessions),
+            #                                           hosts_from_db))
+
+        self.sessions_spawner.destroy_session(session)
+
+            # for each_ip in self.ips[each_project_uuid]:
+            #     nice_hostnames = list(
+            #         filter(
+            #             lambda y: y.get_hostname() in each_ip.get_hostnames(),
+            #             self.hosts.get(each_project_uuid, [])
+            #         )
+            #     )
+            #     each_ip.set_hostnames(nice_hostnames)
+
+            # for each_host in self.hosts[each_project_uuid]:
+            #     nice_ips = list(
+            #         filter(
+            #             lambda y: y.get_ip_address() in each_host.get_ip_addresses(),
+            #             self.ips.get(each_project_uuid, [])
+            #         )
+            #     )
+            #     each_host.set_ip_addresses(nice_ips)
 
     def find_ip(self, ip_address=None, project_uuid=None, ip_id=None):
         """ Checks whether ip object for a certain project already exitst """
