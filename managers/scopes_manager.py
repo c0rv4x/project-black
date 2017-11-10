@@ -29,7 +29,7 @@ class ScopeManager(object):
         if self.find_ip(
             ip_address=ip_address, project_uuid=project_uuid
         ) is not None:
-            return { "status": "dupliacte" }
+            return {"status": "dupliacte"}
 
         new_ip = IPInternal(ip_address, project_uuid)
         save_result = new_ip.save()
@@ -50,7 +50,7 @@ class ScopeManager(object):
         new_ip_addresses = filter(lambda ip_address: self.find_ip(ip_address=ip_address, project_uuid=project_uuid) is None, ip_addresses)
 
         ips_objects = list(map(lambda ip_address: IPInternal(ip_address=ip_address,
-                                                        project_uuid=project_uuid),
+                                                             project_uuid=project_uuid),
                           new_ip_addresses))
 
         db_objects = map(lambda ip_object: ip_object.save(commit=False), ips_objects)
