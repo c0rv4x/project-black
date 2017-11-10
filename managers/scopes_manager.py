@@ -153,7 +153,7 @@ class ScopeManager(object):
                 ip_address = db_dict['ip_address']
                 project_uuid = db_dict['project_uuid']
                 comment = db_dict['comment']
-                hostnames = db_dict.get('hostnames', [])
+                hostnames = []
 
                 ips_dict[ip_address] = IPInternal(ip_id=ip_id,
                                                   ip_address=ip_address,
@@ -178,13 +178,26 @@ class ScopeManager(object):
                 hostname = db_dict['hostname']
                 project_uuid = db_dict['project_uuid']
                 comment = db_dict['comment']
+
+                # IPs objects are already created so we will do the following:
+                # 1. HostDatabse keeps info on the ips
                 ip_addresses = db_dict.get('ip_addresses', [])
 
-                hosts_dict[hostname] = HostInternal(host_id=host_id,
-                                                    hostname=hostname,
-                                                    project_uuid=project_uuid,
-                                                    comment=comment,
-                                                    ip_addresses=ip_addresses)
+                # 2. Map these db objects to our internal objects
+                ips_dict = self.ips[each_project_uuid]
+                ips_internal = list(map(lambda ip_address: ips_dict.get(ip_address.ip_address), ip_addresses))
+
+                # 3. Create a host object with those ips
+                host = HostInternal(host_id=host_id,
+                                    hostname=hostname,
+                                    project_uuid=project_uuid,
+                                    comment=comment,
+                                    ip_addresses=ips_internal)
+                hosts_dict[hostname] = host
+
+                # 4. For each ip assign a hostname
+                for each_ip in ips_internal:
+                    each_ip.append_host(host, save=False)
 
             # self.ips[each_project_uuid] = list(map(lambda x: IP(x.ip_id,
             #                                                     x.ip_address,
@@ -204,24 +217,6 @@ class ScopeManager(object):
             #                                           hosts_from_db))
 
         self.sessions_spawner.destroy_session(session)
-
-        # for each_ip in self.ips[each_project_uuid]:
-        #     nice_hostnames = list(
-        #         filter(
-        #             lambda y: y.get_hostname() in each_ip.get_hostnames(),
-        #             self.hosts.get(each_project_uuid, [])
-        #         )
-        #     )
-        #     each_ip.set_hostnames(nice_hostnames)
-
-        # for each_host in self.hosts[each_project_uuid]:
-        #     nice_ips = list(
-        #         filter(
-        #             lambda y: y.get_ip_address() in each_host.get_ip_addresses(),
-        #             self.ips.get(each_project_uuid, [])
-        #         )
-        #     )
-        #     each_host.set_ip_addresses(nice_ips)
 
     def find_ip(self, ip_address=None, project_uuid=None, ip_id=None):
         """ Checks whether ip object for a certain project already exitst """

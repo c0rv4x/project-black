@@ -56,10 +56,10 @@ class HostInternal(object):
                 self.get_hostname(),
             'ip_addresses':
                 list(
-                        map(
-                            lambda ip_address: ip_address.get_ip_address(),
-                            self.get_ip_addresses()
-                        )
+                    map(
+                        lambda ip_address: ip_address.get_ip_address(),
+                        self.get_ip_addresses()
+                    )
                 ),
             'comment':
                 self.comment,

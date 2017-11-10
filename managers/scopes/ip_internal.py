@@ -120,27 +120,28 @@ class IPInternal(object):
 
             return {'status': 'success'}
 
-    def append_host(self, host_object):
+    def append_host(self, host_object, save=True):
         """ Adds host to a list of known related hosts of the current ip """
         # TODO: should grab the result of saving
         if host_object not in self.hostnames:
-            session = self.session_spawner.get_new_session()
+            if save:
+                session = self.session_spawner.get_new_session()
 
-            # Find db object which reflects the current ip
-            ip_from_db = session.query(IPDatabase).filter_by(
-                ip_id=self.get_id()
-            ).first()
+                # Find db object which reflects the current ip
+                ip_from_db = session.query(IPDatabase).filter_by(
+                    ip_id=self.get_id()
+                ).first()
 
-            # Find db object which reflect a new hostname
-            host_from_db = session.query(HostDatabase).filter_by(
-                host_id=host_object.get_id()
-            ).first()
+                # Find db object which reflect a new hostname
+                host_from_db = session.query(HostDatabase).filter_by(
+                    host_id=host_object.get_id()
+                ).first()
 
-            # Append host to ip
-            ip_from_db.hostnames.append(host_from_db)
+                # Append host to ip
+                ip_from_db.hostnames.append(host_from_db)
 
-            session.commit()
-            self.session_spawner.destroy_session(session)
+                session.commit()
+                self.session_spawner.destroy_session(session)
 
             # If no exception occured there, we will add it locally
             self.hostnames.append(host_object)
