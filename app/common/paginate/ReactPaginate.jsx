@@ -47,7 +47,7 @@ class ReactPaginate extends React.Component {
 			case 3:
 			case 4:
 			case 5:
-				for (var i = 1; i < pageCount; i++) {
+				for (var i = 1; i < pageCount + 1; i++) {
 					pages.push(this.createItem(i));
 				}
 

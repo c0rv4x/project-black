@@ -24,18 +24,13 @@ class HostsTable extends React.Component {
 				pageCount: pageCount
 			}
 		}
-		else {
-			this.state = {
-				shownData: [],
-				offsetPage: 0,
-				pageCount: 0
-			}			
-		}
 
 		this.scopesEmitter = new ScopesSocketioEventsEmitter();
 
 		this.commentSubmitted = this.commentSubmitted.bind(this);
 		this.handlePageClick = this.handlePageClick.bind(this);
+
+		this.page_inited = false;
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -48,10 +43,10 @@ class HostsTable extends React.Component {
 	}	
 
 	handlePageClick(data) {
-		var start = this.limitPerPage * data.selected;
+		var start = this.limitPerPage * (data - 1);
 
 		this.setState({
-			offsetPage: data.selected,
+			offsetPage: data - 1,
 			shownData: this.props.hosts.slice(start, start + this.limitPerPage),
 		});
 	}
