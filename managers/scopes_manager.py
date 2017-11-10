@@ -47,6 +47,10 @@ class ScopeManager(object):
 
     def create_batch_ips(self, ip_addresses, project_uuid):
         """ Creates a lot of ips """
+        # import cProfile, pstats, io
+        # pr = cProfile.Profile()
+        # pr.enable()
+
         new_ip_addresses = filter(lambda ip_address: self.find_ip(
             ip_address=ip_address, project_uuid=project_uuid) is None, ip_addresses)
 
@@ -68,6 +72,18 @@ class ScopeManager(object):
             print("Error when saving ip", exc)
             return {'status': 'error', 'text': str(exc)}
         else:
+            for each_ip in ips_objects:
+                ip_address = each_ip.get_ip_address()
+                self.ips[project_uuid][ip_address] = each_ip
+
+
+            # pr.disable()
+            # s = io.StringIO()
+            # sortby = 'cumulative'
+            # ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+            # ps.print_stats()
+            # print(s.getvalue())
+
             return {
                 'status': 'success',
                 'new_scopes': list(map(lambda x: x.to_json(), ips_objects))
@@ -277,6 +293,7 @@ class ScopeManager(object):
                     for each_host in ip_addr.get_hostnames():
                         each_host.remove_ip_address(ip_addr)
 
+                print(delete_result)
                 return delete_result
 
             else:

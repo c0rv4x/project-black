@@ -80,8 +80,8 @@ function renew_scopes(state = initialState, action) {
 
 	if (message["status"] == 'success') {
 		return {
-			'ips': message['ips'],
-			'hosts': message['hosts']
+			'ips': state.ips.concat(message['ips']),
+			'hosts': state.hosts.concat(message['hosts'])
 		}
 	} else {
 		/* TODO: add error handling */

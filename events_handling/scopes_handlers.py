@@ -1,6 +1,9 @@
 """ Module keeps class of scope handlers """
+import asyncio
 from netaddr import IPNetwork
 
+
+PACKET_SIZE = 100
 
 class ScopeHandlers(object):
     """ Registers all handlers related to scopes """
@@ -228,17 +231,40 @@ class ScopeHandlers(object):
                     result,
                     broadcast=True,
                     namespace='/scopes'
-                )                
+                )
 
     async def send_scopes_back(self, project_uuid=None, broadcast=False):
         """ Collects all relative hosts and ips from the manager and sends them back """
+        ips = self.scope_manager.get_ips(project_uuid)
+        hosts = self.scope_manager.get_hosts(project_uuid)
+
+        await self.send_ips_hosts(ips, hosts, project_uuid, broadcast)
+
+        # for i in range(0, max(len(ips) // PACKET_SIZE, len(hosts) // PACKET_SIZE) + 1):
+
+    async def send_ips_hosts(self, ips, hosts, project_uuid, broadcast=False, i=0):
+        if i == (len(ips) // PACKET_SIZE) + 1:
+            return
+
+        loop = asyncio.get_event_loop()
+        await self.send_scopes_packet(ips[i * PACKET_SIZE : (i + 1) * PACKET_SIZE],
+                                      hosts[i * PACKET_SIZE : (i + 1) * PACKET_SIZE],
+                                      project_uuid,
+                                      broadcast,
+                                      lambda: loop.create_task(self.send_ips_hosts(ips, hosts, project_uuid, broadcast, i + 1)),
+                                      i)
+
+    async def send_scopes_packet(self, ips, hosts, project_uuid, broadcast, callback, step):
+        print("Sending scope #{}".format(step))
         await self.socketio.emit(
             'scopes:all:get:back', {
                 'status': 'success',
                 'project_uuid': project_uuid,
-                'ips': self.scope_manager.get_ips(project_uuid),
-                'hosts': self.scope_manager.get_hosts(project_uuid)
+                'ips': ips,
+                'step': step,
+                'hosts': hosts
             },
             broadcast=broadcast,
-            namespace='/scopes'
+            namespace='/scopes',
+            callback=callback
         )
