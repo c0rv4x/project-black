@@ -32,16 +32,17 @@ class ScopesSocketioEventsSubscriber {
 	basic_events_registration() {
 		/* Register handlers on basic events */
 		// Received all scopes in one message
-		this.register_socketio_handler('scopes:all:get:back', (data, project_uuid, callack) => {
+		this.register_socketio_handler('scopes:all:get:back', renewScopes, (data, callback) => {
+			console.log(data.page);
 			if (data.page == 0) {
 				this.currentTransactionID = data.transaction_id;
-				callback(data, project_uuid);
+				callback();
 			}
 			else {
 				if (this.currentTransactionID === data.transaction_id) {
-					callback(data, project_uuid);
+					callback();
 				}
-			}
+			}			
 		});
 		this.register_socketio_handler('scopes:update:back', updateScope);
 		this.register_socketio_handler('scopes:update:comment:back', updateComment);
@@ -49,19 +50,35 @@ class ScopesSocketioEventsSubscriber {
 		this.register_socketio_handler('scopes:delete', deleteScope);
 	}
 
-	register_socketio_handler(eventName, callback, actionToTrigger) {
+	register_socketio_handler(eventName, dispatchCallback, callback) {
 		/* Just a wrapper for connector.listen */
 		this.connector.listen(eventName, (data, ackFunction) => {
-			ackFunction();
-			if (data.status == 'success') {
-				this.store.dispatch(actionToTrigger(data, this.project_uuid));
+			if (callback) {
+				callback(data, () => {
+					setTimeout(ackFunction, 50);
+					if (data.status == 'success') {
+						this.store.dispatch(dispatchCallback(data, this.project_uuid));
+					}
+					else {
+						this.store.dispatch(Notifications.error({
+							title: 'Error with scopes',
+							message: data.text
+						}));
+					}					
+				})
 			}
 			else {
-				this.store.dispatch(Notifications.error({
-					title: 'Error with scopes',
-					message: data.text
-				}));
+				if (data.status == 'success') {
+					this.store.dispatch(dispatchCallback(data, this.project_uuid));
+				}
+				else {
+					this.store.dispatch(Notifications.error({
+						title: 'Error with scopes',
+						message: data.text
+					}));
+				}				
 			}
+
 		});
 	}
 

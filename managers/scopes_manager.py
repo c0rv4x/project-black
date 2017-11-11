@@ -5,9 +5,7 @@ Ip_address can contain hostname (if they are known), which is in fact
 a one->many relationship in the SQLalchemy. """
 import asyncio
 import aiodns
-import uuid
 
-from managers.resolver import Resolver, ResolverTimeoutException
 from black.black.db import Sessions, IPDatabase, ProjectDatabase, HostDatabase
 from managers.scopes.ip_internal import IPInternal
 from managers.scopes.host_internal import HostInternal
