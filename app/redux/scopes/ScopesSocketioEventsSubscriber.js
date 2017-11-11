@@ -33,7 +33,6 @@ class ScopesSocketioEventsSubscriber {
 		/* Register handlers on basic events */
 		// Received all scopes in one message
 		this.register_socketio_handler('scopes:all:get:back', renewScopes, (data, callback) => {
-			console.log(data.page);
 			if (data.page == 0) {
 				this.currentTransactionID = data.transaction_id;
 				callback();
