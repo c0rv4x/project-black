@@ -8,7 +8,7 @@ class IPInternal(object):
     comment on the ip """
 
     def __init__(
-        self, ip_address, project_uuid, hostnames=None, comment="", ip_id=None, session_spawner=None
+        self, ip_address, project_uuid, session_spawner, hostnames=None, comment="", ip_id=None
     ):
         self.ip_address = ip_address
         self.hostnames = hostnames or list()

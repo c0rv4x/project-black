@@ -11,9 +11,10 @@ class HostInternal(object):
         self,
         hostname,
         project_uuid,
+        session_spawner,
         ip_addresses=None,
         comment="",
-        host_id=None
+        host_id=None,
     ):
         self.hostname = hostname
         self.ip_addresses = ip_addresses or list()
@@ -22,7 +23,7 @@ class HostInternal(object):
 
         self._id = host_id or str(uuid.uuid4())
 
-        self.session_spawner = Sessions()
+        self.session_spawner = session_spawner
 
     def get_id(self):
         """ Returns current id """

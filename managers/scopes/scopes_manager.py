@@ -96,7 +96,8 @@ class ScopeManager(object):
             return {"status": "dupliacte"}
 
         new_host = HostInternal(hostname=hostname,
-                                project_uuid=project_uuid)
+                                project_uuid=project_uuid,
+                                session_spawner=self.session_spawner)
         save_result = new_host.save()
 
         if save_result["status"] == "success":
@@ -211,7 +212,8 @@ class ScopeManager(object):
                                     hostname=hostname,
                                     project_uuid=project_uuid,
                                     comment=comment,
-                                    ip_addresses=ips_internal)
+                                    ip_addresses=ips_internal,
+                                    session_spawner=self.session_spawner)
                 hosts_dict[hostname] = host
 
                 # 4. For each ip assign a hostname
