@@ -4,6 +4,7 @@ import {
 	createScope, 
 	deleteScope,
 	renewScopes,
+	clearScopes,
 	updateScope,
 	updateComment
 } from './actions';
@@ -35,6 +36,7 @@ class ScopesSocketioEventsSubscriber {
 		this.register_socketio_handler('scopes:all:get:back', renewScopes, (data, callback) => {
 			if (data.page == 0) {
 				this.currentTransactionID = data.transaction_id;
+				this.store.dispatch(clearScopes(data, this.project_uuid));
 				callback();
 			}
 			else {
@@ -54,7 +56,7 @@ class ScopesSocketioEventsSubscriber {
 		this.connector.listen(eventName, (data, ackFunction) => {
 			if (callback) {
 				callback(data, () => {
-					setTimeout(ackFunction, 50);
+					setTimeout(ackFunction, 100);
 					if (data.status == 'success') {
 						this.store.dispatch(dispatchCallback(data, this.project_uuid));
 					}
