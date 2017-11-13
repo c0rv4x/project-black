@@ -45,10 +45,6 @@ class ScopeManager(object):
 
     def create_batch_ips(self, ip_addresses, project_uuid):
         """ Creates a lot of ips """
-        # import cProfile, pstats, io
-        # pr = cProfile.Profile()
-        # pr.enable()
-
         new_ip_addresses = filter(lambda ip_address: self.find_ip(
             ip_address=ip_address, project_uuid=project_uuid) is None, ip_addresses)
 
@@ -74,14 +70,6 @@ class ScopeManager(object):
             for each_ip in ips_objects:
                 ip_address = each_ip.get_ip_address()
                 self.ips[project_uuid][ip_address] = each_ip
-
-
-            # pr.disable()
-            # s = io.StringIO()
-            # sortby = 'cumulative'
-            # ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-            # ps.print_stats()
-            # print(s.getvalue())
 
             return {
                 'status': 'success',
@@ -219,12 +207,6 @@ class ScopeManager(object):
                 # 4. For each ip assign a hostname
                 for each_ip in ips_internal:
                     each_ip.append_host(host, save=False)
-
-            # print("Done initing")
-            # from pympler import summary, muppy
-            # all_objects = muppy.get_objects()
-            # sum1 = summary.summarize(muppy.filter(all_objects, Type=IPInternal))
-            # summary.print_(sum1) 
 
         self.session_spawner.destroy_session(session)
 
