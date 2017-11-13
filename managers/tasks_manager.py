@@ -136,7 +136,7 @@ class TaskManager(object):
         if task.task_type == "dirsearch":
             self.data_updated_queue.put(("file", task.project_uuid))
         elif task.task_type == "masscan" or task.task_type == "nmap":
-            self.data_updated_queue.put(("scan", task.project_uuid))
+            self.data_updated_queue.put(("scan", task.project_uuid, task.text))
         elif task.task_type == "dnsscan":
             self.data_updated_queue.put(("scope", task.project_uuid))
 

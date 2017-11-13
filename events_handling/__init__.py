@@ -1,5 +1,6 @@
 """ This module keeps a sexy class that initialises all the handlers and
 starts task_poller. """
+import json
 import queue
 import asyncio
 
@@ -48,18 +49,20 @@ class Handlers(object):
         await self.task_handlers.send_tasks_back()
 
         try:
-            task_type, project_uuid = self.data_updated_queue.get_nowait()
+            task_type, project_uuid, text = self.data_updated_queue.get_nowait()
 
             if task_type == "scope":
-                self.scope_manager.update_from_db()
+                self.scope_manager.update_from_db(project_uuid)
                 await self.scope_handlers.send_scopes_back(project_uuid, broadcast=True)
                 self.data_updated_queue.task_done()
             if task_type == "scan":
-                self.scan_manager.update_from_db()
+                if text:
+                    new_ids = json.loads(text)
+                self.scan_manager.update_from_db(project_uuid, new_ids)
                 await self.scan_handlers.send_scans_back(project_uuid, broadcast=True)
                 self.data_updated_queue.task_done()
             # if task_type == "file":
-            #     self.file_manager.update_from_db()
+            #     self.file_manager.update_from_db(project_uuid)
             #     await self.file_handlers.send_files_back(project_uuid, broadcast=True)
             #     self.data_updated_queue.task_done()
 
