@@ -1,10 +1,8 @@
 """ Keeps class with the interfaces that are pulled by worker
 to manager the launched instance of scan. """
 import re
+import json
 import signal
-import socket
-import threading
-from time import sleep
 
 import asyncio
 from asyncio.subprocess import PIPE
@@ -117,8 +115,6 @@ class MasscanTask(AsyncTask):
 
     async def spawn_status_poller(self):
         """ Spawn the thread that will poll for the progress """
-        # thread = threading.Thread(target=self.progress_poller)
-        # thread.start()
         await self.progress_poller()
 
 
@@ -152,7 +148,6 @@ class MasscanTask(AsyncTask):
 
             except Exception as exc:
                 print("Masscan, status parse:", exc)
-                pass
 
         if self.status != "Finished" and self.status != "Aborted":
             await asyncio.sleep(1)
@@ -168,18 +163,17 @@ class MasscanTask(AsyncTask):
 
         if self.exit_code == 0:
             try:
-                self.save()
-            except Exception as e:
+                save_result = self.save()
+            except Exception:
                 await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
             else:
-                print("Finishing")
-                await self.set_status("Finished", progress=100)
-                print("finished")
+                await self.set_status("Finished", progress=100, text=json.dumps(save_result))
         else:
             await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
-
+ 
     def save(self):
-        save_raw_output(
-            self.task_id,
-            self.stdout,
-            self.project_uuid)
+        """ Parse output of the task and save it to the db"""
+        return save_raw_output(
+                    self.task_id,
+                    self.stdout,
+                    self.project_uuid)

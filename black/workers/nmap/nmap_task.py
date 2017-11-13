@@ -5,7 +5,7 @@ import threading
 import asyncio
 from asyncio.subprocess import PIPE
 from libnmap.parser import NmapParser, NmapParserException
-from black.db import Project, Scan, Sessions
+from black.db import ScanDatabase, Sessions
 
 from black.workers.common.async_task import AsyncTask
 from uuid import uuid4
@@ -141,12 +141,12 @@ class NmapTask(AsyncTask):
             if scans_ids:
                 target_scan = list(filter(lambda x: data["port_number"] == x["port_number"], scans_ids))[0]
                 target_scan_id = target_scan["scan_id"]
-                new_scan = session.query(Scan).filter_by(scan_id=target_scan_id).first()
+                new_scan = session.query(ScanDatabase).filter_by(scan_id=target_scan_id).first()
 
                 new_scan.banner = data["banner"]
                 new_scan.protocol = data["protocol"]
             else:
-                new_scan = Scan()
+                new_scan = ScanDatabase()
                 session.add(new_scan)
 
             session.commit()
