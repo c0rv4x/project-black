@@ -1,6 +1,7 @@
 import datetime
-from black.black.db.models.base import Base
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
+
+from .base import Base
 
 
 class ScanDatabase(Base):

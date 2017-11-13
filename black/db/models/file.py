@@ -1,5 +1,5 @@
 import datetime
-from black.black.db.models.base import Base
+from .base import Base
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
 
 

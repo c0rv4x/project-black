@@ -2,7 +2,7 @@
 import xmltodict
 from uuid import uuid4
 
-from black.db import Sessions, Scan
+from black.db import Sessions, ScanDatabase
 
 
 def save_raw_output(task_id, output, project_uuid):

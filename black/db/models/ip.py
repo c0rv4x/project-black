@@ -2,7 +2,7 @@ import datetime
 from sqlalchemy import Column, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
-from black.black.db.models.base import Base, association_table
+from .base import Base, association_table
 
 
 class IPDatabase(Base):
