@@ -1,9 +1,9 @@
 from .sessions import Sessions
-from black.black.db.models.base import Base, association_table
-from black.black.db.models.ip import IPDatabase
-from black.black.db.models.host import HostDatabase
-from black.black.db.models.project import ProjectDatabase
-from black.black.db.models.task import TaskDatabase
+from .models.base import Base, association_table
+from .models.ip import IPDatabase
+from .models.host import HostDatabase
+from .models.project import ProjectDatabase
+from .models.task import TaskDatabase
 
 
 sessions = Sessions()
