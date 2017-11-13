@@ -1,7 +1,7 @@
 """ Basic class for Task (the isntance of a running scan
 against 1 target) """
 import json
-from black.db import Sessions, models
+from black.db import Sessions, TaskDatabase
 
 
 class Task(object):
@@ -59,7 +59,7 @@ class Task(object):
         self.progress = progress
 
         session = self.sessions.get_new_session()
-        task_db_object = session.query(models.Task).filter_by(
+        task_db_object = session.query(TaskDatabase).filter_by(
             task_id=self.get_id()
         ).first()
         task_db_object.status = new_status
@@ -72,7 +72,7 @@ class Task(object):
         self.stdout.append(stdout)
 
         session = self.sessions.get_new_session()
-        task_db_object = session.query(models.Task).filter_by(
+        task_db_object = session.query(TaskDatabase).filter_by(
             task_id=self.get_id()
         ).first()
         task_db_object.stdout = task_db_object.stdout + stdout
@@ -83,7 +83,7 @@ class Task(object):
         self.stderr.append(stderr)
 
         session = self.sessions.get_new_session()
-        task_db_object = session.query(models.Task).filter_by(
+        task_db_object = session.query(TaskDatabase).filter_by(
             task_id=self.get_id()
         ).first()
         task_db_object.stderr = task_db_object.stderr + stderr
@@ -108,7 +108,7 @@ class Task(object):
     def create_db_record(self):
         """ Creates the record of the task in a special DB table """
         session = self.sessions.get_new_session()
-        task_new_object = models.Task(
+        task_new_object = TaskDatabase(
             task_id=self.get_id(),
             task_type=self.task_type,
             target=json.dumps(self.target),

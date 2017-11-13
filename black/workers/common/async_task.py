@@ -1,7 +1,7 @@
 """ Async class for Task"""
 import asynqp
 from asyncio import Lock
-from black.db import sessions, models
+from black.db import sessions
 from black.workers.common.task import Task
 
 
