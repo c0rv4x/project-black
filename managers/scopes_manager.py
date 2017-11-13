@@ -20,7 +20,7 @@ class ScopeManager(object):
         self.hosts = {}
 
         self.inited = {}
-        self.sessions_spawner = Sessions()
+        self.session_spawner = Sessions()
 
     def create_ip(self, ip_address, project_uuid, result_jsoned=True):
         """ Create IP object, save and add that to the ips list """
@@ -29,7 +29,7 @@ class ScopeManager(object):
         ) is not None:
             return {"status": "dupliacte"}
 
-        new_ip = IPInternal(ip_address, project_uuid)
+        new_ip = IPInternal(ip_address, project_uuid, session_spawner=self.session_spawner)
         save_result = new_ip.save()
 
         if save_result["status"] == "success":
@@ -53,19 +53,20 @@ class ScopeManager(object):
             ip_address=ip_address, project_uuid=project_uuid) is None, ip_addresses)
 
         ips_objects = list(map(lambda ip_address: IPInternal(ip_address=ip_address,
-                                                             project_uuid=project_uuid),
+                                                             project_uuid=project_uuid,
+                                                             session_spawner=self.session_spawner),
                                new_ip_addresses))
 
         db_objects = map(lambda ip_object: ip_object.save(
             commit=False), ips_objects)
 
         try:
-            session = self.sessions_spawner.get_new_session()
+            session = self.session_spawner.get_new_session()
             for db_object in db_objects:
                 session.add(db_object)
 
             session.commit()
-            self.sessions_spawner.destroy_session(session)
+            self.session_spawner.destroy_session(session)
         except Exception as exc:
             print("Error when saving ip", exc)
             return {'status': 'error', 'text': str(exc)}
@@ -141,7 +142,7 @@ class ScopeManager(object):
         self.hosts = {}
 
         # If no project_uuid was specified, find data for all projects
-        session = self.sessions_spawner.get_new_session()
+        session = self.session_spawner.get_new_session()
         project_uuids = session.query(ProjectDatabase.project_uuid).all()
         if project_uuid is not None:
             project_uuids = [(project_uuid, )]
@@ -173,7 +174,8 @@ class ScopeManager(object):
                                                   ip_address=ip_address,
                                                   project_uuid=project_uuid,
                                                   comment=comment,
-                                                  hostnames=hostnames)
+                                                  hostnames=hostnames,
+                                                  session_spawner=self.session_spawner)
 
             # Hosts
             # Remember a link to the dict which we are filling now
