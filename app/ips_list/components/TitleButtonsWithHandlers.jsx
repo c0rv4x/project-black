@@ -21,7 +21,7 @@ class TitleButtonsWithHandlers extends React.Component {
 
 	}
 
-	startTask(targets) {
+	startTask(targets, i, params) {
 		setTimeout(() => {
 			this.tasksEmitter.requestCreateTask('masscan', 
 												targets,
@@ -38,7 +38,7 @@ class TitleButtonsWithHandlers extends React.Component {
 		var batchSize = 50;
 
 		for (var i = 0; i < Math.ceil(targets.length / batchSize); i++) {
-			this.startTask(targets.slice(i * batchSize, (i + 1) * batchSize));			
+			this.startTask(targets.slice(i * batchSize, (i + 1) * batchSize), i, params);			
 		}
 
 	}
