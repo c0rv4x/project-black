@@ -160,6 +160,8 @@ class ScopeManager(object):
             ips_from_db = session.query(IPDatabase).filter(
                 IPDatabase.project_uuid == each_project_uuid).distinct().all()
 
+            print("I found {} ips".format(len(ips_from_db)))
+
             # Transform ips from db to our internal representation
             for each_value in ips_from_db:
                 db_dict = each_value.__dict__
@@ -185,6 +187,7 @@ class ScopeManager(object):
             # dict
             hosts_from_db = session.query(HostDatabase).filter(
                 HostDatabase.project_uuid == each_project_uuid).distinct().all()
+            print("I found {} hosts".format(len(hosts_from_db)))
 
             # Transform ips from db to our internal representation
             for each_value in hosts_from_db:
@@ -215,24 +218,13 @@ class ScopeManager(object):
                 for each_ip in ips_internal:
                     each_ip.append_host(host, save=False)
 
-            # self.ips[each_project_uuid] = list(map(lambda x: IP(x.ip_id,
-            #                                                     x.ip_address,
-            #                                                     x.project_uuid,
-            #                                                     list(map(lambda x: x.hostname, x.hostnames)),
-            #                                                     x.comment,
-            #                                                     sessions=self.sessions),
-            #                                         ips_from_db))
+            # print("Done initing")
+            # from pympler import summary, muppy
+            # all_objects = muppy.get_objects()
+            # sum1 = summary.summarize(muppy.filter(all_objects, Type=IPInternal))
+            # summary.print_(sum1) 
 
-            # hosts_from_db = session.query(HostDatabase).filter(HostDatabase.project_uuid == each_project_uuid).distinct().all()
-            # self.hosts[each_project_uuid] = list(map(lambda x: HostInstance(x.host_id,
-            #                                                                 x.hostname,
-            #                                                                 x.project_uuid,
-            #                                                                 list(map(lambda x: x.ip_address, x.ip_addresses)),
-            #                                                                 x.comment,
-            #                                                                 sessions=self.sessions),
-            #                                           hosts_from_db))
-
-        self.sessions_spawner.destroy_session(session)
+        self.session_spawner.destroy_session(session)
 
     def find_ip(self, ip_address=None, project_uuid=None, ip_id=None):
         """ Checks whether ip object for a certain project already exitst """
