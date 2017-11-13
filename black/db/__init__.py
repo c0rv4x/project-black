@@ -1,4 +1,4 @@
-from black.black.db.sessions import Sessions
+from .sessions import Sessions
 from black.black.db.models.base import Base, association_table
 from black.black.db.models.ip import IPDatabase
 from black.black.db.models.host import HostDatabase
