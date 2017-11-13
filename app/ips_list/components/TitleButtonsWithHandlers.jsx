@@ -17,19 +17,20 @@ class TitleButtonsWithHandlers extends React.Component {
 		this.doSetTimeout = this.doSetTimeout.bind(this);
 
 		this.dirbusterStart = this.dirbusterStart.bind(this);
+		this.startTask = this.startTask.bind(this);
 
 	}
 
-	runMasscan(params) {
-		function startTask(i) {
-			setTimeout(() => {
-				this.tasksEmitter.requestCreateTask('masscan', 
-													targets.slice(i * batchSize, (i + 1) * batchSize), 
-													{'program': [params["argv"]]},
-													this.props.project.project_uuid)				
-			}, 50 * i);
-		}
+	startTask(i) {
+		setTimeout(() => {
+			this.tasksEmitter.requestCreateTask('masscan', 
+												targets.slice(i * batchSize, (i + 1) * batchSize), 
+												{'program': [params["argv"]]},
+												this.props.project.project_uuid)				
+		}, 50 * i);
+	}
 
+	runMasscan(params) {
 		var targets = _.map(this.props.scopes, (x) => {
 			return x.ip_address || x.hostname
 		});
@@ -37,7 +38,7 @@ class TitleButtonsWithHandlers extends React.Component {
 		var batchSize = 50;
 
 		for (var i = 0; i < Math.ceil(targets.length / batchSize); i++) {
-			startTask(i);			
+			this.startTask(i);			
 		}
 
 	}
