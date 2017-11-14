@@ -11,7 +11,7 @@ class Connector {
         }
         else {
             this.name = name;
-            this.socketio = io("http://" + location.host + "/" + name);  
+            this.socketio = io("http://" + location.host + "/" + name);
             connections[name] = this;
         }
     }

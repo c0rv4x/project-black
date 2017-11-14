@@ -56,11 +56,15 @@ class Handlers(object):
                 await self.scope_handlers.send_scopes_back(project_uuid, broadcast=True)
                 self.data_updated_queue.task_done()
             if task_type == "scan":
+                new_ids = None
+
                 if text:
                     new_ids = json.loads(text)
+
                 self.scan_manager.update_from_db(project_uuid, new_ids)
                 await self.scan_handlers.send_scans_back(project_uuid, broadcast=True)
                 self.data_updated_queue.task_done()
+
             # if task_type == "file":
             #     self.file_manager.update_from_db(project_uuid)
             #     await self.file_handlers.send_files_back(project_uuid, broadcast=True)
