@@ -7,7 +7,7 @@ import { updateComment as updateScopeComment } from '../../redux/scopes/actions'
 import { updateFilters } from '../../redux/filters/actions'
 
 
-function formIPs(ips_list, project_uuid) {
+function formIPs(ips_list) {
 	var ips = ips_list.sort((a, b) => {
     	if (a.ip_address < b.ip_address) return -1
     	if (a.ip_address > b.ip_address) return 1
@@ -17,7 +17,7 @@ function formIPs(ips_list, project_uuid) {
     return ips;
 }
 
-function formHosts(hosts_list, project_uuid, files) {
+function formHosts(hosts_list, files) {
 	var hosts = hosts_list.sort((a, b) => {
     	if (a.hostname < b.hostname) return -1
     	if (a.hostname > b.hostname) return 1
@@ -54,8 +54,8 @@ function mapStateToProps(state, ownProps) {
     return {
     	project: project,
         scopes: {
-        	'ips': formIPs(JSON.parse(JSON.stringify(state.scopes.ips)), project['project_uuid']),
-        	'hosts': formHosts(JSON.parse(JSON.stringify(state.scopes.hosts)), project['project_uuid'], state.files)
+        	'ips': formIPs(state.scopes.ips),
+        	'hosts': formHosts(state.scopes.hosts, state.files)
         },
         tasks: _.filter(state.tasks.active, (x) => {
         	return x.project_uuid == project['project_uuid']
