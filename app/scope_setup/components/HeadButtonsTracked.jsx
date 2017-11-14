@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { Divider } from 'semantic-ui-react'
+
 import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
 import HeadButtons from '../presentational/HeadButtons.jsx'
@@ -62,7 +64,7 @@ class HeadButtonsTracked extends React.Component {
 				} />
 
 				<br />
-				<hr />
+				<Divider />
 			</div>
 		)
 	}

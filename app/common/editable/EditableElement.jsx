@@ -83,7 +83,7 @@ class EditableElement extends React.Component {
                 style={this.props.elementStyle}
                 onClick={this.onClick}
             >
-            {this.state.value || 'Click to edit'}
+            {this.state.value || this.props.placeholder}
             </Element>
         );
     }
@@ -143,7 +143,7 @@ EditableElement.defaultProps = {
     onBlur: null,
     onChange: null,
     onKeyDown: null,
-    placeholder: '',
+    placeholder: 'Click to edit',
     value: '',
 };
 

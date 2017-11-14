@@ -1,6 +1,10 @@
 """ Module keeps class of scope handlers """
+import uuid
+import asyncio
 from netaddr import IPNetwork
 
+
+PACKET_SIZE = 1000
 
 class ScopeHandlers(object):
     """ Registers all handlers related to scopes """
@@ -16,7 +20,7 @@ class ScopeHandlers(object):
         async def _cb_handle_scopes_get(sio, msg):
             """ When received this message, send back all the scopes """
             project_uuid = msg.get('project_uuid', None)
-            await self.send_scopes_back(project_uuid)
+            await self.send_scopes_back(sio, project_uuid)
 
         @self.socketio.on('scopes:create', namespace='/scopes')
         async def _cb_handle_scope_create(sio, msg):
@@ -43,17 +47,25 @@ class ScopeHandlers(object):
                 elif scope['type'] == 'network':
                     ips = IPNetwork(scope['target'])
 
-                    for ip_address in ips:
-                        create_result = self.scope_manager.create_ip(
-                            str(ip_address), project_uuid
-                        )
+                    create_result = self.scope_manager.create_batch_ips(
+                        list(map(str, ips)), project_uuid
+                    )
 
-                        if create_result["status"] == "success":
-                            new_scope = create_result["new_scope"]
+                    added = True
+                    new_scopes = create_result["new_scopes"]
 
-                            if new_scope:
-                                added = True
-                                new_scopes.append(new_scope)
+                    # for ip_address in ips:
+                    #     print("Adding ip {}".format(ip_address))
+                    #     create_result = self.scope_manager.create_ip(
+                    #         str(ip_address), project_uuid
+                    #     )
+
+                    #     if create_result["status"] == "success":
+                    #         new_scope = create_result["new_scope"]
+
+                    #         if new_scope:
+                    #             added = True
+                    #             new_scopes.append(new_scope)
                 else:
                     create_result = {
                         "status": 'error',
@@ -80,7 +92,6 @@ class ScopeHandlers(object):
                         'project_uuid': project_uuid,
                         'text': error_text
                     },
-                    broadcast=True,
                     namespace='/scopes'
                 )
 
@@ -92,7 +103,6 @@ class ScopeHandlers(object):
                         'project_uuid': project_uuid,
                         'new_scopes': new_scopes
                     },
-                    broadcast=True,
                     namespace='/scopes'
                 )
 
@@ -103,7 +113,8 @@ class ScopeHandlers(object):
             project_uuid = msg['project_uuid']
 
             # Delete new scope (and register it)
-            delete_result = self.scope_manager.delete_scope(scope_id=scope_id)
+            delete_result = self.scope_manager.delete_scope(scope_id=scope_id,
+                                                            project_uuid=project_uuid)
 
             if delete_result["status"] == "success":
                 # Send the success result
@@ -111,7 +122,6 @@ class ScopeHandlers(object):
                     'scopes:delete', {'status': 'success',
                                       '_id': scope_id,
                                       'project_uuid': project_uuid},
-                    broadcast=True,
                     namespace='/scopes'
                 )
 
@@ -122,7 +132,6 @@ class ScopeHandlers(object):
                         'hosts': self.scope_manager.get_hosts(project_uuid),
                         'project_uuid': project_uuid
                     },
-                    broadcast=True,
                     namespace='/scopes'
                 )
             else:
@@ -132,7 +141,6 @@ class ScopeHandlers(object):
                     {'status': 'error',
                      'text': delete_result["text"],
                      'project_uuid': project_uuid},
-                    broadcast=True,
                     namespace='/scopes'
                 )
 
@@ -155,7 +163,6 @@ class ScopeHandlers(object):
                     'hosts': self.scope_manager.get_hosts(project_uuid),
                     'project_uuid': project_uuid
                 },
-                broadcast=True,
                 namespace='/scopes'
             )
 
@@ -178,7 +185,6 @@ class ScopeHandlers(object):
                      "status": "success",
                      "updated_scope": updated_scope,
                      "project_uuid": project_uuid},
-                    broadcast=True,
                     namespace='/scopes'
                 )
             else:
@@ -186,7 +192,6 @@ class ScopeHandlers(object):
                 await self.socketio.emit(
                     'scopes:update:back',
                     result,
-                    broadcast=True,
                     namespace='/scopes'
                 )
 
@@ -209,7 +214,6 @@ class ScopeHandlers(object):
                      "status": "success",
                      "updated_scope": updated_scope,
                      "project_uuid": project_uuid},
-                    broadcast=True,
                     namespace='/scopes'
                 )
             else:
@@ -217,19 +221,57 @@ class ScopeHandlers(object):
                 await self.socketio.emit(
                     'scopes:update:comment:back',
                     result,
-                    broadcast=True,
                     namespace='/scopes'
-                )                
+                )
 
-    async def send_scopes_back(self, project_uuid=None):
+    async def send_scopes_back(self, sio=None, project_uuid=None):
         """ Collects all relative hosts and ips from the manager and sends them back """
-        await self.socketio.emit(
-            'scopes:all:get:back', {
-                'status': 'success',
-                'project_uuid': project_uuid,
-                'ips': self.scope_manager.get_ips(project_uuid),
-                'hosts': self.scope_manager.get_hosts(project_uuid)
-            },
-            broadcast=True,
-            namespace='/scopes'
-        )
+        ips = self.scope_manager.get_ips(project_uuid)
+        hosts = self.scope_manager.get_hosts(project_uuid)
+
+        await self.send_ips_hosts(sio, ips, hosts, project_uuid, str(uuid.uuid4()))
+
+        # for i in range(0, max(len(ips) // PACKET_SIZE, len(hosts) // PACKET_SIZE) + 1):
+
+    async def send_ips_hosts(self, sio, ips, hosts, project_uuid, transaction_id, i=0):
+        if i == (len(ips) // PACKET_SIZE) + 1:
+            return
+
+        loop = asyncio.get_event_loop()
+        await self.send_scopes_packet(sio,
+                                      ips[i * PACKET_SIZE : (i + 1) * PACKET_SIZE],
+                                      hosts[i * PACKET_SIZE : (i + 1) * PACKET_SIZE],
+                                      project_uuid,
+                                      transaction_id,
+                                      lambda: loop.create_task(self.send_ips_hosts(sio, ips, hosts, project_uuid, transaction_id, i + 1)),
+                                      i)
+
+    async def send_scopes_packet(self, sio, ips, hosts, project_uuid, transaction_id, callback, page):
+        print("Sending scope #{}".format(page))
+        if sio is None:
+            await self.socketio.emit(
+                'scopes:all:get:back', {
+                    'status': 'success',
+                    'project_uuid': project_uuid,
+                    'ips': ips,
+                    'page': page,
+                    'transaction_id': transaction_id,
+                    'hosts': hosts
+                },
+                namespace='/scopes',
+                callback=callback
+            )
+        else:
+            await self.socketio.emit(
+                'scopes:all:get:back', {
+                    'status': 'success',
+                    'project_uuid': project_uuid,
+                    'ips': ips,
+                    'page': page,
+                    'transaction_id': transaction_id,
+                    'hosts': hosts
+                },
+                room=sio,
+                namespace='/scopes',
+                callback=callback
+            )            

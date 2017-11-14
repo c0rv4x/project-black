@@ -8,11 +8,13 @@ class FileManager(object):
     """ FileManager keeps track of all files in the system,
     exposing some interfaces for public use. """
     def __init__(self):
-        self.files = []
+        self.files = {}
+
+        self.inited = {}
 
         self.sessions = Sessions()
 
-        self.update_from_db()
+        # self.update_from_db()
 
     def get_files(self, project_uuid):
         """ Returns the list of files """
@@ -21,9 +23,13 @@ class FileManager(object):
         if project_uuid is None:
             raise NotImplementedError
 
+        if not self.inited.get(project_uuid, False):
+            self.update_from_db(project_uuid)
+            self.inited[project_uuid] = True
+
         return self.files.get(project_uuid, [])
 
-    def update_from_db(self):
+    def update_from_db(self, project_uuid=None):
         """ Extract all the files from the DB.
         The structure is a dict. First level keys are project_uuids,
         second level keys - hosts """
@@ -31,6 +37,9 @@ class FileManager(object):
         session = self.sessions.get_new_session()
 
         project_uuids = session.query(Project.project_uuid).all()
+
+        if project_uuid is not None:
+            project_uuids = [(project_uuid, )]
 
         for each_project_uuid_tupled in project_uuids:
             each_project_uuid = each_project_uuid_tupled[0]

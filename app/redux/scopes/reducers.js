@@ -4,6 +4,7 @@ import {
 	CREATE_SCOPE, 
 	DELETE_SCOPE, 
 	RENEW_SCOPES,
+	CLEAR_SCOPES,
 	UPDATE_COMMENT,
 	UPDATE_SCOPE
 } from './actions.js'
@@ -80,12 +81,16 @@ function renew_scopes(state = initialState, action) {
 
 	if (message["status"] == 'success') {
 		return {
-			'ips': message['ips'],
-			'hosts': message['hosts']
+			'ips': state.ips.concat(message['ips']),
+			'hosts': state.hosts.concat(message['hosts'])
 		}
 	} else {
 		/* TODO: add error handling */
 	}		
+}
+
+function clear_scopes(state = initialState, action) {
+	return initialState;
 }
 
 function update_comment(state = initialState, action) {
@@ -159,6 +164,8 @@ function scope_reduce(state = initialState, action) {
 					return delete_scope(state, action);
 				case RENEW_SCOPES:
 					return renew_scopes(state, action);
+				case CLEAR_SCOPES:
+					return clear_scopes(state, action);
 				case UPDATE_COMMENT:
 					return update_comment(state, action);
 				case UPDATE_SCOPE:

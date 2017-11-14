@@ -5,7 +5,7 @@ import json
 import datetime
 import asynqp
 
-from black.black.db import Sessions, Task
+from black.black.db import Sessions, TaskDatabase
 
 
 class ShadowTask(object):
@@ -134,11 +134,11 @@ class TaskManager(object):
         """ After the task finishes, we need to check, whether we should push
         some new changes to the front end """
         if task.task_type == "dirsearch":
-            self.data_updated_queue.put(("file", task.project_uuid))
+            self.data_updated_queue.put(("file", task.project_uuid, None))
         elif task.task_type == "masscan" or task.task_type == "nmap":
-            self.data_updated_queue.put(("scan", task.project_uuid))
+            self.data_updated_queue.put(("scan", task.project_uuid, task.text))
         elif task.task_type == "dnsscan":
-            self.data_updated_queue.put(("scope", task.project_uuid))
+            self.data_updated_queue.put(("scope", task.project_uuid, None))
 
     def parse_new_status(self, message):
         """ Parse the message from the queue, which contains task status,
@@ -177,7 +177,7 @@ class TaskManager(object):
     def update_from_db(self):
         """ Extract all the tasks from the DB """
         session = self.sessions.get_new_session()
-        tasks_from_db = session.query(Task).all()
+        tasks_from_db = session.query(TaskDatabase).all()
         tasks = list(map(lambda x:
                          ShadowTask(task_id=x.task_id,
                                     task_type=x.task_type,

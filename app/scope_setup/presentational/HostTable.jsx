@@ -1,11 +1,19 @@
 import React from 'react'
 
-import { Table, Button } from 'semantic-ui-react'
+import { Table, Button, Label, Transition } from 'semantic-ui-react'
 
 
 class HostTable extends React.Component {
 	constructor(props) {
 		super(props);
+
+		this.state = {
+			visible: false
+		}
+	}
+
+	toggleVisibility() {
+		this.setState({ visible: !this.state.visible });
 	}
 
 	render() {
@@ -19,19 +27,28 @@ class HostTable extends React.Component {
 			)
 		});
 
+		let visible = this.state.visible;
+
 		return (
-			<Table>
-				<Table.Header>
-					<Table.Row>
-						<Table.HeaderCell>Hostname</Table.HeaderCell>
-						<Table.HeaderCell>Resolved to </Table.HeaderCell>
-						<Table.HeaderCell>Control</Table.HeaderCell>
-					</Table.Row>
-				</Table.Header>
-				<Table.Body>
-					{hosts_rendered}
-				</Table.Body>
-			</Table>
+			<span>
+				<Label as='button' onClick={this.toggleVisibility.bind(this)} size="large" color="blue">
+					{hosts_rendered.length} hosts
+				</Label>
+				<Transition visible={visible} animation='scale' duration={500}>
+					<Table>
+						<Table.Header>
+							<Table.Row>
+								<Table.HeaderCell>Hostname</Table.HeaderCell>
+								<Table.HeaderCell>Resolved to </Table.HeaderCell>
+								<Table.HeaderCell>Control</Table.HeaderCell>
+							</Table.Row>
+						</Table.Header>
+						<Table.Body>
+							{hosts_rendered}
+						</Table.Body>
+					</Table>
+				</Transition>
+			</span>					
 		)
 	}
 }

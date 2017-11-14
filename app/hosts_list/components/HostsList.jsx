@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import Notifications from 'react-notification-system-redux'
+import { Dimmer, Loader } from 'semantic-ui-react'
 
 import HostsListHead from '../presentational/HostsListHead.jsx'
 import Tasks from '../../common/tasks/Tasks.jsx'
@@ -14,10 +15,16 @@ class HostsList extends React.Component {
 	constructor(props) {
 		super(props);
 
+		let inited = false;
+		if (this.props.scopes && this.props.scopes.ips && this.props.scopes.ips.length) {
+			inited = true;
+		}
+
 		this.state = {
 			regexesObjects: {
 
-			}
+			},
+			inited: inited
 		};
 
 		this.filter = this.filter.bind(this);
@@ -28,25 +35,25 @@ class HostsList extends React.Component {
 
 	shouldComponentUpdate(nextProps, nextState) {
 		if (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState)) {
-				if (this.props.scopes.hosts.length !== nextProps.scopes.hosts.length) {
-					var diff = nextProps.scopes.hosts.length - this.props.scopes.hosts.length;
+			if (this.props.scopes.hosts.length !== nextProps.scopes.hosts.length) {
+				var diff = nextProps.scopes.hosts.length - this.props.scopes.hosts.length;
 
-					if (diff > 0) {
-						this.context.store.dispatch(Notifications.info({
-							title: 'New hosts',
-							message: 'Added ' + String(nextProps.scopes.hosts.length - this.props.scopes.hosts.length) + ' hosts.'
-						}));					
-					}
-					else {
-						this.context.store.dispatch(Notifications.info({
-							title: 'Hosts deleted',
-							message: 'Deleted ' + String(this.props.scopes.hosts.length - nextProps.scopes.hosts.length) + ' hosts.'
-						}));					
-					}
-
+				if (diff > 0) {
+					this.context.store.dispatch(Notifications.info({
+						title: 'New hosts',
+						message: 'Added ' + String(nextProps.scopes.hosts.length - this.props.scopes.hosts.length) + ' hosts.'
+					}));					
+				}
+				else {
+					this.context.store.dispatch(Notifications.info({
+						title: 'Hosts deleted',
+						message: 'Deleted ' + String(this.props.scopes.hosts.length - nextProps.scopes.hosts.length) + ' hosts.'
+					}));					
 				}
 
-				return true;
+			}
+
+			return true;
 		}
 		else {
 			return false;
@@ -178,6 +185,14 @@ class HostsList extends React.Component {
 	}
 
 	componentWillReceiveProps(newProps, newState) {
+		// Parse loading canceller
+		if (newProps.inited) {
+			this.setState({
+				inited: true
+			});
+		}
+
+		// Parse filters
 		const newFilters = newProps['filters'];
 
 		if (newFilters === null) {
@@ -218,14 +233,18 @@ class HostsList extends React.Component {
 	}
 
 	render() {
+		const { inited } = this.props;
 		const dirsearch_link = '/project/' + this.props.project.project_uuid + '/dirsearch';
-
 
 		const scopes = this.reworkHostsList(this.props.scopes.hosts, this.props.scans);
 		const filtered_scopes = this.filter(scopes);
 
 		return (
 			<div>
+				<Dimmer active={!inited}>
+					<Loader />
+				</Dimmer>
+
 				<Tasks tasks={this.props.tasks} />
 				<br/>
 				<TasksButtonsTracked scopes={filtered_scopes}

@@ -19,7 +19,7 @@ class FileHandlers(object):
 
             await self.send_files_back(project_uuid, broadcast=hostname is None)
 
-    async def send_files_back(self, project_uuid=None, broadcast=True):
+    async def send_files_back(self, project_uuid=None, broadcast=False):
         """ Get all files and send to all clients """
         await self.socketio.emit(
             'files:all:get:back', {
