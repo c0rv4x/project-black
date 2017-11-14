@@ -42,12 +42,13 @@ class Requester(object):
         'Cache-Control': 'max-age=0',
         }
 
-    def __init__(self, url, cookie=None, user_agent=None, maxPool=1, max_retries=5, delay=0, timeout=30, ip=None, proxy=None,
+    def __init__(self, url, cookie=None, user_agent=None, maxPool=1, max_retries=2, delay=0, timeout=30, ip=None, proxy=None,
                  redirect=False, request_by_name=True, arguments_object=None):
         # if no backslash, append one
         if not url.endswith('/'):
             url = url + '/'
 
+        self.url = url
         # try:
         #     url.index('://') 
         # except ValueError as e:
@@ -103,7 +104,6 @@ class Requester(object):
         self.request_by_name = request_by_name
         self.arguments_object = arguments_object
 
-        self.protocolCheck()
 
     def protocolCheck(self):
         if self.defaultProtocolUsed:
@@ -114,10 +114,9 @@ class Requester(object):
                     self.protocol = 'https'
                     self.request('/' + ''.join(random.choice(string.ascii_lowercase) for _ in range(20)))
                 except RequestException as e:
-                    return
+                    raise ProtocolCheckException()
             except Exception as e:
                 pass
-
 
         if self.request_by_name:
             self.arguments_object.url = "{0}://{1}:{2}".format(self.protocol, self.host, self.port)

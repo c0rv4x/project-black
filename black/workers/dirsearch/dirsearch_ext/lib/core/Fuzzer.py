@@ -17,6 +17,8 @@
 #  Author: Mauro Soria
 
 from queue import Queue
+import json
+import socket
 import threading
 
 from ...lib.connection.RequestException import RequestException
@@ -25,25 +27,43 @@ from .Scanner import *
 
 
 class Fuzzer(object):
-    def __init__(self, requester, dictionary, testFailPath=None, threads=1, matchCallbacks=[], notFoundCallbacks=[],
-                 errorCallbacks=[], set_status_function=None):
+
+    def __init__(
+        self,
+        requester,
+        dictionary,
+        testFailPath=None,
+        threads=1,
+        matchCallbacks=[],
+        notFoundCallbacks=[],
+        errorCallbacks=[],
+        socket=None
+    ):
 
         self.requester = requester
         self.dictionary = dictionary
         self.testFailPath = testFailPath
         self.basePath = self.requester.basePath
         self.threads = []
-        self.threads_count = threads if len(self.dictionary) >= threads else len(self.dictionary)
+        self.threads_count = threads if len(
+            self.dictionary
+        ) >= threads else len(self.dictionary)
         self.running = False
         self.scanners = {}
         self.defaultScanner = None
         self.matchCallbacks = matchCallbacks
         self.notFoundCallbacks = notFoundCallbacks
         self.errorCallbacks = errorCallbacks
-        self.set_status_function = set_status_function
+        self.socket = socket
+
         self.matches = []
         self.errors = []
         self.counter = 0
+
+        self.timeout_counter = 0
+
+
+        self.found_data = False
 
     def wait(self, timeout=None):
         for thread in self.threads:
@@ -58,7 +78,9 @@ class Fuzzer(object):
         self.defaultScanner = Scanner(self.requester, self.testFailPath, "")
         self.scanners['/'] = Scanner(self.requester, self.testFailPath, "/")
         for extension in self.dictionary.extensions:
-            self.scanners[extension] = Scanner(self.requester, self.testFailPath, "." + extension)
+            self.scanners[extension] = Scanner(
+                self.requester, self.testFailPath, "." + extension
+            )
 
     def setupThreads(self):
         if len(self.threads) != 0:
@@ -78,8 +100,12 @@ class Fuzzer(object):
         return self.defaultScanner
 
     def start(self):
-        # Setting up testers
-        self.setupScanners()
+        try:
+            # Setting up testers
+            self.setupScanners()
+        except Exception as exc:
+            print("setupScanners threw an exception", str(exc))
+            return
         # Setting up threads
         self.setupThreads()
         self.index = 0
@@ -133,30 +159,58 @@ class Fuzzer(object):
             path = next(self.dictionary)
             while path is not None:
                 if self.counter % 50 == 0 and self.counter / 50 > 0:
-                    self.set_status_function('Working', progress=int(float(self.counter) / float(len(self.dictionary)) * 100))
+                    # print(self.requester.url, "progress= ", int(float(self.counter) / float(len(self.dictionary)) * 100),self.socket,bytes(json.dumps({"status":'Working', "progress":int(float(self.counter) / float(len(self.dictionary)) * 100)}), 'utf-8'))
+                    self.socket.sendall(
+                        bytes(
+                            json.dumps(
+                                {
+                                    "status":
+                                        'Working',
+                                    "progress":
+                                        int(
+                                            float(self.counter) /
+                                            float(len(self.dictionary)) * 100
+                                        ),
+                                    "new_data": self.found_data
+                                }
+                            ), 'utf-8'
+                        )
+                    )
+                    self.found_data = False
                 try:
                     status, response = self.scan(path)
                     result = Path(path=path, status=status, response=response)
                     if status is not None:
                         self.matches.append(result)
+                        self.found_data = True
                         for callback in self.matchCallbacks:
                             callback(result)
                     else:
                         for callback in self.notFoundCallbacks:
                             callback(result)
+
+                    self.timeout_counter = 0
+
                     del status
                     del response
                 except RequestException as e:
                     self.counter += 1
+                    self.timeout_counter += 1
+                    # print(self.requester.url, "timeout in fuzzer", self.timeout_counter)
                     for callback in self.errorCallbacks:
                         callback(path, e.args[0]['message'])
                     continue
                 finally:
+                    if self.timeout_counter > 15:
+                        raise StopIteration()
+
                     self.counter += 1
                     if not self.playEvent.isSet():
                         self.pausedSemaphore.release()
                         self.playEvent.wait()
-                    path = next(self.dictionary)  # Raises StopIteration when finishes
+                    path = next(
+                        self.dictionary
+                    )  # Raises StopIteration when finishes
                     if not self.running:
                         break
         except StopIteration:

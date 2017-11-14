@@ -1,28 +1,26 @@
 import random
 from time import sleep
-from sqlalchemy import Column, Integer, String, ForeignKey, create_engine
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
 
 
-engine = create_engine(
-    'postgresql://black:black101@127.0.0.1/black')
+class Sessions(object):
 
-Session_builder = sessionmaker(bind=engine)
+    def __init__(self):
+        self.engine = create_engine('postgresql://black:black101@127.0.0.1:5432/black', poolclass=NullPool, echo=True)
+        self.session_builder = sessionmaker(bind=self.engine, expire_on_commit=False)
+        self.sessions_list = list()
 
-sessions_list = list()
+    def get_new_session(self):
+        session = self.session_builder()
+        self.sessions_list.append(session)
 
-def get_new_session():
-    while len(sessions_list) == 5:
-        sleep(random.random() / 3)
+        return session
 
-    session = Session_builder()
-    sessions_list.append(session)
+    def destroy_session(self, session):
+        sessions_by_class = filter(lambda x: x == session, self.sessions_list)
 
-    return session
-
-def destroy_session(session):
-    sessions_by_class = filter(lambda x: x == session, sessions_list)
-
-    for session in sessions_by_class:
-        session.close()
-        sessions_list.remove(session)
+        for session in sessions_by_class:
+            session.close()
+            self.sessions_list.remove(session)

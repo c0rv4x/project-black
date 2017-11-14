@@ -1,13 +1,15 @@
 """ Module that will accumulate all the tasks described """
 from black.workers.dirsearch import DirsearchTask
-from black.workers.common.sync_worker import SyncWorker
+from black.workers.common.async_worker import AsyncWorker
 
 
-class DirsearchWorker(SyncWorker):
+class DirsearchWorker(AsyncWorker):
     """ Main class that monitors and manager instances of running dirsearch. """
     def __init__(self):
-        SyncWorker.__init__(self, 'dirsearch', DirsearchTask)
+        AsyncWorker.__init__(self, 'dirsearch', DirsearchTask)
 
-    def start(self):
+    async def start(self):
         """ Start all the necessary consumers """
-        self.start_consuming()
+        await self.initialize()
+        await self.start_tasks_consumer()
+        # await self.start_notifications_consumer()

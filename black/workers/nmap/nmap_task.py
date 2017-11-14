@@ -5,11 +5,10 @@ import threading
 import asyncio
 from asyncio.subprocess import PIPE
 from libnmap.parser import NmapParser, NmapParserException
-from black.db import Project, Scan, get_new_session, destroy_session
+from black.db import ScanDatabase, Sessions
 
 from black.workers.common.async_task import AsyncTask
 from uuid import uuid4
-from black.workers.common.task import Task
 
 
 class NmapTask(AsyncTask):
@@ -136,22 +135,22 @@ class NmapTask(AsyncTask):
 
     def parse_results(self):
         def save_scan(data):
-            session = get_new_session()
+            session = sessions.get_new_session()
 
             scans_ids = self.params["saver"].get('scans_ids', None)
             if scans_ids:
                 target_scan = list(filter(lambda x: data["port_number"] == x["port_number"], scans_ids))[0]
                 target_scan_id = target_scan["scan_id"]
-                new_scan = session.query(Scan).filter_by(scan_id=target_scan_id).first()
+                new_scan = session.query(ScanDatabase).filter_by(scan_id=target_scan_id).first()
 
                 new_scan.banner = data["banner"]
                 new_scan.protocol = data["protocol"]
             else:
-                new_scan = Scan()
+                new_scan = ScanDatabase()
                 session.add(new_scan)
 
             session.commit()
-            destroy_session(session)
+            sessions.destroy_session(session)
 
         stdout = "".join(self.stdout)
 
@@ -159,6 +158,8 @@ class NmapTask(AsyncTask):
             nmap_report = NmapParser.parse(stdout)
         except NmapParserException:
             nmap_report = NmapParser.parse(stdout, incomplete=True)
+
+        sessions = Sessions()
         for scanned_host in nmap_report.hosts:
             for service_of_host in scanned_host.services:
                 if service_of_host.open():
@@ -169,7 +170,7 @@ class NmapTask(AsyncTask):
                         'banner': str(service_of_host.banner),
                         'project_uuid': self.project_uuid
                     })
-                       
+
 '''
         scans = session.query(Scan).filter_by(
                 target=target["hostname"],

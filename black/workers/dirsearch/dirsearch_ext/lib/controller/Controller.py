@@ -20,12 +20,14 @@ import os
 from queue import Queue
 import time
 import sys
+import json
 import gc
+import socket
 import urllib
 from threading import Lock
 from urllib.parse import urljoin
 
-from ...lib.connection import Requester, RequestException
+from ...lib.connection import Requester, RequestException, ProtocolCheckException
 from ...lib.core import Dictionary, Fuzzer, ReportManager, Saver
 from ...lib.reports import JSONReport
 from ...lib.utils import FileUtils
@@ -36,9 +38,21 @@ class SkipTargetInterrupt(Exception):
 
 
 class Controller(object):
-    def __init__(self, script_path, arguments, output, saver, set_status_function):
+    def __init__(self, script_path, arguments, output, saver, socket_path):
         self.saver = saver
-        self.set_status_function = set_status_function
+        self.socket_path = socket_path
+
+        failed_local_attempts = 0
+        while failed_local_attempts < 3 and not os.path.exists(self.socket_path):
+            failed_local_attempts += 1
+            time.sleep(0.3)
+
+        if failed_local_attempts == 3:
+            raise Exception("Socket not found")
+
+        self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        self.socket.connect(socket_path)
+
         self.script_path = script_path
         self.exit = False
         self.arguments = arguments
@@ -72,7 +86,6 @@ class Controller(object):
                 self.currentUrl = url
                 # self.output.target(self.currentUrl)
                 try:
-
                     self.requester = Requester(url, cookie=self.arguments.cookie,
                                            user_agent=self.arguments.user_agent, maxPool=self.arguments.threads_count,
                                            max_retries=self.arguments.max_retries, delay=self.arguments.delay, timeout=self.arguments.timeout,
@@ -80,9 +93,10 @@ class Controller(object):
                                            redirect=self.arguments.redirect, 
                                            request_by_name=self.arguments.request_by_name,
                                            arguments_object=self.arguments)
+                    self.requester.protocolCheck()
                     self.requester.request("/")
 
-                except RequestException as e:
+                except (RequestException, ProtocolCheckException) as e:
                     # self.output.error(e.args[0]['message'])
                     raise SkipTargetInterrupt
                 if self.arguments.use_random_agents:
@@ -103,10 +117,10 @@ class Controller(object):
                 self.fuzzer = Fuzzer(self.requester, self.dictionary, testFailPath=self.arguments.test_fail_path,
                                      threads=self.arguments.threads_count, matchCallbacks=matchCallbacks,
                                      notFoundCallbacks=notFoundCallbacks, errorCallbacks=errorCallbacks,
-                                     set_status_function=self.set_status_function)
+                                     socket=self.socket)
                 self.wait()
             except SkipTargetInterrupt:
-                pass
+                self.socket.sendall(bytes(json.dumps({"status":"Finished", "progress":100}), 'utf-8'))
             finally:
                 self.reportManager.save()
 
@@ -249,13 +263,13 @@ class Controller(object):
         while not self.directories.empty():
             self.index = 0
             self.currentDirectory = self.directories.get()
-            self.output.warning('[{2}] Starting: {0}'.format(self.currentDirectory, self.arguments.url, time.strftime('%H:%M:%S')))
+            self.output.warning('{1} {0}'.format(self.currentDirectory, self.arguments.url))
             self.fuzzer.requester.basePath = self.basePath + self.currentDirectory
             self.output.basePath = self.basePath + self.currentDirectory
             self.fuzzer.start()
             self.processPaths()
 
-        self.set_status_function('Finished', progress=100)
+        self.socket.sendall(bytes(json.dumps({"status":'Finished', "progress":100}), 'utf-8'))
 
         return
 
