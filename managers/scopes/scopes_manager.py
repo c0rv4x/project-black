@@ -189,7 +189,7 @@ class ScopeManager(object):
 
                 # IPs objects are already created so we will do the following:
                 # 1. HostDatabse keeps info on the ips
-                ip_addresses = db_dict.get('ip_addresses', [])
+                ip_addresses = each_value.ip_addresses
 
                 # 2. Map these db objects to our internal objects
                 ips_dict = self.ips[each_project_uuid]
