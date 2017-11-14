@@ -61,7 +61,8 @@ function mapStateToProps(state, ownProps) {
         	return x.project_uuid == project['project_uuid']
         }),
         scans: scans,
-        filters: state.filters.hosts
+        filters: state.filters.hosts,
+        inited: true
     }
 }
 

@@ -55,7 +55,8 @@ function mapStateToProps(state, ownProps){
         },
         tasks: state.tasks.active,
         scans: scans,
-        filters: state.filters.ips
+        filters: state.filters.ips,
+        inited: true
     }
 }
 
