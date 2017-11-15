@@ -1,13 +1,13 @@
 import _ from 'lodash'
 import { connect } from 'react-redux'
 
-import ProjectDetails from './ProjectDetails.jsx'
+import ProjectDetailsScannerUpdater from './ProjectDetailsScannerUpdater.jsx'
 import { updateComment as updateProjectComment } from '../../redux/projects/actions'
 import { updateComment as updateScopeComment } from '../../redux/scopes/actions'
 import { updateFilters } from '../../redux/filters/actions'
 
 
-function mapStateToProps(state, ownProps){
+function mapStateToProps(state, ownProps) {
     let project_uuid = ownProps.project_uuid;
     let filtered_projects = _.filter(state.projects, (x) => {
         return x.project_uuid == project_uuid
@@ -25,21 +25,27 @@ function mapStateToProps(state, ownProps){
         }
     }
 
+    let ips_backuped = JSON.parse(JSON.stringify(state.scopes.ips));
+
+    for (var each_ip of ips_backuped.data) {
+        each_ip.scans = _.get(state.scans, each_ip.ip_address, [])
+    }
+
     return {
         project: project,
         scopes: {
-            'ips': state.scopes.ips,
+            'ips': ips_backuped,
             'hosts': state.scopes.hosts
         },
         tasks: state.tasks.active,
         scans: state.scans,
-        inited: true
+        inited: project.project_name !== null
     }
 }
 
 
 const ProjectDetailsWrapper = connect(
     mapStateToProps
-)(ProjectDetails)
+)(ProjectDetailsScannerUpdater)
 
 export default ProjectDetailsWrapper

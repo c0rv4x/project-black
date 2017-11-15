@@ -19,11 +19,6 @@ class ScansEventsSubsriber {
             this.project_uuid = project_uuid;
             this.connector = new Connector('scans');
 
-            this.connector.after_connected((x) => {
-            	this.emitter = new ScansSocketioEventsEmitter();
-            	this.emitter.renewScans(this.project_uuid);
-            });
-
             this.basic_events_registration();
         }
 
@@ -34,7 +29,7 @@ class ScansEventsSubsriber {
 		/* Register handlers on basic events */
 
 		// Received all projects in one message
-		this.register_socketio_handler('scans:all:get:back', renewScans);
+		this.register_socketio_handler('scans:part:set', renewScans);
 	}
 
 	register_socketio_handler(eventName, callback) {

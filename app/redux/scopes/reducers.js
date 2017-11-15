@@ -87,6 +87,8 @@ function delete_scope(state = initialState, action) {
 function renew_scopes(state = initialState, action) {
 	const message = action.message;
 
+	console.log("Renewing scopes", message);
+
 	if (message["status"] == 'success') {
 		return {
 			'ips': message.ips,

@@ -65,6 +65,7 @@ class ScopesSocketioEventsEmitter {
 	}
 
 	requestRenewScopes(project_uuid) {
+		console.log('requested');
 		this.connector.emit('scopes:all:get', {
 			'project_uuid': project_uuid
 		});
