@@ -12,7 +12,7 @@ class ProjectDetails extends React.Component {
 		super(props);
 
 		let inited = false;
-		if (this.props.scopes && this.props.scopes.ips && this.props.scopes.ips.length) {
+		if (this.props.scopes && this.props.scopes.hasOwnProperty('ips')) {
 			inited = true;
 		}
 
