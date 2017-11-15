@@ -1,4 +1,4 @@
-from black.black.db import Sessions, IPDatabase, ProjectDatabase, HostDatabase
+from black.black.db import Sessions, IPDatabase, ProjectDatabase, HostDatabase, ScanDatabase
 
 
 class ScopeManager(object):
@@ -26,14 +26,47 @@ class ScopeManager(object):
         ).offset(page_number * page_size).limit(page_size).all()
 
         # Reformat the ips to make the JSON-like objects
-        ips = list(map(lambda each_ip: {
-            "ip_id": each_ip.ip_id,
-            "ip_address": each_ip.ip_address,
-            "hostnames": list(map(lambda host: host.hostname, each_ip.hostnames))
-        }, ips_from_db))
+        ips = list(map(lambda each_ip: self.format_ip(each_ip), ips_from_db))
 
         # Together with ips, return amount of total ips in the database
         return {"total_db_ips": self.count_ips(project_uuid), "ips": ips}
+
+    def format_ip(self, ip_object):
+        """ Getting ip database object, returns the same object, but with scans attached """
+        session = self.session_spawner.get_new_session()
+
+        scans_from_db = session.query(ScanDatabase).filter(
+            ScanDatabase.target == ip_object.ip_address
+        ).order_by(
+            ScanDatabase.date_added.desc(), ScanDatabase.target,
+            ScanDatabase.port_number
+        ).distinct(ScanDatabase.target, ScanDatabase.port_number).all()
+
+        return {
+            "ip_id": ip_object.ip_id,
+            "ip_address": ip_object.ip_address,
+            "hostnames": list(map(lambda host: host.hostname, ip_object.hostnames)),
+            "scans": list(map(lambda each_scan: {
+                "scan_id": each_scan.scan_id,
+                "target": each_scan.target,
+                "port_number": each_scan.port_number,
+                "protocol": each_scan.protocol,
+                "banner": each_scan.banner,
+                "task_id": each_scan.task_id,
+                "project_uuid": each_scan.project_uuid,
+                "date_added": str(each_scan.date_added)
+            }, scans_from_db))
+        }
+
+    def get_one_ip(self, project_uuid, ip_address):
+        """ Returns one nicely formatted ip address with scans """
+        session = self.session_spawner.get_new_session()
+        ip_from_db = session.query(IPDatabase).filter(
+            IPDatabase.project_uuid == project_uuid,
+            IPDatabase.ip_address == ip_address.ip_address
+        ).one()
+
+        return self.format_ip(ip_from_db)
 
     def get_hosts(self, project_uuid, page_number, page_size):
         """ Returns hosts associated with a given project.
@@ -50,7 +83,7 @@ class ScopeManager(object):
         hosts = list(map(lambda each_host: {
             "host_id": each_host.host_id,
             "hostname": each_host.hostname,
-            "ip_addresses": list(map(lambda each_ip: each_ip.ip_address, each_host.ip_addresses))
+            "ip_addresses": list(map(lambda each_ip: self.get_one_ip(project_uuid, each_ip), each_host.ip_addresses))
         }, hosts_from_db))
 
         # Together with hosts list return total amount of hosts in the db

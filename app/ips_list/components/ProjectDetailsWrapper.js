@@ -26,19 +26,11 @@ function mapStateToProps(state, ownProps) {
         }
     }
 
-    let ips_backuped = JSON.parse(JSON.stringify(state.scopes.ips));
-
-    for (var each_ip of ips_backuped.data) {
-        each_ip.scans = _.get(state.scans, each_ip.ip_address, [])
-    }
-
-    console.log(ips_backuped);
-
     return {
         project: project,
         scopes: {
-            'ips': ips_backuped,
-            'hosts': state.scopes.hosts
+            'ips': state.scopes.ips,
+            'hosts': state.scopes.host
         },
         tasks: state.tasks.active,
         scans: state.scans,
