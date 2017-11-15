@@ -82,6 +82,10 @@ class IPTable extends React.Component {
 		});
 	}
 
+	requestScopesPageChange(pageNumber, pageSize=12) {
+		// this.scopesEmitter.
+	}
+
 	render() {
 		const ips = _.map(this.state.shownData, (x) => {
 			return <IPEntryLine key={x.ip_id} 

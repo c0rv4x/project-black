@@ -26,8 +26,6 @@ class ScopesSocketioEventsSubscriber {
         });
 
         this.basic_events_registration();
-
-        this.currentTransactionID = null;
 	}
 
 	basic_events_registration() {

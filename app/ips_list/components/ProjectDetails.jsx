@@ -24,7 +24,6 @@ class ProjectDetails extends React.Component {
 									      project={this.props.project} 
 									      scans={this.props.scans} />			
 				<IPTableTracked ips={this.props.scopes.ips}
-								scans={this.props.scans}
 								project_uuid={this.props.project.project_uuid}
 								onFilterChange={this.props.onFilterChangeIPs} />
 			</div>

@@ -7,6 +7,7 @@ import { updateComment as updateScopeComment } from '../../redux/scopes/actions'
 import { updateFilters } from '../../redux/filters/actions'
 
 
+
 function mapStateToProps(state, ownProps) {
     let project_uuid = ownProps.project_uuid;
     let filtered_projects = _.filter(state.projects, (x) => {

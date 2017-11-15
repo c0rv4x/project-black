@@ -273,4 +273,4 @@ class ScopeHandlers(object):
                 },
                 room=sio,
                 namespace='/scopes'
-            )            
+            )
