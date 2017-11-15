@@ -11,8 +11,16 @@ import {
 
 
 const initialState = {
-	"ips": [],
-	"hosts": []
+	"ips": {
+		"page": 0,
+		"page_size": 12,
+		"data": []
+	},
+	"hosts": {
+		"page": 0,
+		"page_size": 12,
+		"data": []
+	}
 }
 
 function create_scope(state = initialState, action) {
@@ -81,8 +89,8 @@ function renew_scopes(state = initialState, action) {
 
 	if (message["status"] == 'success') {
 		return {
-			'ips': state.ips.concat(message['ips']),
-			'hosts': state.hosts.concat(message['hosts'])
+			'ips': message.ips,
+			'hosts': message.hosts
 		}
 	} else {
 		/* TODO: add error handling */

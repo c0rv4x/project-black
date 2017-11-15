@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 
 import { Table, Button, Label, Transition } from 'semantic-ui-react'
@@ -6,49 +7,15 @@ import { Table, Button, Label, Transition } from 'semantic-ui-react'
 class HostTable extends React.Component {
 	constructor(props) {
 		super(props);
-
-		this.state = {
-			visible: false
-		}
-	}
-
-	toggleVisibility() {
-		this.setState({ visible: !this.state.visible });
 	}
 
 	render() {
-		const hosts_rendered = _.map(this.props.hosts, (x) => {
-			return (
-				<Table.Row key={x._id}> 
-					<Table.Cell>{x.hostname}</Table.Cell>
-					<Table.Cell>{x.ip_addresses.join(", ")}</Table.Cell>
-					<Table.Cell><Button color="red" onClick={() => {this.props.delete(x._id)}}>Delete</Button></Table.Cell>
-				</Table.Row>
-			)
-		});
-
-		let visible = this.state.visible;
-
 		return (
 			<span>
-				<Label as='button' onClick={this.toggleVisibility.bind(this)} size="large" color="blue">
-					{hosts_rendered.length} hosts
+				<Label size="large" color="blue">
+					{this.props.hosts.total_db_hosts} hosts
 				</Label>
-				<Transition visible={visible} animation='scale' duration={500}>
-					<Table>
-						<Table.Header>
-							<Table.Row>
-								<Table.HeaderCell>Hostname</Table.HeaderCell>
-								<Table.HeaderCell>Resolved to </Table.HeaderCell>
-								<Table.HeaderCell>Control</Table.HeaderCell>
-							</Table.Row>
-						</Table.Header>
-						<Table.Body>
-							{hosts_rendered}
-						</Table.Body>
-					</Table>
-				</Transition>
-			</span>					
+			</span>
 		)
 	}
 }

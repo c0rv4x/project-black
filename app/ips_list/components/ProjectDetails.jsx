@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import React from 'react'
-import { Dimmer, Loader } from 'semantic-ui-react'
 
 import TitleButtonsWithHandlers from './TitleButtonsWithHandlers.jsx'
 import IPTableTracked from './IPTableTracked.jsx'
@@ -11,16 +10,10 @@ class ProjectDetails extends React.Component {
 	constructor(props) {
 		super(props);
 
-		let inited = false;
-		if (this.props.scopes && this.props.scopes.hasOwnProperty('ips')) {
-			inited = true;
-		}
-
 		this.state = {
 			regexesObjects: {
 
-			},
-			inited: inited
+			}
 		};
 
 		this.filter = this.filter.bind(this);
@@ -120,14 +113,6 @@ class ProjectDetails extends React.Component {
 	}
 
 	componentWillReceiveProps(newProps, newState) {
-		// Parse loading canceller
-		console.log(newProps);
-		if (newProps.inited) {
-			this.setState({
-				inited: true
-			});
-		}
-
 		// Parse filters
 		const newFilters = newProps['filters'];
 
@@ -165,23 +150,19 @@ class ProjectDetails extends React.Component {
   	}
 
 	render() {
-		const { inited } = this.state;
+		// const scopes = this.reworkIPsList(this.props.scopes.ips, this.props.scans);
+		// const filtered_scopes = this.filter(scopes);
 
-		const scopes = this.reworkIPsList(this.props.scopes.ips, this.props.scans);
-		const filtered_scopes = this.filter(scopes);
+		console.log(this.props);
 
 		return (
 			<div>
-				<Dimmer active={!inited}>
-					<Loader />
-				</Dimmer>
-
 				<br/>
 
-				<TitleButtonsWithHandlers scopes={filtered_scopes}
+				<TitleButtonsWithHandlers scopes={this.props.scopes.ips.data}
 									      project={this.props.project} 
 									      scans={this.props.scans} />			
-				<IPTableTracked scopes={filtered_scopes}
+				<IPTableTracked ips={this.props.scopes.ips}
 								scans={this.props.scans}
 								project_uuid={this.props.project.project_uuid}
 								onFilterChange={this.props.onFilterChangeIPs} />

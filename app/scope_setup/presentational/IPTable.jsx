@@ -13,7 +13,7 @@ class IPTable extends React.Component {
 		return (
 			<span>
 				<Label size="large" color="blue">
-					{this.props.ips.length} ips
+					{this.props.ips.total_db_ips} ips
 				</Label>
 			</span>
 		)

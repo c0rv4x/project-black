@@ -18,12 +18,10 @@ class IPTable extends React.Component {
 		this.limitPerPage = 12;
 
 		if (this.props.ips) {
-			let pageCount = Math.ceil(this.props.ips.length / this.limitPerPage);
-
 			this.state = {
-				shownData: this.props.ips.slice(0, 0 + this.limitPerPage),
-				offsetPage: 0,
-				pageCount: pageCount
+				shownData: this.props.ips.data,
+				offsetPage: this.props.ips.page,
+				pageCount: Math.ceil(this.props.ips.total_db_ips / this.props.ips.page_size)
 			}
 		}
 
@@ -70,13 +68,15 @@ class IPTable extends React.Component {
 		var start = this.limitPerPage * this.state.offsetPage;
 
 		this.setState({
-			shownData: nextProps.ips.slice(start, start + this.limitPerPage),
-			pageCount: Math.ceil(nextProps.ips.length / this.limitPerPage)
+			shownData: nextProps.ips.data,
+			pageCount: Math.ceil(this.props.ips.total_db_ips / this.props.ips.page_size)
 		});
 	}
 
 	handlePageClick(data) {
 		var start = this.limitPerPage * (data - 1);
+
+		this.scopesEmitter.requestRenewScopes(this.props.project_uuid)
 
 		this.setState({
 			offsetPage: data - 1,
@@ -86,7 +86,8 @@ class IPTable extends React.Component {
 
 	render() {
 		const ips = _.map(this.state.shownData, (x) => {
-			return <IPEntryLine key={x._id} 
+			console.log(x);
+			return <IPEntryLine key={x.ip_id} 
 								ip={x}
 								project_uuid={this.props.project_uuid}
 								onCommentSubmit={(value) => this.commentSubmitted(value, x._id)}
