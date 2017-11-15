@@ -15,13 +15,16 @@ class ScopeHandlers(object):
     def register_handlers(self):
         """ Register all handlers """
 
-        @self.socketio.on('scopes:all:get', namespace='/scopes')
+        @self.socketio.on('scopes:part:get', namespace='/scopes')
         async def _cb_handle_scopes_get(sio, msg):
             """ When received this message, send back all the scopes """
             project_uuid = msg.get('project_uuid', None)
-            host_page = msg.get('host_page', 0)
             ip_page = msg.get('ip_page', 0)
-            await self.send_scopes_back(sio, project_uuid, host_page, ip_page)
+            host_page = msg.get('host_page', 0)
+            ip_page_size = msg.get('ip_page_size', 12)
+            host_page_size = msg.get('host_page_size', 12)
+
+            await self.send_scopes_back(sio, project_uuid, host_page, host_page_size, ip_page, ip_page_size)
 
         @self.socketio.on('scopes:create', namespace='/scopes')
         async def _cb_handle_scope_create(sio, msg):

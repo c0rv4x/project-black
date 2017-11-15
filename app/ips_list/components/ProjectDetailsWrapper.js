@@ -31,6 +31,8 @@ function mapStateToProps(state, ownProps) {
         each_ip.scans = _.get(state.scans, each_ip.ip_address, [])
     }
 
+    console.log(ips_backuped);
+
     return {
         project: project,
         scopes: {

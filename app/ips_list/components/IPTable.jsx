@@ -15,8 +15,6 @@ class IPTable extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.limitPerPage = 12;
-
 		if (this.props.ips) {
 			this.state = {
 				shownData: this.props.ips.data,
