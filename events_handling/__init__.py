@@ -8,9 +8,9 @@ from events_handling.projects_handlers import register_project_handlers
 from events_handling.scopes_handlers import ScopeHandlers
 from events_handling.tasks_handlers import TaskHandlers
 from events_handling.scans_handlers import ScanHandlers
-# from events_handling.files_handlers import FileHandlers
+from events_handling.files_handlers import FileHandlers
 
-from managers import ProjectManager, ScopeManager, TaskManager, ScanManager#, FileManager
+from managers import ProjectManager, ScopeManager, TaskManager, ScanManager, FileManager
 
 
 class Handlers(object):
@@ -28,7 +28,7 @@ class Handlers(object):
         self.app.add_task(self.task_manager.spawn_asynqp())
 
         self.scan_manager = ScanManager()
-        # self.file_manager = FileManager()
+        self.file_manager = FileManager()
 
 
         register_project_handlers(self.socketio, self.project_manager)
@@ -39,8 +39,8 @@ class Handlers(object):
         self.scan_handlers = ScanHandlers(self.socketio, self.scan_manager)
         self.scan_handlers.register_handlers()
 
-        # self.file_handlers = FileHandlers(self.socketio, self.file_manager)
-        # self.file_handlers.register_handlers()
+        self.file_handlers = FileHandlers(self.socketio, self.file_manager)
+        self.file_handlers.register_handlers()
 
         self.task_handlers = TaskHandlers(self.socketio, self.task_manager)
         self.task_handlers.register_handlers()
@@ -65,10 +65,15 @@ class Handlers(object):
                 await self.scan_handlers.send_scans_back(project_uuid, broadcast=True)
                 self.data_updated_queue.task_done()
 
-            # if task_type == "file":
-            #     self.file_manager.update_from_db(project_uuid)
-            #     await self.file_handlers.send_files_back(project_uuid, broadcast=True)
-            #     self.data_updated_queue.task_done()
+            if task_type == "file":
+                new_ids = None
+
+                if text:
+                    new_ids = json.loads(text)
+
+                self.file_manager.update_from_db(project_uuid)
+                await self.file_handlers.send_files_back(project_uuid, broadcast=True)
+                self.data_updated_queue.task_done()
 
         except queue.Empty:
             pass

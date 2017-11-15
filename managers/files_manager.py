@@ -1,7 +1,7 @@
 """ Keeps FileManager, which is reponsible for working with File table """
 from operator import itemgetter
 
-from black.black.db import Sessions, FoundFile, Project
+from black.black.db import Sessions, FileDatabase, ProjectDatabase
 
 
 class FileManager(object):
@@ -36,7 +36,7 @@ class FileManager(object):
         self.files = {}
         session = self.sessions.get_new_session()
 
-        project_uuids = session.query(Project.project_uuid).all()
+        project_uuids = session.query(ProjectDatabase.project_uuid).all()
 
         if project_uuid is not None:
             project_uuids = [(project_uuid, )]
@@ -45,12 +45,12 @@ class FileManager(object):
             each_project_uuid = each_project_uuid_tupled[0]
             self.files[each_project_uuid] = {}
 
-            targets = session.query(FoundFile.target).filter(FoundFile.project_uuid == each_project_uuid).distinct().all()
+            targets = session.query(FileDatabase.target).filter(FileDatabase.project_uuid == each_project_uuid).distinct().all()
 
             for each_target in targets:
                 host = each_target[0].split(':')[0]
 
-                files_found = session.query(FoundFile).filter(FoundFile.target == host, FoundFile.project_uuid == each_project_uuid).distinct(FoundFile.file_path, FoundFile.status_code).all()
+                files_found = session.query(FileDatabase).filter(FileDatabase.target == host, FileDatabase.project_uuid == each_project_uuid).distinct(FileDatabase.file_path, FileDatabase.status_code).all()
                 files = list(map(lambda x: {
                     "file_id": x.file_id,
                     "file_name": x.file_name,
