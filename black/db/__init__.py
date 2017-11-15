@@ -5,6 +5,7 @@ from .models.ip import IPDatabase
 from .models.host import HostDatabase
 from .models.task import TaskDatabase
 from .models.scan import ScanDatabase
+from .models.file import FileDatabase
 
 
 sessions = Sessions()
