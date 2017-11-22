@@ -63,6 +63,10 @@ class IPTable extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
+		if ((nextProps.ips.page !== this.props.ips.page) || (nextProps.ips.page_size !== this.props.ips.page_size)) {
+			this.props.setLoading(false);
+		}
+
 		var start = this.limitPerPage * this.state.offsetPage;
 
 		this.setState({
@@ -72,7 +76,8 @@ class IPTable extends React.Component {
 	}
 
 	handlePageClick(page_number) {
-		this.scopesEmitter.requestRenewScopes(this.props.project_uuid, page_number-1)
+		this.scopesEmitter.requestRenewScopes(this.props.project_uuid, page_number-1);
+		this.props.setLoading(true);
 	}
 
 	render() {
