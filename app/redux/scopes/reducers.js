@@ -20,7 +20,8 @@ const initialState = {
 		"page": 0,
 		"page_size": 12,
 		"data": []
-	}
+	},
+	"update_needed": false
 }
 
 function create_scope(state = initialState, action) {
@@ -44,7 +45,9 @@ function create_scope(state = initialState, action) {
 		new_state.ips.total_db_ips += new_ips.length;
 
 		new_state.hosts.data = new_hosts.concat(new_state.hosts.data);
-		new_state.hosts.total_db_hosts += new_hosts.length;				
+		new_state.hosts.total_db_hosts += new_hosts.length;
+
+		new_state.update_needed = false;			
 
 		return new_state;
 	} else {
@@ -56,19 +59,10 @@ function delete_scope(state = initialState, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
-		var ips_filtered = _.filter(state['ips'], (x) => {
-			return x["_id"] != message["_id"];
-		});
-		var hosts_filtered = _.filter(state['hosts'], (x) => {
-			return x["_id"] != message["_id"];
-		});
+		var new_state = JSON.parse(JSON.stringify(state));
+		new_state.update_needed = true;
 
-		var state_new = {
-			'ips': ips_filtered,
-			'hosts': hosts_filtered
-		}
-
-		return state_new;
+		return new_state;
 	} else {
 		/* TODO: add error handling */
 	}
@@ -77,12 +71,11 @@ function delete_scope(state = initialState, action) {
 function renew_scopes(state = initialState, action) {
 	const message = action.message;
 
-	console.log("Renewing scopes", message);
-
 	if (message["status"] == 'success') {
 		return {
 			'ips': message.ips,
-			'hosts': message.hosts
+			'hosts': message.hosts,
+			'update_needed': false
 		}
 	} else {
 		/* TODO: add error handling */

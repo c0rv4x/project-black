@@ -50,10 +50,11 @@ class ScopesSocketioEventsEmitter {
 		});
 	}
 
-	requestDeleteScope(scope_id, project_uuid) {
+	requestDeleteScope(scope_id, project_uuid, type) {
 		this.connector.emit('scopes:delete:scope_id', {
 			'scope_id': scope_id,
-			'project_uuid': project_uuid
+			'project_uuid': project_uuid,
+			'scope_type': type
 		});
 	}
 

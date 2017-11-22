@@ -41,9 +41,10 @@ class ScopeManager(object):
         """ Getting ip database object, returns the same object, but with scans attached """
         session = self.session_spawner.get_new_session()
 
-        subq = session.query(ScanDatabase).order_by(
-            desc(ScanDatabase.date_added)
-        ).subquery('scans')
+        subq = session.query(ScanDatabase).filter(
+            ScanDatabase.target == ip_object.ip_address,
+            ScanDatabase.project_uuid == ip_object.project_uuid
+        ).order_by(desc(ScanDatabase.date_added)).subquery('scans')
         alias = aliased(ScanDatabase, subq)
         ordered = session.query(alias)
         scans_from_db = ordered.distinct(alias.target, alias.port_number)
@@ -164,10 +165,7 @@ class ScopeManager(object):
                 session.commit()
                 self.session_spawner.destroy_session(session)
             except Exception as exc:
-                return {
-                    "status":"error",
-                    "text": str(exc)
-                }
+                return {"status": "error", "text": str(exc)}
             else:
                 ips_count = self.ips[project_uuid].get('ips_count', 0)
                 ips_count += 1
@@ -175,15 +173,47 @@ class ScopeManager(object):
 
                 return {
                     "status": "success",
-                    "new_scope": {
-                        "type": "ip_address",
-                        "ip_id": db_object.ip_id,
-                        "ip_address": ip_address,
-                        "hostnames": [],
-                        "comment": "",
-                        "project_uuid": project_uuid,
-                        "scans": []
-                    }
-                }                
+                    "new_scope":
+                        {
+                            "type": "ip_address",
+                            "ip_id": db_object.ip_id,
+                            "ip_address": ip_address,
+                            "hostnames": [],
+                            "comment": "",
+                            "project_uuid": project_uuid,
+                            "scans": []
+                        }
+                }
 
         return {"status": "duplicate"}
+
+    def delete_scope(self, scope_id, scope_type):
+        """ Deletes scope by its id """
+        try:
+            session = self.session_spawner.get_new_session()
+
+            if scope_type == "ip_address":
+                db_object = session.query(IPDatabase).filter(
+                    IPDatabase.ip_id == scope_id
+                ).one()
+            else:
+                db_object = session.query(HostDatabase).filter(
+                    HostDatabase.host_id == scope_id
+                ).one()
+
+            project_uuid = db_object.project_uuid
+            session.delete(db_object)
+            session.commit()
+            self.session_spawner.destroy_session(session)
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}
+        else:
+            if scope_type == "ip_address":
+                ips_count = self.ips[project_uuid].get('ips_count', 0)
+                ips_count -= 1
+                self.ips[project_uuid]['ips_count'] = ips_count
+            else:
+                hosts_count = self.hosts[project_uuid].get('hosts_count', 0)
+                hosts_count -= 1
+                self.hosts[project_uuid]['hosts_count'] = hosts_count
+            return {"status": "success"}

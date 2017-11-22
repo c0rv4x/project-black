@@ -16,6 +16,7 @@ class ProjectDetails extends React.Component {
   	}
 
 	render() {
+		console.log(this.props);
 		return (
 			<div>
 				<br/>
@@ -25,7 +26,8 @@ class ProjectDetails extends React.Component {
 									      scans={this.props.scans} />			
 				<IPTableTracked ips={this.props.scopes.ips}
 								project_uuid={this.props.project.project_uuid}
-								onFilterChange={this.props.onFilterChangeIPs} />
+								onFilterChange={this.props.onFilterChangeIPs}
+								setLoading={this.props.setLoading} />
 			</div>
 		)
 	}

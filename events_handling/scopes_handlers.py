@@ -115,10 +115,10 @@ class ScopeHandlers(object):
             """ When received this message, delete the scope """
             scope_id = msg['scope_id']
             project_uuid = msg['project_uuid']
+            scope_type = msg['scope_type']
 
             # Delete new scope (and register it)
-            delete_result = self.scope_manager.delete_scope(scope_id=scope_id,
-                                                            project_uuid=project_uuid)
+            delete_result = self.scope_manager.delete_scope(scope_id=scope_id, scope_type=scope_type)
 
             if delete_result["status"] == "success":
                 # Send the success result
@@ -128,16 +128,6 @@ class ScopeHandlers(object):
                                       'project_uuid': project_uuid},
                     namespace='/scopes'
                 )
-
-                await self.socketio.emit(
-                    'scopes:all:get:back', {
-                        'status': 'success',
-                        'ips': self.scope_manager.get_ips(project_uuid),
-                        'hosts': self.scope_manager.get_hosts(project_uuid),
-                        'project_uuid': project_uuid
-                    },
-                    namespace='/scopes'
-                )
             else:
                 # Error occured
                 await self.socketio.emit(
@@ -145,6 +135,7 @@ class ScopeHandlers(object):
                     {'status': 'error',
                      'text': delete_result["text"],
                      'project_uuid': project_uuid},
+                    room=sio,
                     namespace='/scopes'
                 )
 
