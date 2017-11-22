@@ -38,13 +38,6 @@ class ScopeManager(object):
         """ Getting ip database object, returns the same object, but with scans attached """
         session = self.session_spawner.get_new_session()
 
-        # scans_from_db = session.query(ScanDatabase).order_by(
-        #     ScanDatabase.date_added
-        # ).filter(ScanDatabase.target == ip_object.ip_address
-        #         ).order_by(ScanDatabase.date_added).distinct(
-        #             ScanDatabase.target, ScanDatabase.port_number
-        #         ).all()
-
         subq = session.query(ScanDatabase).order_by(desc(ScanDatabase.date_added)).subquery('scans')
         alias = aliased(ScanDatabase, subq)
         ordered = session.query(alias)
