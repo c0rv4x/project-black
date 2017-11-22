@@ -1,3 +1,4 @@
+import uuid
 from sqlalchemy.orm import aliased
 from sqlalchemy import desc
 
@@ -38,16 +39,18 @@ class ScopeManager(object):
         """ Getting ip database object, returns the same object, but with scans attached """
         session = self.session_spawner.get_new_session()
 
-        subq = session.query(ScanDatabase).order_by(desc(ScanDatabase.date_added)).subquery('scans')
+        subq = session.query(ScanDatabase).order_by(
+            desc(ScanDatabase.date_added)
+        ).subquery('scans')
         alias = aliased(ScanDatabase, subq)
         ordered = session.query(alias)
-        scans_from_db = ordered.distinct(
-            alias.target, alias.port_number
-        )
+        scans_from_db = ordered.distinct(alias.target, alias.port_number)
 
         return {
             "ip_id": ip_object.ip_id,
             "ip_address": ip_object.ip_address,
+            "comment": ip_object.comment,
+            "project_uuid": ip_object.project_uuid,
             "hostnames": list(map(lambda host: host.hostname, ip_object.hostnames)),
             "scans": list(map(lambda each_scan: {
                 "scan_id": each_scan.scan_id,
@@ -61,13 +64,22 @@ class ScopeManager(object):
             }, scans_from_db))
         }
 
-    def get_one_ip(self, project_uuid, ip_address):
-        """ Returns one nicely formatted ip address with scans """
+    def find_ip_address(self, ip_address, project_uuid):
+        """ Finds ip address in the database """
         session = self.session_spawner.get_new_session()
         ip_from_db = session.query(IPDatabase).filter(
             IPDatabase.project_uuid == project_uuid,
-            IPDatabase.ip_address == ip_address.ip_address
-        ).one()
+            IPDatabase.ip_address == ip_address
+        ).one_or_none()
+
+        return ip_from_db
+
+    def get_one_ip(self, ip_address, project_uuid):
+        """ Returns one nicely formatted ip address with scans """
+        ip_from_db = self.find_ip_address(ip_address, project_uuid)
+
+        if ip_from_db is None:
+            return None
 
         return self.format_ip(ip_from_db)
 
@@ -86,7 +98,7 @@ class ScopeManager(object):
         hosts = list(map(lambda each_host: {
             "host_id": each_host.host_id,
             "hostname": each_host.hostname,
-            "ip_addresses": list(map(lambda each_ip: self.get_one_ip(project_uuid, each_ip), each_host.ip_addresses))
+            "ip_addresses": list(map(lambda each_ip: self.get_one_ip(each_ip.ip_address, project_uuid), each_host.ip_addresses))
         }, hosts_from_db))
 
         # Together with hosts list return total amount of hosts in the db
@@ -126,3 +138,42 @@ class ScopeManager(object):
                       ).count()
 
         return self.hosts[project_uuid]["hosts_count"]
+
+    def create_ip(self, ip_address, project_uuid):
+        """ Creating an ip address we should first check whether it is already
+        in the db, then create a new one if necessary """
+        if self.find_ip_address(ip_address, project_uuid) is None:
+            try:
+                session = self.session_spawner.get_new_session()
+                db_object = IPDatabase(
+                    ip_id=str(uuid.uuid4()),
+                    ip_address=ip_address,
+                    comment="",
+                    project_uuid=project_uuid
+                )
+                session.add(db_object)
+                session.commit()
+            except Exception as exc:
+                return {
+                    "status":"error",
+                    "text": str(exc)
+                }
+            else:
+                ips_count = self.ips[project_uuid].get('ips_count', 0)
+                ips_count += 1
+                self.ips[project_uuid]["ips_count"] = ips_count
+
+                return {
+                    "status": "success",
+                    "type": "ip_address",
+                    "new_scope": {
+                        "ip_id": db_object.ip_id,
+                        "ip_address": ip_address,
+                        "hostnames": [],
+                        "comment": "",
+                        "project_uuid": project_uuid,
+                        "scans": []
+                    }
+                }                
+
+        return {"status": "duplicate"}

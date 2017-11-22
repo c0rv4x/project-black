@@ -27,35 +27,10 @@ function create_scope(state = initialState, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
-		var new_state = JSON.parse(JSON.stringify(state));
+		let new_state = JSON.parse(JSON.stringify(state));
 
-		var new_ips = _.filter(message["new_scopes"], (x) => {
-			return x['type'] == 'ip';
-		})
-		new_state['ips'] = new_state['ips'].concat(_.map(new_ips, (x) => {
-			return {
-				"_id": x["_id"],
-				"ip_address": x["ip_address"],
-				"hostnames": x["hostnames"],
-				"comment": x["comment"],
-				"project_uuid": message["project_uuid"]
-			}
-		}));
-
-
-		var new_hosts = _.filter(message["new_scopes"], (x) => {
-			return x['type'] == 'host';
-		})
-		new_state['hosts'] = new_state['hosts'].concat(_.map(new_hosts, (x) => {
-			return {
-				"_id": x["_id"],
-				"hostname": x["hostname"],
-				"ip_addresses": [],
-				"comment": x["comment"],
-				"project_uuid": message["project_uuid"]
-			}
-		}))
-
+		new_state.ips.data = message.new_scopes.concat(new_state.ips.data);
+		new_state.ips.total_db_ips += 1;
 		return new_state;
 	} else {
 		/* TODO: add error handling */
