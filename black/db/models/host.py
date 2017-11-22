@@ -30,11 +30,12 @@ class HostDatabase(Base):
     task_id = Column(String, ForeignKey('tasks.task_id'))
 
     # The name of the related project
-    project_uuid = Column(String, ForeignKey('projects.project_uuid', ondelete='CASCADE'))
+    project_uuid = Column(
+        String, ForeignKey('projects.project_uuid', ondelete='CASCADE')
+    )
 
     # Date of added
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
-
 
     def __repr__(self):
         return """<HostDatabase(host_id='%s', hostname='%s',
