@@ -41,10 +41,10 @@ function create_scope(state = initialState, action) {
 			}
 		}
 
-		new_state.ips.data = new_ips.concat(new_state.ips.data);
+		new_state.ips.data = new_ips.concat(new_state.ips.data).slice(0, new_state.ips.page_size);
 		new_state.ips.total_db_ips += new_ips.length;
 
-		new_state.hosts.data = new_hosts.concat(new_state.hosts.data);
+		new_state.hosts.data = new_hosts.concat(new_state.hosts.data).slice(0, new_state.hosts.page_size);
 		new_state.hosts.total_db_hosts += new_hosts.length;
 
 		new_state.update_needed = false;			
