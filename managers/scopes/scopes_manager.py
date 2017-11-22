@@ -29,6 +29,8 @@ class ScopeManager(object):
             IPDatabase.project_uuid == project_uuid
         ).offset(page_number * page_size).limit(page_size).all()
 
+        self.session_spawner.destroy_session(session)
+
         # Reformat the ips to make the JSON-like objects
         ips = list(map(lambda each_ip: self.format_ip(each_ip), ips_from_db))
 
@@ -45,6 +47,8 @@ class ScopeManager(object):
         alias = aliased(ScanDatabase, subq)
         ordered = session.query(alias)
         scans_from_db = ordered.distinct(alias.target, alias.port_number)
+
+        self.session_spawner.destroy_session(session)
 
         return {
             "ip_id": ip_object.ip_id,
@@ -71,6 +75,7 @@ class ScopeManager(object):
             IPDatabase.project_uuid == project_uuid,
             IPDatabase.ip_address == ip_address
         ).one_or_none()
+        self.session_spawner.destroy_session(session)
 
         return ip_from_db
 
@@ -93,6 +98,7 @@ class ScopeManager(object):
         hosts_from_db = session.query(HostDatabase).filter(
             HostDatabase.project_uuid == project_uuid
         ).offset(page_number * page_size).limit(page_size).all()
+        self.session_spawner.destroy_session(session)
 
         # Reformat each hosts to JSON-like objects
         hosts = list(map(lambda each_host: {
@@ -121,6 +127,8 @@ class ScopeManager(object):
                                       IPDatabase.project_uuid == project_uuid
                                   ).count()
 
+            self.session_spawner.destroy_session(session)
+
         return self.ips[project_uuid]["ips_count"]
 
     def count_hosts(self, project_uuid):
@@ -136,6 +144,7 @@ class ScopeManager(object):
                       ]["hosts_count"] = session.query(HostDatabase).filter(
                           HostDatabase.project_uuid == project_uuid
                       ).count()
+            self.session_spawner.destroy_session(session)
 
         return self.hosts[project_uuid]["hosts_count"]
 
@@ -153,6 +162,7 @@ class ScopeManager(object):
                 )
                 session.add(db_object)
                 session.commit()
+                self.session_spawner.destroy_session(session)
             except Exception as exc:
                 return {
                     "status":"error",
