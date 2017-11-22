@@ -28,9 +28,24 @@ function create_scope(state = initialState, action) {
 
 	if (message["status"] == 'success') {
 		let new_state = JSON.parse(JSON.stringify(state));
+		let new_ips = [];
+		let new_hosts = [];
 
-		new_state.ips.data = message.new_scopes.concat(new_state.ips.data);
-		new_state.ips.total_db_ips += 1;
+		for (var each_scope of message.new_scopes) {
+			if (each_scope.type == "ip_address") {
+				new_ips.push(each_scope);
+			}
+			else {
+				new_hosts.push(each_scope);
+			}
+		}
+
+		new_state.ips.data = new_ips.concat(new_state.ips.data);
+		new_state.ips.total_db_ips += new_ips.length;
+
+		new_state.hosts.data = new_hosts.concat(new_state.hosts.data);
+		new_state.hosts.total_db_hosts += new_hosts.length;				
+
 		return new_state;
 	} else {
 		/* TODO: add error handling */

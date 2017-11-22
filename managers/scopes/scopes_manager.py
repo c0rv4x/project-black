@@ -165,8 +165,8 @@ class ScopeManager(object):
 
                 return {
                     "status": "success",
-                    "type": "ip_address",
                     "new_scope": {
+                        "type": "ip_address",
                         "ip_id": db_object.ip_id,
                         "ip_address": ip_address,
                         "hostnames": [],
