@@ -16,7 +16,12 @@ class HostDatabase(Base):
     hostname = Column(String)
 
     # IP addresses of that host
-    ip_addresses = relationship("IPDatabase", secondary=association_table, back_populates="hostnames")
+    ip_addresses = relationship(
+        "IPDatabase",
+        secondary=association_table,
+        back_populates="hostnames",
+        lazy='subquery'
+    )
 
     # Some text comment
     comment = Column(String)

@@ -23,7 +23,8 @@ class IPDatabase(Base):
     hostnames = relationship(
         "HostDatabase",
         secondary=association_table,
-        back_populates="ip_addresses"
+        back_populates="ip_addresses",
+        lazy='subquery'
     )
 
     # Comment field, as requested by VI
