@@ -1,3 +1,6 @@
+from sqlalchemy.orm import aliased
+from sqlalchemy import desc
+
 from black.black.db import Sessions, IPDatabase, ProjectDatabase, HostDatabase, ScanDatabase
 
 
@@ -35,12 +38,19 @@ class ScopeManager(object):
         """ Getting ip database object, returns the same object, but with scans attached """
         session = self.session_spawner.get_new_session()
 
-        scans_from_db = session.query(ScanDatabase).filter(
-            ScanDatabase.target == ip_object.ip_address
-        ).order_by(
-            ScanDatabase.date_added.desc(), ScanDatabase.target,
-            ScanDatabase.port_number
-        ).distinct(ScanDatabase.target, ScanDatabase.port_number).all()
+        # scans_from_db = session.query(ScanDatabase).order_by(
+        #     ScanDatabase.date_added
+        # ).filter(ScanDatabase.target == ip_object.ip_address
+        #         ).order_by(ScanDatabase.date_added).distinct(
+        #             ScanDatabase.target, ScanDatabase.port_number
+        #         ).all()
+
+        subq = session.query(ScanDatabase).order_by(desc(ScanDatabase.date_added)).subquery('scans')
+        alias = aliased(ScanDatabase, subq)
+        ordered = session.query(alias)
+        scans_from_db = ordered.distinct(
+            alias.target, alias.port_number
+        )
 
         return {
             "ip_id": ip_object.ip_id,
