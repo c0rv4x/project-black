@@ -1,11 +1,10 @@
 import _ from 'lodash'
 import { connect } from 'react-redux'
 
-import ProjectDetailsScannerUpdater from './ProjectDetailsScannerUpdater.jsx'
+import ProjectDetailsScopesUpdater from './ProjectDetailsScopesUpdater.jsx'
 import { updateComment as updateProjectComment } from '../../redux/projects/actions'
 import { updateComment as updateScopeComment } from '../../redux/scopes/actions'
 import { updateFilters } from '../../redux/filters/actions'
-
 
 
 function mapStateToProps(state, ownProps) {
@@ -42,6 +41,6 @@ function mapStateToProps(state, ownProps) {
 
 const ProjectDetailsWrapper = connect(
     mapStateToProps
-)(ProjectDetailsScannerUpdater)
+)(ProjectDetailsScopesUpdater)
 
 export default ProjectDetailsWrapper
