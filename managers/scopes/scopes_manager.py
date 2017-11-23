@@ -1,6 +1,8 @@
 import uuid
-from sqlalchemy.orm import aliased
+import aiodns
+import asyncio
 from sqlalchemy import desc
+from sqlalchemy.orm import aliased
 
 from black.black.db import Sessions, IPDatabase, ProjectDatabase, HostDatabase, ScanDatabase
 
@@ -69,7 +71,7 @@ class ScopeManager(object):
             }, scans_from_db))
         }
 
-    def find_ip_address(self, ip_address, project_uuid):
+    def find_ip_db(self, ip_address, project_uuid):
         """ Finds ip address in the database """
         session = self.session_spawner.get_new_session()
         ip_from_db = session.query(IPDatabase).filter(
@@ -93,7 +95,7 @@ class ScopeManager(object):
 
     def get_one_ip(self, ip_address, project_uuid):
         """ Returns one nicely formatted ip address with scans """
-        ip_from_db = self.find_ip_address(ip_address, project_uuid)
+        ip_from_db = self.find_ip_db(ip_address, project_uuid)
 
         if ip_from_db is None:
             return None
@@ -163,7 +165,7 @@ class ScopeManager(object):
     def create_ip(self, ip_address, project_uuid):
         """ Creating an ip address we should first check whether it is already
         in the db, then create a new one if necessary """
-        if self.find_ip_address(ip_address, project_uuid) is None:
+        if self.find_ip_db(ip_address, project_uuid) is None:
             try:
                 session = self.session_spawner.get_new_session()
                 db_object = IPDatabase(
@@ -288,3 +290,74 @@ class ScopeManager(object):
             return {"status": "error", "text": str(exc)}
         else:
             return {"status": "success"}
+
+
+    async def resolve_scopes(self, scopes_ids, project_uuid):
+        """ Using all the ids of scopes, resolve the hosts, now we
+        resolve ALL the scopes, that are related to the project_uuid """
+        session = self.session_spawner.get_new_session()
+
+        # Select all hosts from the db
+        project_hosts = session.query(HostDatabase).filter(
+            HostDatabase.project_uuid == project_uuid
+        ).all()
+
+        if scopes_ids is None:
+            to_resolve = project_hosts
+        else:
+            # This should not work for now, but TODO: make it actually work
+            to_resolve = list(
+                filter(lambda x: x.host_id in scopes_ids, project_hosts)
+            )
+
+        resolver = aiodns.DNSResolver(loop=asyncio.get_event_loop())
+        futures = []
+
+        for each_host in to_resolve:
+            each_future = resolver.query(each_host.hostname, "A")
+            each_future.database_host = each_host
+            futures.append(each_future)
+
+        (done_futures, _) = await asyncio.wait(
+            futures, return_when=asyncio.ALL_COMPLETED
+        )
+
+        while done_futures:
+            each_future = done_futures.pop()
+
+            try:
+                exc = each_future.exception()
+                result = each_future.result()
+                host = each_future.database_host
+            except Exception:
+                continue
+
+            if exc:
+                print("RESOLVE EXCEPTION", each_future, exc)
+
+            for each_result in result:
+                # Well, this is strange, but ip in aiodns is returned in 'host'
+                # field
+                resolved_ip = each_result.host
+                found_ip = self.find_ip_db(resolved_ip, project_uuid)
+
+                if found_ip:
+                    host.ip_addresses.append(found_ip)
+                    found_ip.hostnames.append(host)
+                    session.add(host)
+                    session.add(found_ip)
+                else:
+                    ip_create_result = self.create_ip(
+                        resolved_ip, project_uuid
+                    )
+
+                    if ip_create_result["status"] == "success":
+                        newly_created_ip = ip_create_result["new_scope"]
+
+                        host.ip_addresses.append(newly_created_ip)
+                        newly_created_ip.hostnames.append(host)
+                        session.add(host)
+                        session.add(newly_created_ip)
+        session.commit()
+        self.session_spawner.destroy_session(session)
+        

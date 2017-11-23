@@ -146,11 +146,7 @@ class ScopeHandlers(object):
             project_uuid = msg['project_uuid']
 
             await self.scope_manager.resolve_scopes(scopes_ids, project_uuid)
-            print(
-                "Sending after resolve:",
-                self.scope_manager.get_ips(project_uuid),
-                self.scope_manager.get_hosts(project_uuid)
-            )
+            # TODO: Substitute this method for the correct one
             await self.socketio.emit(
                 'scopes:all:get:back', {
                     'status': 'success',
