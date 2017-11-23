@@ -217,3 +217,26 @@ class ScopeManager(object):
                 hosts_count -= 1
                 self.hosts[project_uuid]['hosts_count'] = hosts_count
             return {"status": "success"}
+
+    def update_scope(self, scope_id, comment, scope_type):
+        """ Update a comment on the scope """
+        try:
+            session = self.session_spawner.get_new_session()
+        
+            if scope_type == "ip_address":
+                db_object = session.query(IPDatabase).filter(
+                    IPDatabase.ip_id == scope_id
+                ).one()
+            else:
+                db_object = session.query(HostDatabase).filter(
+                    HostDatabase.host_id == scope_id
+                ).one()        
+
+            db_object.comment = comment
+            session.add(db_object)
+            session.commit()
+            self.session_spawner.destroy_session(session)
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}
+        else:
+            return {"status": "success"}

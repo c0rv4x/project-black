@@ -167,18 +167,19 @@ class ScopeHandlers(object):
             scope_id = msg['scope_id']
             comment = msg['comment']
             project_uuid = msg['project_uuid']
+            scope_type = msg['scope_type']
 
             result = self.scope_manager.update_scope(
-                scope_id=scope_id, comment=comment
+                scope_id=scope_id, comment=comment, scope_type=scope_type
             )
             if result["status"] == "success":
-                updated_scope = result["updated_scope"]
-
                 await self.socketio.emit(
                     'scopes:update:back',
                     {
                      "status": "success",
-                     "updated_scope": updated_scope,
+                     "scope_id": scope_id,
+                     "scope_type": scope_type,
+                     "comment": comment,
                      "project_uuid": project_uuid},
                     namespace='/scopes'
                 )
@@ -186,35 +187,6 @@ class ScopeHandlers(object):
                 result['project_uuid'] = project_uuid
                 await self.socketio.emit(
                     'scopes:update:back',
-                    result,
-                    namespace='/scopes'
-                )
-
-        @self.socketio.on('scopes:update:comment', namespace='/scopes')
-        async def _cb_handle_scope_update(sio, msg):
-            """ Update the scope (now only used for comment). """
-            scope_id = msg['scope_id']
-            comment = msg['comment']
-            project_uuid = msg['project_uuid']
-
-            result = self.scope_manager.update_scope(
-                scope_id=scope_id, comment=comment
-            )
-            if result["status"] == "success":
-                updated_scope = result["updated_scope"]
-
-                await self.socketio.emit(
-                    'scopes:update:comment:back',
-                    {
-                     "status": "success",
-                     "updated_scope": updated_scope,
-                     "project_uuid": project_uuid},
-                    namespace='/scopes'
-                )
-            else:
-                result['project_uuid'] = project_uuid
-                await self.socketio.emit(
-                    'scopes:update:comment:back',
                     result,
                     namespace='/scopes'
                 )

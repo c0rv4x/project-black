@@ -30,7 +30,7 @@ class IPTable extends React.Component {
 	}
 
 	commentSubmitted(comment, _id) {
-		this.scopesEmitter.requestUpdateComment(comment, _id, this.props.project_uuid);
+		this.scopesEmitter.requestUpdateScope(comment, _id, this.props.project_uuid, 'ip_address');
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {

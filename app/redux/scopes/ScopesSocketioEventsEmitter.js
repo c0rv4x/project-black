@@ -75,21 +75,14 @@ class ScopesSocketioEventsEmitter {
 		});
 	}
 
-	requestUpdateScope(comment, scope_id, project_uuid) {
+	requestUpdateScope(comment, scope_id, project_uuid, scope_type) {
 		this.connector.emit('scopes:update', {
 			'scope_id': scope_id,
 			'comment': comment,
-			'project_uuid': project_uuid
+			'project_uuid': project_uuid,
+			'scope_type': scope_type
 		});
 	}
-
-	requestUpdateComment(comment, scope_id, project_uuid) {
-		this.connector.emit('scopes:update:comment', {
-			'scope_id': scope_id,
-			'comment': comment,
-			'project_uuid': project_uuid
-		});
-	}	
 
 }
 

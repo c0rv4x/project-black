@@ -79,7 +79,7 @@ function renew_scopes(state = initialState, action) {
 		}
 	} else {
 		/* TODO: add error handling */
-	}		
+	}
 }
 
 function clear_scopes(state = initialState, action) {
@@ -87,26 +87,6 @@ function clear_scopes(state = initialState, action) {
 }
 
 function update_comment(state = initialState, action) {
-	const _id = action.message.updated_scope['_id'];
-	const new_comment = action.message.updated_scope['comment'];
-
-	var new_state = JSON.parse(JSON.stringify(state));
-
-	for (var scope of new_state['ips']) {
-		if (scope._id == _id) {
-			scope.comment = new_comment;
-
-			return new_state;
-		}
-	}
-	for (var scope of new_state['hosts']) {
-		if (scope._id == _id) {
-			scope.comment = new_comment;
-
-			return new_state;
-		}
-	}
-
 	return state;
 }
 
@@ -114,27 +94,41 @@ function update_scope(state = initialState, action) {
 	const message = action.message;
 
 	if (message["status"] == "success") {
-		var new_state = JSON.parse(JSON.stringify(state));
-		var updated_scope = message["updated_scope"];
+		var { scope_id, scope_type, comment } = message;
 
-		if (updated_scope["type"] == "ip") {
-			for (var ip_addr of new_state["ips"]) {
-				if (ip_addr["_id"] == updated_scope["_id"]) {
-					ip_addr["comment"] = updated_scope["comment"]
-					break;
+		if (scope_type == 'ip_address') {
+			for (var each_ip of state.ips.data) {
+				if (each_ip.ip_id == scope_id) {
+					var new_state = JSON.parse(JSON.stringify(state));
+
+					for (var each_new_ip of new_state.ips.data) {
+						if (each_new_ip.ip_id == scope_id) {
+							each_new_ip.comment = comment;
+							break;
+						}
+					}
+
+					return new_state;
+				}
+			}
+		} else {
+			for (var each_host of state.hosts.data) {
+				if (each_host.host_id == scope_id) {
+					var new_state = JSON.parse(JSON.stringify(state));
+
+					for (var each_new_host of new_state.hosts.data) {
+						if (each_new_host.host_id == scope_id) {
+							each_new_host.comment = comment;
+							break;
+						}
+					}
+
+					return new_state;
 				}
 			}
 		}
-		else if (updated_scope["type"] == "host") {
-			for (var host of new_state["hosts"]) {
-				if (host["_id"] == updated_scope["_id"]) {
-					host["comment"] = updated_scope["comment"]
-					break;
-				}
-			}
-		}
 
-		return new_state;
+		return state;
 	} else {
 		console.error(message);
 		/* TODO: add error handling */
