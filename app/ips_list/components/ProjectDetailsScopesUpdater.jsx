@@ -6,7 +6,7 @@ import ProjectDetails from './ProjectDetails.jsx'
 import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
 
 
-class ProjectDetailsScannerUpdater extends React.Component {
+class ProjectDetailsScopesUpdater extends React.Component {
 	constructor(props) {
 		super(props);
 
@@ -56,4 +56,4 @@ class ProjectDetailsScannerUpdater extends React.Component {
 	}
 }
 
-export default ProjectDetailsScannerUpdater;
+export default ProjectDetailsScopesUpdater;
