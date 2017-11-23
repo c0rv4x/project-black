@@ -13,15 +13,11 @@ class HostsTable extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.limitPerPage = 12;
-
 		if (this.props.hosts) {
-			let pageCount = Math.ceil(this.props.hosts.length / this.limitPerPage);
-
 			this.state = {
-				shownData: this.props.hosts.slice(0, 0 + this.limitPerPage),
-				offsetPage: 0,
-				pageCount: pageCount
+				shownData: this.props.hosts.data,
+				offsetPage: this.props.hosts.page,
+				pageCount: Math.ceil(this.props.hosts.total_db_hosts / this.props.hosts.page_size)
 			}
 		}
 
@@ -29,26 +25,25 @@ class HostsTable extends React.Component {
 
 		this.commentSubmitted = this.commentSubmitted.bind(this);
 		this.handlePageClick = this.handlePageClick.bind(this);
-
-		this.page_inited = false;
 	}
 
 	componentWillReceiveProps(nextProps) {
-		var start = this.limitPerPage * this.state.offsetPage;
+		if ((nextProps.hosts.page !== this.props.hosts.page) || (nextProps.hosts.page_size !== this.props.hosts.page_size)) {
+			this.props.setLoading(false);
+		}
+
+		let start = this.limitPerPage * this.state.offsetPage;
 
 		this.setState({
-			shownData: nextProps.hosts.slice(start, start + this.limitPerPage),
-			pageCount: Math.ceil(nextProps.hosts.length / this.limitPerPage)
+			shownData: nextProps.hosts.data,
+			pageCount: Math.ceil(this.props.hosts.total_db_hosts / this.props.hosts.page_size)
 		});
-	}	
+	}
 
-	handlePageClick(data) {
-		var start = this.limitPerPage * (data - 1);
-
-		this.setState({
-			offsetPage: data - 1,
-			shownData: this.props.hosts.slice(start, start + this.limitPerPage),
-		});
+	handlePageClick(page_number) {
+		this.scopesEmitter.requestRenewScopes(this.props.project_uuid,
+			this.props.ips, this.props.ips.page_size, page_number - 1, this.props.hosts.page_size);
+		this.props.setLoading(true);
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -61,7 +56,7 @@ class HostsTable extends React.Component {
 
 	render() {
 		const scopes = _.map(this.state.shownData, (x) => {
-			return <HostsEntryLine key={x._id}
+			return <HostsEntryLine key={x.host_id}
 								   project={this.props.project}
 								   host={x} 
 								   onCommentSubmit={(value) => this.commentSubmitted(value, x._id)}

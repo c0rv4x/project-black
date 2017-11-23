@@ -45,6 +45,10 @@ class NavigationTabs extends React.Component {
 				render: (() => <ProjectDetailsWrapper project_uuid={this.project_uuid} />)
 			},
 			{
+				menuItem: 'Hosts List',
+				render: (() => <HostsListWrapper project_uuid={this.project_uuid} />)
+			},
+			{
 				menuItem: <Menu.Item key="dirsearch_table" onClick={() => 
 					window.open(dirsearch_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
 					Dirsearch List

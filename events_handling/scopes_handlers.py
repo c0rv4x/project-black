@@ -210,7 +210,7 @@ class ScopeHandlers(object):
                     'hosts': {
                         'page': host_page,
                         'page_size': host_page_size,
-                        'data': [],
+                        'data': hosts['hosts'],
                         'total_db_hosts': hosts['total_db_hosts']
                     }
                 },
@@ -230,7 +230,7 @@ class ScopeHandlers(object):
                     'hosts': {
                         'page': host_page,
                         'page_size': host_page_size,
-                        'data': [],
+                        'data': hosts['hosts'],
                         'total_db_hosts': hosts['total_db_hosts']
                     }
                 },

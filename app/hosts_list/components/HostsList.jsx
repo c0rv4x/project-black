@@ -14,255 +14,26 @@ import { Button } from 'semantic-ui-react'
 class HostsList extends React.Component {
 	constructor(props) {
 		super(props);
-
-		let inited = false;
-		if (this.props.scopes && this.props.scopes.hasOwnProperty('ips')) {
-			inited = true;
-		}
-
-		this.state = {
-			regexesObjects: {
-
-			},
-			inited: inited
-		};
-
-		this.filter = this.filter.bind(this);
-		this.reworkHostsList = this.reworkHostsList.bind(this);
-
-		this.page_inited = false;
-	}
-
-	shouldComponentUpdate(nextProps, nextState) {
-		if (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState)) {
-			if (this.props.scopes.hosts.length !== nextProps.scopes.hosts.length) {
-				var diff = nextProps.scopes.hosts.length - this.props.scopes.hosts.length;
-
-				if (diff > 0) {
-					this.context.store.dispatch(Notifications.info({
-						title: 'New hosts',
-						message: 'Added ' + String(nextProps.scopes.hosts.length - this.props.scopes.hosts.length) + ' hosts.'
-					}));					
-				}
-				else {
-					this.context.store.dispatch(Notifications.info({
-						title: 'Hosts deleted',
-						message: 'Deleted ' + String(this.props.scopes.hosts.length - nextProps.scopes.hosts.length) + ' hosts.'
-					}));					
-				}
-
-			}
-
-			return true;
-		}
-		else {
-			return false;
-		}		
-	}
-
-	filter(data, name) {
-		if (data) {
-			// Work only on hosts (hostname filter + banner filter)
-			var data_copy = JSON.parse(JSON.stringify(data));
-			var hosts = [];
-			var noFilter = true;
-
-			if (this.state.regexesObjects.hasOwnProperty('host')) {
-				if (noFilter) {
-					hosts = data_copy;
-				}
-				noFilter = false;
-
-				var hostsRegex = this.state.regexesObjects['host'];
-				var newHosts = data_copy.filter((x) => {
-					return hostsRegex.test(x['hostname']);
-				});
-
-				hosts = newHosts;
-			}
-
-			if (this.state.regexesObjects.hasOwnProperty('ip')) {
-				if (noFilter) {
-					hosts = data_copy;
-				}				
-				noFilter = false;
-
-				var ipRegex = this.state.regexesObjects['ip'];
-				for (var host of hosts) {
-					host['ip_addresses'] = host['ip_addresses'].filter((x) => {
-						return ipRegex.test(x['ip_address']);
-					});
-				}
-
-				hosts = hosts.filter((x) => {
-					return x.ip_addresses.length > 0;
-				});
-			}
-
-			if (this.state.regexesObjects.hasOwnProperty('banner')) {
-				if (noFilter) {
-					hosts = data_copy;
-				}
-
-				noFilter = false;
-				var bannerRegex = this.state.regexesObjects['banner'];
-				for (var host of hosts) {
-					for (var ip_address of host['ip_addresses']) {
-						ip_address['scans'] = ip_address['scans'].filter((x) => {
-							return bannerRegex.test(x['banner']);
-						});
-					}
-
-					host['ip_addresses'] = host['ip_addresses'].filter((x) => {
-						return x.scans.length > 0;
-					});
-				}
-
-				hosts = hosts.filter((x) => {
-					return x.ip_addresses.length > 0;
-				});
-			}
-
-			if (this.state.regexesObjects.hasOwnProperty('port')) {
-				if (noFilter) {
-					hosts = data_copy;
-				}
-
-				noFilter = false;
-				var portRegex = this.state.regexesObjects['port'];
-				for (var host of hosts) {
-					for (var ip_address of host['ip_addresses']) {
-						ip_address['scans'] = ip_address['scans'].filter((x) => {
-							return portRegex.test(String(x['port_number']));
-						});
-					}
-
-					host['ip_addresses'] = host['ip_addresses'].filter((x) => {
-						return x.scans.length > 0;
-					});
-
-				}
-				hosts = hosts.filter((x) => {
-					return x.ip_addresses.length > 0;
-				});
-			}
-
-			if (this.state.regexesObjects.hasOwnProperty('port')) {
-				if (noFilter) {
-					hosts = data_copy;
-				}
-
-				noFilter = false;
-				var portRegex = this.state.regexesObjects['port'];
-				for (var host of hosts) {
-					for (var ip_address of host['ip_addresses']) {
-						ip_address['scans'] = ip_address['scans'].filter((x) => {
-							return portRegex.test(String(x['port_number']));
-						});
-					}
-
-					host['ip_addresses'] = host['ip_addresses'].filter((x) => {
-						return x.scans.length > 0;
-					});
-
-				}
-
-				hosts = hosts.filter((x) => {
-					return x.ip_addresses.length > 0;
-				});
-			}
-
-			if (noFilter) {
-				return data_copy
-			}
-			else {
-				return hosts
-			}
-		}
-		else {
-			return []
-		}
-	}
-
-	componentWillReceiveProps(newProps, newState) {
-		// Parse loading canceller
-		if (newProps.inited) {
-			this.setState({
-				inited: true
-			});
-		}
-
-		// Parse filters
-		const newFilters = newProps['filters'];
-
-		if (newFilters === null) {
-			this.setState({
-				regexesObjects: {}
-			});		
-		}
-		else {
-			var newRegexObjects = {};
-
-			for (var eachKey of Object.keys(newFilters)) {
-				newRegexObjects[eachKey] = new RegExp(newFilters[eachKey]);
-			}
-
-			this.setState({
-				regexesObjects: newRegexObjects
-			});			
-		}
-
-	}
-
-	reworkHostsList(hosts_input, scans) {
-		var hosts = JSON.parse(JSON.stringify(hosts_input));
-
-	    for (var each_host of hosts) {
-			for (var ip_index = 0; ip_index < each_host.ip_addresses.length; ip_index++) {
-				let ip_address = each_host.ip_addresses[ip_index];
-				let filtered_scans = _.get(scans, ip_address, []);
-
-				each_host.ip_addresses[ip_index] = {
-					'ip_address': ip_address,
-					'scans': filtered_scans
-				};
-			}    	
-	    }
-
-	    return hosts
 	}
 
 	render() {
-		const { inited } = this.props;
-		const dirsearch_link = '/project/' + this.props.project.project_uuid + '/dirsearch';
-
-		const scopes = this.reworkHostsList(this.props.scopes.hosts, this.props.scans);
-		const filtered_scopes = this.filter(scopes);
+		const { scopes } = this.props;
 
 		return (
 			<div>
-				<Dimmer active={!inited}>
-					<Loader />
-				</Dimmer>
-
 				<Tasks tasks={this.props.tasks} />
 				<br/>
-				<TasksButtonsTracked scopes={filtered_scopes}
+				<TasksButtonsTracked scopes={scopes.hosts}
 									 scans={this.props.scans} 
 									 project={this.props.project} />
 
 				<HostsTableTracked project={this.props.project}
-								   scopes={filtered_scopes}
-								   onFilterChange={this.props.onFilterChangeHosts}
+								   scopes={scopes.hosts}
 
 								   scans={this.props.scans} />
 			</div>
 		)
 	}
-}
-
-HostsList.contextTypes = {
-	store: React.PropTypes.object
 }
 
 export default HostsList;

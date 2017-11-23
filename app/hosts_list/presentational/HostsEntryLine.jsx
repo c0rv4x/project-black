@@ -50,20 +50,29 @@ class HostsEntryLine extends React.Component {
 			</div>
 		);
 
+		console.log(this.props.host);
+
+		// var files_by_statuses = {
+		// 	'2xx': this.props.host.files.filter((x) => {
+		// 		return Math.floor(x.status_code / 100) === 2;
+		// 	}).length,
+		// 	'3xx': this.props.host.files.filter((x) => {
+		// 		return Math.floor(x.status_code / 100) === 3;
+		// 	}).length,
+		// 	'4xx': this.props.host.files.filter((x) => {
+		// 		return Math.floor(x.status_code / 100) === 4 && x.status_code !== 404;
+		// 	}).length,	
+		// 	'5xx': this.props.host.files.filter((x) => {
+		// 		return Math.floor(x.status_code / 100) === 5 && x.status_code !== 404;
+		// 	}).length						
+		// };
+
 		var files_by_statuses = {
-			'2xx': this.props.host.files.filter((x) => {
-				return Math.floor(x.status_code / 100) === 2;
-			}).length,
-			'3xx': this.props.host.files.filter((x) => {
-				return Math.floor(x.status_code / 100) === 3;
-			}).length,
-			'4xx': this.props.host.files.filter((x) => {
-				return Math.floor(x.status_code / 100) === 4 && x.status_code !== 404;
-			}).length,	
-			'5xx': this.props.host.files.filter((x) => {
-				return Math.floor(x.status_code / 100) === 5 && x.status_code !== 404;
-			}).length						
-		};
+			'2xx': 0,
+			'3xx': 0,
+			'4xx': 0,
+			'5xx': 0
+		};		
 
 		const description = (
 			<div>
