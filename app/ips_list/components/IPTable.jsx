@@ -34,30 +34,7 @@ class IPTable extends React.Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-		if (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState)) {
-			if (this.props.ips.length !== nextProps.ips.length) {
-				var diff = nextProps.ips.length - this.props.ips.length;
-
-				if (diff > 0) {
-					this.context.store.dispatch(Notifications.info({
-						title: 'New IPs',
-						message: 'Added ' + String(nextProps.ips.length - this.props.ips.length) + ' IPs.'
-					}));					
-				}
-				else {
-					this.context.store.dispatch(Notifications.info({
-						title: 'IPs deleted',
-						message: 'Deleted ' + String(this.props.ips.length - nextProps.ips.length) + ' IPs.'
-					}));					
-				}
-
-			}
-
-			return true;
-		}
-		else {
-			return false;
-		}
+		return (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState));
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -65,7 +42,7 @@ class IPTable extends React.Component {
 			this.props.setLoading(false);
 		}
 
-		var start = this.limitPerPage * this.state.offsetPage;
+		let start = this.limitPerPage * this.state.offsetPage;
 
 		this.setState({
 			shownData: nextProps.ips.data,
@@ -74,7 +51,8 @@ class IPTable extends React.Component {
 	}
 
 	handlePageClick(page_number) {
-		this.scopesEmitter.requestRenewScopes(this.props.project_uuid, page_number-1);
+		this.scopesEmitter.requestRenewScopes(this.props.project_uuid,
+			page_number - 1, this.props.ips.page_size, this.props.hosts.page, this.props.hosts.page_size);
 		this.props.setLoading(true);
 	}
 
