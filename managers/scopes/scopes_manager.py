@@ -80,6 +80,17 @@ class ScopeManager(object):
 
         return ip_from_db
 
+    def find_hostname(self, hostname, project_uuid):
+        """ Finds hostname in the database """
+        session = self.session_spawner.get_new_session()
+        host_from_db = session.query(HostDatabase).filter(
+            HostDatabase.project_uuid == project_uuid,
+            HostDatabase.hostname == hostname
+        ).one_or_none()
+        self.session_spawner.destroy_session(session)
+
+        return host_from_db
+
     def get_one_ip(self, ip_address, project_uuid):
         """ Returns one nicely formatted ip address with scans """
         ip_from_db = self.find_ip_address(ip_address, project_uuid)
@@ -182,6 +193,43 @@ class ScopeManager(object):
                             "comment": "",
                             "project_uuid": project_uuid,
                             "scans": []
+                        }
+                }
+
+        return {"status": "duplicate"}
+
+    def create_host(self, hostname, project_uuid):
+        """ Creating a host we should first check whether it is already
+        in the db, then create a new one if necessary """
+        if self.find_hostname(hostname, project_uuid) is None:
+            try:
+                session = self.session_spawner.get_new_session()
+                db_object = HostDatabase(
+                    host_id=str(uuid.uuid4()),
+                    hostname=hostname,
+                    comment="",
+                    project_uuid=project_uuid
+                )
+                session.add(db_object)
+                session.commit()
+                self.session_spawner.destroy_session(session)
+            except Exception as exc:
+                return {"status": "error", "text": str(exc)}
+            else:
+                hosts_count = self.hosts[project_uuid].get('hosts_count', 0)
+                hosts_count += 1
+                self.hosts[project_uuid]["hosts_count"] = hosts_count
+
+                return {
+                    "status": "success",
+                    "new_scope":
+                        {
+                            "type": "host",
+                            "host_id": db_object.host_id,
+                            "hostname": hostname,
+                            "ip_addresses": [],
+                            "comment": "",
+                            "project_uuid": project_uuid
                         }
                 }
 
