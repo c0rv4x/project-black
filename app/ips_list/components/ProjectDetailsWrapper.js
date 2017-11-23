@@ -33,8 +33,7 @@ function mapStateToProps(state, ownProps) {
             'update_needed': state.scopes.update_needed
         },
         tasks: state.tasks.active,
-        scans: state.scans,
-        inited: project.project_name !== null
+        scans: state.scans
     }
 }
 
