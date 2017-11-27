@@ -27,6 +27,9 @@ class IPDatabase(Base):
         lazy='subquery'
     )
 
+    # Open ports
+    ports = relationship('ScanDatabase', cascade="all, delete-orphan", lazy='subquery')
+
     # Comment field, as requested by VI
     comment = Column(String)
 

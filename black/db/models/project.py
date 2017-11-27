@@ -27,7 +27,7 @@ class ProjectDatabase(Base):
     ips_relationship = relationship('IPDatabase', cascade="all, delete-orphan")
     hosts_relationship = relationship('HostDatabase', cascade="all, delete-orphan")
     tasks_relationship = relationship('TaskDatabase', cascade="all, delete-orphan")
-    # scans_relationship = relationship('Scan', cascade="all, delete-orphan")
+    scans_relationship = relationship('ScanDatabase', cascade="all, delete-orphan")
 
     def __repr__(self):
         return "<Project(project_name='%s')>" % (self.project_name)

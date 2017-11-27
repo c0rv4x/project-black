@@ -12,8 +12,10 @@ class ScanDatabase(Base):
     # Primary key (probably uuid4)
     scan_id = Column(String, primary_key=True)
 
-    # Target is (probably) host/ip
-    target = Column(String)
+    # The name of the related project
+    target = Column(
+        String, ForeignKey('ips.ip_id', ondelete='CASCADE')
+    )
 
     # TCP port number
     port_number = Column(Integer)
