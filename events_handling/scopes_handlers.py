@@ -3,8 +3,6 @@ import asyncio
 from netaddr import IPNetwork
 
 
-PACKET_SIZE = 1000
-
 class ScopeHandlers(object):
     """ Registers all handlers related to scopes """
 
