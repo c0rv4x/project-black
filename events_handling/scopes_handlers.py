@@ -148,10 +148,8 @@ class ScopeHandlers(object):
             await self.scope_manager.resolve_scopes(scopes_ids, project_uuid)
             # TODO: Substitute this method for the correct one
             await self.socketio.emit(
-                'scopes:all:get:back', {
+                'scopes:resolve:done', {
                     'status': 'success',
-                    'ips': self.scope_manager.get_ips(project_uuid),
-                    'hosts': self.scope_manager.get_hosts(project_uuid),
                     'project_uuid': project_uuid
                 },
                 namespace='/scopes'

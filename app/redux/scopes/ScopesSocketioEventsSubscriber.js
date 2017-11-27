@@ -4,9 +4,8 @@ import {
 	createScope, 
 	deleteScope,
 	renewScopes,
-	clearScopes,
 	updateScope,
-	updateComment
+	resolveScopes
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
@@ -34,9 +33,9 @@ class ScopesSocketioEventsSubscriber {
 		this.register_socketio_handler('scopes:part:set', renewScopes);
 
 		this.register_socketio_handler('scopes:update:back', updateScope);
-		this.register_socketio_handler('scopes:update:comment:back', updateComment);
 		this.register_socketio_handler('scopes:create', createScope);
 		this.register_socketio_handler('scopes:delete', deleteScope);
+		this.register_socketio_handler('scopes:resolve:done', resolveScopes);
 	}
 
 	register_socketio_handler(eventName, dispatchCallback, callback) {

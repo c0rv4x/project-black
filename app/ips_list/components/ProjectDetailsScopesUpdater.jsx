@@ -21,7 +21,7 @@ class ProjectDetailsScopesUpdater extends React.Component {
 
 		if (this.props.update_needed === true) {
 			this.scopesEmitter.requestRenewScopes(this.props.project_uuid,
-				ip_page=ips.ip_page, ip_page_size=ips.ip_page_size);//, host_page=hosts.host_page, host_page_size=hosts.host_page);
+				ip_page=ips.ip_page, ip_page_size=ips.ip_page_size, host_page=hosts.host_page, host_page_size=hosts.host_page);
 		}
 	}
 

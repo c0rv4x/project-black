@@ -29,20 +29,21 @@ class ScopeSetup extends React.Component {
 	}
 
 	render() {
+		let { project, scopes } = this.props;
 		return (
 			<div>
 				<br/>
-				<HeadButtonsTracked project={this.props.project}
-									hosts={this.props.scopes.hosts} />
+				<HeadButtonsTracked project={project}
+									hosts={scopes.hosts} />
 
-				<ScopeAdderTracked project={this.props.project} />
+				<ScopeAdderTracked project={project} />
 
-				<ProjectComment project={this.props.project}/>
+				<ProjectComment project={project}/>
 
-				<IPTable ips={this.props.scopes.ips}
+				<IPTable ips={scopes.ips}
 						 delete={this.deleteScope} />
 
-				<HostTable hosts={this.props.scopes.hosts}
+				<HostTable hosts={scopes.hosts}
 						   delete={this.deleteScope} />
 
 			</div>

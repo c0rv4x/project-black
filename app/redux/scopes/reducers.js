@@ -4,9 +4,8 @@ import {
 	CREATE_SCOPE, 
 	DELETE_SCOPE, 
 	RENEW_SCOPES,
-	CLEAR_SCOPES,
-	UPDATE_COMMENT,
-	UPDATE_SCOPE
+	UPDATE_SCOPE,
+	RESOLVE_SCOPES
 } from './actions.js'
 
 
@@ -70,7 +69,6 @@ function delete_scope(state = initialState, action) {
 
 function renew_scopes(state = initialState, action) {
 	const message = action.message;
-	console.log(message.hosts);
 
 	if (message["status"] == 'success') {
 		return {
@@ -81,14 +79,6 @@ function renew_scopes(state = initialState, action) {
 	} else {
 		/* TODO: add error handling */
 	}
-}
-
-function clear_scopes(state = initialState, action) {
-	return initialState;
-}
-
-function update_comment(state = initialState, action) {
-	return state;
 }
 
 function update_scope(state = initialState, action) {
@@ -137,6 +127,18 @@ function update_scope(state = initialState, action) {
 
 }
 
+function resolve_scopes(state = initialState, action) {
+	const message = action.message;
+	if (message["status"] == 'success') {
+		var new_state = JSON.parse(JSON.stringify(state));
+		new_state.update_needed = true;
+
+		return new_state;
+	} else {
+		/* TODO: add error handling */
+	}
+}
+
 function scope_reduce(state = initialState, action) {
 	if (!action.hasOwnProperty('message')) {
 		return state
@@ -152,12 +154,10 @@ function scope_reduce(state = initialState, action) {
 					return delete_scope(state, action);
 				case RENEW_SCOPES:
 					return renew_scopes(state, action);
-				case CLEAR_SCOPES:
-					return clear_scopes(state, action);
-				case UPDATE_COMMENT:
-					return update_comment(state, action);
 				case UPDATE_SCOPE:
 					return update_scope(state, action);
+				case RESOLVE_SCOPES:
+					return resolve_scopes(state, action);
 				default:
 					return state;
 			}

@@ -17,11 +17,11 @@ class HostsListScopesUpdater extends React.Component {
 		this.scopesEmitter = new ScopesSocketioEventsEmitter();
 		this.setLoading = this.setLoading.bind(this);
 
-		var { ips, hosts } = this.props;
+		var { ips, hosts, update_needed } = this.props.scopes;
 
-		if (this.props.update_needed === true) {
+		if (update_needed === true) {
 			this.scopesEmitter.requestRenewScopes(this.props.project_uuid,
-				ip_page=ips.ip_page, ip_page_size=ips.ip_page_size, host_page=hosts.host_page, host_page_size=hosts.host_page);
+				ips.page, ips.page_size, hosts.page, hosts.page_size);
 		}
 	}
 
@@ -35,9 +35,10 @@ class HostsListScopesUpdater extends React.Component {
 		var { ips, hosts } = nextProps.scopes;
 
 		if (nextProps.scopes.update_needed === true) {
+			this.setLoading(true);
 			this.scopesEmitter.requestRenewScopes(
-				this.props.project_uuid, ip_page=ips.ip_page, ip_page_size=ips.ip_page_size,
-				host_page=hosts.host_page, host_page_size=hosts.host_page);
+				this.props.project_uuid, ips.page, ips.page_size,
+				hosts.page, hosts.page);
 		}
 
 		if ((hosts.page !== this.props.scopes.hosts.page) || (hosts.page_size !== this.props.scopes.hosts.page_size)

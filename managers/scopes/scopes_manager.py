@@ -342,10 +342,16 @@ class ScopeManager(object):
                 found_ip = self.find_ip_db(resolved_ip, project_uuid)
 
                 if found_ip:
-                    host.ip_addresses.append(found_ip)
-                    found_ip.hostnames.append(host)
-                    session.add(host)
-                    session.add(found_ip)
+                    found = False
+                    for each_inner_ip_address in host.ip_addresses:
+                        if each_inner_ip_address.ip_id == found_ip.ip_id:
+                            found = True
+
+                    if not found:
+                        host.ip_addresses.append(found_ip)
+                        found_ip.hostnames.append(host)
+                        session.add(host)
+                        session.add(found_ip)
                 else:
                     ip_create_result = self.create_ip(
                         resolved_ip, project_uuid
