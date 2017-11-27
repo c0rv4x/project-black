@@ -118,6 +118,7 @@ class ScopeManager(object):
         hosts = list(map(lambda each_host: {
             "host_id": each_host.host_id,
             "hostname": each_host.hostname,
+            "comment": each_host.comment,
             "ip_addresses": list(map(lambda each_ip: self.get_one_ip(each_ip.ip_address, project_uuid), each_host.ip_addresses))
         }, hosts_from_db))
 
