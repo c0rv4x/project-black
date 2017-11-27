@@ -20,7 +20,7 @@ class ScopeManager(object):
 
         self.session_spawner = Sessions()
 
-    def get_ips(self, project_uuid, page_number, page_size):
+    def get_ips(self, project_uuid, page_number, page_size, **filters):
         """ Returns ips that are associated with a given project.
         Not all ips are selected. Only those, that are within the
         described page """
@@ -29,7 +29,7 @@ class ScopeManager(object):
         # Select all ips from db
         ips_from_db = session.query(IPDatabase).filter(
             IPDatabase.project_uuid == project_uuid
-        ).offset(page_number * page_size).limit(page_size).all()
+        ).filter_by(**filters).offset(page_number * page_size).limit(page_size).all()
 
         self.session_spawner.destroy_session(session)
 

@@ -21,12 +21,12 @@ class TaskHandlers(object):
         async def _cb_handle_tasks_create(sio, msg):
             """ When received this message, create a new tasks """
             task_type = msg["task_type"]
-            target = msg["target"]
+            filters = msg["filters"]
             params = msg["params"]
             project_uuid = msg["project_uuid"]
 
             task = self.task_manager.create_task(
-                task_type, target, params, project_uuid
+                task_type, filters, params, project_uuid
             )
 
             await self.socketio.emit(
