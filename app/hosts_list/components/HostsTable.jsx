@@ -51,7 +51,7 @@ class HostsTable extends React.Component {
 	}
 
 	commentSubmitted(comment, _id) {
-		this.scopesEmitter.requestUpdateScope(comment, _id);
+		this.scopesEmitter.requestUpdateScope(comment, _id, this.props.project.project_uuid, "host");
 	}
 
 	render() {
@@ -59,7 +59,7 @@ class HostsTable extends React.Component {
 			return <HostsEntryLine key={x.host_id}
 								   project={this.props.project}
 								   host={x} 
-								   onCommentSubmit={(value) => this.commentSubmitted(value, x._id)}
+								   onCommentSubmit={(value) => this.commentSubmitted(value, x.host_id)}
 								   deleteScope={() => this.props.deleteScope(x._id)} />
 		});
 
