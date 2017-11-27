@@ -40,19 +40,7 @@ class ScopeManager(object):
         return {"total_db_ips": self.count_ips(project_uuid), "ips": ips}
 
     def format_ip(self, ip_object):
-        """ Getting ip database object, returns the same object, but with scans attached """
-        session = self.session_spawner.get_new_session()
-
-        subq = session.query(ScanDatabase).filter(
-            ScanDatabase.target == ip_object.ip_address,
-            ScanDatabase.project_uuid == ip_object.project_uuid
-        ).order_by(desc(ScanDatabase.date_added)).subquery('scans')
-        alias = aliased(ScanDatabase, subq)
-        ordered = session.query(alias)
-        scans_from_db = ordered.distinct(alias.target, alias.port_number)
-
-        self.session_spawner.destroy_session(session)
-
+        """ Getting ip database object, returns the same object, but JSONed """
         return {
             "ip_id": ip_object.ip_id,
             "ip_address": ip_object.ip_address,
@@ -68,7 +56,7 @@ class ScopeManager(object):
                 "task_id": each_scan.task_id,
                 "project_uuid": each_scan.project_uuid,
                 "date_added": str(each_scan.date_added)
-            }, scans_from_db))
+            }, ip_object.ports))
         }
 
     def find_ip_db(self, ip_address, project_uuid):
