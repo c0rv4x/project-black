@@ -20,8 +20,8 @@ class ProjectDetailsScopesUpdater extends React.Component {
 		var { ips, hosts } = this.props;
 
 		if (this.props.update_needed === true) {
-			this.scopesEmitter.requestRenewScopes(this.props.project_uuid,
-				ip_page=ips.ip_page, ip_page_size=ips.ip_page_size, host_page=hosts.host_page, host_page_size=hosts.host_page);
+			this.scopesEmitter.requestRenewScopes(
+				this.props.project_uuid, ips.ip_page, ips.ip_page_size, hosts.host_page, hosts.host_page);
 		}
 	}
 
@@ -34,8 +34,11 @@ class ProjectDetailsScopesUpdater extends React.Component {
 	componentWillReceiveProps(nextProps) {
 		var { ips, hosts } = nextProps.scopes;
 
-		if (nextProps.scopes.update_needed === true) {
-			this.scopesEmitter.requestRenewScopes(this.props.project_uuid, ips.page, ips.page_size);
+		if ((nextProps.scopes.update_needed === true) || (!_.isEqual(nextProps.filters, this.props.filters))) {
+			this.scopesEmitter.requestRenewScopes(
+				this.props.project.project_uuid, nextProps.filters,
+				ips.page, ips.page_size,
+				hosts.page, hosts.page_size);
 		}
 
 		if (this.state.loading) {

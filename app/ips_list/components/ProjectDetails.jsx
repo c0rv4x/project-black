@@ -22,11 +22,14 @@ class ProjectDetails extends React.Component {
 
 				<TitleButtonsWithHandlers scopes={this.props.scopes.ips.data}
 									      project={this.props.project} 
-									      scans={this.props.scans} />			
+									      scans={this.props.scans}
+									      filters={this.props.filters} />
+
 				<IPTableTracked ips={this.props.scopes.ips}
 								hosts={this.props.scopes.hosts}
 								project_uuid={this.props.project.project_uuid}
-								onFilterChange={this.props.onFilterChangeIPs}
+								applyFilters={this.props.applyFilters}
+								filters={this.props.filters}
 								setLoading={this.props.setLoading} />
 			</div>
 		)

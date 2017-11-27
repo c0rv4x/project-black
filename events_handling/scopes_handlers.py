@@ -23,8 +23,9 @@ class ScopeHandlers(object):
             host_page = msg.get('host_page', 0)
             ip_page_size = msg.get('ip_page_size', 12)
             host_page_size = msg.get('host_page_size', 12)
+            filters = msg.get('filters')
 
-            await self.send_scopes_back(sio, project_uuid, host_page, host_page_size, ip_page, ip_page_size)
+            await self.send_scopes_back(filters, sio, project_uuid, host_page, host_page_size, ip_page, ip_page_size)
 
         @self.socketio.on('scopes:create', namespace='/scopes')
         async def _cb_handle_scope_create(sio, msg):
@@ -185,10 +186,10 @@ class ScopeHandlers(object):
                     namespace='/scopes'
                 )
 
-    async def send_scopes_back(self, sio=None, project_uuid=None, host_page=0, host_page_size=12, ip_page=0, ip_page_size=12):
+    async def send_scopes_back(self, filters, sio=None, project_uuid=None, host_page=0, host_page_size=12, ip_page=0, ip_page_size=12):
         """ Collects all relative hosts and ips from the manager and sends them back """
-        ips = self.scope_manager.get_ips(project_uuid, ip_page, ip_page_size)
-        hosts = self.scope_manager.get_hosts(project_uuid, host_page, host_page_size)
+        ips = self.scope_manager.get_ips(filters, project_uuid, ip_page, ip_page_size)
+        hosts = self.scope_manager.get_hosts(filters, project_uuid, host_page, host_page_size)
 
         if sio is None:
             await self.socketio.emit(

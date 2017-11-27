@@ -14,72 +14,25 @@ class TitleButtonsWithHandlers extends React.Component {
 		this.runMasscan = this.runMasscan.bind(this);
 		this.runNmap = this.runNmap.bind(this);
 		this.runNmapOnlyOpen = this.runNmapOnlyOpen.bind(this);
-		this.doSetTimeout = this.doSetTimeout.bind(this);
 
 		this.dirbusterStart = this.dirbusterStart.bind(this);
-		this.startTask = this.startTask.bind(this);
-
-	}
-
-	startTask(targets, i, params) {
-		setTimeout(() => {
-			this.tasksEmitter.requestCreateTask('masscan', 
-												targets,
-												{'program': [params["argv"]]},
-												this.props.project.project_uuid)				
-		}, 50 * i);
 	}
 
 	runMasscan(params) {
-		var targets = _.map(this.props.scopes, (x) => {
-			return x.ip_address || x.hostname
-		});
-
-		var batchSize = 50;
-
-		for (var i = 0; i < Math.ceil(targets.length / batchSize); i++) {
-			this.startTask(targets.slice(i * batchSize, (i + 1) * batchSize), i, params);			
-		}
-
+		this.tasksEmitter.requestCreateTask('masscan',
+											this.props.filters,
+											{'program': [params["argv"]]},
+											this.props.project.project_uuid)
 	}
 
 	runNmap(params) {
-		var targets = _.map(this.props.scopes, (x) => {
-			return x.ip_address;
-		});
-
 		var startTime = 0;
 
-		for (var target of targets) {
-			setTimeout(() => {
-				this.tasksEmitter.requestCreateTask('nmap', 
-													[target], 
-													{'program': [params["argv"]]},
-													this.props.project.project_uuid)
-			}, startTime);
-
-			startTime += 70;
-		}
+		this.tasksEmitter.requestCreateTask('nmap', 
+											this.props.filters, 
+											{'program': [params["argv"]]},
+											this.props.project.project_uuid)
 	}	
-
-	doSetTimeout(each_task, startTime) {
-		// setTimeout(() => {
-			this.tasksEmitter.requestCreateTask('nmap', 
-												[each_task.ip_address], 
-												{
-													'program': [each_task.flags, '-sV'],
-													'saver': {
-														'scans_ids': each_task.scans.map((x) => {
-															return {
-																'scan_id': x.scan_id,
-																'port_number': x.port_number
-															}
-														})
-													}
-												}, 
-												this.props.project.project_uuid);
-		// }, startTime);
-	}
 
 	runNmapOnlyOpen(params) {
 		var targets = this.props.scopes.filter((x) => {
@@ -131,7 +84,7 @@ class TitleButtonsWithHandlers extends React.Component {
 	render() {
 		return (
 			<ButtonTasks project={this.props.project}
-						  tasks={
+						 tasks={
 						  	[
 						  		{
 						  			"name": "Masscan",
@@ -144,7 +97,7 @@ class TitleButtonsWithHandlers extends React.Component {
 											}
 										},
 										{
-											"name": "10k Ports",
+											"name": "First 10k Ports",
 											"options": {
 												"argv": "--rate 10000 -p1-10000"
 											}

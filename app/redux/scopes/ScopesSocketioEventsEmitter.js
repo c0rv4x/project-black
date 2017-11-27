@@ -65,9 +65,10 @@ class ScopesSocketioEventsEmitter {
 		});
 	}
 
-	requestRenewScopes(project_uuid, ip_page=0, ip_page_size=12, host_page=0, host_page_size=12) {
+	requestRenewScopes(project_uuid, filters={}, ip_page=0, ip_page_size=12, host_page=0, host_page_size=12) {
 		this.connector.emit('scopes:part:get', {
 			'project_uuid': project_uuid,
+			'filters': filters,
 			'ip_page': ip_page,
 			'ip_page_size': ip_page_size,
 			'host_page': host_page,

@@ -51,8 +51,9 @@ class IPTable extends React.Component {
 	}
 
 	handlePageClick(page_number) {
-		this.scopesEmitter.requestRenewScopes(this.props.project_uuid,
-			page_number - 1, this.props.ips.page_size, this.props.hosts.page, this.props.hosts.page_size);
+		this.scopesEmitter.requestRenewScopes(
+			this.props.project_uuid, page_number - 1, this.props.ips.page_size,
+			this.props.hosts.page, this.props.hosts.page_size);
 		this.props.setLoading(true);
 	}
 
@@ -67,7 +68,7 @@ class IPTable extends React.Component {
 
 		return (
 			<div>
-				<Search onFilterChange={this.props.onFilterChange} />
+				<Search applyFilters={this.props.applyFilters} />
 				<br />
 				<Card.Group>
 					{ips}
@@ -78,10 +79,6 @@ class IPTable extends React.Component {
 			</div>
 		)
 	}
-}
-
-IPTable.contextTypes = {
-	store: React.PropTypes.object
 }
 
 export default IPTable;

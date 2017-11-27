@@ -20,17 +20,27 @@ class ScopeManager(object):
 
         self.session_spawner = Sessions()
 
-    def get_ips(self, project_uuid, page_number, page_size, **filters):
+    def get_ips(self, filters, project_uuid, page_number, page_size):
         """ Returns ips that are associated with a given project.
         Not all ips are selected. Only those, that are within the
         described page """
         session = self.session_spawner.get_new_session()
 
+        parsed_filters = []
+        for key in filters.keys():
+            filter_value = filters[key]
+
+            each_filter_value = filter_value[0]
+            if key == 'ip':
+                if '%' in each_filter_value:
+                    parsed_filters.append(IPDatabase.ip_address.like(each_filter_value))
+                else:
+                    parsed_filters.append(IPDatabase.ip_address == each_filter_value)
+
         # Select all ips from db
         ips_from_db = session.query(IPDatabase).filter(
             IPDatabase.project_uuid == project_uuid
-        ).filter_by(**filters).offset(page_number * page_size).limit(page_size).all()
-
+        ).filter(*parsed_filters).offset(page_number * page_size).limit(page_size).all()
         self.session_spawner.destroy_session(session)
 
         # Reformat the ips to make the JSON-like objects
@@ -90,7 +100,7 @@ class ScopeManager(object):
 
         return self.format_ip(ip_from_db)
 
-    def get_hosts(self, project_uuid, page_number, page_size):
+    def get_hosts(self, filters, project_uuid, page_number, page_size):
         """ Returns hosts associated with a given project.
         Not all hosts are returned. Only those that are within
         the described page"""
@@ -118,6 +128,7 @@ class ScopeManager(object):
 
     def count_ips(self, project_uuid):
         """ Counts ip entries in the database (for single project) """
+        assert project_uuid is not None
 
         if self.ips.get(project_uuid, None) is None:
             self.ips[project_uuid] = {}

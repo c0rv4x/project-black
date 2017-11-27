@@ -8,10 +8,10 @@ class TasksSocketioEventsEmitter {
         this.connector = new Connector('tasks');
 	}
 
-	requestCreateTask(task_type, target, params, project_uuid) {
+	requestCreateTask(task_type, filters, params, project_uuid) {
 		this.connector.emit('tasks:create', {
 			"task_type": task_type,
-			"target": target,
+			"filters": filters,
 			"params": params,
 			"project_uuid": project_uuid
 		});

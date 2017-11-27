@@ -43,7 +43,7 @@ class Search extends React.Component {
 			const splitted = unparsedOptions.split(":");
 
 			const key = splitted[0].trim();
-			const value = splitted[1].trim();
+			const value = splitted.slice(1).join(':').trim();
 
 			if (_.has(resultObject, key)) {
 				resultObject[key].push(value);
@@ -53,94 +53,7 @@ class Search extends React.Component {
 			}
 		}
 
-		var regexes = {};
-		for (var eachParam of Object.keys(resultObject)) {
-			regexes[eachParam] = [];
-
-			const value = resultObject[eachParam];
-
-			var negativeOptions = [];
-
-			for (var eachWord of value) {
-				// Replace start in regexes
-				var toRemove = [];
-				var escaped = false;
-
-				for (var i in eachWord) {
-					const eachChar = eachWord[i];
-
-					if ((eachChar == '*') && (!escaped)) {
-						toRemove.push(parseInt(i));
-					}
-					else if (eachChar == '\\') {
-						escaped = true;
-					}
-				}
-
-				var replacedStar = eachWord;
-
-				for (var subIndex = 0; subIndex < toRemove.length; subIndex++) {
-					const index = toRemove[subIndex];
-					replacedStar = splice(replacedStar, index, 1, '.*');
-
-					for (var i = subIndex + 1; i < toRemove.length; i++) {
-						toRemove[i] += 1;
-					}
-				}
-
-				if (replacedStar.indexOf('!') === -1) {
-					regexes[eachParam].push(replacedStar);
-				}
-
-				// Replace negative in regexes
-				var toRemove = [];
-				var escaped = false;
-
-				for (var i in replacedStar) {
-					const eachChar = eachWord[i];
-
-					if ((eachChar == '!') && (!escaped)) {
-						toRemove.push(parseInt(i));
-					}
-					else if (eachChar == '\\') {
-						escaped = true;
-					}
-				}
-
-				var replacedExclamation = eachWord;
-
-				for (var subIndex = 0; subIndex < toRemove.length; subIndex++) {
-					const index = toRemove[subIndex];
-					var rightIndexNegativeOption = replacedExclamation.indexOf(' ');
-					if (rightIndexNegativeOption === -1) {
-						rightIndexNegativeOption = replacedExclamation.length;
-					}
-					const negativeOption = replacedExclamation.slice(index + 1, rightIndexNegativeOption);
-					negativeOptions.push(negativeOption);
-					// const newRegex = '^(?!^' + negativeOption + '$).*$';
-					// replacedExclamation = splice(replacedExclamation, index, rightIndexNegativeOption - index, newRegex);
-
-					// for (var i = subIndex + 1; i < toRemove.length; i++) {
-					// 	toRemove[i] += 1;
-					// }
-				}	
-
-				// regexes[eachParam].push(replacedExclamation);
-			}
-
-			var basicRegex = null;
-			if (regexes[eachParam].length == 0) {
-				basicRegex = "(" + '.*' + ")";
-			}
-			else {
-				basicRegex = "(" + regexes[eachParam].join('|') + ")";
-			}
-			var negativeRegex = '^(?!^' + negativeOptions.join('|') + '$)' + basicRegex + '$';
-			regexes[eachParam] = negativeRegex;
-
-		}
-
-		this.props.onFilterChange(regexes);
+		this.props.applyFilters(resultObject);
 	}
 
 	render() {
