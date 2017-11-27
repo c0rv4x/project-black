@@ -38,10 +38,14 @@ class ProjectDetailsScopesUpdater extends React.Component {
 			this.scopesEmitter.requestRenewScopes(this.props.project_uuid, ips.page, ips.page_size);
 		}
 
-		if ((ips.page !== this.props.scopes.ips.page) || (ips.page_size !== this.props.scopes.ips.page_size)
-			|| (JSON.stringify(ips.data) !== JSON.stringify(this.props.scopes.ips.data))) {
+		if (this.state.loading) {
 			this.setLoading(false);
-		}		
+		}
+
+		// if ((ips.page !== this.props.scopes.ips.page) || (ips.page_size !== this.props.scopes.ips.page_size)
+		// 	|| (JSON.stringify(ips.data) !== JSON.stringify(this.props.scopes.ips.data))) {
+		// 	this.setLoading(false);
+		// }		
 	}
 
 	render() {

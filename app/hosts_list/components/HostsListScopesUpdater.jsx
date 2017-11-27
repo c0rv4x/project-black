@@ -41,10 +41,14 @@ class HostsListScopesUpdater extends React.Component {
 				hosts.page, hosts.page);
 		}
 
-		if ((hosts.page !== this.props.scopes.hosts.page) || (hosts.page_size !== this.props.scopes.hosts.page_size)
-			|| (JSON.stringify(hosts.data) !== JSON.stringify(this.props.scopes.hosts.data))) {
+		if (this.state.loading) {
 			this.setLoading(false);
 		}
+
+		// if ((hosts.page !== this.props.scopes.hosts.page) || (hosts.page_size !== this.props.scopes.hosts.page_size)
+		// 	|| (JSON.stringify(hosts.data) !== JSON.stringify(this.props.scopes.hosts.data))) {
+		// 	this.setLoading(false);
+		// }
 	}
 
 	render() {
