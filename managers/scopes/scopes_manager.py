@@ -1,8 +1,8 @@
 import uuid
 import aiodns
 import asyncio
-from sqlalchemy import desc
-from sqlalchemy.orm import aliased
+from sqlalchemy import desc, or_
+from sqlalchemy.orm import aliased, contains_eager
 
 from black.black.db import Sessions, IPDatabase, ProjectDatabase, HostDatabase, ScanDatabase
 
@@ -26,21 +26,54 @@ class ScopeManager(object):
         described page """
         session = self.session_spawner.get_new_session()
 
-        parsed_filters = []
+        filters_divided = {
+            'ips': [],
+            'hosts': [],
+            'ports': [],
+            'banners': [],
+            'protocols': []
+        }
+
         for key in filters.keys():
             filter_value = filters[key]
+            for each_filter_value in filter_value:
+                if key == 'ip':
+                    if '%' in each_filter_value:
+                        filters_divided['ips'].append(IPDatabase.ip_address.like(each_filter_value))
+                    else:
+                        filters_divided['ips'].append(IPDatabase.ip_address == each_filter_value)
+                elif key == 'host':
+                    if '%' in each_filter_value:
+                        filters_divided['hosts'].append(HostDatabase.hostname.like(each_filter_value))
+                    else:
+                        filters_divided['hosts'].append(HostDatabase.hostname == each_filter_value)
+                elif key == 'port':
+                    filters_divided['ports'].append(ScanDatabase.port_number == each_filter_value)
+                elif key == 'banner':
+                    if '%' in each_filter_value:
+                        filters_divided['banners'].append(ScanDatabase.banner.like(each_filter_value))
+                    else:
+                        filters_divided['banners'].append(ScanDatabase.banner == each_filter_value)
+                elif key == 'protocol':
+                    if '%' in each_filter_value:
+                        filters_divided['protocols'].append(ScanDatabase.protocol.like(each_filter_value))
+                    else:
+                        filters_divided['protocols'].append(ScanDatabase.protocol == each_filter_value)
 
-            each_filter_value = filter_value[0]
-            if key == 'ip':
-                if '%' in each_filter_value:
-                    parsed_filters.append(IPDatabase.ip_address.like(each_filter_value))
-                else:
-                    parsed_filters.append(IPDatabase.ip_address == each_filter_value)
+        grouped_filters = []
+        for subfilters in filters_divided.values():
+            if subfilters:
+                grouped_filters.append(or_(*subfilters))
 
         # Select all ips from db
-        ips_from_db = session.query(IPDatabase).filter(
+        req_ips_from_db = session.query(IPDatabase).filter(
             IPDatabase.project_uuid == project_uuid
-        ).filter(*parsed_filters).offset(page_number * page_size).limit(page_size).all()
+        ).join(IPDatabase.ports
+        ).filter(*grouped_filters
+        ).options(contains_eager(IPDatabase.ports))
+
+        ips_from_db = req_ips_from_db.offset(page_number * page_size).limit(page_size).all()
+
         self.session_spawner.destroy_session(session)
 
         # Reformat the ips to make the JSON-like objects
