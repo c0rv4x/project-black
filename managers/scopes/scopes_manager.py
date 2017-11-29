@@ -65,12 +65,19 @@ class ScopeManager(object):
             if subfilters:
                 grouped_filters.append(or_(*subfilters))
 
-        # Select all ips from db
-        req_ips_from_db = session.query(IPDatabase).filter(
-            IPDatabase.project_uuid == project_uuid
-        ).join(IPDatabase.ports
-        ).filter(*grouped_filters
-        ).options(contains_eager(IPDatabase.ports))
+        if grouped_filters:
+            # Select only those ips that have suitable ports. Port are also filtered
+            req_ips_from_db = session.query(IPDatabase).filter(
+                IPDatabase.project_uuid == project_uuid
+            ).join(IPDatabase.ports
+            ).filter(*grouped_filters
+            ).options(contains_eager(IPDatabase.ports))
+        else:
+            # Here we select ips and perform outer join with scans
+            req_ips_from_db = session.query(IPDatabase).filter(
+                IPDatabase.project_uuid == project_uuid
+            ).join(IPDatabase.ports, isouter=True
+            ).options(contains_eager(IPDatabase.ports))          
 
         ips_from_db = req_ips_from_db.offset(page_number * page_size).limit(page_size).all()
 
