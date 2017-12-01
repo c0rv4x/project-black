@@ -260,24 +260,44 @@ class ScopeHandlers(object):
 
             if error_found:
                 await self.socketio.emit(
-                    'scopes:create', {
+                    'ips:create', {
                         'status': 'error',
                         'project_uuid': project_uuid,
                         'text': error_text
                     },
-                    namespace='/scopes'
+                    namespace='/ips'
                 )
+                await self.socketio.emit(
+                    'hosts:create', {
+                        'status': 'error',
+                        'project_uuid': project_uuid,
+                        'text': error_text
+                    },
+                    namespace='/hosts'
+                )                
 
             else:
                 # Send the scope back
-                await self.socketio.emit(
-                    'scopes:create', {
-                        'status': 'success',
-                        'project_uuid': project_uuid,
-                        'new_scopes': new_scopes
-                    },
-                    namespace='/scopes'
-                )
+
+                if scope['type'] == 'hsotname':
+                    await self.socketio.emit(
+                        'hosts:create', {
+                            'status': 'success',
+                            'project_uuid': project_uuid,
+                            'new_hosts': new_scopes
+                        },
+                        namespace='/hosts'
+                    )  
+                
+                else:
+                    await self.socketio.emit(
+                        'ips:create', {
+                            'status': 'success',
+                            'project_uuid': project_uuid,
+                            'new_ips': new_scopes
+                        },
+                        namespace='/ips'
+                    )
 
         @self.socketio.on('scopes:delete:scope_id', namespace='/scopes')
         async def _cb_handle_scope_delete(sio, msg):
@@ -291,12 +311,20 @@ class ScopeHandlers(object):
 
             if delete_result["status"] == "success":
                 # Send the success result
-                await self.socketio.emit(
-                    'scopes:delete', {'status': 'success',
-                                      '_id': scope_id,
-                                      'project_uuid': project_uuid},
-                    namespace='/scopes'
-                )
+                if scope_type == 'ip_address':
+                    await self.socketio.emit(
+                        'ips:delete', {'status': 'success',
+                                          '_id': scope_id,
+                                          'project_uuid': project_uuid},
+                        namespace='/ips'
+                    )
+                else:
+                    await self.socketio.emit(
+                        'hosts:delete', {'status': 'success',
+                                          '_id': scope_id,
+                                          'project_uuid': project_uuid},
+                        namespace='/hosts'
+                    )                    
             else:
                 # Error occured
                 await self.socketio.emit(
