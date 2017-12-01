@@ -1,7 +1,5 @@
 import React from 'react'
 
-import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
-
 import ProjectDetailsScopesUpdater from './ProjectDetailsScopesUpdater.jsx'
 
 
@@ -26,7 +24,7 @@ class ProjectDetailsFilters extends React.Component {
 	render() {
 		return (
 			<ProjectDetailsScopesUpdater
-				 scopes={this.props.scopes}
+				 ips={this.props.ips}
 				 project={this.props.project}
 				 filters={this.state.filters}
 				 applyFilters={this.applyFilters} />

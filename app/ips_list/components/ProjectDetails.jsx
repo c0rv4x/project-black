@@ -16,21 +16,21 @@ class ProjectDetails extends React.Component {
   	}
 
 	render() {
+		let { ips, hosts, project, filters, applyFilters, setLoading } = this.props;
+
 		return (
 			<div>
 				<br/>
 
-				<TitleButtonsWithHandlers scopes={this.props.scopes.ips.data}
-									      project={this.props.project} 
-									      scans={this.props.scans}
+				<TitleButtonsWithHandlers scopes={ips.data}
+									      project={project} 
 									      filters={this.props.filters} />
 
-				<IPTableTracked ips={this.props.scopes.ips}
-								hosts={this.props.scopes.hosts}
-								project_uuid={this.props.project.project_uuid}
-								applyFilters={this.props.applyFilters}
-								filters={this.props.filters}
-								setLoading={this.props.setLoading} />
+				<IPTableTracked ips={ips}
+								project_uuid={project.project_uuid}
+								applyFilters={applyFilters}
+								filters={filters}
+								setLoading={setLoading} />
 			</div>
 		)
 	}

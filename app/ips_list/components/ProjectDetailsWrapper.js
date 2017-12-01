@@ -27,11 +27,7 @@ function mapStateToProps(state, ownProps) {
 
     return {
         project: project,
-        scopes: {
-            'ips': state.scopes.ips,
-            'hosts': state.scopes.hosts,
-            'update_needed': state.scopes.update_needed
-        },
+        ips: state.ips,
         tasks: state.tasks.active,
         scans: state.scans
     }

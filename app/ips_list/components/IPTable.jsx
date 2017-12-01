@@ -3,7 +3,7 @@ import React from 'react'
 import Notifications from 'react-notification-system-redux'
 
 import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
-import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
+import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
 import IPEntryLine from '../presentational/scope/IPEntryLine.jsx'
 import Search from './Search.jsx'
 
@@ -23,14 +23,14 @@ class IPTable extends React.Component {
 			}
 		}
 
-		this.scopesEmitter = new ScopesSocketioEventsEmitter();
+		this.ipsEmitter = new IPsSocketioEventsEmitter();
 
 		this.commentSubmitted = this.commentSubmitted.bind(this);
 		this.handlePageClick = this.handlePageClick.bind(this);
 	}
 
 	commentSubmitted(comment, _id) {
-		this.scopesEmitter.requestUpdateScope(comment, _id, this.props.project_uuid, 'ip_address');
+		this.ipsEmitter.requestUpdateIP(comment, _id, this.props.project_uuid, 'ip_address');
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -51,9 +51,7 @@ class IPTable extends React.Component {
 	}
 
 	handlePageClick(page_number) {
-		this.scopesEmitter.requestRenewScopes(
-			this.props.project_uuid, page_number - 1, this.props.ips.page_size,
-			this.props.hosts.page, this.props.hosts.page_size);
+		this.ipsEmitter.requestRenewIPs(this.props.project_uuid, page_number - 1, this.props.ips.page_size);
 		this.props.setLoading(true);
 	}
 
@@ -63,7 +61,7 @@ class IPTable extends React.Component {
 								ip={x}
 								project_uuid={this.props.project_uuid}
 								onCommentSubmit={(value) => this.commentSubmitted(value, x.ip_id)}
-								deleteScope={() => this.props.deleteScope(x.ip_id)} />
+								deleteIP={() => this.props.deleteScope(x.ip_id)} />
 		});
 
 		return (

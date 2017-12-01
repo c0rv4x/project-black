@@ -28,7 +28,7 @@ class IPEntryLine extends React.Component {
 					</Button>
 	            </a>
 
-				<Button basic color="red" size="tiny" onClick={this.props.deleteScope}>
+				<Button basic color="red" size="tiny" onClick={this.props.deleteIP}>
 					Delete
 				</Button>
 			</div>

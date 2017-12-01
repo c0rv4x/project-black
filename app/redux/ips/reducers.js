@@ -67,7 +67,7 @@ function update_ip(state = initialState, action) {
 	if (message["status"] == "success") {
 		var { ip_id, ip_type, comment } = message;
 
-		for (var each_ip of state.ips.data) {
+		for (var each_ip of state.data) {
 			if (each_ip.ip_id == ip_id) {
 				var new_state = JSON.parse(JSON.stringify(state));
 

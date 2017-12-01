@@ -3,7 +3,7 @@ import React from 'react'
 import { Dimmer, Loader, Segment } from 'semantic-ui-react'
 
 import ProjectDetails from './ProjectDetails.jsx'
-import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
+import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
 
 
 class ProjectDetailsScopesUpdater extends React.Component {
@@ -14,14 +14,14 @@ class ProjectDetailsScopesUpdater extends React.Component {
 			loading: false
 		}
 
-		this.scopesEmitter = new ScopesSocketioEventsEmitter();
+		this.ipsEmitter = new IPsSocketioEventsEmitter();
 		this.setLoading = this.setLoading.bind(this);
 
-		var { ips, hosts } = this.props;
+		var { ips } = this.props;
 
 		if (this.props.update_needed === true) {
-			this.scopesEmitter.requestRenewScopes(
-				this.props.project_uuid, ips.ip_page, ips.ip_page_size, hosts.host_page, hosts.host_page);
+			this.ipsEmitter.requestRenewIPs(
+				this.props.project_uuid, this.props.filters, ips.ip_page, ips.ip_page_size);
 		}
 	}
 
@@ -32,23 +32,16 @@ class ProjectDetailsScopesUpdater extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		var { ips, hosts } = nextProps.scopes;
+		var { ips, filters } = nextProps;
 
-		if ((nextProps.scopes.update_needed === true) || (!_.isEqual(nextProps.filters, this.props.filters))) {
-			this.scopesEmitter.requestRenewScopes(
-				this.props.project.project_uuid, nextProps.filters,
-				ips.page, ips.page_size,
-				hosts.page, hosts.page_size);
+		if ((ips.update_needed === true) || (!_.isEqual(filters, this.props.filters))) {
+			this.ipsEmitter.requestRenewIPs(
+				this.props.project.project_uuid, filters, ips.page, ips.page_size);
 		}
 
 		if (this.state.loading) {
 			this.setLoading(false);
 		}
-
-		// if ((ips.page !== this.props.scopes.ips.page) || (ips.page_size !== this.props.scopes.ips.page_size)
-		// 	|| (JSON.stringify(ips.data) !== JSON.stringify(this.props.scopes.ips.data))) {
-		// 	this.setLoading(false);
-		// }		
 	}
 
 	render() {

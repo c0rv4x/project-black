@@ -10,7 +10,8 @@ import Notifications from 'react-notification-system-redux'
 
 
 import ProjectsSocketioEventsSubscriber from '../../redux/projects/ProjectsSocketioEventsSubscriber'
-import ScopesSocketioEventsSubsriber from '../../redux/scopes/ScopesSocketioEventsSubscriber'
+import IPsSocketioEventsSubsriber from '../../redux/ips/IPsSocketioEventsSubscriber'
+import HostsSocketioEventsSubsriber from '../../redux/hosts/HostsSocketioEventsSubscriber'
 import TasksSocketioEventsSubsriber from '../../redux/tasks/TasksSocketioEventsSubsriber'
 import ScansSocketioEventsSubsriber from '../../redux/scans/ScansSocketioEventsSubscriber'
 import FilesSocketioEventsSubsriber from '../../redux/files/FilesSocketioEventsSubscriber'
@@ -34,7 +35,8 @@ class NavigationTabsWrapper extends React.Component {
         var mainStore = this.context.store;
 
         this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
-        this.scopesSubscriber = new ScopesSocketioEventsSubsriber(mainStore, project_uuid);
+        this.ipsSubscriber = new IPsSocketioEventsSubsriber(mainStore, project_uuid);
+        this.hostsSubscriber = new HostsSocketioEventsSubsriber(mainStore, project_uuid);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
         this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);         
@@ -48,7 +50,8 @@ class NavigationTabsWrapper extends React.Component {
 
     componentWillUnmount() {
         this.projectsSubscriber.close();
-        this.scopesSubscriber.close();
+        this.ipsSubscriber.close();
+        this.hostsSubscriber.close();
         this.tasksSubscriber.close();
         this.scansSubscriber.close();
         this.filesSubscriber.close();
@@ -95,7 +98,7 @@ class Host extends React.Component {
         var mainStore = this.context.store;
 
         this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
-        this.scopesSubscriber = new ScopesSocketioEventsSubsriber(mainStore, project_uuid);
+        this.hostsSubscriber = new HostsSocketioEventsSubsriber(mainStore, project_uuid);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
         this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid, hostname);        
@@ -108,7 +111,7 @@ class Host extends React.Component {
     } 
     componentWillUnmount() {
         this.projectsSubscriber.close();
-        this.scopesSubscriber.close();
+        this.hostsSubscriber.close();
         this.tasksSubscriber.close();
         this.scansSubscriber.close();
         this.filesSubscriber.close();        
@@ -130,7 +133,7 @@ class IP extends React.Component {
         var mainStore = this.context.store;
 
         this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
-        this.scopesSubscriber = new ScopesSocketioEventsSubsriber(mainStore, project_uuid);
+        this.ipsSubscriber = new IPsSocketioEventsSubsriber(mainStore, project_uuid);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
         this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid, ip_address);        
@@ -144,7 +147,7 @@ class IP extends React.Component {
 
     componentWillUnmount() {
         this.projectsSubscriber.close();
-        this.scopesSubscriber.close();
+        this.ipsSubscriber.close();
         this.tasksSubscriber.close();
         this.scansSubscriber.close();
         this.filesSubscriber.close();        

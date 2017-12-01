@@ -68,7 +68,7 @@ function update_host(state = initialState, action) {
 	if (message["status"] == "success") {
 		var { host_id, host_type, comment } = message;
 
-		for (var each_host of state.hosts.data) {
+		for (var each_host of state.data) {
 			if (each_host.host_id == host_id) {
 				var new_state = JSON.parse(JSON.stringify(state));
 

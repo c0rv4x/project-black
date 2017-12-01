@@ -58,33 +58,6 @@ class ScopesSocketioEventsEmitter {
 		});
 	}
 
-	requestResolveScopes(scopes_ids, project_uuid) {
-		this.connector.emit('scopes:resolve', {
-			'scopes_ids': scopes_ids,
-			'project_uuid': project_uuid
-		});
-	}
-
-	requestRenewScopes(project_uuid, filters={}, ip_page=0, ip_page_size=12, host_page=0, host_page_size=12) {
-		this.connector.emit('scopes:part:get', {
-			'project_uuid': project_uuid,
-			'filters': filters,
-			'ip_page': ip_page,
-			'ip_page_size': ip_page_size,
-			'host_page': host_page,
-			'host_page_size': host_page_size			
-		});
-	}
-
-	requestUpdateScope(comment, scope_id, project_uuid, scope_type) {
-		this.connector.emit('scopes:update', {
-			'scope_id': scope_id,
-			'comment': comment,
-			'project_uuid': project_uuid,
-			'scope_type': scope_type
-		});
-	}
-
 }
 
 export default ScopesSocketioEventsEmitter;

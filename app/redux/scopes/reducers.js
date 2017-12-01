@@ -2,10 +2,7 @@ import _ from 'lodash';
 
 import { 
 	CREATE_SCOPE, 
-	DELETE_SCOPE, 
-	RENEW_SCOPES,
-	UPDATE_SCOPE,
-	RESOLVE_SCOPES
+	DELETE_SCOPE
 } from './actions.js'
 
 
@@ -67,80 +64,6 @@ function delete_scope(state = initialState, action) {
 	}
 }
 
-function renew_scopes(state = initialState, action) {
-	const message = action.message;
-
-	console.log(123,message);
-
-	if (message["status"] == 'success') {
-		return {
-			'ips': message.ips,
-			'hosts': message.hosts,
-			'update_needed': false
-		}
-	} else {
-		/* TODO: add error handling */
-	}
-}
-
-function update_scope(state = initialState, action) {
-	const message = action.message;
-
-	if (message["status"] == "success") {
-		var { scope_id, scope_type, comment } = message;
-
-		if (scope_type == 'ip_address') {
-			for (var each_ip of state.ips.data) {
-				if (each_ip.ip_id == scope_id) {
-					var new_state = JSON.parse(JSON.stringify(state));
-
-					for (var each_new_ip of new_state.ips.data) {
-						if (each_new_ip.ip_id == scope_id) {
-							each_new_ip.comment = comment;
-							break;
-						}
-					}
-
-					return new_state;
-				}
-			}
-		} else {
-			for (var each_host of state.hosts.data) {
-				if (each_host.host_id == scope_id) {
-					var new_state = JSON.parse(JSON.stringify(state));
-
-					for (var each_new_host of new_state.hosts.data) {
-						if (each_new_host.host_id == scope_id) {
-							each_new_host.comment = comment;
-							break;
-						}
-					}
-
-					return new_state;
-				}
-			}
-		}
-
-		return state;
-	} else {
-		console.error(message);
-		/* TODO: add error handling */
-	}
-
-}
-
-function resolve_scopes(state = initialState, action) {
-	const message = action.message;
-	if (message["status"] == 'success') {
-		var new_state = JSON.parse(JSON.stringify(state));
-		new_state.update_needed = true;
-
-		return new_state;
-	} else {
-		/* TODO: add error handling */
-	}
-}
-
 function scope_reduce(state = initialState, action) {
 	if (!action.hasOwnProperty('message')) {
 		return state
@@ -154,12 +77,6 @@ function scope_reduce(state = initialState, action) {
 					return create_scope(state, action);
 				case DELETE_SCOPE:
 					return delete_scope(state, action);
-				case RENEW_SCOPES:
-					return renew_scopes(state, action);
-				case UPDATE_SCOPE:
-					return update_scope(state, action);
-				case RESOLVE_SCOPES:
-					return resolve_scopes(state, action);
 				default:
 					return state;
 			}
