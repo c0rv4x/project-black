@@ -279,7 +279,7 @@ class ScopeHandlers(object):
             else:
                 # Send the scope back
 
-                if scope['type'] == 'hsotname':
+                if scope['type'] == 'hostname':
                     await self.socketio.emit(
                         'hosts:create', {
                             'status': 'success',
