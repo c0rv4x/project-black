@@ -17,20 +17,19 @@ class HostsList extends React.Component {
 	}
 
 	render() {
-		const { scopes } = this.props;
+		const { hosts, project_uuid } = this.props;
 
 		return (
 			<div>
 				<Tasks tasks={this.props.tasks} />
 				<br/>
-				<TasksButtonsTracked scopes={scopes.hosts}
-									 scans={this.props.scans} 
-									 project={this.props.project} />
+				<TasksButtonsTracked hosts={hosts}
+									 project_uuid={project_uuid} />
 
-				<HostsTableTracked project={this.props.project}
-								   scopes={scopes.hosts}
-
-								   scans={this.props.scans} />
+				<HostsTableTracked project_uuid={project_uuid}
+								   hosts={hosts}
+								   setLoading={this.props.setLoading}
+								   renewHosts={this.props.renewHosts} />
 			</div>
 		)
 	}

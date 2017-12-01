@@ -2,7 +2,7 @@ import uuid
 import aiodns
 import asyncio
 from sqlalchemy import desc, or_
-from sqlalchemy.orm import aliased, contains_eager
+from sqlalchemy.orm import aliased, joinedload, subqueryload, contains_eager
 
 from black.black.db import Sessions, IPDatabase, ProjectDatabase, HostDatabase, ScanDatabase
 
@@ -60,24 +60,26 @@ class ScopeManager(object):
                     else:
                         filters_divided['protocols'].append(ScanDatabase.protocol == each_filter_value)
 
-        grouped_filters = []
-        for subfilters in filters_divided.values():
-            if subfilters:
-                grouped_filters.append(or_(*subfilters))
+        # grouped_filters = []
+        # for subfilters in filters_divided.values():
+        #     if subfilters:
+        #         grouped_filters.append(or_(*subfilters))
 
-        if grouped_filters:
-            # Select only those ips that have suitable ports. Port are also filtered
-            req_ips_from_db = session.query(IPDatabase).filter(
-                IPDatabase.project_uuid == project_uuid
-            ).join(IPDatabase.ports
-            ).filter(*grouped_filters
-            ).options(contains_eager(IPDatabase.ports))
-        else:
-            # Here we select ips and perform outer join with scans
-            req_ips_from_db = session.query(IPDatabase).filter(
-                IPDatabase.project_uuid == project_uuid
-            ).join(IPDatabase.ports, isouter=True
-            ).options(contains_eager(IPDatabase.ports))          
+        subq = session.query(ScanDatabase).filter(
+            ScanDatabase.project_uuid == project_uuid
+        ).order_by(desc(ScanDatabase.date_added)).subquery('scans_odered')
+        alias_ordered = aliased(ScanDatabase, subq)
+        ordered = session.query(alias_ordered)
+        # Select distinc scans (we need only the latest)
+        scans_from_db_raw = ordered.distinct(alias_ordered.target, alias_ordered.port_number
+        ).filter(*filters_divided['ports'])
+        scans_from_db = scans_from_db_raw.subquery('scans_distinct')
+
+        # Now select ips, outer joining them with scans
+        req_ips_from_db = session.query(IPDatabase).filter(
+            IPDatabase.project_uuid == project_uuid
+        ).join(scans_from_db, IPDatabase.ports, isouter=True
+        ).options(contains_eager(IPDatabase.ports, alias=scans_from_db))
 
         ips_from_db = req_ips_from_db.offset(page_number * page_size).limit(page_size).all()
 
@@ -96,7 +98,7 @@ class ScopeManager(object):
             "ip_address": ip_object.ip_address,
             "comment": ip_object.comment,
             "project_uuid": ip_object.project_uuid,
-            "hostnames": list(map(lambda host: host.hostname, ip_object.hostnames)),
+            "hostnames": [],#list(map(lambda host: host.hostname, ip_object.hostnames)),
             "scans": list(map(lambda each_scan: {
                 "scan_id": each_scan.scan_id,
                 "target": each_scan.target,
@@ -108,6 +110,7 @@ class ScopeManager(object):
                 "date_added": str(each_scan.date_added)
             }, ip_object.ports))
         }
+
 
     def find_ip_db(self, ip_address, project_uuid):
         """ Finds ip address in the database """
@@ -146,10 +149,62 @@ class ScopeManager(object):
         the described page"""
         session = self.session_spawner.get_new_session()
 
-        # Select all hosts from the db
-        hosts_from_db = session.query(HostDatabase).filter(
-            HostDatabase.project_uuid == project_uuid
-        ).offset(page_number * page_size).limit(page_size).all()
+        filters_divided = {
+            'ips': [],
+            'hosts': [],
+            'ports': [],
+            'banners': [],
+            'protocols': []
+        }
+
+        for key in filters.keys():
+            filter_value = filters[key]
+            for each_filter_value in filter_value:
+                if key == 'ip':
+                    if '%' in each_filter_value:
+                        filters_divided['ips'].append(IPDatabase.ip_address.like(each_filter_value))
+                    else:
+                        filters_divided['ips'].append(IPDatabase.ip_address == each_filter_value)
+                elif key == 'host':
+                    if '%' in each_filter_value:
+                        filters_divided['hosts'].append(HostDatabase.hostname.like(each_filter_value))
+                    else:
+                        filters_divided['hosts'].append(HostDatabase.hostname == each_filter_value)
+                elif key == 'port':
+                    filters_divided['ports'].append(ScanDatabase.port_number == each_filter_value)
+                elif key == 'banner':
+                    if '%' in each_filter_value:
+                        filters_divided['banners'].append(ScanDatabase.banner.like(each_filter_value))
+                    else:
+                        filters_divided['banners'].append(ScanDatabase.banner == each_filter_value)
+                elif key == 'protocol':
+                    if '%' in each_filter_value:
+                        filters_divided['protocols'].append(ScanDatabase.protocol.like(each_filter_value))
+                    else:
+                        filters_divided['protocols'].append(ScanDatabase.protocol == each_filter_value)
+
+
+
+        grouped_filters = []
+        for subfilters in filters_divided.values():
+            if subfilters:
+                grouped_filters.append(or_(*subfilters))
+
+        if grouped_filters:
+            # Select only those ips that have suitable ports. Port are also filtered
+            # req_ips_from_db = session.query(IPDatabase
+            # ).filter(IPDatabase.project_uuid == project_uuid
+            # ).join(IPDatabase.ports
+            # ).filter(*grouped_filters
+            # ).options(contains_eager(IPDatabase.ports))
+            raise Exception("")
+        else:
+            # Here we select ips and perform outer join with scans
+            req_hosts_from_db = session.query(HostDatabase
+            ).options(subqueryload(HostDatabase.ip_addresses).subqueryload(IPDatabase.ports))
+
+        hosts_from_db = req_hosts_from_db.offset(page_number * page_size).limit(page_size).all()
+
         self.session_spawner.destroy_session(session)
 
         # Reformat each hosts to JSON-like objects
@@ -157,7 +212,7 @@ class ScopeManager(object):
             "host_id": each_host.host_id,
             "hostname": each_host.hostname,
             "comment": each_host.comment,
-            "ip_addresses": list(map(lambda each_ip: self.get_one_ip(each_ip.ip_address, project_uuid), each_host.ip_addresses))
+            "ip_addresses": list(map(lambda each_ip: self.format_ip(each_ip), each_host.ip_addresses))
         }, hosts_from_db))
 
         # Together with hosts list return total amount of hosts in the db

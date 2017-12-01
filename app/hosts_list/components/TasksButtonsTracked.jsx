@@ -17,7 +17,7 @@ class TasksButtonsTracked extends React.Component {
 		// This is a set of pairs: ip + port, which should be scanned.
 		var all_ips = new Set();
 
-		for (var each_host of this.props.scopes) {
+		for (var each_host of this.props.hosts) {
 			var ports = new Set();
 
 			for (var ip_address of each_host.ip_addresses) {
@@ -31,7 +31,7 @@ class TasksButtonsTracked extends React.Component {
 				this.tasksEmitter.requestCreateTask('dirsearch', 
 													[target + ":" + each_port], 
 													{'program': options}, 
-													this.props.project.project_uuid);
+													this.props.project_uuid);
 
 				if (options.dirsearch_all_ips) {
 					for (var ip_address of each_host.ip_addresses) {
@@ -51,7 +51,7 @@ class TasksButtonsTracked extends React.Component {
 			this.tasksEmitter.requestCreateTask('dirsearch', 
 												[each_target], 
 												{'program': options}, 
-												this.props.project.project_uuid);			
+												this.props.project_uuid);			
 		}
 	}
 

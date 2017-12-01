@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { connect } from 'react-redux'
 
-import HostsListScopesUpdater from './HostsListScopesUpdater.jsx'
+import HostsListFilters from './HostsListFilters.jsx'
 import { updateComment as updateProjectComment } from '../../redux/projects/actions'
 import { updateComment as updateScopeComment } from '../../redux/scopes/actions'
 import { updateFilters } from '../../redux/filters/actions'
@@ -26,12 +26,8 @@ function mapStateToProps(state, ownProps) {
 	}
 
     return {
-    	project: project,
-        scopes: {
-        	'ips': state.scopes.ips,
-        	'hosts': state.scopes.hosts,
-            'update_needed': state.scopes.update_needed
-        },
+    	project_uuid: project.project_uuid,
+    	hosts: state.hosts,
         tasks: state.tasks.active,
         scans: state.scans
     }
@@ -40,6 +36,6 @@ function mapStateToProps(state, ownProps) {
 
 const HostsListWrapper = connect(
 	mapStateToProps
-)(HostsListScopesUpdater)
+)(HostsListFilters)
 
 export default HostsListWrapper

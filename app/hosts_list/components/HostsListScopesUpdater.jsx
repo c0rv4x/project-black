@@ -3,7 +3,7 @@ import React from 'react'
 import { Dimmer, Loader, Segment } from 'semantic-ui-react'
 
 import HostsList from './HostsList.jsx'
-import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
+import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'
 
 
 class HostsListScopesUpdater extends React.Component {
@@ -14,15 +14,16 @@ class HostsListScopesUpdater extends React.Component {
 			loading: false
 		}
 
-		this.scopesEmitter = new ScopesSocketioEventsEmitter();
+		this.hostsEmitter = new HostsSocketioEventsEmitter();
 		this.setLoading = this.setLoading.bind(this);
 
-		var { ips, hosts, update_needed } = this.props.scopes;
+		var { hosts } = this.props;
 
-		if (update_needed === true) {
-			this.scopesEmitter.requestRenewScopes(this.props.project_uuid,
-				ips.page, ips.page_size, hosts.page, hosts.page_size);
+		if (hosts.update_needed === true) {
+			this.renewHosts(hosts.page, hosts.page_size);
 		}
+
+		this.renewHosts = this.renewHosts.bind(this);
 	}
 
 	setLoading(value) {
@@ -31,24 +32,21 @@ class HostsListScopesUpdater extends React.Component {
 		});
 	}
 
-	componentWillReceiveProps(nextProps) {
-		var { ips, hosts } = nextProps.scopes;
+	renewHosts(page, page_size) {
+		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, this.props.filters, page, page_size);
+	}
 
-		if (nextProps.scopes.update_needed === true) {
+	componentWillReceiveProps(nextProps) {
+		var { hosts } = nextProps;
+
+		if (hosts.update_needed === true) {
 			this.setLoading(true);
-			this.scopesEmitter.requestRenewScopes(
-				this.props.project_uuid, ips.page, ips.page_size,
-				hosts.page, hosts.page);
+			this.renewHosts(hosts.page, hosts.page_size);
 		}
 
 		if (this.state.loading) {
 			this.setLoading(false);
 		}
-
-		// if ((hosts.page !== this.props.scopes.hosts.page) || (hosts.page_size !== this.props.scopes.hosts.page_size)
-		// 	|| (JSON.stringify(hosts.data) !== JSON.stringify(this.props.scopes.hosts.data))) {
-		// 	this.setLoading(false);
-		// }
 	}
 
 	render() {
@@ -57,7 +55,9 @@ class HostsListScopesUpdater extends React.Component {
 				<Dimmer active={this.state.loading} inverted>
 					<Loader />
 				</Dimmer>			
-				<HostsList setLoading={this.setLoading} {...this.props} />
+				<HostsList setLoading={this.setLoading}
+						   renewHosts={this.renewHosts}
+						   {...this.props} />
 			</Segment>
 		)
 	}

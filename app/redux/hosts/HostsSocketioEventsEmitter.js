@@ -8,14 +8,6 @@ class HostsSocketioEventsEmitter {
         this.connector = new Connector('hosts');
 	}
 
-	requestDeleteHost(host_id, project_uuid, type) {
-		this.connector.emit('hosts:delete:host_id', {
-			'host_id': host_id,
-			'project_uuid': project_uuid,
-			'host_type': type
-		});
-	}
-
 	requestResolveHosts(hosts_ids, project_uuid) {
 		this.connector.emit('hosts:resolve', {
 			'hosts_ids': hosts_ids,

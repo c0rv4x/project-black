@@ -3,7 +3,6 @@ import React from 'react'
 
 import Search from './Search.jsx'
 import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
-import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
 import HostsEntryLine from '../presentational/HostsEntryLine.jsx'
 
 import { Card } from 'semantic-ui-react'
@@ -20,8 +19,6 @@ class HostsTable extends React.Component {
 				pageCount: Math.ceil(this.props.hosts.total_db_hosts / this.props.hosts.page_size)
 			}
 		}
-
-		this.scopesEmitter = new ScopesSocketioEventsEmitter();
 
 		this.commentSubmitted = this.commentSubmitted.bind(this);
 		this.handlePageClick = this.handlePageClick.bind(this);
@@ -41,8 +38,7 @@ class HostsTable extends React.Component {
 	}
 
 	handlePageClick(page_number) {
-		this.scopesEmitter.requestRenewScopes(this.props.project_uuid,
-			this.props.ips, this.props.ips.page_size, page_number - 1, this.props.hosts.page_size);
+		this.props.renewHosts(page_number - 1, this.props.hosts.page_size);
 		this.props.setLoading(true);
 	}
 
@@ -51,21 +47,21 @@ class HostsTable extends React.Component {
 	}
 
 	commentSubmitted(comment, _id) {
-		this.scopesEmitter.requestUpdateScope(comment, _id, this.props.project.project_uuid, "host");
+		this.hostsEmitter.requestUpdateHost(comment, _id, this.props.project_uuid, "host");
 	}
 
 	render() {
 		const scopes = _.map(this.state.shownData, (x) => {
 			return <HostsEntryLine key={x.host_id}
-								   project={this.props.project}
+								   project_uuid={this.props.project_uuid}
 								   host={x} 
 								   onCommentSubmit={(value) => this.commentSubmitted(value, x.host_id)}
-								   deleteScope={() => this.props.deleteScope(x._id)} />
+								   deleteScope={() => this.props.deleteScope(x.host_id)} />
 		});
 
 		return (
 			<div>
-				<Search onFilterChange={this.props.onFilterChange} />
+				<Search applyFilters={this.props.applyFilters} />
 				<br />
 				<Card.Group>
 					{scopes}
