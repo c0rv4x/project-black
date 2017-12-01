@@ -23,20 +23,19 @@ class IPHandlers(object):
         @self.socketio.on('ips:update', namespace='/ips')
         async def _cb_handle_scope_update(sio, msg):
             """ Update the scope (now only used for comment). """
-            scope_id = msg['scope_id']
+            ip_id = msg['ip_id']
             comment = msg['comment']
             project_uuid = msg['project_uuid']
 
             result = self.scope_manager.update_scope(
-                scope_id=scope_id, comment=comment, scope_type='ip_address'
+                scope_id=ip_id, comment=comment, scope_type='ip_address'
             )
             if result["status"] == "success":
                 await self.socketio.emit(
                     'ips:update:back',
                     {
                      "status": "success",
-                     "scope_id": scope_id,
-                     "scope_type": scope_type,
+                     "ip_id": ip_id,
                      "comment": comment,
                      "project_uuid": project_uuid},
                     namespace='/ips'
