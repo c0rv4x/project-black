@@ -103,7 +103,8 @@ class ScopeManager(object):
 
         # Now select ips, outer joining them with scans
         req_ips_from_db = session.query(IPDatabase).filter(
-            IPDatabase.project_uuid == project_uuid
+            IPDatabase.project_uuid == project_uuid,
+            *filters_divided['ips']
         ).join(scans_from_db, IPDatabase.ports, isouter=(not filters_exist) # This is important. If any filters exist, do inner join
         ).options(contains_eager(IPDatabase.ports, alias=scans_from_db))
 
