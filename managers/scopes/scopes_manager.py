@@ -48,37 +48,56 @@ class ScopeManager(object):
                     else:
                         filters_divided['hosts'].append(HostDatabase.hostname == each_filter_value)
                 elif key == 'port':
-                    filters_divided['ports'].append(ScanDatabase.port_number == each_filter_value)
+                    filters_divided['ports'].append(each_filter_value)
                 elif key == 'banner':
-                    if '%' in each_filter_value:
-                        filters_divided['banners'].append(ScanDatabase.banner.like(each_filter_value))
-                    else:
-                        filters_divided['banners'].append(ScanDatabase.banner == each_filter_value)
+                    filters_divided['banners'].append(each_filter_value)
                 elif key == 'protocol':
-                    if '%' in each_filter_value:
-                        filters_divided['protocols'].append(ScanDatabase.protocol.like(each_filter_value))
-                    else:
-                        filters_divided['protocols'].append(ScanDatabase.protocol == each_filter_value)
-
-        # grouped_filters = []
-        # for subfilters in filters_divided.values():
-        #     if subfilters:
-        #         grouped_filters.append(or_(*subfilters))
+                    filters_divided['protocols'].append(each_filter_value)
 
         subq = session.query(ScanDatabase).filter(
             ScanDatabase.project_uuid == project_uuid
-        ).order_by(desc(ScanDatabase.date_added)).subquery('scans_odered')
+        ).order_by(desc(ScanDatabase.date_added)
+        ).subquery('scans_ordered')
         alias_ordered = aliased(ScanDatabase, subq)
         ordered = session.query(alias_ordered)
+
         # Select distinc scans (we need only the latest)
-        scans_from_db_raw = ordered.distinct(alias_ordered.target, alias_ordered.port_number
-        ).filter(*filters_divided['ports'])
-        scans_from_db = scans_from_db_raw.subquery('scans_distinct')
+        scans_from_db_raw = ordered.distinct(alias_ordered.target, alias_ordered.port_number)
+
+        # Now we should filter all the data using client's filters
+        filters_exist = filters_divided['ports'] or filters_divided['protocols'] or filters_divided['banners']
+        chained_filters = []
+
+        # If there are no filters, no need to chain empty lists
+        if filters_exist:
+            ports_filters_list = map(lambda port_number: alias_ordered.port_number == port_number, filters_divided['ports'])
+            ports_filters = or_(*ports_filters_list)
+
+            protocols_filters_list = []
+            for protocol in filters_divided['protocols']:
+                if '%' in protocol:
+                    protocols_filters_list.append(alias_ordered.protocol.like(protocol))
+                else:
+                    protocols_filters_list.append(alias_ordered.protocol == protocol)
+            protocols_filters = or_(*protocols_filters_list)
+
+            banners_filters_list = []
+            for banner in filters_divided['banners']:
+                if '%' in banner:
+                    banners_filters_list.append(alias_ordered.banner.like(banner))
+                else:
+                    banners_filters_list.append(alias_ordered.banner == banner)
+            banners_filters = or_(*banners_filters_list)
+
+            chained_filters = [ports_filters, protocols_filters, banners_filters]
+
+        # Filter ports to correspond the request
+        scans_from_db = scans_from_db_raw.filter(*chained_filters).subquery('scans_distinct')
 
         # Now select ips, outer joining them with scans
         req_ips_from_db = session.query(IPDatabase).filter(
             IPDatabase.project_uuid == project_uuid
-        ).join(scans_from_db, IPDatabase.ports, isouter=True
+        ).join(scans_from_db, IPDatabase.ports, isouter=(not filters_exist) # This is important. If any filters exist, do inner join
         ).options(contains_eager(IPDatabase.ports, alias=scans_from_db))
 
         ips_from_db = req_ips_from_db.offset(page_number * page_size).limit(page_size).all()
