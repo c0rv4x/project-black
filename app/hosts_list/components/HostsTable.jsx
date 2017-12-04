@@ -47,7 +47,7 @@ class HostsTable extends React.Component {
 	}
 
 	commentSubmitted(comment, _id) {
-		this.hostsEmitter.requestUpdateHost(comment, _id, this.props.project_uuid, "host");
+		this.props.requestUpdateHost(comment, _id);
 	}
 
 	render() {

@@ -24,6 +24,7 @@ class HostsListScopesUpdater extends React.Component {
 		}
 
 		this.renewHosts = this.renewHosts.bind(this);
+		this.requestUpdateHost = this.requestUpdateHost.bind(this);
 	}
 
 	setLoading(value) {
@@ -34,6 +35,10 @@ class HostsListScopesUpdater extends React.Component {
 
 	renewHosts(page, page_size) {
 		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, this.props.filters, page, page_size);
+	}
+
+	requestUpdateHost(comment, _id) {
+		this.hostsEmitter.requestUpdateHost(comment, _id, this.props.project_uuid, "host");
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -57,6 +62,7 @@ class HostsListScopesUpdater extends React.Component {
 				</Dimmer>			
 				<HostsList setLoading={this.setLoading}
 						   renewHosts={this.renewHosts}
+						   requestUpdateHost={this.requestUpdateHost}
 						   {...this.props} />
 			</Segment>
 		)
