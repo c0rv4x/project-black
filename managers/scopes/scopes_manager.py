@@ -20,12 +20,7 @@ class ScopeManager(object):
 
         self.session_spawner = Sessions()
 
-    def get_ips(self, filters, project_uuid, page_number, page_size):
-        """ Returns ips that are associated with a given project.
-        Not all ips are selected. Only those, that are within the
-        described page """
-        session = self.session_spawner.get_new_session()
-
+    def parse_filters(self, filters):
         filters_divided = {
             'ips': [],
             'hosts': [],
@@ -54,6 +49,18 @@ class ScopeManager(object):
                 elif key == 'protocol':
                     filters_divided['protocols'].append(each_filter_value)
 
+        return filters_divided
+
+    def get_ips(self, filters, project_uuid, page_number, page_size):
+        """ Returns ips that are associated with a given project.
+        Not all ips are selected. Only those, that are within the
+        described page """
+        session = self.session_spawner.get_new_session()
+
+        # Parse filters into an object for more comfortable work
+        filters_divided = self.parse_filters(filters)
+
+        # Query all the scans and order them by date they were modified
         subq = session.query(ScanDatabase).filter(
             ScanDatabase.project_uuid == project_uuid
         ).order_by(desc(ScanDatabase.date_added)
