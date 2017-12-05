@@ -328,14 +328,30 @@ class ScopeManager(object):
             "new_scopes": []
         }
 
+        to_add = []
+
         for ip_address in ips:
             if self.find_ip_db(ip_address, project_uuid) is None:
-                local_result = self.create_ip(ip_address, project_uuid)
-                if local_result["status"] == "success":
-                    results["new_scopes"].append(local_result["new_scope"])
-                else:
-                    results["status"] = "error"
-                    results["text"] = local_result["text"]
+                to_add.append(ip_address)
+
+        try:
+            current_date = datetime.datetime.utcnow()
+            self.session_spawner.engine.execute(
+                IPDatabase.__table__.insert(),
+                [{"ip_id": str(uuid.uuid4()), "ip_address": ip_address, "comment": "",
+                "project_uuid": project_uuid, "task_id": None, "date_added": current_date
+                } for ip_address in to_add]
+            )
+
+            ips_count = self.ips[project_uuid].get('ips_count', 0)
+            ips_count += len(to_add)
+            self.ips[project_uuid]["ips_count"] = ips_count            
+            # session = self.session_spawner.get_new_session()
+            # session.add_all(results["new_scopes"])
+            # session.commit()
+            # self.session_spawner.destroy_session(session)
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}
 
         return results
 
