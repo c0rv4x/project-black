@@ -284,7 +284,7 @@ class ScopeHandlers(object):
                         'hosts:create', {
                             'status': 'success',
                             'project_uuid': project_uuid,
-                            'new_hosts': new_scopes
+                            'new_hosts': new_scopes[0:50]
                         },
                         namespace='/hosts'
                     )  
@@ -294,7 +294,7 @@ class ScopeHandlers(object):
                         'ips:create', {
                             'status': 'success',
                             'project_uuid': project_uuid,
-                            'new_ips': new_scopes
+                            'new_ips': new_scopes[0:50]
                         },
                         namespace='/ips'
                     )
