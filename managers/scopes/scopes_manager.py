@@ -322,6 +322,24 @@ class ScopeManager(object):
 
         return {"status": "duplicate"}
 
+    def create_batch_ips(self, ips, project_uuid):
+        results = {
+            "status": "success",
+            "new_scopes": []
+        }
+
+        for ip_address in ips:
+            if self.find_ip_db(ip_address, project_uuid) is None:
+                local_result = self.create_ip(ip_address, project_uuid)
+                if local_result["status"] == "success":
+                    results["new_scopes"].append(local_result["new_scope"])
+                else:
+                    results["status"] = "error"
+                    results["text"] = local_result["text"]
+
+        return results
+
+
     def create_host(self, hostname, project_uuid):
         """ Creating a host we should first check whether it is already
         in the db, then create a new one if necessary """
