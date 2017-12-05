@@ -51,7 +51,7 @@ class IPTable extends React.Component {
 	}
 
 	handlePageClick(page_number) {
-		this.ipsEmitter.requestRenewIPs(this.props.project_uuid, page_number - 1, this.props.ips.page_size);
+		this.props.renewIps(page_number - 1);
 		this.props.setLoading(true);
 	}
 

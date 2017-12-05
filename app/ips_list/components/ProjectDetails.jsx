@@ -16,7 +16,7 @@ class ProjectDetails extends React.Component {
   	}
 
 	render() {
-		let { ips, hosts, project, filters, applyFilters, setLoading } = this.props;
+		let { ips, hosts, project, filters, applyFilters, setLoading, renewIps } = this.props;
 
 		return (
 			<div>
@@ -30,7 +30,8 @@ class ProjectDetails extends React.Component {
 								project_uuid={project.project_uuid}
 								applyFilters={applyFilters}
 								filters={filters}
-								setLoading={setLoading} />
+								setLoading={setLoading}
+								renewIps={renewIps}/>
 			</div>
 		)
 	}

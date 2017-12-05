@@ -16,12 +16,10 @@ class ProjectDetailsScopesUpdater extends React.Component {
 
 		this.ipsEmitter = new IPsSocketioEventsEmitter();
 		this.setLoading = this.setLoading.bind(this);
-
-		var { ips } = this.props;
+		this.renewIps = this.renewIps.bind(this);
 
 		if (this.props.update_needed === true) {
-			this.ipsEmitter.requestRenewIPs(
-				this.props.project_uuid, this.props.filters, ips.ip_page, ips.ip_page_size);
+			this.renewIps();
 		}
 	}
 
@@ -31,12 +29,19 @@ class ProjectDetailsScopesUpdater extends React.Component {
 		});
 	}
 
+	renewIps(ip_page=this.props.ips.page, filters=this.props.filters) {
+		var { ips } = this.props;
+
+		console.log(this.props.project.project_uuid, this.props.filters, ip_page, ips.page_size);
+
+		this.ipsEmitter.requestRenewIPs(this.props.project.project_uuid, filters, ip_page, ips.page_size);
+	}
+
 	componentWillReceiveProps(nextProps) {
 		var { ips, filters } = nextProps;
 
 		if ((ips.update_needed === true) || (!_.isEqual(filters, this.props.filters))) {
-			this.ipsEmitter.requestRenewIPs(
-				this.props.project.project_uuid, filters, ips.page, ips.page_size);
+			this.renewIps(nextProps.ips.page, nextProps.filters);
 		}
 
 		if (this.state.loading) {
@@ -50,7 +55,9 @@ class ProjectDetailsScopesUpdater extends React.Component {
 				<Dimmer active={this.state.loading} inverted>
 					<Loader />
 				</Dimmer>			
-				<ProjectDetails setLoading={this.setLoading} {...this.props} />
+				<ProjectDetails setLoading={this.setLoading}
+								renewIps={this.renewIps}
+								{...this.props} />
 			</Segment>
 		)
 	}

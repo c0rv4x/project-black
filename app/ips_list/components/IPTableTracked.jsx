@@ -25,7 +25,8 @@ class IPTableTracked extends React.Component {
 					 project_uuid={this.props.project_uuid}
 					 deleteScope={this.deleteScope}
 					 applyFilters={this.props.applyFilters}
-					 setLoading={this.props.setLoading}/>
+					 setLoading={this.props.setLoading}
+					 renewIps={this.props.renewIps} />
 		)
 	}
 
