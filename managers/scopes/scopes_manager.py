@@ -120,14 +120,14 @@ class ScopeManager(object):
         # Together with ips, return amount of total ips in the database
         return {"total_db_ips": self.count_ips(project_uuid), "selected_ips": selected_ips, "ips": ips}
 
-    def format_ip(self, ip_object):
+    def format_ip(self, ip_object, no_hosts=False):
         """ Getting ip database object, returns the same object, but JSONed """
         return {
             "ip_id": ip_object.ip_id,
             "ip_address": ip_object.ip_address,
             "comment": ip_object.comment,
             "project_uuid": ip_object.project_uuid,
-            "hostnames": [],#list(map(lambda host: host.hostname, ip_object.hostnames)),
+            "hostnames": [] if no_hosts else list(map(lambda host: host.hostname, ip_object.hostnames)),
             "scans": list(map(lambda each_scan: {
                 "scan_id": each_scan.scan_id,
                 "target": each_scan.target,
@@ -241,7 +241,7 @@ class ScopeManager(object):
             "host_id": each_host.host_id,
             "hostname": each_host.hostname,
             "comment": each_host.comment,
-            "ip_addresses": list(map(lambda each_ip: self.format_ip(each_ip), each_host.ip_addresses))
+            "ip_addresses": list(map(lambda each_ip: self.format_ip(each_ip, no_hosts=True), each_host.ip_addresses))
         }, hosts_from_db))
 
         # Together with hosts list return total amount of hosts in the db
