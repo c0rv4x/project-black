@@ -239,6 +239,7 @@ class ScopeManager(object):
         ).options(contains_eager(HostDatabase.ip_addresses, alias=req_ips_from_db
             ).contains_eager(IPDatabase.ports, alias=scans_from_db))
 
+        selected_hosts = hosts.count()
         hosts_from_db = hosts.offset(page_number * page_size).limit(page_size).all()
 
         self.session_spawner.destroy_session(session)
@@ -254,6 +255,7 @@ class ScopeManager(object):
         # Together with hosts list return total amount of hosts in the db
         return {
             "total_db_hosts": self.count_hosts(project_uuid),
+            "selected_hosts": selected_hosts,
             "hosts": hosts
         }
 
