@@ -106,7 +106,8 @@ class ScopeManager(object):
             IPDatabase.project_uuid == project_uuid,
             *filters_divided['ips']
         ).join(scans_from_db, IPDatabase.ports, isouter=(not filters_exist) # This is important. If any filters exist, do inner join
-        ).options(contains_eager(IPDatabase.ports, alias=scans_from_db))
+        ).options(contains_eager(IPDatabase.ports, alias=scans_from_db)
+        ).options(contains_eager(IPDatabase.hostnames))
 
         selected_ips = req_ips_from_db.count()
 
