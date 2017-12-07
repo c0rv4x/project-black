@@ -195,6 +195,7 @@ class ScopeManager(object):
 
         # Now we should filter all the data using client's filters
         scan_filters_exist = filters_divided['ports'] or filters_divided['protocols'] or filters_divided['banners']
+        ip_filters_exist = filters_divided['ips'] or False
         chained_filters = []
 
         # If there are no filters, no need to chain empty lists
@@ -233,7 +234,7 @@ class ScopeManager(object):
         hosts = session.query(HostDatabase).filter(
             HostDatabase.project_uuid == project_uuid,
             *filters_divided['hosts']
-        ).join(req_ips_from_db, HostDatabase.ip_addresses
+        ).join(req_ips_from_db, HostDatabase.ip_addresses, isouter=(not scan_filters_exist and not ip_filters_exist)
         ).join(scans_from_db, IPDatabase.ports, isouter=(not scan_filters_exist)
         ).options(contains_eager(HostDatabase.ip_addresses, alias=req_ips_from_db
             ).contains_eager(IPDatabase.ports, alias=scans_from_db))
