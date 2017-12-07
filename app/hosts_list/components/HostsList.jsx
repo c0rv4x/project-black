@@ -30,7 +30,8 @@ class HostsList extends React.Component {
 								   hosts={hosts}
 								   setLoading={this.props.setLoading}
 								   renewHosts={this.props.renewHosts}
-								   requestUpdateHost={this.props.requestUpdateHost} />
+								   requestUpdateHost={this.props.requestUpdateHost}
+								   applyFilters={this.props.applyFilters} />
 			</div>
 		)
 	}

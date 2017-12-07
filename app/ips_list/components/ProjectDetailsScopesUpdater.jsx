@@ -41,7 +41,7 @@ class ProjectDetailsScopesUpdater extends React.Component {
 		var { ips, filters } = nextProps;
 
 		if ((ips.update_needed === true) || (!_.isEqual(filters, this.props.filters))) {
-			this.renewIps(nextProps.ips.page, nextProps.filters);
+			this.renewIps(nextProps.ips.page, filters);
 		}
 
 		if (this.state.loading) {

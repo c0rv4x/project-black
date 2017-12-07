@@ -33,8 +33,8 @@ class HostsListScopesUpdater extends React.Component {
 		});
 	}
 
-	renewHosts(page, page_size) {
-		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, this.props.filters, page, page_size);
+	renewHosts(page=this.props.hosts.page, filters=this.props.filters) {
+		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, filters, page, this.props.hosts.page_size);
 	}
 
 	requestUpdateHost(comment, _id) {
@@ -42,11 +42,11 @@ class HostsListScopesUpdater extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		var { hosts } = nextProps;
+		var { hosts, filters } = nextProps;
 
-		if (hosts.update_needed === true) {
+		if ((hosts.update_needed === true) || (!_.isEqual(filters, this.props.filters))) {
 			this.setLoading(true);
-			this.renewHosts(hosts.page, hosts.page_size);
+			this.renewHosts(hosts.page, filters);
 		}
 
 		if (this.state.loading) {
