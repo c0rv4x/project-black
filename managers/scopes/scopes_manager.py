@@ -118,7 +118,7 @@ class ScopeManager(object):
         ips = list(map(lambda each_ip: self.format_ip(each_ip), ips_from_db))
 
         # Together with ips, return amount of total ips in the database
-        return {"total_db_ips": self.count_ips(project_uuid), "ips": ips}
+        return {"total_db_ips": self.count_ips(project_uuid), "selected_ips": selected_ips, "ips": ips}
 
     def format_ip(self, ip_object):
         """ Getting ip database object, returns the same object, but JSONed """
