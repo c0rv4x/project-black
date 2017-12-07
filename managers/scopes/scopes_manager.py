@@ -83,7 +83,7 @@ class ScopeManager(object):
             protocols_filters_list = []
             for protocol in filters_divided['protocols']:
                 if '%' in protocol:
-                    protocols_filters_list.append(alias_ordered.protocol.like(protocol))
+                    protocols_filters_list.append(alias_ordered.protocol.ilike(protocol))
                 else:
                     protocols_filters_list.append(alias_ordered.protocol == protocol)
             protocols_filters = or_(*protocols_filters_list)
@@ -91,7 +91,7 @@ class ScopeManager(object):
             banners_filters_list = []
             for banner in filters_divided['banners']:
                 if '%' in banner:
-                    banners_filters_list.append(alias_ordered.banner.like(banner))
+                    banners_filters_list.append(alias_ordered.banner.ilike(banner))
                 else:
                     banners_filters_list.append(alias_ordered.banner == banner)
             banners_filters = or_(*banners_filters_list)
