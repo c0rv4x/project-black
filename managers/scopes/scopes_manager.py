@@ -297,13 +297,14 @@ class ScopeManager(object):
         in the db, then create a new one if necessary """
         if self.find_ip_db(ip_address, project_uuid) is None:
             try:
-                session = self.session_spawner.get_new_session()
                 db_object = IPDatabase(
                     ip_id=str(uuid.uuid4()),
                     ip_address=ip_address,
                     comment="",
                     project_uuid=project_uuid
                 )
+
+                session = self.session_spawner.get_new_session()
                 session.add(db_object)
                 session.commit()
                 self.session_spawner.destroy_session(session)
