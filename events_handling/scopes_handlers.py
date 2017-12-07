@@ -105,10 +105,10 @@ class HostHandlers(object):
         @self.socketio.on('hosts:resolve', namespace='/hosts')
         async def _cb_handle_scope_resolve(sio, msg):
             """ On receive, resolve the needed scope """
-            scopes_ids = msg['scopes_ids']
+            hosts_ids = msg['hosts_ids']
             project_uuid = msg['project_uuid']
 
-            await self.scope_manager.resolve_scopes(scopes_ids, project_uuid)
+            await self.scope_manager.resolve_scopes(hosts_ids, project_uuid)
             # TODO: Substitute this method for the correct one
             await self.socketio.emit(
                 'scopes:resolve:done', {

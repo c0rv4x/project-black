@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Divider } from 'semantic-ui-react'
 
-import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
+import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
 import HeadButtons from '../presentational/HeadButtons.jsx'
 import ButtonTasks from '../../common/tasks_buttons/components/ButtonTasks.jsx'
@@ -12,7 +12,7 @@ class HeadButtonsTracked extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.scopesEmitter = new ScopesSocketioEventsEmitter();
+		this.hostsEmitter = new HostsSocketioEventsEmitter();
 		this.tasksEmitter = new TasksSocketioEventsEmitter();
 
 		this.resolveScopes = this.resolveScopes.bind(this);
@@ -20,7 +20,7 @@ class HeadButtonsTracked extends React.Component {
 	}
 
 	resolveScopes(scopes_ids, project_uuid) {
-		this.scopesEmitter.requestResolveScopes(scopes_ids, project_uuid);
+		this.hostsEmitter.requestResolveHosts(scopes_ids, project_uuid);
 	}
 
 	dnsscanStart(options) {
