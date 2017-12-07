@@ -11,6 +11,8 @@ import {
 const initialState = {
 	"page": 0,
 	"page_size": 12,
+	"total_db_ips": 0,
+	"selected_ips": 0,
 	"data": [],
 	"update_needed": false
 }
@@ -24,6 +26,10 @@ function create_ip(state = initialState, action) {
 
 		new_state.data = new_ips.concat(new_state.data).slice(0, new_state.page_size);
 		new_state.total_db_ips += new_ips.length;
+
+		if (new_state.page_size > new_state.selected_ips) {
+			new_state.selected_ips += 1;
+		}
 
 		new_state.update_needed = false;			
 

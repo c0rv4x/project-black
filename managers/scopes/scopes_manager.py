@@ -108,6 +108,8 @@ class ScopeManager(object):
         ).join(scans_from_db, IPDatabase.ports, isouter=(not filters_exist) # This is important. If any filters exist, do inner join
         ).options(contains_eager(IPDatabase.ports, alias=scans_from_db))
 
+        selected_ips = req_ips_from_db.count()
+
         ips_from_db = req_ips_from_db.offset(page_number * page_size).limit(page_size).all()
 
         self.session_spawner.destroy_session(session)

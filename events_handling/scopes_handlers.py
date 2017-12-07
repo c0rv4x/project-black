@@ -61,6 +61,7 @@ class IPHandlers(object):
                         'page': ip_page,
                         'page_size': ip_page_size,
                         'data': ips['ips'],
+                        'selected_ips': ips['selected_ips'],
                         'total_db_ips': ips['total_db_ips']
                     }
                 },
@@ -75,6 +76,7 @@ class IPHandlers(object):
                         'page': ip_page,
                         'page_size': ip_page_size,
                         'data': ips['ips'],
+                        'selected_ips': ips['selected_ips'],
                         'total_db_ips': ips['total_db_ips']
                     }
                 },

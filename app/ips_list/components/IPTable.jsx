@@ -19,7 +19,7 @@ class IPTable extends React.Component {
 			this.state = {
 				shownData: this.props.ips.data,
 				offsetPage: this.props.ips.page,
-				pageCount: Math.ceil(this.props.ips.total_db_ips / this.props.ips.page_size)
+				pageCount: Math.ceil(this.props.ips.selected_ips / this.props.ips.page_size)
 			}
 		}
 
@@ -46,7 +46,7 @@ class IPTable extends React.Component {
 
 		this.setState({
 			shownData: nextProps.ips.data,
-			pageCount: Math.ceil(this.props.ips.total_db_ips / this.props.ips.page_size)
+			pageCount: Math.ceil(nextProps.ips.selected_ips / nextProps.ips.page_size)
 		});
 	}
 
