@@ -7,6 +7,24 @@ from sqlalchemy.orm import aliased, joinedload, subqueryload, contains_eager
 from black.black.db import Sessions, IPDatabase, ProjectDatabase, HostDatabase, ScanDatabase
 
 
+import cProfile
+from io import StringIO
+import pstats
+import contextlib
+
+@contextlib.contextmanager
+def profiled():
+    pr = cProfile.Profile()
+    pr.enable()
+    yield
+    pr.disable()
+    s = StringIO()
+    ps = pstats.Stats(pr, stream=s).sort_stats('cumulative')
+    ps.print_stats()
+    # uncomment this to see who's calling what
+    ps.print_callers()
+    print(s.getvalue())
+
 class ScopeManager(object):
     """ ScopeManager keeps track of all ips and hosts in the system,
     exposing some interfaces for public use. """
