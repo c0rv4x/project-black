@@ -102,16 +102,25 @@ class ScopeManager(object):
         scans_from_db = scans_from_db_raw.filter(*chained_filters).subquery('scans_distinct')
 
         # Now select ips, outer joining them with scans
-        req_ips_from_db = session.query(IPDatabase).filter(
-            IPDatabase.project_uuid == project_uuid,
-            *filters_divided['ips']
-        ).join(scans_from_db, IPDatabase.ports, isouter=(not filters_exist) # This is important. If any filters exist, do inner join
-        ).options(contains_eager(IPDatabase.ports, alias=scans_from_db)
-        ).options(contains_eager(IPDatabase.hostnames))
+        ips_from_db = session.query(IPDatabase
+            ).filter(
+                IPDatabase.project_uuid == project_uuid,
+                *filters_divided['ips']
+            ).limit(page_size
+            ).offset(page_number * page_size
+            ).from_self(
+            ).join(scans_from_db, IPDatabase.ports, isouter=(not filters_exist)
+            ).options(contains_eager(IPDatabase.ports, alias=scans_from_db)
+            ).all()
 
-        selected_ips = req_ips_from_db.count()
-
-        ips_from_db = req_ips_from_db.offset(page_number * page_size).limit(page_size).all()
+        selected_ips = session.query(IPDatabase
+            ).filter(
+                IPDatabase.project_uuid == project_uuid,
+                *filters_divided['ips']
+            ).from_self(
+            ).join(scans_from_db, IPDatabase.ports, isouter=(not filters_exist)
+            ).options(contains_eager(IPDatabase.ports, alias=scans_from_db)
+            ).count()
 
         self.session_spawner.destroy_session(session)
 
@@ -225,7 +234,7 @@ class ScopeManager(object):
         scans_from_db = scans_from_db_raw.filter(*chained_filters).subquery('scans_distinct')
 
         # Now select ips, outer joining them with scans
-        req_ips_from_db = session.query(IPDatabase).filter(
+        ips_with_ports = session.query(IPDatabase).filter(
             IPDatabase.project_uuid == project_uuid,
             *filters_divided['ips']
         ).subquery('ips_formatted')
@@ -234,9 +243,9 @@ class ScopeManager(object):
         hosts = session.query(HostDatabase).filter(
             HostDatabase.project_uuid == project_uuid,
             *filters_divided['hosts']
-        ).join(req_ips_from_db, HostDatabase.ip_addresses, isouter=(not scan_filters_exist and not ip_filters_exist)
+        ).join(ips_with_ports, HostDatabase.ip_addresses, isouter=(not scan_filters_exist and not ip_filters_exist)
         ).join(scans_from_db, IPDatabase.ports, isouter=(not scan_filters_exist)
-        ).options(contains_eager(HostDatabase.ip_addresses, alias=req_ips_from_db
+        ).options(contains_eager(HostDatabase.ip_addresses, alias=ips_with_ports
             ).contains_eager(IPDatabase.ports, alias=scans_from_db))
 
         selected_hosts = hosts.count()
