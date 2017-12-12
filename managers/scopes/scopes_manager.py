@@ -275,8 +275,6 @@ class ScopeManager(object):
             ).filter(
                 HostDatabase.project_uuid == project_uuid,
                 *filters_divided['hosts']
-            ).limit(page_size
-            ).offset(page_number * page_size
             ).from_self(
             ).join(ips, HostDatabase.ip_addresses, isouter=(not ip_filters_exist and not ip_filters_exist)
             ).join(scans_from_db, IPDatabase.ports, isouter=(not scan_filters_exist)
