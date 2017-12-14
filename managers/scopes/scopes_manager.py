@@ -261,35 +261,40 @@ class ScopeManager(object):
         # Filter ports to correspond the request
         scans_from_db = scans_from_db_raw.filter(*chained_filters).subquery('scans_distinct')
 
-        # Now select ips, outer joining them with scans
-        ips = session.query(IPDatabase).filter(
-            IPDatabase.project_uuid == project_uuid,
-            *filters_divided['ips']
-        ).subquery('ips_formatted')
+        ips_query = session.query(IPDatabase
+            ).filter(
+                IPDatabase.project_uuid == project_uuid,
+                *filters_divided['ips']
+            )
 
-        # Now select ips, outer joining them with scans
-        hosts_from_db = session.query(HostDatabase
+        ips_query_subq = aliased(IPDatabase, ips_query.subquery('all_ips_parsed'))
+
+        hosts_query = session.query(HostDatabase
             ).filter(
                 HostDatabase.project_uuid == project_uuid,
                 *filters_divided['hosts']
+            ).from_self(
+            ).join(ips_query_subq, HostDatabase.ip_addresses, isouter=(not ip_filters_exist and not ip_filters_exist)
+            ).join(scans_from_db, IPDatabase.ports, isouter=(not scan_filters_exist)
+            ).options(contains_eager(HostDatabase.ip_addresses, alias=ips_query_subq).contains_eager(IPDatabase.ports, alias=scans_from_db)
+            )
+
+        hosts_query_subq = aliased(HostDatabase, hosts_query.subquery('hosts_parsed'))
+
+        selected_hosts = hosts_query.count()
+
+        hosts_limited = hosts_query.from_self(HostDatabase.host_id).distinct(
             ).limit(page_size
-            ).offset(page_number * page_size
-            ).from_self(
-            ).join(ips, HostDatabase.ip_addresses, isouter=(not ip_filters_exist and not ip_filters_exist)
-            ).join(scans_from_db, IPDatabase.ports, isouter=(not scan_filters_exist)
-            ).options(contains_eager(HostDatabase.ip_addresses, alias=ips).contains_eager(IPDatabase.ports, alias=scans_from_db)
-            ).all()
+            ).offset(page_size * page_number
+            ).subquery('limited_hosts_ids')
 
         # Now select ips, outer joining them with scans
-        selected_hosts = session.query(HostDatabase
-            ).filter(
-                HostDatabase.project_uuid == project_uuid,
-                *filters_divided['hosts']
-            ).from_self(
-            ).join(ips, HostDatabase.ip_addresses, isouter=(not ip_filters_exist and not ip_filters_exist)
-            ).join(scans_from_db, IPDatabase.ports, isouter=(not scan_filters_exist)
-            ).options(contains_eager(HostDatabase.ip_addresses, alias=ips).contains_eager(IPDatabase.ports, alias=scans_from_db)
-            ).count()
+        hosts_from_db = session.query(hosts_query_subq
+            ).filter(hosts_query_subq.host_id.in_(hosts_limited)
+            ).join(ips_query_subq, hosts_query_subq.ip_addresses, isouter=(not ip_filters_exist and not ip_filters_exist)
+            ).join(scans_from_db, ips_query_subq.ports, isouter=(not scan_filters_exist)
+            ).options(contains_eager(hosts_query_subq.ip_addresses, alias=ips_query_subq).contains_eager(ips_query_subq.ports, alias=scans_from_db)
+            )
 
         self.session_spawner.destroy_session(session)
 
