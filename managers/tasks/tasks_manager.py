@@ -163,9 +163,9 @@ class TaskManager(object):
         """ Register the task and send a command to start it """
         print(task_type, filters, params, project_uuid)
         if task_type == 'masscan':
-            targets = self.scope_manager.get_ips(filters, project_uuid)['ips']
+            targets = self.scope_manager.get_ips(filters, project_uuid, ips_only=True)['ips']
             tasks = MasscanStarter.start_task(targets, params, project_uuid, self.exchange)
 
             self.active_tasks += tasks
 
-        return list(map(lambda task: task.get_as_native_object(grab_file_descriptors=False)), tasks)
+        return list(map(lambda task: task.get_as_native_object(grab_file_descriptors=False), tasks))

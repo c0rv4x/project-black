@@ -69,7 +69,7 @@ class ScopeManager(object):
 
         return filters_divided
 
-    def get_ips(self, filters, project_uuid, page_number=None, page_size=None):
+    def get_ips(self, filters, project_uuid, page_number=None, page_size=None, ips_only=False):
         """ Returns ips that are associated with a given project.
         Not all ips are selected. Only those, that are within the
         described page """
@@ -137,23 +137,35 @@ class ScopeManager(object):
 
         ips_query_subq = aliased(IPDatabase, ips_query.subquery('all_ips_parsed'))
 
-        ids_limited = ips_query.from_self(IPDatabase.ip_id).distinct(
-            ).limit(page_size
-            ).offset(page_size * page_number
-            ).subquery('limited_ips_ids')
+        if page_size is None or page_number is None:
+            ids_limited = ips_query.from_self(IPDatabase.ip_id).distinct(
+                ).subquery('limited_ips_ids')
+        else:
+            ids_limited = ips_query.from_self(IPDatabase.ip_id).distinct(
+                ).limit(page_size
+                ).offset(page_size * page_number
+                ).subquery('limited_ips_ids')
 
-        ips_from_db = session.query(ips_query_subq
-            ).filter(ips_query_subq.ip_id.in_(ids_limited)
-            ).join(scans_from_db, ips_query_subq.ports, isouter=(not filters_exist)
-            ).options(contains_eager(ips_query_subq.ports, alias=scans_from_db)
-            ).all()
+        if ips_only:
+            ips_from_db = session.query(ips_query_subq.ip_address
+                ).filter(ips_query_subq.ip_id.in_(ids_limited)
+                ).all()
+        else:
+            ips_from_db = session.query(ips_query_subq
+                ).filter(ips_query_subq.ip_id.in_(ids_limited)
+                ).join(scans_from_db, ips_query_subq.ports, isouter=(not filters_exist)
+                ).options(contains_eager(ips_query_subq.ports, alias=scans_from_db)
+                ).all()
 
         selected_ips = ips_query.count()
 
         self.session_spawner.destroy_session(session)
 
-        # Reformat the ips to make the JSON-like objects
-        ips = list(map(lambda each_ip: self.format_ip(each_ip), ips_from_db))
+        if ips_only:
+            ips = list(map(lambda each_ip: each_ip[0], ips_from_db))
+        else:
+            # Reformat the ips to make the JSON-like objects
+            ips = list(map(lambda each_ip: self.format_ip(each_ip), ips_from_db))
 
         # Together with ips, return amount of total ips in the database
         return {"total_db_ips": self.count_ips(project_uuid), "selected_ips": selected_ips, "ips": ips}
