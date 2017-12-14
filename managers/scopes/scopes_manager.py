@@ -95,7 +95,13 @@ class ScopeManager(object):
 
         # If there are no filters, no need to chain empty lists
         if filters_exist:
-            ports_filters_list = map(lambda port_number: alias_ordered.port_number == port_number, filters_divided['ports'])
+            ports_filters_list = []
+            for port_number in filters_divided['ports']:
+                if port_number == '*':
+                    ports_filters_list.append(alias_ordered.port_number > 0)
+                else:
+                    ports_filters_list.append(alias_ordered.port_number == port_number)
+
             ports_filters = or_(*ports_filters_list)
 
             protocols_filters_list = []
