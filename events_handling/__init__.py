@@ -24,7 +24,7 @@ class Handlers(object):
 
         self.project_manager = ProjectManager()
         self.scope_manager = ScopeManager()
-        self.task_manager = TaskManager(self.data_updated_queue)
+        self.task_manager = TaskManager(self.data_updated_queue, self.scope_manager)
         self.app.add_task(self.task_manager.spawn_asynqp())
 
         self.scan_manager = ScanManager()

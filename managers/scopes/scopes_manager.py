@@ -69,7 +69,7 @@ class ScopeManager(object):
 
         return filters_divided
 
-    def get_ips(self, filters, project_uuid, page_number, page_size):
+    def get_ips(self, filters, project_uuid, page_number=None, page_size=None):
         """ Returns ips that are associated with a given project.
         Not all ips are selected. Only those, that are within the
         described page """

@@ -25,13 +25,13 @@ class TaskHandlers(object):
             params = msg["params"]
             project_uuid = msg["project_uuid"]
 
-            task = self.task_manager.create_task(
+            tasks = self.task_manager.create_task(
                 task_type, filters, params, project_uuid
             )
 
             await self.socketio.emit(
                 'tasks:new', {'status': 'success',
-                              'new_task': task},
+                              'new_tasks': tasks},
                 namespace='/tasks'
             )
 
