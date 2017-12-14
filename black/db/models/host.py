@@ -20,7 +20,7 @@ class HostDatabase(Base):
         "IPDatabase",
         secondary=association_table,
         back_populates="hostnames",
-        lazy='subquery'
+        lazy='noload'
     )
 
     # Some text comment

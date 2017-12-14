@@ -24,7 +24,8 @@ class IPDatabase(Base):
         "HostDatabase",
         secondary=association_table,
         back_populates="ip_addresses",
-        lazy='subquery'
+        # lazy='joined'
+        lazy='noload'
     )
 
     # Open ports

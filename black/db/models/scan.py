@@ -39,6 +39,5 @@ class ScanDatabase(Base):
 
     # Date of added
     date_added = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
-    # def __repr__(self):
-    #    return "<Scan(project_uuid='%s'>" % (
-    #                         self.project_uuid)
+    def __repr__(self):
+       return "<Scan(port_number='%s'>" % (self.port_number)
