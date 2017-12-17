@@ -18,13 +18,16 @@ class ScanHandlers(object):
             ips = msg.get('ips', [])
             await self.send_scans_back(project_uuid, ips)
 
-    async def send_scans_back(self, project_uuid=None, ips=None):
+    async def send_scans_back(self, new_ips, project_uuid=None):
         """ Finds all scans for the project and sends them back """
-        await self.socketio.emit(
-            'scans:part:set', {
-                'status': 'success',
-                'project_uuid': project_uuid,
-                'scans': self.scan_manager.get_scans(project_uuid, ips)
-            },
-            namespace='/scans'
-        )
+        print("Sending back new_ips {} , {}".format(new_ips, project_uuid))
+
+        if new_ips:
+            await self.socketio.emit(
+                'ips:updated', {
+                    'status': 'success',
+                    'project_uuid': project_uuid,
+                    'updated_ips': new_ips
+                },
+                namespace='/scans'
+            )

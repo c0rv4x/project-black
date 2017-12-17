@@ -4,6 +4,7 @@ import {
 	CREATE_IP, 
 	DELETE_IP, 
 	RENEW_IPS,
+	UPDATED_IPS,
 	UPDATE_IP
 } from './actions.js'
 
@@ -94,6 +95,42 @@ function update_ip(state = initialState, action) {
 
 }
 
+function updated_ips(state = initialState, action) {
+	const message = action.message;
+	console.log("GOT IPS UPDATING with new scans");
+
+	if (message["status"] == 'success') {
+		console.log(message);
+		console.log(message.updated_ips);
+		if (message.updated_ips) {
+			var found = false;
+
+			for (var each_id of message.updated_ips) {
+				for (var state_ip of state.data) {
+					if (state_ip.ip_id == each_id) {
+						found = true;
+						break;
+					}
+				}
+				if (found) break;
+			}
+		}
+
+		if (found) {
+			var new_state = JSON.parse(JSON.stringify(state));
+
+			new_state.update_needed = true;
+
+			return new_state;
+		}
+		else {
+			return state;
+		}
+	} else {
+		/* TODO: add error handling */
+	}
+}
+
 function ip_reduce(state = initialState, action) {
 	if (!action.hasOwnProperty('message')) {
 		return state
@@ -111,6 +148,8 @@ function ip_reduce(state = initialState, action) {
 					return renew_ips(state, action);
 				case UPDATE_IP:
 					return update_ip(state, action);
+				case UPDATED_IPS:
+					return updated_ips(state, action);					
 				default:
 					return state;
 			}

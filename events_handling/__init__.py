@@ -59,10 +59,9 @@ class Handlers(object):
                 new_ids = None
 
                 if text:
-                    new_ids = json.loads(text)
+                    new_ids = text
 
-                self.scan_manager.update_from_db(project_uuid, new_ids)
-                await self.scan_handlers.send_scans_back(project_uuid, broadcast=True)
+                await self.scan_handlers.send_scans_back(new_ids, project_uuid)
                 self.data_updated_queue.task_done()
 
             if task_type == "file":

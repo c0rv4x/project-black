@@ -6,7 +6,7 @@ import asynqp
 
 from black.black.db import Sessions, TaskDatabase
 from managers.tasks.shadow_task import ShadowTask
-from managers.tasks.masscan_starter import MasscanStarter
+from managers.tasks.task_starter import TaskStarter
 
 
 class TaskManager(object):
@@ -54,6 +54,7 @@ class TaskManager(object):
         if task.task_type == "dirsearch":
             self.data_updated_queue.put(("file", task.project_uuid, None))
         elif task.task_type == "masscan" or task.task_type == "nmap":
+            print("Finished task necessities", task.text)
             self.data_updated_queue.put(("scan", task.project_uuid, task.text))
         elif task.task_type == "dnsscan":
             self.data_updated_queue.put(("scope", task.project_uuid, None))
@@ -87,6 +88,9 @@ class TaskManager(object):
                     self.active_tasks.remove(task)
                     self.finished_tasks.append(task)
 
+                print('-'*20)
+                print(body)
+                print('-'*20)
                 break
 
         message.ack()
@@ -164,8 +168,13 @@ class TaskManager(object):
         print(task_type, filters, params, project_uuid)
         if task_type == 'masscan':
             targets = self.scope_manager.get_ips(filters, project_uuid, ips_only=True)['ips']
-            tasks = MasscanStarter.start_task(targets, params, project_uuid, self.exchange)
+            tasks = TaskStarter.start_masscan(targets, params, project_uuid, self.exchange)
 
             self.active_tasks += tasks
+        if task_type == 'nmap':
+            targets = self.scope_manager.get_ips(filters, project_uuid, ips_ports_only=True)['ips']
+            tasks = TaskStarter.start_nmap(targets, params, project_uuid, self.exchange)
+
+            self.active_tasks += tasks            
 
         return list(map(lambda task: task.get_as_native_object(grab_file_descriptors=False), tasks))

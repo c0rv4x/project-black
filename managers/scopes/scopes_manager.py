@@ -22,7 +22,7 @@ def profiled():
     ps = pstats.Stats(pr, stream=s).sort_stats('cumulative')
     ps.print_stats()
     # uncomment this to see who's calling what
-    ps.print_callers()
+    # ps.print_callers()
     print(s.getvalue())
 
 class ScopeManager(object):
@@ -69,7 +69,7 @@ class ScopeManager(object):
 
         return filters_divided
 
-    def get_ips(self, filters, project_uuid, page_number=None, page_size=None, ips_only=False):
+    def get_ips(self, filters, project_uuid, page_number=None, page_size=None, ips_only=False, ips_ports_only=False):
         """ Returns ips that are associated with a given project.
         Not all ips are selected. Only those, that are within the
         described page """
@@ -146,6 +146,10 @@ class ScopeManager(object):
                 ).offset(page_size * page_number
                 ).subquery('limited_ips_ids')
 
+        # if ips_ports_only:
+        #     ips_from_db = session.query(ips_query_subq.ip_address, ips_query_subq.ports
+        #         ).filter(ips_query_subq.ip_id.in_(ids_limited)
+        #         ).all()            
         if ips_only:
             ips_from_db = session.query(ips_query_subq.ip_address
                 ).filter(ips_query_subq.ip_id.in_(ids_limited)
@@ -161,6 +165,18 @@ class ScopeManager(object):
 
         self.session_spawner.destroy_session(session)
 
+        # if ips_ports_only:
+        #     ips_ports = {}
+
+        #     print('@@@@', ips_from_db)
+
+        #     for ip, port_number  in ips_from_db:
+        #         if ips_ports.get(ip, None) is None:
+        #             ips_ports[ip] = [port_number]
+        #         else:
+        #             ips_ports[ip].append(port_number)
+
+        #     ips = ips_ports_only
         if ips_only:
             ips = list(map(lambda each_ip: each_ip[0], ips_from_db))
         else:

@@ -35,33 +35,19 @@ class TitleButtonsWithHandlers extends React.Component {
 	}	
 
 	runNmapOnlyOpen(params) {
-		var targets = this.props.scopes.filter((x) => {
-			return x.scans.length > 0;
-		});
-		var startTime = 0;
+		var filters = this.props.filters;
 
-		var task_queue = [];
-
-		for (var target of targets) {
-			let ip_address = target.ip_address;
-			let ports = target.scans.map((x) => {
-				return x.port_number;
-			});
-
-			let flags = "-p" + ports.join();
-
-			task_queue.push({
-				ip_address: ip_address,
-				flags: flags,
-				scans: target.scans
-			});
+		if (filters.hasOwnProperty('port')) {
+			filters['port'].concat("*")
+		}
+		else {
+			filters['port'] = ["*"];
 		}
 
-		for (var each_task of task_queue) {
-			this.doSetTimeout(each_task, startTime);
-
-			startTime += 70;
-		}
+		this.tasksEmitter.requestCreateTask('nmap',
+											filters,
+											{'program': [params["argv"]]},
+											this.props.project.project_uuid)
 
 	}	
 

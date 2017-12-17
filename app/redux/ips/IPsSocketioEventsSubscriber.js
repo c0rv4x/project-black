@@ -5,6 +5,7 @@ import {
 	deleteIP,
 	renewIPs,
 	updateIP,
+	updatedIPs,
 	resolveIPs
 } from './actions';
 
@@ -35,11 +36,13 @@ class IPsSocketioEventsSubscriber {
 		this.register_socketio_handler('ips:update:back', updateIP);
 		this.register_socketio_handler('ips:create', createIP);
 		this.register_socketio_handler('ips:delete', deleteIP);
+		this.register_socketio_handler('ips:updated', updatedIPs);
 	}
 
 	register_socketio_handler(eventName, dispatchCallback, callback) {
 		/* Just a wrapper for connector.listen */
 		this.connector.listen(eventName, (data) => {
+			console.log(123123, eventName);
 			if (data.status == 'success') {
 				this.store.dispatch(dispatchCallback(data, this.project_uuid));
 			}
