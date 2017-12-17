@@ -55,8 +55,6 @@ function delete_ip(state = initialState, action) {
 function renew_ips(state = initialState, action) {
 	const message = action.message;
 
-	console.log('ips:',message);
-
 	if (message["status"] == 'success') {
 		return {
 			...message.ips,

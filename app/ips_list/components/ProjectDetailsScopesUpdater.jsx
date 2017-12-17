@@ -32,8 +32,6 @@ class ProjectDetailsScopesUpdater extends React.Component {
 	renewIps(ip_page=this.props.ips.page, filters=this.props.filters) {
 		var { ips } = this.props;
 
-		console.log(this.props.project.project_uuid, this.props.filters, ip_page, ips.page_size);
-
 		this.ipsEmitter.requestRenewIPs(this.props.project.project_uuid, filters, ip_page, ips.page_size);
 	}
 
