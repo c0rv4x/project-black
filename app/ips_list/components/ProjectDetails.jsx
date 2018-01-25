@@ -20,6 +20,7 @@ class ProjectDetails extends React.Component {
 
 		return (
 			<div>
+				<Tasks tasks={this.props.tasks} />
 				<br/>
 
 				<TitleButtonsWithHandlers scopes={ips.data}
