@@ -41,7 +41,7 @@ def save_raw_output(task_id, output, project_uuid):
                         session.add(new_scan)
                         session.commit()
 
-                        saved_scans.append(scan_id)
+                        saved_scans.append(target.ip_id)
             else:
                 each_host = parsed_dict['nmaprun']['host']
                 address = each_host['address']['@addr']
@@ -64,11 +64,11 @@ def save_raw_output(task_id, output, project_uuid):
                     session.add(new_scan)
                     session.commit()
 
-                    saved_scans.append(scan_id)
+                    saved_scans.append(target.ip_id)
 
             sessions.destroy_session(session)
 
-            return saved_scans
+            return list(set(saved_scans))
 
     except Exception as e:
         # TODO: add logger here
