@@ -28,8 +28,7 @@ function mapStateToProps(state, ownProps) {
     return {
     	project_uuid: project.project_uuid,
     	hosts: state.hosts,
-        tasks: state.tasks.active,
-        scans: state.scans
+        tasks: state.tasks.active
     }
 }
 
