@@ -42,7 +42,7 @@ class IPsSocketioEventsSubscriber {
 	register_socketio_handler(eventName, dispatchCallback, callback) {
 		/* Just a wrapper for connector.listen */
 		this.connector.listen(eventName, (data) => {
-			console.log(123123, eventName);
+			console.log("Ips got event:", eventName);
 			if (data.status == 'success') {
 				this.store.dispatch(dispatchCallback(data, this.project_uuid));
 			}
