@@ -11,7 +11,7 @@ class ScanHandlers(object):
 
     def register_handlers(self):
         """ Register the single handler for returning all scans """
-        @self.socketio.on('scans:part:get', namespace='/scans')
+        @self.socketio.on('scans:part:get', namespace='/ips')
         async def _cb_handle_custom_event(sio, msg):
             """ When received this message, send back all the scans """
             project_uuid = msg.get('project_uuid', None)
@@ -29,5 +29,5 @@ class ScanHandlers(object):
                     'project_uuid': project_uuid,
                     'updated_ips': new_ips
                 },
-                namespace='/scans'
+                namespace='/ips'
             )
