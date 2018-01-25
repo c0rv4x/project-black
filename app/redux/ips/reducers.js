@@ -97,7 +97,6 @@ function update_ip(state = initialState, action) {
 
 function updated_ips(state = initialState, action) {
 	const message = action.message;
-	console.log("GOT IPS UPDATING with new scans", message.updated_ips);
 
 	if (message["status"] == 'success') {
 		if (message.updated_ips) {

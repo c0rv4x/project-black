@@ -31,3 +31,12 @@ class ScanHandlers(object):
                 },
                 namespace='/ips'
             )
+
+            await self.socketio.emit(
+                'hosts:updated:ips', {
+                    'status': 'success',
+                    'project_uuid': project_uuid,
+                    'updated_ips': new_ips
+                },
+                namespace='/hosts'
+            )

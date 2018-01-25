@@ -5,6 +5,7 @@ import {
 	DELETE_HOST, 
 	RENEW_HOSTS,
 	UPDATE_HOST,
+	UPDATED_IPS,
 	RESOLVE_HOSTS
 } from './actions.js'
 
@@ -89,6 +90,41 @@ function update_host(state = initialState, action) {
 
 }
 
+function updated_ips(state = initialState, action) {
+	const message = action.message;
+	console.log("updated hosts:ips");
+	if (message["status"] == 'success') {
+		if (message.updated_ips) {
+			var found = false;
+
+			for (var each_id of JSON.parse(message.updated_ips)) {
+				for (var state_host of state.data) {
+					for (var state_ip of state_host.ip_addresses) {
+						if (state_ip.ip_id == each_id) {
+							console.log("Got some scans for currently displayed hosts");
+							found = true;
+							break;
+						}
+					}
+				}
+				if (found) break;
+			}
+		}
+
+		if (found) {
+			var new_state = JSON.parse(JSON.stringify(state));
+
+			new_state.update_needed = true;
+
+			return new_state;
+		}
+		else {
+			return state;
+		}
+	} else {
+		/* TODO: add error handling */
+	}
+}
 function resolve_hosts(state = initialState, action) {
 	const message = action.message;
 	if (message["status"] == 'success') {
@@ -120,6 +156,8 @@ function host_reduce(state = initialState, action) {
 					return update_host(state, action);
 				case RESOLVE_HOSTS:
 					return resolve_hosts(state, action);
+				case UPDATED_IPS:
+					return updated_ips(state, action);					
 				default:
 					return state;
 			}
