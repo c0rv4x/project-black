@@ -23,7 +23,8 @@ class NmapTask(AsyncTask):
 
     async def start(self):
         """ Launch the task """
-        self.command = ['nmap', '-oX', '-'] + self.params['program'] + self.target
+        print(self.params, self.target)
+        self.command = ['nmap', '-oX', '-'] + self.params['program'] + [self.target]
         print("Start: ",' '.join(self.command))
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
@@ -31,7 +32,7 @@ class NmapTask(AsyncTask):
         loop = asyncio.get_event_loop()
         loop.create_task(self.read_stdout())
         loop.create_task(self.read_stderr())
-        self.spawn_status_poller()
+        # self.spawn_status_poller()
 
     def send_notification(self, command):
         """ Sends 'command' notification to the current process. """
