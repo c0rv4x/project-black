@@ -16,7 +16,7 @@ class ScanHandlers(object):
             """ When received this message, send back all the scans """
             project_uuid = msg.get('project_uuid', None)
             ips = msg.get('ips', [])
-            await self.send_scans_back(project_uuid, ips)
+            await self.send_scans_back(ips, project_uuid)
 
     async def send_scans_back(self, new_ips, project_uuid=None):
         """ Finds all scans for the project and sends them back """
