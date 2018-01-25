@@ -120,19 +120,19 @@ class NmapTask(AsyncTask):
 
         if self.exit_code == 0:
             try:
-                self.parse_results()
+                scans_ids = self.parse_results()
             except Exception as e:
                 print("Set to aborted", "".join(self.stderr))
                 print(str(e))
+                raise(e)
                 await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
             else:
-                print("Finished: ",' '.join(self.command))
-                await self.set_status("Finished", progress=100)
+                print("Finished: ",scans_ids)
+                await self.set_status("Finished", progress=100, text=scans_ids)
         else:
             print("Not null exit code", ' '.join(self.command))
             print("".join(self.stderr))
             await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
-
 
     def parse_results(self):
         def save_scan(data):
@@ -142,7 +142,7 @@ class NmapTask(AsyncTask):
             if scans_ids:
                 target_scan = list(filter(lambda x: data["port_number"] == x["port_number"], scans_ids))[0]
                 target_scan_id = target_scan["scan_id"]
-                new_scan = session.query(ScanDatabase).filter_by(scan_id=target_scan_id).first()
+                new_scan = session.query(ScanDatabase).filter(ScanDatabase.scan_id==target_scan_id).first()
 
                 new_scan.banner = data["banner"]
                 new_scan.protocol = data["protocol"]
@@ -153,6 +153,8 @@ class NmapTask(AsyncTask):
             session.commit()
             sessions.destroy_session(session)
 
+            return new_scan.scan_id
+
         stdout = "".join(self.stdout)
 
         try:
@@ -161,16 +163,23 @@ class NmapTask(AsyncTask):
             nmap_report = NmapParser.parse(stdout, incomplete=True)
 
         sessions = Sessions()
+        scans_ids = []
         for scanned_host in nmap_report.hosts:
             for service_of_host in scanned_host.services:
                 if service_of_host.open():
-                    save_scan({
+                    scan_id = save_scan({
                         'target': str(scanned_host.address),
                         'port_number': int(service_of_host.port),
                         'protocol': str(service_of_host.service),
                         'banner': str(service_of_host.banner),
                         'project_uuid': self.project_uuid
                     })
+
+                    print(scan_id, 123412341234)
+
+                    scans_ids.append(scan_id)
+
+        return scans_ids
 
 '''
         scans = session.query(Scan).filter_by(
