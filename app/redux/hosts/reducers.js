@@ -50,8 +50,6 @@ function delete_host(state = initialState, action) {
 function renew_hosts(state = initialState, action) {
 	const message = action.message;
 
-	console.log('hosts:',message);
-
 	if (message["status"] == 'success') {
 		return {
 			...message.hosts,

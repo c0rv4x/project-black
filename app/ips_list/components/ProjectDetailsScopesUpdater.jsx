@@ -18,7 +18,7 @@ class ProjectDetailsScopesUpdater extends React.Component {
 		this.setLoading = this.setLoading.bind(this);
 		this.renewIps = this.renewIps.bind(this);
 
-		if (this.props.update_needed === true) {
+		if (this.props.ips.update_needed === true) {
 			this.renewIps();
 		}
 	}
