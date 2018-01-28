@@ -65,7 +65,7 @@ function update_host(state = initialState, action) {
 	const message = action.message;
 
 	if (message["status"] == "success") {
-		var { host_id, host_type, comment } = message;
+		var { host_id, comment } = message;
 
 		for (var each_host of state.data) {
 			if (each_host.host_id == host_id) {

@@ -24,8 +24,8 @@ function mapStateToProps(state, ownProps){
 
     // Extract hostname
     let hostname = ownProps.match.params.hostname;
-    let filtered_hosts = _.filter(state.scopes['hosts'], (x) => {
-        return ((x.hostname == hostname) && (x.project_uuid == project['project_uuid']));
+    let filtered_hosts = _.filter(state.hosts.data, (x) => {
+        return x.hostname == hostname;
     });
 
     let host = null;
@@ -35,54 +35,19 @@ function mapStateToProps(state, ownProps){
     } else {
         host = {
             "hostname": null,
-            "_id": null,
-            "comment": ""
+            "host_id": null,
+            "comment": "",
+            "ip_addresses": []
         }
     }
 
-    // Filter only related IPs
-    let filtered_ips = _.filter(state.scopes.ips, (x) => {
-        return x.hostnames.indexOf(host['hostname']) !== -1;
-    });
-
-    // TODO make proper ip choser
-    let ip = null;
-
-    if (filtered_ips.length) {
-        ip = filtered_ips[0];
-    }
-
-    if (ip) {
-        // Ports filter
-        var ports_filtered = _.get(state.scans, ip.ip_address, []);
-
-        var ports_sorted = ports_filtered.sort((a, b) => {
-            if (a['port_number'] < b['port_number']) {
-                return -1;
-            }
-            if (a['port_number'] > b['port_number']) {
-                return 1;
-            }
-            if (a['port_number'] == b['port_number']) {
-                return 0;
-            }       
-        });     
-    }
-    else {
-        var ports_sorted = [];
-    }
-
     return {
-        project: project,
+        project_uuid: project.project_uuid,
         host: host,
-        ip: ip,
-        ports: ports_sorted,
-        tasks: _.filter(state.tasks.active, (x) => {
-            return x.project_uuid == project['project_uuid']
-        }),
-        files: state.files[host.hostname]
+        tasks: state.tasks.active,
+        files: state.files[host.hostname],
+        ports: _.get(_.get(host.ip_addresses, 0, {}), 'scans', [])
     }
-    // x['target'].split(':')[0] == host['hostname'])); is a shitty costil'
 }
 
 
