@@ -121,20 +121,19 @@ class HostHandlers(object):
         @self.socketio.on('hosts:update', namespace='/hosts')
         async def _cb_handle_scope_update(sio, msg):
             """ Update the scope (now only used for comment). """
-            scope_id = msg['scope_id']
+            host_id = msg['host_id']
             comment = msg['comment']
             project_uuid = msg['project_uuid']
 
             result = self.scope_manager.update_scope(
-                scope_id=scope_id, comment=comment, scope_type='host'
+                scope_id=host_id, comment=comment, scope_type='host'
             )
             if result["status"] == "success":
                 await self.socketio.emit(
                     'hosts:update:back',
                     {
                      "status": "success",
-                     "scope_id": scope_id,
-                     "scope_type": scope_type,
+                     "host_id": host_id,
                      "comment": comment,
                      "project_uuid": project_uuid},
                     namespace='/hosts'
