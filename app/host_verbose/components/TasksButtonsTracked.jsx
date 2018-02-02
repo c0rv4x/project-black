@@ -19,7 +19,7 @@ class TasksButtonsTracked extends React.Component {
 		this.tasksEmitter.requestCreateTask('dirsearch', 
 											[scheme + "://" + target + ':' + this.props.activePortNumber], 
 											{'program': options}, 
-											this.props.project.project_uuid)
+											this.props.project_uuid)
 	}
 
 	render() {

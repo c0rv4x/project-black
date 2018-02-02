@@ -46,7 +46,7 @@ class MainAccumulator extends React.Component {
 			
 				<Tasks tasks={this.props.tasks} />
 				<Divider />
-				<TasksButtonsTracked project={this.props.project}
+				<TasksButtonsTracked project_uuid={this.props.project_uuid}
 									 host={this.props.host}
 									 activePortNumber={this.state.activePortNumber} />					
 				<ScopeComment comment={this.props.host.comment} />
