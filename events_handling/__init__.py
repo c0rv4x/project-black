@@ -55,6 +55,7 @@ class Handlers(object):
                 self.scope_manager.update_from_db(project_uuid)
                 await self.scope_handlers.send_scopes_back(project_uuid, broadcast=True)
                 self.data_updated_queue.task_done()
+
             if task_type == "scan":
                 new_ids = None
 

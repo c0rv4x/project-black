@@ -238,7 +238,7 @@ class ScopeManager(object):
 
         return self.format_ip(ip_from_db)
 
-    def get_hosts(self, filters, project_uuid, page_number, page_size):
+    def get_hosts(self, filters, project_uuid, page_number=None, page_size=None, hosts_only=False):
         """ Returns hosts associated with a given project.
         Not all hosts are returned. Only those that are within
         the described page"""
@@ -311,18 +311,30 @@ class ScopeManager(object):
 
         selected_hosts = hosts_query.count()
 
-        hosts_limited = hosts_query.from_self(HostDatabase.host_id).distinct(
-            ).limit(page_size
-            ).offset(page_size * page_number
-            ).subquery('limited_hosts_ids')
+        if page_number is None or page_size is None:
+            hosts_limited = hosts_query.from_self(HostDatabase.host_id).distinct(
+                ).subquery('limited_hosts_ids')
+        else:
+            hosts_limited = hosts_query.from_self(HostDatabase.host_id).distinct(
+                ).limit(page_size
+                ).offset(page_size * page_number
+                ).subquery('limited_hosts_ids')
 
-        # Now select ips, outer joining them with scans
-        hosts_from_db = session.query(hosts_query_subq
-            ).filter(hosts_query_subq.host_id.in_(hosts_limited)
-            ).join(ips_query_subq, hosts_query_subq.ip_addresses, isouter=(not ip_filters_exist and not ip_filters_exist)
-            ).join(scans_from_db, ips_query_subq.ports, isouter=(not scan_filters_exist)
-            ).options(contains_eager(hosts_query_subq.ip_addresses, alias=ips_query_subq).contains_eager(ips_query_subq.ports, alias=scans_from_db)
-            )
+        if hosts_only:
+            hosts_from_db = session.query(hosts_query_subq
+                ).filter(hosts_query_subq.host_id.in_(hosts_limited)
+                ).join(ips_query_subq, hosts_query_subq.ip_addresses, isouter=(not ip_filters_exist and not ip_filters_exist)
+                ).join(scans_from_db, ips_query_subq.ports, isouter=(not scan_filters_exist)
+                ).options(contains_eager(hosts_query_subq.ip_addresses, alias=ips_query_subq).contains_eager(ips_query_subq.ports, alias=scans_from_db)
+                )
+        else:
+        # Now select hosts, outer joining them with scans
+            hosts_from_db = session.query(hosts_query_subq
+                ).filter(hosts_query_subq.host_id.in_(hosts_limited)
+                ).join(ips_query_subq, hosts_query_subq.ip_addresses, isouter=(not ip_filters_exist and not ip_filters_exist)
+                ).join(scans_from_db, ips_query_subq.ports, isouter=(not scan_filters_exist)
+                ).options(contains_eager(hosts_query_subq.ip_addresses, alias=ips_query_subq).contains_eager(ips_query_subq.ports, alias=scans_from_db)
+                )
 
         self.session_spawner.destroy_session(session)
 

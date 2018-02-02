@@ -26,8 +26,6 @@ class TitleButtonsWithHandlers extends React.Component {
 	}
 
 	runNmap(params) {
-		var startTime = 0;
-
 		this.tasksEmitter.requestCreateTask('nmap', 
 											this.props.filters, 
 											{'program': [params["argv"]]},
@@ -48,7 +46,6 @@ class TitleButtonsWithHandlers extends React.Component {
 											filters,
 											{'program': [params["argv"]]},
 											this.props.project.project_uuid)
-
 	}	
 
 	dirbusterStart(options) {

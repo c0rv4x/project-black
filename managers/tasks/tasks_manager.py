@@ -88,9 +88,6 @@ class TaskManager(object):
                     self.active_tasks.remove(task)
                     self.finished_tasks.append(task)
 
-                print('-'*20)
-                print(body)
-                print('-'*20)
                 break
 
         message.ack()
@@ -165,16 +162,24 @@ class TaskManager(object):
 
     def create_task(self, task_type, filters, params, project_uuid):
         """ Register the task and send a command to start it """
-        print(task_type, filters, params, project_uuid)
         if task_type == 'masscan':
             targets = self.scope_manager.get_ips(filters, project_uuid, ips_only=True)['ips']
             tasks = TaskStarter.start_masscan(targets, params, project_uuid, self.exchange)
 
             self.active_tasks += tasks
-        if task_type == 'nmap':
+
+        elif task_type == 'nmap':
             targets = self.scope_manager.get_ips(filters, project_uuid, ips_ports_only=True)['ips']
             tasks = TaskStarter.start_nmap(targets, params, project_uuid, self.exchange)
 
-            self.active_tasks += tasks            
+            self.active_tasks += tasks
+
+        elif task_type == 'dirsearch':
+            if params['targets'] == 'ips':
+                targets = self.scope_manager.get_ips(filters, project_uuid, ips_ports_only=True)
+            else:
+                targets = self.scope_manager.get_hosts(filters, project_uuid, hosts_only=True)
+
+            tasks = TaskStarter.start_dirsearch(targets, params, project_uuid, self.exchange)
 
         return list(map(lambda task: task.get_as_native_object(grab_file_descriptors=False), tasks))
