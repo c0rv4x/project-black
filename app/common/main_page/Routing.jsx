@@ -168,7 +168,8 @@ class DirsearchWrapper extends React.Component {
         var mainStore = this.context.store;
 
         this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
-        this.scopesSubscriber = new ScopesSocketioEventsSubsriber(mainStore, project_uuid);
+        this.hostsSubscriber = new HostsSocketioEventsSubsriber(mainStore, project_uuid);
+        this.ipsSubscriber = new IPsSocketioEventsSubsriber(mainStore, project_uuid);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
         this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);        
@@ -182,7 +183,8 @@ class DirsearchWrapper extends React.Component {
 
     componentWillUnmount() {
         this.projectsSubscriber.close();
-        this.scopesSubscriber.close();
+        this.ipsSubscriber.close();
+        this.hostsSubscriber.close();
         this.tasksSubscriber.close();
         this.scansSubscriber.close();
         this.filesSubscriber.close();        

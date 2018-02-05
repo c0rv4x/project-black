@@ -97,7 +97,6 @@ class MainTable extends React.Component {
 
 				<TablesAccumulator ips={this.props.ips}
 								   hosts={this.props.hosts}
-								   ports={this.props.ports}
 								   files={files_filtered} />
 			</div>
 		)
