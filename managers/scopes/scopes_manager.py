@@ -7,23 +7,72 @@ from sqlalchemy.orm import aliased, joinedload, subqueryload, contains_eager
 from black.black.db import Sessions, IPDatabase, ProjectDatabase, HostDatabase, ScanDatabase
 
 
-import cProfile
-from io import StringIO
-import pstats
-import contextlib
+def parse_filters(filters):
+    parsed_filters = {
+        'ips': [],
+        'hosts': [],
+        'ports': [],
+        'banners': [],
+        'protocols': []
+    }
 
-@contextlib.contextmanager
-def profiled():
-    pr = cProfile.Profile()
-    pr.enable()
-    yield
-    pr.disable()
-    s = StringIO()
-    ps = pstats.Stats(pr, stream=s).sort_stats('cumulative')
-    ps.print_stats()
-    # uncomment this to see who's calling what
-    # ps.print_callers()
-    print(s.getvalue())
+    for key in filters.keys():
+        filter_value = filters[key]
+        for each_filter_value in filter_value:
+            if key == 'ip':
+                if '%' in each_filter_value:
+                    parsed_filters['ips'].append(IPDatabase.ip_address.like(each_filter_value))
+                else:
+                    parsed_filters['ips'].append(IPDatabase.ip_address == each_filter_value)
+            elif key == 'host':
+                if '%' in each_filter_value:
+                    parsed_filters['hosts'].append(HostDatabase.hostname.like(each_filter_value))
+                else:
+                    parsed_filters['hosts'].append(HostDatabase.hostname == each_filter_value)
+            elif key == 'port':
+                parsed_filters['ports'].append(each_filter_value)
+            elif key == 'banner':
+                parsed_filters['banners'].append(each_filter_value)
+            elif key == 'protocol':
+                parsed_filters['protocols'].append(each_filter_value)
+
+    return parsed_filters
+
+def build_scans_filters(parsed_filters):
+    # Now we should filter all the data using client's filters
+    filters_exist = parsed_filters['ports'] or parsed_filters['protocols'] or parsed_filters['banners']
+    scans_filters = []
+
+    # If there are no filters, no need to chain empty lists
+    if filters_exist:
+        ports_filters_list = []
+        for port_number in parsed_filters['ports']:
+            if port_number == '*':
+                ports_filters_list.append(alias_ordered.port_number > 0)
+            else:
+                ports_filters_list.append(alias_ordered.port_number == port_number)
+
+        ports_filters = or_(*ports_filters_list)
+
+        protocols_filters_list = []
+        for protocol in parsed_filters['protocols']:
+            if '%' in protocol:
+                protocols_filters_list.append(alias_ordered.protocol.ilike(protocol))
+            else:
+                protocols_filters_list.append(alias_ordered.protocol == protocol)
+        protocols_filters = or_(*protocols_filters_list)
+
+        banners_filters_list = []
+        for banner in parsed_filters['banners']:
+            if '%' in banner:
+                banners_filters_list.append(alias_ordered.banner.ilike(banner))
+            else:
+                banners_filters_list.append(alias_ordered.banner == banner)
+        banners_filters = or_(*banners_filters_list)
+
+        scans_filters = [ports_filters, protocols_filters, banners_filters]
+
+    return scans_filters
 
 class ScopeManager(object):
     """ ScopeManager keeps track of all ips and hosts in the system,
@@ -38,46 +87,8 @@ class ScopeManager(object):
 
         self.session_spawner = Sessions()
 
-    def parse_filters(self, filters):
-        filters_divided = {
-            'ips': [],
-            'hosts': [],
-            'ports': [],
-            'banners': [],
-            'protocols': []
-        }
-
-        for key in filters.keys():
-            filter_value = filters[key]
-            for each_filter_value in filter_value:
-                if key == 'ip':
-                    if '%' in each_filter_value:
-                        filters_divided['ips'].append(IPDatabase.ip_address.like(each_filter_value))
-                    else:
-                        filters_divided['ips'].append(IPDatabase.ip_address == each_filter_value)
-                elif key == 'host':
-                    if '%' in each_filter_value:
-                        filters_divided['hosts'].append(HostDatabase.hostname.like(each_filter_value))
-                    else:
-                        filters_divided['hosts'].append(HostDatabase.hostname == each_filter_value)
-                elif key == 'port':
-                    filters_divided['ports'].append(each_filter_value)
-                elif key == 'banner':
-                    filters_divided['banners'].append(each_filter_value)
-                elif key == 'protocol':
-                    filters_divided['protocols'].append(each_filter_value)
-
-        return filters_divided
-
-    def get_ips(self, filters, project_uuid, page_number=None, page_size=None, ips_only=False, ips_ports_only=False):
-        """ Returns ips that are associated with a given project.
-        Not all ips are selected. Only those, that are within the
-        described page """
-        session = self.session_spawner.get_new_session()
-
-        # Parse filters into an object for more comfortable work
-        filters_divided = self.parse_filters(filters)
-
+    @staticmethod
+    def build_filtered_scans_query(session, project_uuid, scans_filters):
         # Query all the scans and order them by date they were modified
         subq = session.query(ScanDatabase).filter(
             ScanDatabase.project_uuid == project_uuid
@@ -89,54 +100,46 @@ class ScopeManager(object):
         # Select distinc scans (we need only the latest)
         scans_from_db_raw = ordered.distinct(alias_ordered.target, alias_ordered.port_number)
 
-        # Now we should filter all the data using client's filters
-        filters_exist = filters_divided['ports'] or filters_divided['protocols'] or filters_divided['banners']
-        chained_filters = []
-
-        # If there are no filters, no need to chain empty lists
-        if filters_exist:
-            ports_filters_list = []
-            for port_number in filters_divided['ports']:
-                if port_number == '*':
-                    ports_filters_list.append(alias_ordered.port_number > 0)
-                else:
-                    ports_filters_list.append(alias_ordered.port_number == port_number)
-
-            ports_filters = or_(*ports_filters_list)
-
-            protocols_filters_list = []
-            for protocol in filters_divided['protocols']:
-                if '%' in protocol:
-                    protocols_filters_list.append(alias_ordered.protocol.ilike(protocol))
-                else:
-                    protocols_filters_list.append(alias_ordered.protocol == protocol)
-            protocols_filters = or_(*protocols_filters_list)
-
-            banners_filters_list = []
-            for banner in filters_divided['banners']:
-                if '%' in banner:
-                    banners_filters_list.append(alias_ordered.banner.ilike(banner))
-                else:
-                    banners_filters_list.append(alias_ordered.banner == banner)
-            banners_filters = or_(*banners_filters_list)
-
-            chained_filters = [ports_filters, protocols_filters, banners_filters]
-
         # Filter ports to correspond the request
-        scans_from_db = scans_from_db_raw.filter(*chained_filters).subquery('scans_distinct')
+        scans_from_db = scans_from_db_raw.filter(*scans_filters).subquery('scans_distinct')
+
+        return scans_from_db
+
+    def get_ips(self, filters, project_uuid, page_number=None, page_size=None, ips_only=False):
+        """ Returns ips that are associated with a given project.
+        Not all ips are selected. Only those, that are within the
+        described page """
+        session = self.session_spawner.get_new_session()
+
+        # Parse filters into an object for more comfortable work
+        parsed_filters = parse_filters(filters)
+
+        ### SCANS ###
+
+        # Create a list of filters which will be applied against scans
+        scans_filters = build_scans_filters(parsed_filters)
+        scans_filters_exist = len(scans_filters) == 0
+
+        # Create a query for selection unqie, ordered and filtered scans
+        scans_from_db = self.build_filtered_scans_query(session, project_uuid, scans_filters)
+
+        ### /SCANS ###
 
         # Now select ips, outer joining them with scans
         ips_query = session.query(IPDatabase
             ).filter(
                 IPDatabase.project_uuid == project_uuid,
-                *filters_divided['ips']
+                *parsed_filters['ips']
             ).from_self(
-            ).join(scans_from_db, IPDatabase.ports, isouter=(not filters_exist)
+            ).join(scans_from_db, IPDatabase.ports, isouter=(not scans_filters_exist)
             ).options(contains_eager(IPDatabase.ports, alias=scans_from_db)
             )
 
         ips_query_subq = aliased(IPDatabase, ips_query.subquery('all_ips_parsed'))
 
+        # From the filtered ips, we need to select only first N of them.
+        # So we select ids of the first N. Then select all the ips, which have
+        # that ids.
         if page_size is None or page_number is None:
             ids_limited = ips_query.from_self(IPDatabase.ip_id).distinct(
                 ).subquery('limited_ips_ids')
@@ -146,10 +149,6 @@ class ScopeManager(object):
                 ).offset(page_size * page_number
                 ).subquery('limited_ips_ids')
 
-        # if ips_ports_only:
-        #     ips_from_db = session.query(ips_query_subq.ip_address, ips_query_subq.ports
-        #         ).filter(ips_query_subq.ip_id.in_(ids_limited)
-        #         ).all()            
         if ips_only:
             ips_from_db = session.query(ips_query_subq.ip_address
                 ).filter(ips_query_subq.ip_id.in_(ids_limited)
@@ -157,7 +156,7 @@ class ScopeManager(object):
         else:
             ips_from_db = session.query(ips_query_subq
                 ).filter(ips_query_subq.ip_id.in_(ids_limited)
-                ).join(scans_from_db, ips_query_subq.ports, isouter=(not filters_exist)
+                ).join(scans_from_db, ips_query_subq.ports, isouter=(not scans_filters_exist)
                 ).options(contains_eager(ips_query_subq.ports, alias=scans_from_db)
                 ).all()
 
@@ -165,18 +164,6 @@ class ScopeManager(object):
 
         self.session_spawner.destroy_session(session)
 
-        # if ips_ports_only:
-        #     ips_ports = {}
-
-        #     print('@@@@', ips_from_db)
-
-        #     for ip, port_number  in ips_from_db:
-        #         if ips_ports.get(ip, None) is None:
-        #             ips_ports[ip] = [port_number]
-        #         else:
-        #             ips_ports[ip].append(port_number)
-
-        #     ips = ips_ports_only
         if ips_only:
             ips = list(map(lambda each_ip: each_ip[0], ips_from_db))
         else:
@@ -238,76 +225,55 @@ class ScopeManager(object):
 
         return self.format_ip(ip_from_db)
 
-    def get_hosts(self, filters, project_uuid, page_number=None, page_size=None, hosts_only=False):
+    def get_hosts(self, filters, project_uuid, page_number=None, page_size=None):
         """ Returns hosts associated with a given project.
         Not all hosts are returned. Only those that are within
         the described page"""
-        # Parse filters into an object for more comfortable work
-        filters_divided = self.parse_filters(filters)
-
         session = self.session_spawner.get_new_session()
 
-        # Query all the scans and order them by date they were modified
-        subq = session.query(ScanDatabase).filter(
-            ScanDatabase.project_uuid == project_uuid
-        ).order_by(desc(ScanDatabase.date_added)
-        ).subquery('scans_ordered')
-        alias_ordered = aliased(ScanDatabase, subq)
-        ordered = session.query(alias_ordered)
+        # Parse filters into an object for more comfortable work
+        parsed_filters = parse_filters(filters)
 
-        # Select distinc scans (we need only the latest)
-        scans_from_db_raw = ordered.distinct(alias_ordered.target, alias_ordered.port_number)
+        ### SCANS ###
 
-        # Now we should filter all the data using client's filters
-        scan_filters_exist = filters_divided['ports'] or filters_divided['protocols'] or filters_divided['banners']
-        ip_filters_exist = filters_divided['ips'] or False
-        chained_filters = []
+        # Create a list of filters which will be applied against scans
+        scans_filters = build_scans_filters(parsed_filters)
+        scan_filters_exist = len(scans_filters) == 0
 
-        # If there are no filters, no need to chain empty lists
-        if scan_filters_exist:
-            ports_filters_list = map(lambda port_number: alias_ordered.port_number == port_number, filters_divided['ports'])
-            ports_filters = or_(*ports_filters_list)
+        # Create a query for selection unqie, ordered and filtered scans
+        scans_from_db = self.build_filtered_scans_query(session, project_uuid, scans_filters)
 
-            protocols_filters_list = []
-            for protocol in filters_divided['protocols']:
-                if '%' in protocol:
-                    protocols_filters_list.append(alias_ordered.protocol.ilike(protocol))
-                else:
-                    protocols_filters_list.append(alias_ordered.protocol == protocol)
-            protocols_filters = or_(*protocols_filters_list)
+        ### /SCANS ###
 
-            banners_filters_list = []
-            for banner in filters_divided['banners']:
-                if '%' in banner:
-                    banners_filters_list.append(alias_ordered.banner.ilike(banner))
-                else:
-                    banners_filters_list.append(alias_ordered.banner == banner)
-            banners_filters = or_(*banners_filters_list)
+        ### IPS ###
 
-            chained_filters = [ports_filters, protocols_filters, banners_filters]
-
-        # Filter ports to correspond the request
-        scans_from_db = scans_from_db_raw.filter(*chained_filters).subquery('scans_distinct')
+        ip_filters_exist = parsed_filters['ips'] or False
 
         ips_query = session.query(IPDatabase
             ).filter(
                 IPDatabase.project_uuid == project_uuid,
-                *filters_divided['ips']
+                *parsed_filters['ips']
             )
 
         ips_query_subq = aliased(IPDatabase, ips_query.subquery('all_ips_parsed'))
 
+        ### /IPS ###
+
+        ### HOSTS ###
+
         hosts_query = session.query(HostDatabase
             ).filter(
                 HostDatabase.project_uuid == project_uuid,
-                *filters_divided['hosts']
+                *parsed_filters['hosts']
             ).from_self(
-            ).join(ips_query_subq, HostDatabase.ip_addresses, isouter=(not ip_filters_exist and not ip_filters_exist)
+            ).join(ips_query_subq, HostDatabase.ip_addresses, isouter=(not ip_filters_exist)
             ).join(scans_from_db, IPDatabase.ports, isouter=(not scan_filters_exist)
             ).options(contains_eager(HostDatabase.ip_addresses, alias=ips_query_subq).contains_eager(IPDatabase.ports, alias=scans_from_db)
             )
 
         hosts_query_subq = aliased(HostDatabase, hosts_query.subquery('hosts_parsed'))
+
+        ### /HOSTS ###
 
         selected_hosts = hosts_query.count()
 
@@ -320,21 +286,14 @@ class ScopeManager(object):
                 ).offset(page_size * page_number
                 ).subquery('limited_hosts_ids')
 
-        if hosts_only:
-            hosts_from_db = session.query(hosts_query_subq
-                ).filter(hosts_query_subq.host_id.in_(hosts_limited)
-                ).join(ips_query_subq, hosts_query_subq.ip_addresses, isouter=(not ip_filters_exist and not ip_filters_exist)
-                ).join(scans_from_db, ips_query_subq.ports, isouter=(not scan_filters_exist)
-                ).options(contains_eager(hosts_query_subq.ip_addresses, alias=ips_query_subq).contains_eager(ips_query_subq.ports, alias=scans_from_db)
-                )
-        else:
         # Now select hosts, outer joining them with scans
-            hosts_from_db = session.query(hosts_query_subq
-                ).filter(hosts_query_subq.host_id.in_(hosts_limited)
-                ).join(ips_query_subq, hosts_query_subq.ip_addresses, isouter=(not ip_filters_exist and not ip_filters_exist)
-                ).join(scans_from_db, ips_query_subq.ports, isouter=(not scan_filters_exist)
-                ).options(contains_eager(hosts_query_subq.ip_addresses, alias=ips_query_subq).contains_eager(ips_query_subq.ports, alias=scans_from_db)
-                )
+        hosts_from_db = session.query(hosts_query_subq
+            ).filter(hosts_query_subq.host_id.in_(hosts_limited)
+            ).join(ips_query_subq, hosts_query_subq.ip_addresses, isouter=(not ip_filters_exist)
+            ).join(scans_from_db, ips_query_subq.ports, isouter=(not scan_filters_exist)
+            ).options(contains_eager(hosts_query_subq.ip_addresses, alias=ips_query_subq
+                    ).contains_eager(ips_query_subq.ports, alias=scans_from_db)
+            )
 
         self.session_spawner.destroy_session(session)
 
