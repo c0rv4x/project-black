@@ -279,6 +279,7 @@ class ScopeManager(object):
 
         ### /IPS ###
 
+
         ### HOSTS ###
 
         hosts_query = session.query(HostDatabase
@@ -306,9 +307,20 @@ class ScopeManager(object):
                 ).offset(page_size * page_number
                 ).subquery('limited_hosts_ids')
 
+        ### FILES ###
+
+        files_query = session.query(FileDatabase
+            ).filter(FileDatabase.project_uuid == project_uuid
+            )
+        files_query_aliased = aliased(FileDatabase, files_query.subquery('files_filtered'))
+
+        ### /FILES ###
+
+
         # Now select hosts, outer joining them with scans
         hosts_from_db = session.query(hosts_query_subq
             ).filter(hosts_query_subq.id.in_(hosts_limited)
+            ).join(files_query_aliased, hosts_query_subq.files, isouter=True
             ).join(ips_query_subq, hosts_query_subq.ip_addresses, isouter=(not ip_filters_exist)
             ).join(scans_from_db, ips_query_subq.ports, isouter=(not scan_filters_exist)
             ).options(contains_eager(hosts_query_subq.ip_addresses, alias=ips_query_subq
@@ -322,7 +334,17 @@ class ScopeManager(object):
             "host_id": each_host.id,
             "hostname": each_host.target,
             "comment": each_host.comment,
-            "ip_addresses": list(map(lambda each_ip: self.format_ip(each_ip, no_hosts=True), each_host.ip_addresses))
+            "ip_addresses": list(map(lambda each_ip: self.format_ip(each_ip, no_hosts=True), each_host.ip_addresses)),
+            "files": list(map(lambda each_file: {
+                "file_id": each_file.file_id,
+                "file_name": each_file.file_name,
+                "port_number": each_file.port_number,
+                "file_path": each_file.file_path,
+                "status_code": each_file.status_code,
+                "content_length": each_file.content_length,
+                "task_id": each_file.task_id,
+                "date_added": str(each_file.date_added)
+            }, each_host.files))            
         }, hosts_from_db))
 
         # Together with hosts list return total amount of hosts in the db
