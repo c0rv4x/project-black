@@ -31,30 +31,32 @@ class MainAccumulator extends React.Component {
 		}
 	}
 
-	tabChange(newNumber, portNumber) {
+	tabChange(newNumber) {
 		this.setState({
 			activeTabNumber: newNumber,
-			activePortNumber: portNumber
+			activePortNumber: this.props.ports[newNumber].port_number
 		});
 	}
 
 	render() {
+		const { host, tasks, ports, project_uuid } = this.props;
+
 		return (
 			<div>
 				<br/>
-				<Header as="h2">{this.props.host.hostname}</Header>
+				<Header as="h2">{host.hostname}</Header>
 			
-				<Tasks tasks={this.props.tasks} />
+				<Tasks tasks={tasks} />
 				<Divider />
-				<TasksButtonsTracked project_uuid={this.props.project_uuid}
-									 host={this.props.host}
+				<TasksButtonsTracked project_uuid={project_uuid}
+									 host={host}
 									 activePortNumber={this.state.activePortNumber} />					
-				<ScopeComment comment={this.props.host.comment} />
+				<ScopeComment comment={host.comment} />
 
-				<PortsTabs ports={this.props.ports}
+				<PortsTabs ports={ports}
 					   	   activeTabNumber={this.state.activeTabNumber}
 					   	   tabChange={this.tabChange}
-					   	   files={this.props.files} />
+					   	   files={host.files} />
 			</div>				  
 		)
 	}

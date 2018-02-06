@@ -34,7 +34,8 @@ class HostsEntryLine extends React.Component {
 	}
 
 	render() {
-		const verbose_host_link = '/project/' + this.props.project_uuid + '/host/' + this.props.host.hostname;
+		const { host } = this.props;
+		const verbose_host_link = '/project/' + this.props.project_uuid + '/host/' + host.hostname;
 
 		const footer = (
 			<div>
@@ -50,35 +51,26 @@ class HostsEntryLine extends React.Component {
 			</div>
 		);
 
-		console.log(this.props.host);
-
-		// var files_by_statuses = {
-		// 	'2xx': this.props.host.files.filter((x) => {
-		// 		return Math.floor(x.status_code / 100) === 2;
-		// 	}).length,
-		// 	'3xx': this.props.host.files.filter((x) => {
-		// 		return Math.floor(x.status_code / 100) === 3;
-		// 	}).length,
-		// 	'4xx': this.props.host.files.filter((x) => {
-		// 		return Math.floor(x.status_code / 100) === 4 && x.status_code !== 404;
-		// 	}).length,	
-		// 	'5xx': this.props.host.files.filter((x) => {
-		// 		return Math.floor(x.status_code / 100) === 5 && x.status_code !== 404;
-		// 	}).length						
-		// };
-
 		var files_by_statuses = {
-			'2xx': 0,
-			'3xx': 0,
-			'4xx': 0,
-			'5xx': 0
-		};		
+			'2xx': host.files.filter((x) => {
+				return Math.floor(x.status_code / 100) === 2;
+			}).length,
+			'3xx': host.files.filter((x) => {
+				return Math.floor(x.status_code / 100) === 3;
+			}).length,
+			'4xx': host.files.filter((x) => {
+				return Math.floor(x.status_code / 100) === 4 && x.status_code !== 404;
+			}).length,	
+			'5xx': host.files.filter((x) => {
+				return Math.floor(x.status_code / 100) === 5 && x.status_code !== 404;
+			}).length						
+		};
 
 		const description = (
 			<div>
-				<Header>{this.props.host.hostname}</Header>
+				<Header>{host.hostname}</Header>
 				<Divider/>
-				<ScopeComment comment={this.props.host.comment}
+				<ScopeComment comment={host.comment}
 							  onCommentSubmit={this.props.onCommentSubmit} />
 				Dirsearch: 
 				<List bulleted>
@@ -87,7 +79,7 @@ class HostsEntryLine extends React.Component {
 					<List.Item>4xx: {files_by_statuses['4xx']}</List.Item>
 					<List.Item>5xx: {files_by_statuses['5xx']}</List.Item>
 				</List>
-				<HostsEntryLinePorts host={this.props.host} />
+				<HostsEntryLinePorts host={host} />
 			</div>
 		);
 

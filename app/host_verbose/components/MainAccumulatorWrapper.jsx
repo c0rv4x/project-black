@@ -41,12 +41,16 @@ function mapStateToProps(state, ownProps){
         }
     }
 
+    let ports_unsorted = _.get(_.get(host.ip_addresses, 0, {}), 'scans', []);
+    let ports = ports_unsorted.sort((x, y) => {
+        return x.port_number > y.port_number;
+    });
+
     return {
         project_uuid: project.project_uuid,
         host: host,
         tasks: state.tasks.active,
-        files: state.files[host.hostname],
-        ports: _.get(_.get(host.ip_addresses, 0, {}), 'scans', [])
+        ports: ports
     }
 }
 

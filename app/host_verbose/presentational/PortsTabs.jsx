@@ -8,10 +8,6 @@ class PortsTabs extends React.Component {
 		super(props);
 	}
 
-	componentWillMount() {
-		this.props.tabChange(0);
-	}
-
 	render() {
 		var i = 0;
 
@@ -28,7 +24,7 @@ class PortsTabs extends React.Component {
 				return 0;
 			});
 
-			var files = _.map(filtered_files, (port) => {
+			const files = _.map(filtered_files, (port) => {
 				var result = Math.floor(port.status_code / 100)
 				if (result == 2) {
 					return <Table.Row key={port.file_id}>
@@ -63,7 +59,7 @@ class PortsTabs extends React.Component {
 		}
 
 		return (
-			<Tab panes={panes} />
+			<Tab onTabChange={(event, data) => { this.props.tabChange(data.activeIndex)} } panes={panes} />
 		)
 	}
 }
