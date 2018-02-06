@@ -46,7 +46,7 @@ class DirsearchTask(AsyncTask):
 
         try:
             self.dirsearch_proc = self.loop.run_in_executor(
-                ProcessPoolExecutor(), start_program, self.target[0],
+                ProcessPoolExecutor(), start_program, self.target,
                 self.task_id, self.project_uuid, self.socket_path,
                 self.params_object
             )
