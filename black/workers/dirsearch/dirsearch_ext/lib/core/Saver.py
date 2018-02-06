@@ -1,6 +1,6 @@
 import uuid
 import urllib
-from black.db import Sessions, FoundFile
+from black.db import Sessions, FileDatabase
 
 class Saver(object):
     def __init__(self, task_id, project_uuid):
@@ -30,7 +30,7 @@ class Saver(object):
             file_name = parsed_url.path
 
             session = self.sessions.get_new_session()
-            new_file = FoundFile(
+            new_file = FileDatabase(
                 file_id=str(uuid.uuid4()),
                 file_name=file_name,
                 target=target,

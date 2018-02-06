@@ -2,10 +2,10 @@ import datetime
 from sqlalchemy import Column, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
-from .base import Base, association_table
+from .scope import Scope, association_table
 
 
-class IPDatabase(Base):
+class IPDatabase(Scope):
     """ Kepps the data on scope:
     * Hostnames
     * IPs
@@ -13,23 +13,11 @@ class IPDatabase(Base):
     __tablename__ = 'ips'
 
     # Primary key (probably uuid4)
-    ip_id = Column(String, primary_key=True)
+    id = Column(String, primary_key=True)
 
     # IP address is a string (probably None, but not sure if
     #    is needed)
-    ip_address = Column(String)
-
-    # The hostnames that point to this IP
-    hostnames = relationship(
-        "HostDatabase",
-        secondary=association_table,
-        back_populates="ip_addresses",
-        # lazy='joined'
-        lazy='noload'
-    )
-
-    # Open ports
-    ports = relationship('ScanDatabase', cascade="all, delete-orphan", lazy='select')
+    target = Column(String)
 
     # Comment field, as requested by VI
     comment = Column(String)
@@ -48,7 +36,23 @@ class IPDatabase(Base):
     # Date of adding
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
 
+    # The hostnames that point to this IP
+    hostnames = relationship(
+        "HostDatabase",
+        secondary=association_table,
+        back_populates="ip_addresses",
+        # lazy='joined'
+        lazy='noload'
+    )
+
+    # Open ports
+    ports = relationship('ScanDatabase', cascade="all, delete-orphan", lazy='select')
+
+    __mapper_args__ = {
+        'concrete': True
+    }
+
     def __repr__(self):
         return """<IPDatabase(ip_id='%s', hostnames='%s', ip_address='%s', project_uuid='%s')>""" % (
-            self.ip_id, self.hostnames, self.ip_address, self.project_uuid
+            self.id, self.hostnames, self.target, self.project_uuid
         )
