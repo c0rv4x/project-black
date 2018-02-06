@@ -118,7 +118,7 @@ class ScopeManager(object):
 
         # Create a list of filters which will be applied against scans
         scans_filters = build_scans_filters(parsed_filters)
-        scans_filters_exist = len(scans_filters) == 0
+        scans_filters_exist = len(scans_filters) != 0
 
         # Create a query for selection unqie, ordered and filtered scans
         scans_from_db = self.build_filtered_scans_query(session, project_uuid, scans_filters)
@@ -258,7 +258,7 @@ class ScopeManager(object):
 
         # Create a list of filters which will be applied against scans
         scans_filters = build_scans_filters(parsed_filters)
-        scan_filters_exist = len(scans_filters) == 0
+        scan_filters_exist = len(scans_filters) != 0
 
         # Create a query for selection unqie, ordered and filtered scans
         scans_from_db = self.build_filtered_scans_query(session, project_uuid, scans_filters)
