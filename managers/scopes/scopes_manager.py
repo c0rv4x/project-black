@@ -4,7 +4,7 @@ import asyncio
 from sqlalchemy import desc, or_
 from sqlalchemy.orm import aliased, joinedload, subqueryload, contains_eager
 
-from black.black.db import Sessions, IPDatabase, ProjectDatabase, HostDatabase, ScanDatabase
+from black.black.db import Sessions, IPDatabase, ProjectDatabase, HostDatabase, ScanDatabase, FileDatabase
 
 
 def parse_filters(filters):
@@ -21,14 +21,14 @@ def parse_filters(filters):
         for each_filter_value in filter_value:
             if key == 'ip':
                 if '%' in each_filter_value:
-                    parsed_filters['ips'].append(IPDatabase.ip_address.like(each_filter_value))
+                    parsed_filters['ips'].append(IPDatabase.target.like(each_filter_value))
                 else:
-                    parsed_filters['ips'].append(IPDatabase.ip_address == each_filter_value)
+                    parsed_filters['ips'].append(IPDatabase.target == each_filter_value)
             elif key == 'host':
                 if '%' in each_filter_value:
-                    parsed_filters['hosts'].append(HostDatabase.hostname.like(each_filter_value))
+                    parsed_filters['hosts'].append(HostDatabase.target.like(each_filter_value))
                 else:
-                    parsed_filters['hosts'].append(HostDatabase.hostname == each_filter_value)
+                    parsed_filters['hosts'].append(HostDatabase.target == each_filter_value)
             elif key == 'port':
                 parsed_filters['ports'].append(each_filter_value)
             elif key == 'banner':
@@ -141,24 +141,34 @@ class ScopeManager(object):
         # So we select ids of the first N. Then select all the ips, which have
         # that ids.
         if page_size is None or page_number is None:
-            ids_limited = ips_query.from_self(IPDatabase.ip_id).distinct(
+            ids_limited = ips_query.from_self(IPDatabase.id).distinct(
                 ).subquery('limited_ips_ids')
         else:
-            ids_limited = ips_query.from_self(IPDatabase.ip_id).distinct(
+            ids_limited = ips_query.from_self(IPDatabase.id).distinct(
                 ).limit(page_size
                 ).offset(page_size * page_number
                 ).subquery('limited_ips_ids')
 
         if ips_only:
-            ips_from_db = session.query(ips_query_subq.ip_address
-                ).filter(ips_query_subq.ip_id.in_(ids_limited)
+            ips_from_db = session.query(ips_query_subq.target
+                ).filter(ips_query_subq.id.in_(ids_limited)
                 ).all()
         else:
+            files_query = session.query(FileDatabase
+                ).filter(FileDatabase.project_uuid == project_uuid
+                )
+            files_query_aliased = aliased(FileDatabase, files_query.subquery('files_filtered'))
+
             ips_from_db = session.query(ips_query_subq
-                ).filter(ips_query_subq.ip_id.in_(ids_limited)
+                ).filter(ips_query_subq.id.in_(ids_limited)
+                ).join(files_query_aliased, ips_query_subq.files, isouter=True
                 ).join(scans_from_db, ips_query_subq.ports, isouter=(not scans_filters_exist)
                 ).options(contains_eager(ips_query_subq.ports, alias=scans_from_db)
                 ).all()
+
+            print("-----")
+            print(ips_from_db)
+            print("-----")
 
         selected_ips = ips_query.count()
 
@@ -176,11 +186,11 @@ class ScopeManager(object):
     def format_ip(self, ip_object, no_hosts=False):
         """ Getting ip database object, returns the same object, but JSONed """
         return {
-            "ip_id": ip_object.ip_id,
-            "ip_address": ip_object.ip_address,
+            "ip_id": ip_object.id,
+            "ip_address": ip_object.target,
             "comment": ip_object.comment,
             "project_uuid": ip_object.project_uuid,
-            "hostnames": [] if no_hosts else list(map(lambda host: host.hostname, ip_object.hostnames)),
+            "hostnames": [] if no_hosts else list(map(lambda host: host.target, ip_object.hostnames)),
             "scans": list(map(lambda each_scan: {
                 "scan_id": each_scan.scan_id,
                 "target": each_scan.target,
@@ -190,7 +200,17 @@ class ScopeManager(object):
                 "task_id": each_scan.task_id,
                 "project_uuid": each_scan.project_uuid,
                 "date_added": str(each_scan.date_added)
-            }, ip_object.ports))
+            }, ip_object.ports)),
+            "files": list(map(lambda each_file: {
+                "file_id": each_file.file_id,
+                "file_name": each_file.file_name,
+                "port_number": each_file.port_number,
+                "file_path": each_file.file_path,
+                "status_code": each_file.status_code,
+                "content_length": each_file.content_length,
+                "task_id": each_file.task_id,
+                "date_added": str(each_file.date_added)
+            }, ip_object.files))
         }
 
 
@@ -199,7 +219,7 @@ class ScopeManager(object):
         session = self.session_spawner.get_new_session()
         ip_from_db = session.query(IPDatabase).filter(
             IPDatabase.project_uuid == project_uuid,
-            IPDatabase.ip_address == ip_address
+            IPDatabase.target == ip_address
         ).one_or_none()
         self.session_spawner.destroy_session(session)
 
@@ -210,7 +230,7 @@ class ScopeManager(object):
         session = self.session_spawner.get_new_session()
         host_from_db = session.query(HostDatabase).filter(
             HostDatabase.project_uuid == project_uuid,
-            HostDatabase.hostname == hostname
+            HostDatabase.target == hostname
         ).one_or_none()
         self.session_spawner.destroy_session(session)
 
@@ -278,17 +298,17 @@ class ScopeManager(object):
         selected_hosts = hosts_query.count()
 
         if page_number is None or page_size is None:
-            hosts_limited = hosts_query.from_self(HostDatabase.host_id).distinct(
+            hosts_limited = hosts_query.from_self(HostDatabase.id).distinct(
                 ).subquery('limited_hosts_ids')
         else:
-            hosts_limited = hosts_query.from_self(HostDatabase.host_id).distinct(
+            hosts_limited = hosts_query.from_self(HostDatabase.id).distinct(
                 ).limit(page_size
                 ).offset(page_size * page_number
                 ).subquery('limited_hosts_ids')
 
         # Now select hosts, outer joining them with scans
         hosts_from_db = session.query(hosts_query_subq
-            ).filter(hosts_query_subq.host_id.in_(hosts_limited)
+            ).filter(hosts_query_subq.id.in_(hosts_limited)
             ).join(ips_query_subq, hosts_query_subq.ip_addresses, isouter=(not ip_filters_exist)
             ).join(scans_from_db, ips_query_subq.ports, isouter=(not scan_filters_exist)
             ).options(contains_eager(hosts_query_subq.ip_addresses, alias=ips_query_subq
@@ -299,8 +319,8 @@ class ScopeManager(object):
 
         # Reformat each hosts to JSON-like objects
         hosts = list(map(lambda each_host: {
-            "host_id": each_host.host_id,
-            "hostname": each_host.hostname,
+            "host_id": each_host.id,
+            "hostname": each_host.target,
             "comment": each_host.comment,
             "ip_addresses": list(map(lambda each_ip: self.format_ip(each_ip, no_hosts=True), each_host.ip_addresses))
         }, hosts_from_db))
@@ -354,8 +374,8 @@ class ScopeManager(object):
         if self.find_ip_db(ip_address, project_uuid) is None:
             try:
                 db_object = IPDatabase(
-                    ip_id=str(uuid.uuid4()),
-                    ip_address=ip_address,
+                    id=str(uuid.uuid4()),
+                    target=ip_address,
                     comment="",
                     project_uuid=project_uuid
                 )
@@ -376,7 +396,7 @@ class ScopeManager(object):
                     "new_scope":
                         {
                             "type": "ip_address",
-                            "ip_id": db_object.ip_id,
+                            "ip_id": db_object.id,
                             "ip_address": ip_address,
                             "hostnames": [],
                             "comment": "",
@@ -403,7 +423,7 @@ class ScopeManager(object):
             current_date = datetime.datetime.utcnow()
             self.session_spawner.engine.execute(
                 IPDatabase.__table__.insert(),
-                [{"ip_id": str(uuid.uuid4()), "ip_address": ip_address, "comment": "",
+                [{"id": str(uuid.uuid4()), "target": ip_address, "comment": "",
                 "project_uuid": project_uuid, "task_id": None, "date_added": current_date
                 } for ip_address in to_add]
             )
@@ -428,8 +448,8 @@ class ScopeManager(object):
             try:
                 session = self.session_spawner.get_new_session()
                 db_object = HostDatabase(
-                    host_id=str(uuid.uuid4()),
-                    hostname=hostname,
+                    id=str(uuid.uuid4()),
+                    target=hostname,
                     comment="",
                     project_uuid=project_uuid
                 )
@@ -448,7 +468,7 @@ class ScopeManager(object):
                     "new_scope":
                         {
                             "type": "host",
-                            "host_id": db_object.host_id,
+                            "host_id": db_object.id,
                             "hostname": hostname,
                             "ip_addresses": [],
                             "comment": "",
@@ -465,11 +485,11 @@ class ScopeManager(object):
 
             if scope_type == "ip_address":
                 db_object = session.query(IPDatabase).filter(
-                    IPDatabase.ip_id == scope_id
+                    IPDatabase.id == scope_id
                 ).one()
             else:
                 db_object = session.query(HostDatabase).filter(
-                    HostDatabase.host_id == scope_id
+                    HostDatabase.id == scope_id
                 ).one()
 
             project_uuid = db_object.project_uuid
@@ -496,11 +516,11 @@ class ScopeManager(object):
         
             if scope_type == "ip_address":
                 db_object = session.query(IPDatabase).filter(
-                    IPDatabase.ip_id == scope_id
+                    IPDatabase.id == scope_id
                 ).one()
             else:
                 db_object = session.query(HostDatabase).filter(
-                    HostDatabase.host_id == scope_id
+                    HostDatabase.id == scope_id
                 ).one()        
 
             db_object.comment = comment
@@ -528,14 +548,14 @@ class ScopeManager(object):
         else:
             # This should not work for now, but TODO: make it actually work
             to_resolve = list(
-                filter(lambda x: x.host_id in scopes_ids, project_hosts)
+                filter(lambda x: x.id in scopes_ids, project_hosts)
             )
 
         resolver = aiodns.DNSResolver(loop=asyncio.get_event_loop())
         futures = []
 
         for each_host in to_resolve:
-            each_future = resolver.query(each_host.hostname, "A")
+            each_future = resolver.query(each_host.target, "A")
             each_future.database_host = each_host
             futures.append(each_future)
 
@@ -565,7 +585,7 @@ class ScopeManager(object):
                 if found_ip:
                     found = False
                     for each_inner_ip_address in host.ip_addresses:
-                        if each_inner_ip_address.ip_id == found_ip.ip_id:
+                        if each_inner_ip_address.id == found_ip.id:
                             found = True
 
                     if not found:
