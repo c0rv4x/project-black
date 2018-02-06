@@ -19,6 +19,9 @@ class HostDatabase(Scope):
     # Comment field, as requested by VI
     comment = Column(String)
 
+    # A list of files which is associated with the current scope
+    files = relationship('FileDatabase', cascade="all, delete-orphan", lazy='select', primaryjoin="HostDatabase.target == foreign(FileDatabase.target)")
+
     # The name of the related project
     project_uuid = Column(
         String, ForeignKey('projects.project_uuid', ondelete="CASCADE")
