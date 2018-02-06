@@ -17,7 +17,7 @@ class FileHandlers(object):
             project_uuid = msg.get('project_uuid', None)
             hostname = msg.get('hostname', None)
 
-            await self.send_files_back(project_uuid, broadcast=hostname is None)
+            # await self.send_files_back(project_uuid, broadcast=hostname is None)
 
     async def send_files_back(self, project_uuid=None, broadcast=False):
         """ Get all files and send to all clients """
