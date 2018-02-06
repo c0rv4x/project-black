@@ -53,6 +53,8 @@ class IPDatabase(Scope):
     }
 
     def __repr__(self):
-        return """<IPDatabase(ip_id='%s', hostnames='%s', ip_address='%s', project_uuid='%s')>""" % (
-            self.id, self.hostnames, self.target, self.project_uuid
+        return """
+        <IPDatabase(ip_id='%s', hostnames='%s', ip_address='%s', project_uuid='%s', files='%s')>""" % (
+            self.id, self.hostnames, self.target, self.project_uuid,
+            self.files
         )

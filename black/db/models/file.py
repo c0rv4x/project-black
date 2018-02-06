@@ -41,3 +41,10 @@ class FileDatabase(Base):
 
     # Date of added
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
+
+    def __repr__(self):
+        return """
+            <FileDatabase(file_id='%s', target='%s', project_uuid='%s', file_name='%s')>""" % (
+            self.file_id, self.target, self.project_uuid,
+            self.file_name
+        )
