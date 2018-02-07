@@ -1,4 +1,12 @@
+import _ from 'lodash'
 import React from 'react'
+import Notifications from 'react-notification-system-redux'
+
+import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
+import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
+import Search from '../../common/search/Search.jsx'
+
+import { Card } from 'semantic-ui-react'
 
 import DirsearchTable from './DirsearchTable.jsx'
 
@@ -6,6 +14,10 @@ import DirsearchTable from './DirsearchTable.jsx'
 class TablesAccumulator extends React.Component {
 	constructor(props) {
 		super(props);
+
+		this.state = {
+			pageCount: Math.ceil((this.props.ips.selected_ips + this.props.hosts.selected_hosts) / this.props.page_size)
+		}
 	}
 
 	render() {
@@ -45,8 +57,13 @@ class TablesAccumulator extends React.Component {
 
 		return (
 			<div>
-				{tables}
-			</div>
+				<Search applyFilters={this.props.applyFilters} />
+				<br />
+					{tables}
+				<br />
+				<ReactPaginate pageCount={this.state.pageCount}
+							   clickHandler={this.props.changePage} />
+			</div>			
 		)
 	}
 }

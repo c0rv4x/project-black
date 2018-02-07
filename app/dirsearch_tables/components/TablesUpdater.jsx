@@ -16,11 +16,10 @@ class TableUpdater extends React.Component {
 
 		this.renewHosts = this.renewHosts.bind(this);
 		this.renewIps = this.renewIps.bind(this);
-		this.prevPage = this.prevPage.bind(this);
-		this.nextPage = this.nextPage.bind(this);
+		this.changePage = this.changePage.bind(this);
 		this.getVisibleScopes = this.getVisibleScopes.bind(this);
 
-		this.page_size = 12;
+		this.page_size = 4;
 		this.page_number_ip = 0;
 		this.page_number_host = 0;
 		this.page_type = 'ip';
@@ -33,7 +32,6 @@ class TableUpdater extends React.Component {
 	renewIps(ip_page=this.page_number_ip, filters={}) {
 		this.ipsEmitter.requestRenewIPs(this.props.project.project_uuid, filters, ip_page, this.page_size);
 	}
-
 
 	getVisibleScopes() {
 		let { ips, hosts } = this.props;
@@ -81,38 +79,65 @@ class TableUpdater extends React.Component {
 		}
 	}
 
-	prevPage() {
-		if (this.page_type == 'ip') {
-			this.page_number_ip -= 1;
-			this.renewHosts();
-		}
-		else {
-			this.page_number_host += 1;
-			this.renewIps();
-		}
-	}
+	// prevPage() {
+	// 	if (this.page_type == 'ip') {
+	// 		this.page_number_ip -= 1;
+	// 		this.renewHosts();
+	// 	}
+	// 	else {
+	// 		this.page_number_host += 1;
+	// 		this.renewIps();
+	// 	}
+	// }
 
-	nextPage() {
-		if (this.page_type == 'host') {
-			this.page_number_host += 1;
-			this.renewHosts();
+	// nextPage() {
+	// 	if (this.page_type == 'host') {
+	// 		this.page_number_host += 1;
+	// 		this.renewHosts();
+	// 	}
+	// 	else {
+	// 		this.page_number_ip += 1;
+	// 		this.renewIps();
+	// 	}
+	// }
+
+	changePage(pageNumber) {
+		const ipPages = Math.ceil(this.props.ips.selected_ips / this.page_size);
+		const hostPages = Math.ceil(this.props.hosts.selected_hosts / this.page_size);
+
+		if (ipPages > pageNumber) {
+			this.page_type = 'ip';
+
+			this.page_number_ip = pageNumber;
+			this.requestIps();
+		}
+		else if (ipPages == pageNumber) {
+			this.page_type = 'ip/host';
+
+			this.page_number_ip = pageNumber;
+			this.page_number_host = 0;
+			this.requestIps();
+			this.reqeustHosts();
 		}
 		else {
-			this.page_number_ip += 1;
-			this.renewIps();
+			this.page_type = 'host';
+
+			this.page_number_host = pageNumber - ipPages;
+			thos.requestIps();
 		}
 	}
 
 
 	render() {
 		let scopes = this.getVisibleScopes();
+		console.log(scopes);
 
 		return (
 			<TablesAccumulator 
 				ips={scopes.ips}
 				hosts={scopes.hosts}
-				nextPage={this.nextPage}
-				prevPage={this.prevPage}
+				changePage={this.changePage}
+				pageSize={this.pageSize}
 			/>
 		);
 	}

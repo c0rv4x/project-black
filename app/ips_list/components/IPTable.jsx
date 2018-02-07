@@ -5,7 +5,7 @@ import Notifications from 'react-notification-system-redux'
 import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
 import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
 import IPEntryLine from '../presentational/scope/IPEntryLine.jsx'
-import Search from './Search.jsx'
+import Search from '../../common/search/Search.jsx'
 
 import { Card } from 'semantic-ui-react'
 

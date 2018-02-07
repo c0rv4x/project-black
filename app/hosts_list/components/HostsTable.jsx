@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 
-import Search from './Search.jsx'
+import Search from '../../common/search/Search.jsx'
 import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
 import HostsEntryLine from '../presentational/HostsEntryLine.jsx'
 
