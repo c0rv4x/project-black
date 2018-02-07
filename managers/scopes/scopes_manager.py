@@ -38,7 +38,7 @@ def parse_filters(filters):
 
     return parsed_filters
 
-def build_scans_filters(parsed_filters):
+def build_scans_filters(parsed_filters, alias_ordered):
     # Now we should filter all the data using client's filters
     filters_exist = parsed_filters['ports'] or parsed_filters['protocols'] or parsed_filters['banners']
     scans_filters = []
@@ -88,7 +88,7 @@ class ScopeManager(object):
         self.session_spawner = Sessions()
 
     @staticmethod
-    def build_filtered_scans_query(session, project_uuid, scans_filters):
+    def build_dinstinc_scans_request(session, project_uuid):
         # Query all the scans and order them by date they were modified
         subq = session.query(ScanDatabase).filter(
             ScanDatabase.project_uuid == project_uuid
@@ -100,10 +100,7 @@ class ScopeManager(object):
         # Select distinc scans (we need only the latest)
         scans_from_db_raw = ordered.distinct(alias_ordered.target, alias_ordered.port_number)
 
-        # Filter ports to correspond the request
-        scans_from_db = scans_from_db_raw.filter(*scans_filters).subquery('scans_distinct')
-
-        return scans_from_db
+        return (scans_from_db_raw, alias_ordered)
 
     def get_ips(self, filters, project_uuid, page_number=None, page_size=None, ips_only=False):
         """ Returns ips that are associated with a given project.
@@ -116,12 +113,15 @@ class ScopeManager(object):
 
         ### SCANS ###
 
+        # Create a query for selection unqie, ordered and filtered scans
+        scans_from_db_raw, alias_ordered = self.build_dinstinc_scans_request(session, project_uuid)
+
         # Create a list of filters which will be applied against scans
-        scans_filters = build_scans_filters(parsed_filters)
+        scans_filters = build_scans_filters(parsed_filters, alias_ordered)
         scans_filters_exist = len(scans_filters) != 0
 
-        # Create a query for selection unqie, ordered and filtered scans
-        scans_from_db = self.build_filtered_scans_query(session, project_uuid, scans_filters)
+        # Filter ports to correspond the request
+        scans_from_db = scans_from_db_raw.filter(*scans_filters).subquery('scans_distinct')
 
         ### /SCANS ###
 
@@ -163,12 +163,10 @@ class ScopeManager(object):
                 ).filter(ips_query_subq.id.in_(ids_limited)
                 ).join(files_query_aliased, ips_query_subq.files, isouter=True
                 ).join(scans_from_db, ips_query_subq.ports, isouter=(not scans_filters_exist)
-                ).options(contains_eager(ips_query_subq.ports, alias=scans_from_db)
+                ).options(
+                    contains_eager(ips_query_subq.files, alias=files_query_aliased),
+                    contains_eager(ips_query_subq.ports, alias=scans_from_db)
                 ).all()
-
-            print("-----")
-            print(ips_from_db)
-            print("-----")
 
         selected_ips = ips_query.count()
 
@@ -256,12 +254,15 @@ class ScopeManager(object):
 
         ### SCANS ###
 
-        # Create a list of filters which will be applied against scans
-        scans_filters = build_scans_filters(parsed_filters)
-        scan_filters_exist = len(scans_filters) != 0
-
         # Create a query for selection unqie, ordered and filtered scans
-        scans_from_db = self.build_filtered_scans_query(session, project_uuid, scans_filters)
+        scans_from_db_raw, alias_ordered = self.build_dinstinc_scans_request(session, project_uuid)
+
+        # Create a list of filters which will be applied against scans
+        scans_filters = build_scans_filters(parsed_filters, alias_ordered)
+        scans_filters_exist = len(scans_filters) != 0
+
+        # Filter ports to correspond the request
+        scans_from_db = scans_from_db_raw.filter(*scans_filters).subquery('scans_distinct')
 
         ### /SCANS ###
 
@@ -288,7 +289,7 @@ class ScopeManager(object):
                 *parsed_filters['hosts']
             ).from_self(
             ).join(ips_query_subq, HostDatabase.ip_addresses, isouter=(not ip_filters_exist)
-            ).join(scans_from_db, IPDatabase.ports, isouter=(not scan_filters_exist)
+            ).join(scans_from_db, IPDatabase.ports, isouter=(not scans_filters_exist)
             ).options(contains_eager(HostDatabase.ip_addresses, alias=ips_query_subq).contains_eager(IPDatabase.ports, alias=scans_from_db)
             )
 
@@ -322,9 +323,11 @@ class ScopeManager(object):
             ).filter(hosts_query_subq.id.in_(hosts_limited)
             ).join(files_query_aliased, hosts_query_subq.files, isouter=True
             ).join(ips_query_subq, hosts_query_subq.ip_addresses, isouter=(not ip_filters_exist)
-            ).join(scans_from_db, ips_query_subq.ports, isouter=(not scan_filters_exist)
-            ).options(contains_eager(hosts_query_subq.ip_addresses, alias=ips_query_subq
-                    ).contains_eager(ips_query_subq.ports, alias=scans_from_db)
+            ).join(scans_from_db, ips_query_subq.ports, isouter=(not scans_filters_exist)
+            ).options(
+                contains_eager(hosts_query_subq.files, alias=files_query_aliased),
+                contains_eager(hosts_query_subq.ip_addresses, alias=ips_query_subq
+                ).contains_eager(ips_query_subq.ports, alias=scans_from_db) 
             )
 
         self.session_spawner.destroy_session(session)
