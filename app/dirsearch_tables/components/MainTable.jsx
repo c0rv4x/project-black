@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 
 import Filtering from './Filtering.jsx'
-import TablesAccumulator from './TablesAccumulator.jsx'
+import TablesUpdater from './TablesUpdater.jsx'
 
 
 class MainTable extends React.Component {
@@ -90,12 +90,11 @@ class MainTable extends React.Component {
 
 		return (
 			<div>
-				This is the main table
 				<Filtering filters={this.filters}
 						   triggerFilter={this.triggerFilter.bind(this)} />
 				<br />
 
-				<TablesAccumulator ips={this.props.ips}
+				<TablesUpdater ips={this.props.ips}
 								   hosts={this.props.hosts}
 								   files={files_filtered} />
 			</div>
