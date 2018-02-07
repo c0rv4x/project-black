@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { Header } from 'semantic-ui-react'
+
 import MainTable from './MainTable.jsx'
 
 
@@ -9,12 +11,13 @@ class MainAccumulator extends React.Component {
 	}
 
 	render() {
+		const { ips, hosts, project } = this.props;
+
 		return (
 			<div>
-				<h2>{this.props.project.project_name}</h2>
-				<MainTable ips={this.props.ips}
-						   hosts={this.props.hosts}
-						   files={this.props.files} />
+				<Header as="h2">{project.project_name}</Header>
+				<MainTable ips={ips}
+						   hosts={hosts} />
 			</div>
 		)
 	}
