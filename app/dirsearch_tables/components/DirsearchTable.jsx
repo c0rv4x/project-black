@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Table, Segment } from 'semantic-ui-react'
+import { Table } from 'semantic-ui-react'
 
 
 class DirsearchTable extends React.Component {
@@ -33,22 +33,16 @@ class DirsearchTable extends React.Component {
 
 		if (this.props.files && this.props.files.length) {
 			return (
-				<Segment>
-					<h3>{this.props.target + ':' + this.props.port_number}</h3>
-					<Table>
-						<Table.Header>
-							<Table.Row>
-								<Table.HeaderCell>Code</Table.HeaderCell>
-								<Table.HeaderCell>File Name</Table.HeaderCell>
-								<Table.HeaderCell>Length</Table.HeaderCell>
-								<Table.HeaderCell>Special Note</Table.HeaderCell>
-							</Table.Row>
-						</Table.Header>
-						<Table.Body>
-							{files}
-						</Table.Body>
-					</Table>
-				</Segment>
+				<Table>
+					<Table.Header>
+						<Table.Row>
+							<Table.HeaderCell colSpan='4'>{this.props.target + ':' + this.props.port_number}</Table.HeaderCell>
+						</Table.Row>
+					</Table.Header>
+					<Table.Body>
+						{files}
+					</Table.Body>
+				</Table>
 			)
 		}
 		else {
