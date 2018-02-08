@@ -167,8 +167,7 @@ class ScopeManager(object):
                     contains_eager(ips_query_subq.files, alias=files_query_aliased),
                     contains_eager(ips_query_subq.ports, alias=scans_from_db)
                 ).all()
-
-        selected_ips = ips_query.count()
+        selected_ips = ips_query.from_self(IPDatabase.id).distinct().count()
 
         self.session_spawner.destroy_session(session)
 
