@@ -19,58 +19,60 @@ class TableUpdater extends React.Component {
 		this.changePage = this.changePage.bind(this);
 		this.getVisibleScopes = this.getVisibleScopes.bind(this);
 
-		this.page_size = 10;
-		this.page_number_ip = 0;
-		this.page_number_host = 0;
-		this.page_type = 'ip';
+		this.pageSize = 4;
+		this.pageNumberIp = 0;
+		this.pageMumberHost = 0;
+		this.pageType = 'ip';
 	}
 
-	renewHosts(page=this.page_number_host, filters={}) {
-		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, filters, page, this.page_size);
+	renewHosts(page=this.pageMumberHost, filters={}) {
+		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, filters, page, this.pageSize);
 	}
 
-	renewIps(page=this.page_number_ip, filters={}) {
-		this.ipsEmitter.requestRenewIPs(this.props.project.project_uuid, filters, page, this.page_size);
+	renewIps(page=this.pageNumberIp, filters={}) {
+		this.ipsEmitter.requestRenewIPs(this.props.project_uuid, filters, page, this.pageSize);
 	}
 
 	getVisibleScopes() {
 		let { ips, hosts } = this.props;
 
-		if (this.page_type == 'ip') {
-			if (ips.data.length >= this.page_size) {
+		console.log('ips.data.length=', ips.data.length);
+
+		if (this.pageType == 'ip') {
+			if (ips.data.length >= this.pageSize) {
 				return {
-					ips: ips.data.slice(0, this.page_size),
+					ips: ips.data.slice(0, this.pageSize),
 					hosts: []
 				};				
 			}
 			else {
-				this.page_type = 'ip/host';
+				this.pageType = 'ip/host';
 
-				let hosts_to_select = this.page_size - ips.data.length + 1;
+				let hosts_to_select = this.pageSize - ips.data.length + 1;
 				return {
 					ips: ips.data,
 					hosts: hosts.data.slice(0, hosts_to_select)
 				}				
 			}
 		}
-		else if (this.page_type == 'ip/host') {
-			let hosts_to_select = this.page_size - ips.data.length + 1;
+		else if (this.pageType == 'ip/host') {
+			let hosts_to_select = this.pageSize - ips.data.length + 1;
 			return {
 				ips: ips.data,
 				hosts: hosts.data.slice(0, hosts_to_select)
 			}			
 		}
 		else {
-			if (hosts.data.length >= this.page_size) {
+			if (hosts.data.length >= this.pageSize) {
 				return {
 					ips: [],
-					hosts: hosts.data.slice(0, this.page_size)
+					hosts: hosts.data.slice(0, this.pageSize)
 				}				
 			}
 			else {
-				this.page_type = 'ip/host';
+				this.pageType = 'ip/host';
 
-				let hosts_to_select = this.page_size - ips.data.length + 1;
+				let hosts_to_select = this.pageSize - ips.data.length + 1;
 				return {
 					ips: ips.data,
 					hosts: hosts.data.slice(0, hosts_to_select)
@@ -79,29 +81,31 @@ class TableUpdater extends React.Component {
 		}
 	}
 
-	changePage(pageNumber) {
-		const ipPages = Math.ceil(this.props.ips.selected_ips / this.page_size);
-		const hostPages = Math.ceil(this.props.hosts.selected_hosts / this.page_size);
+	changePage(pageNumberUnmodified) {
+		var pageNumber = pageNumberUnmodified - 1;
+		console.log(pageNumber);
+		const ipPages = Math.ceil(this.props.ips.selected_ips / this.pageSize);
+		const hostPages = Math.ceil(this.props.hosts.selected_hosts / this.pageSize);
 
 		if (ipPages > pageNumber) {
-			this.page_type = 'ip';
+			this.pageType = 'ip';
 
-			this.page_number_ip = pageNumber;
-			this.requestIps();
+			this.pageNumberIp = pageNumber;
+			this.renewIps();
 		}
 		else if (ipPages == pageNumber) {
-			this.page_type = 'ip/host';
+			this.pageType = 'ip/host';
 
-			this.page_number_ip = pageNumber;
-			this.page_number_host = 0;
-			this.requestIps();
-			this.reqeustHosts();
+			this.pageNumberIp = pageNumber;
+			this.pageMumberHost = 0;
+			this.renewIps();
+			this.renewHosts();
 		}
 		else {
-			this.page_type = 'host';
+			this.pageType = 'host';
 
-			this.page_number_host = pageNumber - ipPages;
-			thos.requestIps();
+			this.pageMumberHost = pageNumber - ipPages;
+			thos.renewHosts();
 		}
 	}
 
@@ -109,10 +113,16 @@ class TableUpdater extends React.Component {
 	render() {
 		let scopes = this.getVisibleScopes();
 
+		scopes.selected = {
+			ips: this.props.ips.selected_ips,
+			hosts: this.props.hosts.selected_hosts
+		}
+
 		return (
 			<TablesAccumulator 
 				ips={scopes.ips}
 				hosts={scopes.hosts}
+				selected={scopes.selected}
 				changePage={this.changePage}
 				pageSize={this.pageSize}
 			/>

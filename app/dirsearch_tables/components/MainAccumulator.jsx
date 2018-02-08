@@ -17,7 +17,8 @@ class MainAccumulator extends React.Component {
 			<div>
 				<Header as="h2">{project.project_name}</Header>
 				<MainTable ips={ips}
-						   hosts={hosts} />
+						   hosts={hosts}
+						   project_uuid={project.project_uuid} />
 			</div>
 		)
 	}

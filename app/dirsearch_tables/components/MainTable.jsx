@@ -62,7 +62,7 @@ class MainTable extends React.Component {
 	}
 
 	render() {
-		var { files } = this.props;
+		var { files, project_uuid } = this.props;
 		var files_filtered;
 
 		if (this.state.filters.length) {
@@ -96,7 +96,8 @@ class MainTable extends React.Component {
 
 				<TablesUpdater ips={this.props.ips}
 								   hosts={this.props.hosts}
-								   files={files_filtered} />
+								   files={files_filtered}
+								   project_uuid={project_uuid}/>
 			</div>
 		)
 	}
