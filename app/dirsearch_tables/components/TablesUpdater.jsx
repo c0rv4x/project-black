@@ -29,8 +29,8 @@ class TableUpdater extends React.Component {
 		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, filters, page, this.page_size);
 	}
 
-	renewIps(ip_page=this.page_number_ip, filters={}) {
-		this.ipsEmitter.requestRenewIPs(this.props.project.project_uuid, filters, ip_page, this.page_size);
+	renewIps(page=this.page_number_ip, filters={}) {
+		this.ipsEmitter.requestRenewIPs(this.props.project.project_uuid, filters, page, this.page_size);
 	}
 
 	getVisibleScopes() {
@@ -79,28 +79,6 @@ class TableUpdater extends React.Component {
 		}
 	}
 
-	// prevPage() {
-	// 	if (this.page_type == 'ip') {
-	// 		this.page_number_ip -= 1;
-	// 		this.renewHosts();
-	// 	}
-	// 	else {
-	// 		this.page_number_host += 1;
-	// 		this.renewIps();
-	// 	}
-	// }
-
-	// nextPage() {
-	// 	if (this.page_type == 'host') {
-	// 		this.page_number_host += 1;
-	// 		this.renewHosts();
-	// 	}
-	// 	else {
-	// 		this.page_number_ip += 1;
-	// 		this.renewIps();
-	// 	}
-	// }
-
 	changePage(pageNumber) {
 		const ipPages = Math.ceil(this.props.ips.selected_ips / this.page_size);
 		const hostPages = Math.ceil(this.props.hosts.selected_hosts / this.page_size);
@@ -130,7 +108,6 @@ class TableUpdater extends React.Component {
 
 	render() {
 		let scopes = this.getVisibleScopes();
-		console.log(scopes);
 
 		return (
 			<TablesAccumulator 
