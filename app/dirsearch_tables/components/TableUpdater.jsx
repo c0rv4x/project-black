@@ -25,18 +25,30 @@ class TableUpdater extends React.Component {
 		this.pageType = 'ip';
 	}
 
-	renewHosts(page=this.pageMumberHost, filters={}) {
+	componentWillReceiveProps(nextProps) {
+		var { hosts, filters } = nextProps;
+
+		if ((hosts.update_needed === true) || (!_.isEqual(filters, this.props.filters))) {
+			// this.setLoading(true);
+			this.renewHosts(this.pageMumberHost, filters);
+			this.renewIps(this.pageNumberIp, filters);
+		}
+
+		// if (this.state.loading) {
+		// 	this.setLoading(false);
+		// }
+	}
+
+	renewHosts(page=this.pageMumberHost, filters=this.props.filters) {
 		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, filters, page, this.pageSize);
 	}
 
-	renewIps(page=this.pageNumberIp, filters={}) {
+	renewIps(page=this.pageNumberIp, filters=this.props.filters) {
 		this.ipsEmitter.requestRenewIPs(this.props.project_uuid, filters, page, this.pageSize);
 	}
 
 	getVisibleScopes() {
 		let { ips, hosts } = this.props;
-
-		console.log('ips.data.length=', ips.data.length);
 
 		if (this.pageType == 'ip') {
 			if (ips.data.length >= this.pageSize) {
@@ -83,7 +95,7 @@ class TableUpdater extends React.Component {
 
 	changePage(pageNumberUnmodified) {
 		var pageNumber = pageNumberUnmodified - 1;
-		console.log(pageNumber);
+
 		const ipPages = Math.ceil(this.props.ips.selected_ips / this.pageSize);
 		const hostPages = Math.ceil(this.props.hosts.selected_hosts / this.pageSize);
 
@@ -119,7 +131,8 @@ class TableUpdater extends React.Component {
 		}
 
 		return (
-			<TablesAccumulator 
+			<TablesAccumulator
+				applyFilters={this.props.applyFilters}
 				ips={scopes.ips}
 				hosts={scopes.hosts}
 				selected={scopes.selected}

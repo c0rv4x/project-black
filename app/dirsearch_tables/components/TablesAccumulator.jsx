@@ -21,8 +21,6 @@ class TablesAccumulator extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		console.log(nextProps);
-		console.log((nextProps.selected.ips + nextProps.selected.hosts) / nextProps.pageSize);
 		this.setState({
 			pageCount: Math.ceil((nextProps.selected.ips + nextProps.selected.hosts) / nextProps.pageSize)
 		});
