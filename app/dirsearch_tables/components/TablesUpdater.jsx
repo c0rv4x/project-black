@@ -19,7 +19,7 @@ class TableUpdater extends React.Component {
 		this.changePage = this.changePage.bind(this);
 		this.getVisibleScopes = this.getVisibleScopes.bind(this);
 
-		this.page_size = 4;
+		this.page_size = 10;
 		this.page_number_ip = 0;
 		this.page_number_host = 0;
 		this.page_type = 'ip';
