@@ -130,6 +130,7 @@ class ScopeManager(object):
             ).filter(
                 IPDatabase.project_uuid == project_uuid,
                 *parsed_filters['ips']
+            ).order_by(IPDatabase.target.asc()
             ).from_self(
             ).join(scans_from_db, IPDatabase.ports, isouter=(not scans_filters_exist)
             ).options(contains_eager(IPDatabase.ports, alias=scans_from_db)
@@ -161,6 +162,7 @@ class ScopeManager(object):
 
             ips_from_db = session.query(ips_query_subq
                 ).filter(ips_query_subq.id.in_(ids_limited)
+                ).order_by(ips_query_subq.target
                 ).join(files_query_aliased, ips_query_subq.files, isouter=True
                 ).join(scans_from_db, ips_query_subq.ports, isouter=(not scans_filters_exist)
                 ).options(
