@@ -182,7 +182,7 @@ class ScopeManager(object):
         # Together with ips, return amount of total ips in the database
         return {"total_db_ips": self.count_ips(project_uuid), "selected_ips": selected_ips, "ips": ips}
 
-    def format_ip(self, ip_object, no_hosts=False):
+    def format_ip(self, ip_object, no_hosts=False, no_files=False):
         """ Getting ip database object, returns the same object, but JSONed """
         return {
             "ip_id": ip_object.id,
@@ -200,7 +200,7 @@ class ScopeManager(object):
                 "project_uuid": each_scan.project_uuid,
                 "date_added": str(each_scan.date_added)
             }, ip_object.ports)),
-            "files": list(map(lambda each_file: {
+            "files": [] if no_files else list(map(lambda each_file: {
                 "file_id": each_file.file_id,
                 "file_name": each_file.file_name,
                 "port_number": each_file.port_number,
@@ -338,7 +338,7 @@ class ScopeManager(object):
             "host_id": each_host.id,
             "hostname": each_host.target,
             "comment": each_host.comment,
-            "ip_addresses": list(map(lambda each_ip: self.format_ip(each_ip, no_hosts=True), each_host.ip_addresses)),
+            "ip_addresses": list(map(lambda each_ip: self.format_ip(each_ip, no_hosts=True, no_files=True), each_host.ip_addresses)),
             "files": list(map(lambda each_file: {
                 "file_id": each_file.file_id,
                 "file_name": each_file.file_name,
