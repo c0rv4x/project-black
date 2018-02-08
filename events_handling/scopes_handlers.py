@@ -159,7 +159,8 @@ class HostHandlers(object):
                         'page': host_page,
                         'page_size': host_page_size,
                         'data': hosts['hosts'],
-                        'total_db_hosts': hosts['total_db_hosts']
+                        'total_db_hosts': hosts['total_db_hosts'],
+                        'selected_hosts': hosts['selected_hosts']
                     }
                 },
                 namespace='/hosts'
@@ -173,7 +174,8 @@ class HostHandlers(object):
                         'page': host_page,
                         'page_size': host_page_size,
                         'data': hosts['hosts'],
-                        'total_db_hosts': hosts['total_db_hosts']
+                        'total_db_hosts': hosts['total_db_hosts'],
+                        'selected_hosts': hosts['selected_hosts']
                     }
                 },
                 room=sio,
