@@ -298,7 +298,6 @@ class ScopeManager(object):
 
         ### /HOSTS ###
 
-        selected_hosts = hosts_query.count()
 
         if page_number is None or page_size is None:
             hosts_limited = hosts_query.from_self(HostDatabase.id).distinct(
@@ -308,6 +307,8 @@ class ScopeManager(object):
                 ).limit(page_size
                 ).offset(page_size * page_number
                 ).subquery('limited_hosts_ids')
+
+        selected_hosts = hosts_query.from_self(HostDatabase.id).distinct().count()
 
         ### FILES ###
 
@@ -329,7 +330,7 @@ class ScopeManager(object):
                 contains_eager(hosts_query_subq.files, alias=files_query_aliased),
                 contains_eager(hosts_query_subq.ip_addresses, alias=ips_query_subq
                 ).contains_eager(ips_query_subq.ports, alias=scans_from_db) 
-            )
+            ).all()
 
         self.session_spawner.destroy_session(session)
 
