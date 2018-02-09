@@ -54,10 +54,14 @@ async def cb_complex_handler(request, project_uuid=None, host=None):
     """ Simlpy returns index.html """
     return await response.file_stream(os.path.abspath('./public/index.html'))
 
-@authorized()
-async def cb_complex_handler_bundle(request):
-    """ Simlpy returns bundle.js """
-    return await response.file_stream(os.path.abspath('./public/bundle.js'))
+# @authorized()
+# async def cb_css_handler(request):
+#     """ Return correspongind csses """
+
+# @authorized()
+# async def cb_complex_handler_bundle(request):
+#     """ Simlpy returns bundle.js """
+#     return await response.file_stream(os.path.abspath('./public/bundle.js'))
 
 
 
@@ -73,7 +77,9 @@ APP.add_route(cb_complex_handler, '/project/<project_uuid>/dirsearch')
 APP.add_route(cb_complex_handler, '/project/<project_uuid>/host/<host>')
 APP.add_route(cb_complex_handler, '/project/<project_uuid>/ip/<host>')
 
-APP.add_route(cb_complex_handler_bundle, '/bundle.js')
+# APP.add_route(cb_complex_handler_bundle, '/bundle.js')
+
+APP.static('static', './public/static')
 
 HANDLERS = Handlers(SOCKET_IO, APP)
 
