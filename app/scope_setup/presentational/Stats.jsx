@@ -10,7 +10,7 @@ class ScopeSetup extends React.Component {
 		let { ips, hosts } = this.props;
 
 		return (
-			<Statistic.Group widths='four' size='large'>
+			<Statistic.Group widths='four'>
 				<IPTable
 					ips={ips}
 				/>
