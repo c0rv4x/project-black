@@ -12,7 +12,7 @@ class HeadButtons extends React.Component {
 		return (
 			<Button onClick={this.props.resolveScopes}
 					color="blue">
-				Resolve Scopes
+				Resolve Hosts
 			</Button>
 		)
 	}
