@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 
-import { Table, Button, Label, Transition } from 'semantic-ui-react'
+import { Statistic } from 'semantic-ui-react'
 
 
 class HostTable extends React.Component {
@@ -11,11 +11,10 @@ class HostTable extends React.Component {
 
 	render() {
 		return (
-			<span>
-				<Label size="large" color="blue">
-					{this.props.hosts.total_db_hosts} hosts
-				</Label>
-			</span>
+			<Statistic>
+				<Statistic.Value>{this.props.hosts.total_db_hosts}</Statistic.Value>
+				<Statistic.Label>hosts</Statistic.Label>
+			</Statistic>			
 		)
 	}
 }

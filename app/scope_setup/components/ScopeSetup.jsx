@@ -6,9 +6,9 @@ import HeadButtonsTracked from './HeadButtonsTracked.jsx'
 import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
 
 import Tasks from '../../common/tasks/Tasks.jsx'
-import IPTable from '../presentational/IPTable.jsx'
-import HostTable from '../presentational/HostTable.jsx'
 import ProjectComment from '../../common/project_comment/ProjectComment.jsx'
+
+import Stats from '../presentational/Stats.jsx'
 
 
 class ScopeSetup extends React.Component {
@@ -34,18 +34,16 @@ class ScopeSetup extends React.Component {
 		return (
 			<div>
 				<br/>
+				<ProjectComment project={project}/>
 				<HeadButtonsTracked project={project}
 									hosts={hosts} />
 
 				<ScopeAdderTracked project={project} />
 
-				<ProjectComment project={project}/>
-
-				<IPTable ips={ips}
-						 delete={this.deleteScope} />
-
-				<HostTable hosts={hosts}
-						   delete={this.deleteScope} />
+				<Stats
+					ips={ips}
+					hosts={hosts}
+				/>
 
 			</div>
 		)

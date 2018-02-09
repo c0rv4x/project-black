@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 
-import { Table, Button, Label, Transition } from 'semantic-ui-react'
+import { Statistic } from 'semantic-ui-react'
 
 
 class IPTable extends React.Component {
@@ -11,11 +11,10 @@ class IPTable extends React.Component {
 
 	render() {
 		return (
-			<span>
-				<Label size="large" color="blue">
-					{this.props.ips.total_db_ips} ips
-				</Label>
-			</span>
+			<Statistic>
+				<Statistic.Value>{this.props.ips.total_db_ips}</Statistic.Value>
+				<Statistic.Label>ips</Statistic.Label>
+			</Statistic>
 		)
 	}
 }
