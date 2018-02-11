@@ -99,7 +99,7 @@ class HostHandlers(object):
             host_page = msg.get('host_page', 0)
             host_page_size = msg.get('host_page_size', 12)
             host_filters = msg.get('host_filters', {})
-            print(msg)
+
             await self.send_hosts_back(host_filters, sio, project_uuid, host_page, host_page_size)
 
         @self.socketio.on('hosts:single:get', namespace='/hosts')

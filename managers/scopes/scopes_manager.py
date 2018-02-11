@@ -421,15 +421,7 @@ class ScopeManager(object):
                 return {
                     "status": "success",
                     "new_scope":
-                        {
-                            "type": "ip_address",
-                            "ip_id": db_object.id,
-                            "ip_address": ip_address,
-                            "hostnames": [],
-                            "comment": "",
-                            "project_uuid": project_uuid,
-                            "scans": []
-                        }
+                        db_object
                 }
 
         return {"status": "duplicate"}
@@ -568,7 +560,7 @@ class ScopeManager(object):
         # Select all hosts from the db
         project_hosts = session.query(HostDatabase).filter(
             HostDatabase.project_uuid == project_uuid
-        ).all()
+        ).options(joinedload(HostDatabase.ip_addresses)).all()
 
         if scopes_ids is None:
             to_resolve = project_hosts
@@ -616,10 +608,10 @@ class ScopeManager(object):
                             found = True
 
                     if not found:
+                        # print(222, host)
                         host.ip_addresses.append(found_ip)
-                        found_ip.hostnames.append(host)
                         session.add(host)
-                        session.add(found_ip)
+                        # session.add(found_ip)
                 else:
                     ip_create_result = self.create_ip(
                         resolved_ip, project_uuid
@@ -628,10 +620,14 @@ class ScopeManager(object):
                     if ip_create_result["status"] == "success":
                         newly_created_ip = ip_create_result["new_scope"]
 
+                        # print(111, host)
+                        # print(host.ip_addresses)
+                        # print(newly_created_ip)
+
                         host.ip_addresses.append(newly_created_ip)
-                        newly_created_ip.hostnames.append(host)
+                        # newly_created_ip.hostnames.append(host)
                         session.add(host)
-                        session.add(newly_created_ip)
+                        # session.add(newly_created_ip)
         session.commit()
         self.session_spawner.destroy_session(session)
         
