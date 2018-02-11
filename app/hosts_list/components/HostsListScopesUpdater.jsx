@@ -33,8 +33,8 @@ class HostsListScopesUpdater extends React.Component {
 		});
 	}
 
-	renewHosts(page=this.props.hosts.page, filters=this.props.filters) {
-		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, filters, page, this.props.hosts.page_size);
+	renewHosts(page=this.props.hosts.page, page_size=this.props.hosts.page_size) {
+		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, this.props.filters, page, this.props.hosts.page_size);
 	}
 
 	requestUpdateHost(comment, _id) {
