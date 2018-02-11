@@ -24,6 +24,13 @@ class HostsSocketioEventsEmitter {
 		});
 	}
 
+	requestSingleHost(project_uuid, hostname) {
+		this.connector.emit('hosts:single:get', {
+			'project_uuid': project_uuid,
+			'host_filters': hostname
+		});		
+	}
+
 	requestUpdateHost(comment, host_id, project_uuid, host_type) {
 		this.connector.emit('hosts:update', {
 			'host_id': host_id,

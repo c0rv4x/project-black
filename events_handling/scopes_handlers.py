@@ -98,9 +98,17 @@ class HostHandlers(object):
             project_uuid = msg.get('project_uuid', None)
             host_page = msg.get('host_page', 0)
             host_page_size = msg.get('host_page_size', 12)
-            host_filters = msg.get('host_filters')
-
+            host_filters = msg.get('host_filters', {})
+            print(msg)
             await self.send_hosts_back(host_filters, sio, project_uuid, host_page, host_page_size)
+
+        @self.socketio.on('hosts:single:get', namespace='/hosts')
+        async def _cb_handle_single_scope_get(sio, msg):
+            """ When received this message, send back all the scopes """
+            project_uuid = msg.get('project_uuid', None)
+            hostname = msg.get('hostname')
+
+            await self.send_hosts_back({'hosts': [hostname]}, sio, project_uuid)
 
         @self.socketio.on('hosts:resolve', namespace='/hosts')
         async def _cb_handle_scope_resolve(sio, msg):

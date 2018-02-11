@@ -98,7 +98,7 @@ class Host extends React.Component {
         var mainStore = this.context.store;
 
         this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
-        this.hostsSubscriber = new HostsSocketioEventsSubsriber(mainStore, project_uuid);
+        this.hostsSubscriber = new HostsSocketioEventsSubsriber(mainStore, project_uuid, hostname);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
         this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid, hostname);        
