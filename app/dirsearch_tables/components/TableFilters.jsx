@@ -10,7 +10,9 @@ class TableFilters extends React.Component {
 		super(props);
 
 		this.state = {
-			filters: {}
+			filters: {
+				files: ['%']
+			}
 		};
 
 		this.applyFilters = this.applyFilters.bind(this);	

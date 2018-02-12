@@ -15,7 +15,7 @@ import HostsSocketioEventsEmitter from './HostsSocketioEventsEmitter.js';
 
 class HostsSocketioEventsSubscriber {
 	/* Singleton class for managing events subscrhosttion for the hosts */
-	constructor(store, project_uuid, hostname=null) {
+	constructor(store, project_uuid, hostname=null, filters={}) {
         this.store = store;
         this.project_uuid = project_uuid;
         this.connector = new Connector('hosts');
@@ -27,7 +27,7 @@ class HostsSocketioEventsSubscriber {
         		this.emitter.requestSingleHost(this.project_uuid, hostname)
         	}
         	else {
-	        	this.emitter.requestRenewHosts(this.project_uuid);
+	        	this.emitter.requestRenewHosts(this.project_uuid, filters);
         	}
         });
 

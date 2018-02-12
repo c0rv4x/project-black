@@ -21,7 +21,7 @@ class TableUpdater extends React.Component {
 
 		this.pageSize = 4;
 		this.pageNumberIp = 0;
-		this.pageMumberHost = 0;
+		this.pageNumberHost = 0;
 		this.pageType = 'ip';
 	}
 
@@ -30,7 +30,7 @@ class TableUpdater extends React.Component {
 
 		if ((hosts.update_needed === true) || (!_.isEqual(filters, this.props.filters))) {
 			// this.setLoading(true);
-			this.renewHosts(this.pageMumberHost, filters);
+			this.renewHosts(this.pageNumberHost, filters);
 			this.renewIps(this.pageNumberIp, filters);
 		}
 
@@ -39,12 +39,17 @@ class TableUpdater extends React.Component {
 		// }
 	}
 
-	renewHosts(page=this.pageMumberHost, filters=this.props.filters) {
-		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, filters, page, this.pageSize);
+	renewHosts(page=this.pageNumberHost, filters=this.props.filters) {
+		console.log(1234);
+		var newFilters = filters;
+		newFilters['files'] = '%';
+		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, newFilters, page, this.pageSize);
 	}
 
 	renewIps(page=this.pageNumberIp, filters=this.props.filters) {
-		this.ipsEmitter.requestRenewIPs(this.props.project_uuid, filters, page, this.pageSize);
+		var newFilters = filters;
+		newFilters['files'] = '%';		
+		this.ipsEmitter.requestRenewIPs(this.props.project_uuid, newFilters, page, this.pageSize);
 	}
 
 	getVisibleScopes() {
@@ -109,14 +114,14 @@ class TableUpdater extends React.Component {
 			this.pageType = 'ip/host';
 
 			this.pageNumberIp = pageNumber;
-			this.pageMumberHost = 0;
+			this.pageNumberHost = 0;
 			this.renewIps();
 			this.renewHosts();
 		}
 		else {
 			this.pageType = 'host';
 
-			this.pageMumberHost = pageNumber - ipPages;
+			this.pageNumberHost = pageNumber - ipPages;
 			thos.renewHosts();
 		}
 	}

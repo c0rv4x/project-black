@@ -13,7 +13,8 @@ def parse_filters(filters):
         'hosts': [],
         'ports': [],
         'banners': [],
-        'protocols': []
+        'protocols': [],
+        'files': []
     }
 
     for key in filters.keys():
@@ -35,6 +36,12 @@ def parse_filters(filters):
                 parsed_filters['banners'].append(each_filter_value)
             elif key == 'protocol':
                 parsed_filters['protocols'].append(each_filter_value)
+            elif key == 'files':
+                if each_filter_value == '%':
+                    parsed_filters['files'].append(FileDatabase.status_code > 0)
+                else:
+                    parsed_filters['files'].append(FileDatabase.target == each_filter_value)
+
 
     return parsed_filters
 
@@ -125,6 +132,13 @@ class ScopeManager(object):
 
         ### /SCANS ###
 
+        files_filters = parsed_filters['files']
+        files_filters_exist = len(files_filters) != 0
+        files_query = session.query(FileDatabase
+            ).filter(FileDatabase.project_uuid == project_uuid
+            ).filter(*files_filters)
+        files_query_aliased = aliased(FileDatabase, files_query.subquery('files_filtered'))
+
         # Now select ips, outer joining them with scans
         ips_query = session.query(IPDatabase
             ).filter(
@@ -132,9 +146,12 @@ class ScopeManager(object):
                 *parsed_filters['ips']
             ).order_by(IPDatabase.target.asc()
             ).from_self(
+            ).join(files_query_aliased, IPDatabase.files, isouter=(not files_filters_exist)
             ).join(scans_from_db, IPDatabase.ports, isouter=(not scans_filters_exist)
-            ).options(contains_eager(IPDatabase.ports, alias=scans_from_db)
-            )
+            ).options(
+                contains_eager(IPDatabase.files, alias=files_query_aliased),
+                contains_eager(IPDatabase.ports, alias=scans_from_db)
+            )         
 
         ips_query_subq = aliased(IPDatabase, ips_query.subquery('all_ips_parsed'))
 
@@ -155,15 +172,10 @@ class ScopeManager(object):
                 ).filter(ips_query_subq.id.in_(ids_limited)
                 ).all()
         else:
-            files_query = session.query(FileDatabase
-                ).filter(FileDatabase.project_uuid == project_uuid
-                )
-            files_query_aliased = aliased(FileDatabase, files_query.subquery('files_filtered'))
-
             ips_from_db = session.query(ips_query_subq
                 ).filter(ips_query_subq.id.in_(ids_limited)
                 ).order_by(ips_query_subq.target
-                ).join(files_query_aliased, ips_query_subq.files, isouter=True
+                ).join(files_query_aliased, ips_query_subq.files, isouter=(not files_filters_exist)
                 ).join(scans_from_db, ips_query_subq.ports, isouter=(not scans_filters_exist)
                 ).options(
                     contains_eager(ips_query_subq.files, alias=files_query_aliased),
@@ -281,6 +293,16 @@ class ScopeManager(object):
 
         ### /IPS ###
 
+        ### FILES ###
+
+        files_filters = parsed_filters['files']
+        files_filters_exist = len(files_filters) != 0
+        files_query = session.query(FileDatabase
+            ).filter(FileDatabase.project_uuid == project_uuid
+            ).filter(*files_filters)
+        files_query_aliased = aliased(FileDatabase, files_query.subquery('files_filtered'))
+
+        ### /FILES ###
 
         ### HOSTS ###
 
@@ -289,9 +311,12 @@ class ScopeManager(object):
                 HostDatabase.project_uuid == project_uuid,
                 *parsed_filters['hosts']
             ).from_self(
+            ).join(files_query_aliased, HostDatabase.files, isouter=(not files_filters_exist)
             ).join(ips_query_subq, HostDatabase.ip_addresses, isouter=(not ip_filters_exist)
             ).join(scans_from_db, IPDatabase.ports, isouter=(not scans_filters_exist)
-            ).options(contains_eager(HostDatabase.ip_addresses, alias=ips_query_subq).contains_eager(IPDatabase.ports, alias=scans_from_db)
+            ).options(
+                contains_eager(HostDatabase.files, alias=files_query_aliased),
+                contains_eager(HostDatabase.ip_addresses, alias=ips_query_subq).contains_eager(IPDatabase.ports, alias=scans_from_db)
             )
 
         hosts_query_subq = aliased(HostDatabase, hosts_query.subquery('hosts_parsed'))
@@ -310,20 +335,10 @@ class ScopeManager(object):
 
         selected_hosts = hosts_query.from_self(HostDatabase.id).distinct().count()
 
-        ### FILES ###
-
-        files_query = session.query(FileDatabase
-            ).filter(FileDatabase.project_uuid == project_uuid
-            )
-        files_query_aliased = aliased(FileDatabase, files_query.subquery('files_filtered'))
-
-        ### /FILES ###
-
-
         # Now select hosts, outer joining them with scans
         hosts_from_db = session.query(hosts_query_subq
             ).filter(hosts_query_subq.id.in_(hosts_limited)
-            ).join(files_query_aliased, hosts_query_subq.files, isouter=True
+            ).join(files_query_aliased, hosts_query_subq.files, isouter=(not files_filters_exist)
             ).join(ips_query_subq, hosts_query_subq.ip_addresses, isouter=(not ip_filters_exist)
             ).join(scans_from_db, ips_query_subq.ports, isouter=(not scans_filters_exist)
             ).options(

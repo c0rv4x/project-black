@@ -15,14 +15,21 @@ import IPsSocketioEventsEmitter from './IPsSocketioEventsEmitter.js';
 
 class IPsSocketioEventsSubscriber {
 	/* Singleton class for managing events subscription for the ips */
-	constructor(store, project_uuid) {
+	constructor(store, project_uuid, ip=null, filters={}) {
+		console.log(filters);
         this.store = store;
         this.project_uuid = project_uuid;
         this.connector = new Connector('ips');
 
         this.connector.after_connected((x) => {
         	this.emitter = new IPsSocketioEventsEmitter();
-        	this.emitter.requestRenewIPs(this.project_uuid);
+
+        	if (ip) {
+	        	this.emitter.requestRenewIPs(this.project_uuid);
+        	}
+        	else {
+	        	this.emitter.requestRenewIPs(this.project_uuid, filters);
+        	}
         });
 
         this.basic_events_registration();
