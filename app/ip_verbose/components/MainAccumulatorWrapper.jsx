@@ -23,9 +23,10 @@ function mapStateToProps(state, ownProps){
     }
 
     let ip_param = ownProps.match.params.ip_address;
-    var ip_object = null
-    let ip_objects = _.filter(state.ips, (x) => {
-        return ((x.project_uuid == project['project_uuid']) && (x.ip_address == ip_param))
+    let ip_object = null;
+
+    let ip_objects = _.filter(state.ips.data, (x) => {
+        return x.ip_address == ip_param
     });
 
     if (ip_objects.length > 0) {

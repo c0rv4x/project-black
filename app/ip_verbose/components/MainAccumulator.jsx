@@ -35,15 +35,17 @@ class MainAccumulator extends React.Component {
 	}
 
 	render() {
+		let { ip, ports, files } = this.props;
+
 		return (
 			<div>
-				<h2>{this.props.ip.ip_address}</h2>
-				<ScopeComment commentValue={this.props.ip.comment} />
+				<h2>{ip.ip_address}</h2>
+				<ScopeComment commentValue={ip.comment} />
 
-				<PortsTabs ports={this.props.ports}
+				<PortsTabs ports={ports}
 					   	   activeTabNumber={this.state.activeTabNumber}
 					   	   tabChange={this.tabChange}
-					   	   files={this.props.files} />
+					   	   files={ip.files} />
 			</div>
 		)
 	}

@@ -32,6 +32,13 @@ class IPsSocketioEventsEmitter {
 		});
 	}
 
+	requestSingleIPs(project_uuid, ip_address) {
+		this.connector.emit('ips:single:get', {
+			'project_uuid': project_uuid,
+			'ip_address': ip_address,
+		});
+	}
+
 	requestUpdateIP(comment, ip_id, project_uuid, ip_type) {
 		this.connector.emit('ips:update', {
 			'ip_id': ip_id,

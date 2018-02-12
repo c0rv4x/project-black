@@ -20,6 +20,16 @@ class IPHandlers(object):
 
             await self.send_ips_back(ip_filters, sio, project_uuid, ip_page, ip_page_size)
 
+        @self.socketio.on('ips:single:get', namespace='/ips')
+        async def _cb_handle_scope_single_get(sio, msg):
+            """ When received this message, send back all the scopes """
+            project_uuid = msg.get('project_uuid', None)
+            ip_address = msg.get('ip_address')
+
+            print("Getting single ip", ip_address)
+
+            await self.send_ips_back({'ip': [ip_address]}, sio, project_uuid)
+
         @self.socketio.on('ips:update', namespace='/ips')
         async def _cb_handle_scope_update(sio, msg):
             """ Update the scope (now only used for comment). """
