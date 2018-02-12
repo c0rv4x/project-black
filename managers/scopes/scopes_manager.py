@@ -38,7 +38,7 @@ def parse_filters(filters):
                 parsed_filters['protocols'].append(each_filter_value)
             elif key == 'files':
                 if each_filter_value == '%':
-                    parsed_filters['files'].append(FileDatabase.status_code > 0)
+                    parsed_filters['files'].append(1 == 1)
                 else:
                     parsed_filters['files'].append(FileDatabase.target == each_filter_value)
 
