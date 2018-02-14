@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import { Dropdown, Button } from 'semantic-ui-react';
+import { Dropdown, Menu } from 'semantic-ui-react';
 
 
 import TasksOptions from './TasksOptions.jsx'
@@ -58,15 +58,17 @@ class ButtonsTasks extends React.Component {
 
 		return (
 			<span>
-				<Dropdown as={Button} text="Launch Task">
-					<Dropdown.Menu>
-						{items}
-					</Dropdown.Menu>
-				</Dropdown>
+				<Menu>
+					<Menu.Item as={Dropdown} text="Launch Task">
+						<Dropdown.Menu>
+							{items}
+						</Dropdown.Menu>
+					</Menu.Item>
+				</Menu>
 				<InnerModal open={this.state.modalOpen}
 				            task={this.state.current_task}
 				            openModal={this.openModal.bind(this)}
-				            closeModal={this.closeModal.bind(this)}/>
+				            closeModal={this.closeModal.bind(this)}/>				
 			</span>
 		)
 	}
