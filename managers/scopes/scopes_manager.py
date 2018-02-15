@@ -410,7 +410,7 @@ class ScopeManager(object):
 
         return self.hosts[project_uuid]["hosts_count"]
 
-    def create_ip(self, ip_address, project_uuid):
+    def create_ip(self, ip_address, project_uuid, format_ip=True):
         """ Creating an ip address we should first check whether it is already
         in the db, then create a new one if necessary """
         if self.find_ip_db(ip_address, project_uuid) is None:
@@ -436,7 +436,7 @@ class ScopeManager(object):
                 return {
                     "status": "success",
                     "new_scope":
-                        self.format_ip(db_object, no_hosts=True, no_ports=True, no_files=True)
+                        self.format_ip(db_object, no_hosts=True, no_ports=True, no_files=True) if format_ip else db_object
                 }
 
         return {"status": "duplicate"}
@@ -631,7 +631,7 @@ class ScopeManager(object):
                         # session.add(found_ip)
                 else:
                     ip_create_result = self.create_ip(
-                        resolved_ip, project_uuid
+                        resolved_ip, project_uuid, format_ip=False
                     )
 
                     if ip_create_result["status"] == "success":
