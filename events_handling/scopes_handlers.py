@@ -127,9 +127,9 @@ class HostHandlers(object):
             project_uuid = msg['project_uuid']
 
             await self.scope_manager.resolve_scopes(hosts_ids, project_uuid)
-            # TODO: Substitute this method for the correct one
+
             await self.socketio.emit(
-                'scopes:resolve:done', {
+                'hosts:resolve:done', {
                     'status': 'success',
                     'project_uuid': project_uuid
                 },

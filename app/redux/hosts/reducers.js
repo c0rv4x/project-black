@@ -127,6 +127,7 @@ function updated_ips(state = initialState, action) {
 }
 function resolve_hosts(state = initialState, action) {
 	const message = action.message;
+
 	if (message["status"] == 'success') {
 		var new_state = JSON.parse(JSON.stringify(state));
 		new_state.update_needed = true;

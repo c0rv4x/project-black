@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { connect } from 'react-redux'
 
-import ScopeSetup from './ScopeSetup.jsx'
+import ScopeSetupUpdater from './ScopeSetupUpdater.jsx'
 
 
 function mapStateToProps(state, ownProps){
@@ -35,6 +35,6 @@ function mapStateToProps(state, ownProps){
 
 const ScopeSetupWrapper = connect(
 	mapStateToProps
-)(ScopeSetup)
+)(ScopeSetupUpdater)
 
 export default ScopeSetupWrapper;
