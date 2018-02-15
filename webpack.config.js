@@ -5,9 +5,9 @@ var BUILD_DIR = path.resolve('public/static');
 var APP_DIR = path.resolve('app');
 
 var config = {
-    watchOptions: {
-        poll: true
-    },
+    // watchOptions: {
+    //     poll: true
+    // },
 	entry: APP_DIR + '/index.jsx',
 	module : {
 		loaders : [{
