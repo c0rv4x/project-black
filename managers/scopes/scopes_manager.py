@@ -520,10 +520,12 @@ class ScopeManager(object):
             if scope_type == "ip_address":
                 db_object = session.query(IPDatabase).filter(
                     IPDatabase.id == scope_id
+                ).options(contains_eager(IPDatabase.hostnames)
                 ).one()
             else:
                 db_object = session.query(HostDatabase).filter(
                     HostDatabase.id == scope_id
+                ).options(contains_eager(HostDatabase.ip_addresses)
                 ).one()
 
             project_uuid = db_object.project_uuid
