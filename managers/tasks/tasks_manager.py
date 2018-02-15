@@ -169,7 +169,7 @@ class TaskManager(object):
             self.active_tasks += tasks
 
         elif task_type == 'nmap':
-            targets = self.scope_manager.get_ips(filters, project_uuid, ips_ports_only=True)['ips']
+            targets = self.scope_manager.get_ips(filters, project_uuid)['ips']
             tasks = TaskStarter.start_nmap(targets, params, project_uuid, self.exchange)
 
             self.active_tasks += tasks
