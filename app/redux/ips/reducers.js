@@ -102,7 +102,7 @@ function updated_ips(state = initialState, action) {
 		if (message.updated_ips) {
 			var found = false;
 
-			for (var each_id of JSON.parse(message.updated_ips)) {
+			for (var each_id of message.updated_ips) {
 				for (var state_ip of state.data) {
 					if (state_ip.ip_id == each_id) {
 						console.log("Got some scans for currently displayed data");

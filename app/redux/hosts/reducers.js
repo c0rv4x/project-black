@@ -92,12 +92,12 @@ function update_host(state = initialState, action) {
 
 function updated_ips(state = initialState, action) {
 	const message = action.message;
-	console.log("updated hosts:ips");
+
 	if (message["status"] == 'success') {
 		if (message.updated_ips) {
 			var found = false;
 
-			for (var each_id of JSON.parse(message.updated_ips)) {
+			for (var each_id of message.updated_ips) {
 				for (var state_host of state.data) {
 					for (var state_ip of state_host.ip_addresses) {
 						if (state_ip.ip_id == each_id) {
