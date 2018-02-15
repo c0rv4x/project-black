@@ -256,7 +256,7 @@ class ScopeManager(object):
 
         return self.format_ip(ip_from_db)
 
-    def get_hosts(self, filters, project_uuid, page_number=None, page_size=None):
+    def get_hosts(self, filters, project_uuid, page_number=None, page_size=None, hosts_only=False):
         """ Returns hosts associated with a given project.
         Not all hosts are returned. Only those that are within
         the described page"""
@@ -346,6 +346,7 @@ class ScopeManager(object):
                 contains_eager(hosts_query_subq.ip_addresses, alias=ips_query_subq
                 ).contains_eager(ips_query_subq.ports, alias=scans_from_db) 
             ).all()
+
 
         self.session_spawner.destroy_session(session)
 
