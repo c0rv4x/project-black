@@ -44,7 +44,6 @@ class IPDatabase(Scope):
         "HostDatabase",
         secondary=association_table,
         back_populates="ip_addresses",
-        # lazy='joined'
         lazy='noload'
     )
 
