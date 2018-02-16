@@ -260,6 +260,8 @@ class ScopeManager(object):
         """ Returns hosts associated with a given project.
         Not all hosts are returned. Only those that are within
         the described page"""
+        import time
+        t = time.time()
         session = self.session_spawner.get_new_session()
 
         # Parse filters into an object for more comfortable work
@@ -295,12 +297,12 @@ class ScopeManager(object):
 
         ### FILES ###
 
-        files_filters = parsed_filters['files']
-        files_filters_exist = len(files_filters) != 0
-        files_query = session.query(FileDatabase
-            ).filter(FileDatabase.project_uuid == project_uuid
-            ).filter(*files_filters)
-        files_query_aliased = aliased(FileDatabase, files_query.subquery('files_filtered'))
+        # files_filters = parsed_filters['files']
+        # files_filters_exist = len(files_filters) != 0
+        # files_query = session.query(FileDatabase
+        #     ).filter(FileDatabase.project_uuid == project_uuid
+        #     ).filter(*files_filters)
+        # files_query_aliased = aliased(FileDatabase, files_query.subquery('files_filtered'))
 
         ### /FILES ###
 
@@ -311,11 +313,11 @@ class ScopeManager(object):
                 HostDatabase.project_uuid == project_uuid,
                 *parsed_filters['hosts']
             ).from_self(
-            ).join(files_query_aliased, HostDatabase.files, isouter=(not files_filters_exist)
+            # ).join(files_query_aliased, HostDatabase.files, isouter=(not files_filters_exist)
             ).join(ips_query_subq, HostDatabase.ip_addresses, isouter=(not ip_filters_exist)
             ).join(scans_from_db, IPDatabase.ports, isouter=(not scans_filters_exist)
             ).options(
-                contains_eager(HostDatabase.files, alias=files_query_aliased),
+                # contains_eager(HostDatabase.files, alias=files_query_aliased),
                 contains_eager(HostDatabase.ip_addresses, alias=ips_query_subq).contains_eager(IPDatabase.ports, alias=scans_from_db)
             )
 
@@ -334,15 +336,16 @@ class ScopeManager(object):
                 ).subquery('limited_hosts_ids')
 
         selected_hosts = hosts_query.from_self(HostDatabase.id).distinct().count()
+        print(selected_hosts, '!!!')
 
         # Now select hosts, outer joining them with scans
         hosts_from_db = session.query(hosts_query_subq
             ).filter(hosts_query_subq.id.in_(hosts_limited)
-            ).join(files_query_aliased, hosts_query_subq.files, isouter=(not files_filters_exist)
+            # ).join(files_query_aliased, hosts_query_subq.files, isouter=(not files_filters_exist)
             ).join(ips_query_subq, hosts_query_subq.ip_addresses, isouter=(not ip_filters_exist)
             ).join(scans_from_db, ips_query_subq.ports, isouter=(not scans_filters_exist)
             ).options(
-                contains_eager(hosts_query_subq.files, alias=files_query_aliased),
+                # contains_eager(hosts_query_subq.files, alias=files_query_aliased),
                 contains_eager(hosts_query_subq.ip_addresses, alias=ips_query_subq
                 ).contains_eager(ips_query_subq.ports, alias=scans_from_db) 
             ).all()
@@ -350,23 +353,36 @@ class ScopeManager(object):
 
         self.session_spawner.destroy_session(session)
 
-        # Reformat each hosts to JSON-like objects
-        hosts = list(map(lambda each_host: {
-            "host_id": each_host.id,
-            "hostname": each_host.target,
-            "comment": each_host.comment,
-            "ip_addresses": list(map(lambda each_ip: self.format_ip(each_ip, no_hosts=True, no_files=True), each_host.ip_addresses)),
-            "files": list(map(lambda each_file: {
-                "file_id": each_file.file_id,
-                "file_name": each_file.file_name,
-                "port_number": each_file.port_number,
-                "file_path": each_file.file_path,
-                "status_code": each_file.status_code,
-                "content_length": each_file.content_length,
-                "task_id": each_file.task_id,
-                "date_added": str(each_file.date_added)
-            }, each_host.files))            
-        }, hosts_from_db))
+
+        hosts = []
+
+        for each_host in hosts_from_db:
+            session = self.session_spawner.get_new_session()
+            db_files = session.query(FileDatabase
+                ).filter(FileDatabase.project_uuid == project_uuid, FileDatabase.target == each_host.target
+                ).all()
+
+            files = list(map(lambda each_file: {
+                    "file_id": each_file.file_id,
+                    "file_name": each_file.file_name,
+                    "port_number": each_file.port_number,
+                    "file_path": each_file.file_path,
+                    "status_code": each_file.status_code,
+                    "content_length": each_file.content_length,
+                    "task_id": each_file.task_id,
+                    "date_added": str(each_file.date_added)
+                }, db_files))
+
+            # Reformat each host to JSON-like objects
+            hosts.append({
+                "host_id": each_host.id,
+                "hostname": each_host.target,
+                "comment": each_host.comment,
+                "ip_addresses": list(map(lambda each_ip: self.format_ip(each_ip, no_hosts=True, no_files=True), each_host.ip_addresses)),
+                "files": files
+            })           
+
+        print("@@@@", time.time() - t)
 
         # Together with hosts list return total amount of hosts in the db
         return {

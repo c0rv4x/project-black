@@ -49,13 +49,14 @@ class TaskHandlers(object):
             tasks = self.task_manager.get_tasks_native_objects(
                 project_uuid, get_all=True
             )
+            
+            # TODO, make broadcasting
             await self.socketio.emit(
                 'tasks:all:get:back:all', {
                     "status": "success",
                     "project_uuid": project_uuid,
                     "tasks": tasks
                 },
-                broadcast=True,
                 namespace='/tasks'
             )
         else:
@@ -66,12 +67,12 @@ class TaskHandlers(object):
             if len(tasks['finished']) == 0 and len(tasks['active']) == 0:
                 return
 
+            # TODO, make broadcasting
             await self.socketio.emit(
                 'tasks:all:get:back:updated', {
                     "status": "success",
                     "project_uuid":  project_uuid,
                     "tasks": tasks
                 },
-                broadcast=True,
                 namespace='/tasks'
             )
