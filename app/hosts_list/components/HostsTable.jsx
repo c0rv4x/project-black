@@ -42,7 +42,6 @@ class HostsTable extends React.Component {
 				pageCount: Math.ceil(nextProps.hosts.selected_hosts / this.props.hosts.page_size)
 			});
 		}
-
 	}
 
 	handlePageClick(page_number) {

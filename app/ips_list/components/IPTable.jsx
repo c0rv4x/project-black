@@ -42,13 +42,20 @@ class IPTable extends React.Component {
 			this.props.setLoading(false);
 		}
 
-		let start = this.limitPerPage * this.state.offsetPage;
-
-		this.setState({
-			shownData: nextProps.ips.data,
-			pageCount: Math.ceil(nextProps.ips.selected_ips / nextProps.ips.page_size)
-		});
-	}
+		if (nextProps.ips.selected_ips !== this.props.ips.selected_ips) {
+			this.setState({
+				shownData: nextProps.ips.data,
+				offsetPage: 0,
+				pageCount: Math.ceil(nextProps.ips.selected_ips / this.props.ips.page_size)
+			});
+		}
+		else {
+			this.setState({
+				shownData: nextProps.ips.data,
+				pageCount: Math.ceil(nextProps.ips.selected_ips / this.props.ips.page_size)
+			});
+		}
+	}	
 
 	handlePageClick(page_number) {
 		this.props.renewIps(page_number - 1);
