@@ -27,7 +27,7 @@ class HostsSocketioEventsEmitter {
 	requestSingleHost(project_uuid, hostname) {
 		this.connector.emit('hosts:single:get', {
 			'project_uuid': project_uuid,
-			'host_filters': hostname
+			'hostname': hostname
 		});		
 	}
 

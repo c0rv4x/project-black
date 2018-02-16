@@ -118,7 +118,7 @@ class HostHandlers(object):
             project_uuid = msg.get('project_uuid', None)
             hostname = msg.get('hostname')
 
-            await self.send_hosts_back({'hosts': [hostname]}, sio, project_uuid)
+            await self.send_hosts_back({'host': [hostname]}, sio, project_uuid)
 
         @self.socketio.on('hosts:resolve', namespace='/hosts')
         async def _cb_handle_scope_resolve(sio, msg):
