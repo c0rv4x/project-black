@@ -70,7 +70,7 @@ class DirsearchTask(AsyncTask):
             await self.set_status(status, progress=progress)
 
             if status == 'Finished' or status == 'Aborted':
-                print(self.target[0], "exited poller")
+                print(self.target, "exited poller")
                 self.all_done.release()
                 return
 
