@@ -626,9 +626,11 @@ class ScopeManager(object):
                             found = True
 
                     if not found:
-                        # print(222, host)
-                        host.ip_addresses.append(found_ip)
+                        # print(222, host.id, list(map(lambda x: x.id, host.ip_addresses)))
+                        # print(found_ip.id)
+                        host.ip_addresses.append(session.merge(found_ip))
                         session.add(host)
+                        # print('-'*20)
                         # session.add(found_ip)
                 else:
                     ip_create_result = self.create_ip(
