@@ -121,7 +121,7 @@ class TableUpdater extends React.Component {
 			this.pageType = 'host';
 
 			this.pageNumberHost = pageNumber - ipPages;
-			thos.renewHosts();
+			this.renewHosts();
 		}
 	}
 
