@@ -21,7 +21,9 @@ def save_raw_output(task_id, output, project_uuid):
             if isinstance(parsed_dict['nmaprun']['host'], list):
                 for each_host in parsed_dict['nmaprun']['host']:
                     address = each_host['address']['@addr']
-                    target = session.query(IPDatabase.ip_id).filter(IPDatabase.ip_address == address).one()
+                    target = session.query(IPDatabase.id
+                        ).filter(IPDatabase.project_uuid == project_uuid, IPDatabase.target == address
+                        ).one()
 
                     port_data = each_host['ports']['port']
 
@@ -41,11 +43,13 @@ def save_raw_output(task_id, output, project_uuid):
                         session.add(new_scan)
                         session.commit()
 
-                        saved_scans.append(target.ip_id)
+                        saved_scans.append(target.id)
             else:
                 each_host = parsed_dict['nmaprun']['host']
                 address = each_host['address']['@addr']
-                target = session.query(IPDatabase.ip_id).filter(IPDatabase.ip_address == address).one()
+                target = session.query(IPDatabase.id
+                    ).filter(IPDatabase.project_uuid == project_uuid, IPDatabase.target == address
+                    ).one()
                 port_data = each_host['ports']['port']
 
                 port_number = int(port_data['@portid'])
@@ -64,7 +68,7 @@ def save_raw_output(task_id, output, project_uuid):
                     session.add(new_scan)
                     session.commit()
 
-                    saved_scans.append(target.ip_id)
+                    saved_scans.append(target.id)
 
             sessions.destroy_session(session)
 
