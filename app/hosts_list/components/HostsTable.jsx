@@ -29,12 +29,20 @@ class HostsTable extends React.Component {
 			this.props.setLoading(false);
 		}
 
-		let start = this.limitPerPage * this.state.offsetPage;
+		if (nextProps.hosts.selected_hosts !== this.props.hosts.selected_hosts) {
+			this.setState({
+				shownData: nextProps.hosts.data,
+				offsetPage: 0,
+				pageCount: Math.ceil(nextProps.hosts.selected_hosts / this.props.hosts.page_size)
+			});
+		}
+		else {
+			this.setState({
+				shownData: nextProps.hosts.data,
+				pageCount: Math.ceil(nextProps.hosts.selected_hosts / this.props.hosts.page_size)
+			});
+		}
 
-		this.setState({
-			shownData: nextProps.hosts.data,
-			pageCount: Math.ceil(this.props.hosts.total_db_hosts / this.props.hosts.page_size)
-		});
 	}
 
 	handlePageClick(page_number) {
