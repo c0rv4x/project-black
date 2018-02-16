@@ -54,7 +54,7 @@ def build_scans_filters(parsed_filters, alias_ordered):
     if filters_exist:
         ports_filters_list = []
         for port_number in parsed_filters['ports']:
-            if port_number == '*':
+            if port_number == '%':
                 ports_filters_list.append(alias_ordered.port_number > 0)
             else:
                 ports_filters_list.append(alias_ordered.port_number == port_number)
