@@ -36,10 +36,10 @@ class TitleButtonsWithHandlers extends React.Component {
 		var filters = this.props.filters;
 
 		if (filters.hasOwnProperty('port')) {
-			filters['port'].concat("*")
+			filters['port'].concat("%");
 		}
 		else {
-			filters['port'] = ["*"];
+			filters['port'] = ["%"];
 		}
 
 		this.tasksEmitter.requestCreateTask('nmap',

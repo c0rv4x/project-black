@@ -42,6 +42,7 @@ class TableUpdater extends React.Component {
 	renewHosts(page=this.pageNumberHost, filters=this.props.filters) {
 		var newFilters = filters;
 		newFilters['files'] = '%';
+
 		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, newFilters, page, this.pageSize);
 	}
 
