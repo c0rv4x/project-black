@@ -38,7 +38,7 @@ def parse_filters(filters):
                 parsed_filters['protocols'].append(each_filter_value)
             elif key == 'files':
                 if each_filter_value == '%':
-                    parsed_filters['files'].append(1 == 1)
+                    parsed_filters['files'].append(FileDatabase.status_code > 0)
                 else:
                     parsed_filters['files'].append(FileDatabase.target == each_filter_value)
 
@@ -136,7 +136,7 @@ class ScopeManager(object):
         files_filters_exist = len(files_filters) != 0
         files_query = session.query(FileDatabase
             ).filter(FileDatabase.project_uuid == project_uuid
-            ).filter(*files_filters)
+            )
         files_query_aliased = aliased(FileDatabase, files_query.subquery('files_filtered'))
 
         # Now select ips, outer joining them with scans
