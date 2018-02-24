@@ -14,7 +14,7 @@ class ScanHandlers(object):
         @self.socketio.on('scans:part:get', namespace='/ips')
         async def _cb_handle_custom_event(sio, msg):
             """ When received this message, send back all the scans """
-            project_uuid = msg.get('project_uuid', None)
+            project_uuid = int(msg.get('project_uuid', None))
             ips = msg.get('ips', [])
             await self.send_scans_back(ips, project_uuid)
 

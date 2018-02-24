@@ -39,7 +39,7 @@ function renew_tasks(state = {'active': [], 'finished': []}, action) {
 
 	if (message["status"] == 'success') {
 		const active_tasks = message['tasks']['active'].filter((x) => {
-			return x.project_uuid === action.current_project_uuid;
+			return x.project_uuid == action.current_project_uuid;
 		});
 
 		var parsed_active_tasks = _.map(_.uniq(active_tasks), (x) => {
@@ -59,7 +59,7 @@ function renew_tasks(state = {'active': [], 'finished': []}, action) {
 		});
 
 		const finished_tasks = message['tasks']['finished'].filter((x) => {
-			return x.project_uuid === action.current_project_uuid;
+			return x.project_uuid == action.current_project_uuid;
 		});
 		var parsed_finished_tasks = _.map(_.uniq(finished_tasks), (x) => {
 			return {
@@ -92,7 +92,7 @@ function update_tasks(state = {'active': [], 'finished': []}, action) {
 
 	if (message["status"] == 'success') {
 		const active_tasks = message['tasks']['active'].filter((x) => {
-			return x.project_uuid === action.current_project_uuid;
+			return x.project_uuid == action.current_project_uuid;
 		});
 
 		var updated_active_task_ids = [];
@@ -116,7 +116,7 @@ function update_tasks(state = {'active': [], 'finished': []}, action) {
 		});
 
 		const finished_tasks = message['tasks']['finished'].filter((x) => {
-			return x.project_uuid === action.current_project_uuid;
+			return x.project_uuid == action.current_project_uuid;
 		});
 		var updated_finished_task_ids = [];
 
@@ -157,8 +157,8 @@ function task_reduce(state = {'active': [], 'finished': []}, action) {
 		return state
 	}
 	else {
-		if (action.message && action.message.project_uuid && (action.current_project_uuid !== action.message.project_uuid)) { return state; }
-		else {		
+		if (action.message && action.message.project_uuid != action.message.project_uuid) { return state; }
+		else {
 			switch (action.type) {
 				case NEW_TASK:
 					return new_task(state, action);

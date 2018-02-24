@@ -14,7 +14,7 @@ class TaskHandlers(object):
         @self.socketio.on('tasks:all:get', namespace='/tasks')
         async def _cb_handle_tasks_get(sio, msg):
             """ When received this message, send back all the tasks """
-            project_uuid = msg.get('project_uuid', None)
+            project_uuid = int(msg.get('project_uuid', None))
             await self.send_tasks_back(project_uuid, send_all=True)
 
         @self.socketio.on('tasks:create', namespace='/tasks')
@@ -49,7 +49,7 @@ class TaskHandlers(object):
             tasks = self.task_manager.get_tasks_native_objects(
                 project_uuid, get_all=True
             )
-            
+
             # TODO, make broadcasting
             await self.socketio.emit(
                 'tasks:all:get:back:all', {
@@ -67,6 +67,7 @@ class TaskHandlers(object):
             if len(tasks['finished']) == 0 and len(tasks['active']) == 0:
                 return
 
+            # print(tasks, project_uuid, type(project_uuid))
             # TODO, make broadcasting
             await self.socketio.emit(
                 'tasks:all:get:back:updated', {

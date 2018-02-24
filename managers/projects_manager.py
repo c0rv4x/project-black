@@ -10,8 +10,10 @@ from black.black.db import ProjectDatabase
 class ProjectInner(object):
     """ Simple class for abstacting information on the project """
 
-    def __init__(self, project_uuid, project_name, comment):
-        self._project_uuid = project_uuid
+    def __init__(self, project_name, comment, project_uuid=None):
+        if project_uuid:
+            self._project_uuid = project_uuid
+
         self._project_name = project_name
         self.comment = comment
 
@@ -42,13 +44,15 @@ class ProjectInner(object):
         try:
             session = self.sessions.get_new_session()
             project_db = ProjectDatabase(
-                project_uuid=self._project_uuid,
                 project_name=self._project_name,
                 comment=self.comment
             )
             session.add(project_db)
             session.commit()
             self.sessions.destroy_session(session)
+
+            self._project_uuid = project_db.project_uuid
+
             return {"status": "success", "project": self.to_dict()}
         except Exception as exc:
             return {"status": "error", "text": str(exc)}
@@ -104,7 +108,7 @@ class ProjectManager(object):
         """ Extract all the projects from the DB """
         session = self.sessions.get_new_session()
         projects_db = session.query(ProjectDatabase).all()
-        self.projects = list(map(lambda x: ProjectInner(x.project_uuid, x.project_name, x.comment),
+        self.projects = list(map(lambda x: ProjectInner(x.project_name, x.comment, x.project_uuid),
             projects_db))
         self.sessions.destroy_session(session)
 
@@ -132,9 +136,7 @@ class ProjectManager(object):
         """ Create a new project instance, save it to db and add
         minimal information for the web. """
         if not self.find_project(project_name=project_name):
-            project_uuid = str(uuid.uuid4())
-
-            project = ProjectInner(project_uuid, project_name, "")
+            project = ProjectInner(project_name, "")
             save_result = project.save()
 
             if save_result["status"] == "success":

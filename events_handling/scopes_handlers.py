@@ -13,7 +13,7 @@ class IPHandlers(object):
         @self.socketio.on('ips:part:get', namespace='/ips')
         async def _cb_handle_scopes_get(sio, msg):
             """ When received this message, send back all the scopes """
-            project_uuid = msg.get('project_uuid', None)
+            project_uuid = int(msg.get('project_uuid', None))
             ip_page = msg.get('ip_page', 0)
             ip_page_size = msg.get('ip_page_size', 12)
             ip_filters = msg.get('ip_filters')
@@ -23,7 +23,7 @@ class IPHandlers(object):
         @self.socketio.on('ips:single:get', namespace='/ips')
         async def _cb_handle_scope_single_get(sio, msg):
             """ When received this message, send back all the scopes """
-            project_uuid = msg.get('project_uuid', None)
+            project_uuid = int(msg.get('project_uuid', None))
             ip_address = msg.get('ip_address')
 
             print("Getting single ip", ip_address)
@@ -105,7 +105,7 @@ class HostHandlers(object):
         @self.socketio.on('hosts:part:get', namespace='/hosts')
         async def _cb_handle_scopes_get(sio, msg):
             """ When received this message, send back all the scopes """
-            project_uuid = msg.get('project_uuid', None)
+            project_uuid = int(msg.get('project_uuid', None))
             host_page = msg.get('host_page', 0)
             host_page_size = msg.get('host_page_size', 12)
             host_filters = msg.get('host_filters', {})
@@ -115,7 +115,7 @@ class HostHandlers(object):
         @self.socketio.on('hosts:single:get', namespace='/hosts')
         async def _cb_handle_single_scope_get(sio, msg):
             """ When received this message, send back all the scopes """
-            project_uuid = msg.get('project_uuid', None)
+            project_uuid = int(msg.get('project_uuid', None))
             hostname = msg.get('hostname')
 
             await self.send_hosts_back({'host': [hostname]}, sio, project_uuid)
@@ -167,7 +167,6 @@ class HostHandlers(object):
     async def send_hosts_back(self, filters, sio=None, project_uuid=None, host_page=0, host_page_size=12):
         """ Collects all relative hosts and ips from the manager and sends them back """
         hosts = self.scope_manager.get_hosts(filters, project_uuid, host_page, host_page_size)
-
         if sio is None:
             await self.socketio.emit(
                 'hosts:part:set', {

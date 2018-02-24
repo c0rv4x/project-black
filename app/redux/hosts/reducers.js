@@ -144,7 +144,7 @@ function host_reduce(state = initialState, action) {
 	}
 
 	else {
-		if (action.message && action.current_project_uuid !== action.message.project_uuid) { return state; }
+		if (action.message && action.current_project_uuid != action.message.project_uuid) { return state; }
 		else {
 			switch (action.type) {
 				case CREATE_HOST:

@@ -14,7 +14,7 @@ class FileHandlers(object):
         @self.socketio.on('files:all:get', namespace='/files')
         async def _cb_handle_files_get(sio, msg):
             """ When received this message, send back all the files """
-            project_uuid = msg.get('project_uuid', None)
+            project_uuid = int(msg.get('project_uuid', None))
             hostname = msg.get('hostname', None)
 
             # await self.send_files_back(project_uuid, broadcast=hostname is None)

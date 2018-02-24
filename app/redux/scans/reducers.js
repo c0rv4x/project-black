@@ -20,7 +20,7 @@ function scan_reduce(state = {}, action) {
 		return state
 	}
 	else {
-		if (action.message && action.current_project_uuid !== action.message.project_uuid) { 
+		if (action.message && action.current_project_uuid != action.message.project_uuid) { 
 			return state;
 		}
 		else {	
