@@ -14,7 +14,7 @@ class FileDatabase(Base):
     file_name = Column(String)
 
     # Target (this is either IP or hostname)
-    target = Column(String)
+    target = Column(String, index=True)
 
     # Port
     port_number = Column(Integer)
@@ -36,7 +36,7 @@ class FileDatabase(Base):
 
     # The name of the related project
     project_uuid = Column(
-        Integer, ForeignKey('projects.project_uuid', ondelete='CASCADE')
+        Integer, ForeignKey('projects.project_uuid', ondelete='CASCADE'), index=True
     )
 
     # Date of added

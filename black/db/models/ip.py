@@ -27,7 +27,7 @@ class IPDatabase(Scope):
 
     # The name of the related project
     project_uuid = Column(
-        Integer, ForeignKey('projects.project_uuid', ondelete="CASCADE")
+        Integer, ForeignKey('projects.project_uuid', ondelete="CASCADE"), index=True
     )
 
     # References the task that got this record
