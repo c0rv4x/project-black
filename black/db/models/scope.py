@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import Column, String, DateTime, ForeignKey
+from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
 from .base import Base, association_table
@@ -27,7 +27,7 @@ class Scope(Base):
 
     # The name of the related project
     project_uuid = Column(
-        String, ForeignKey('projects.project_uuid', ondelete="CASCADE")
+        Integer, ForeignKey('projects.project_uuid', ondelete="CASCADE")
     )
 
     # References the task that got this record

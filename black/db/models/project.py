@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import Column, String, DateTime, ForeignKey
+from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
 from .base import Base
@@ -12,7 +12,7 @@ class ProjectDatabase(Base):
     __tablename__ = 'projects'
 
     # ID of the project (uuid for now)
-    project_uuid = Column(String, primary_key=True)
+    project_uuid = Column(Integer, primary_key=True, autoincrement=True)
 
     # Given name
     project_name = Column(String)
