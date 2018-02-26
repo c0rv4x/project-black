@@ -325,6 +325,7 @@ class ScopeManager(object):
                 ).join(scans_from_db, ips_query_subq.ports, isouter=(not scans_filters_exist)
                 ).join(files_query_aliased, ips_query_subq.files, isouter=(not files_filters_exist)
                 ).options(
+                    joinedload(ips_query_subq.hostnames),
                     contains_eager(ips_query_subq.files, alias=files_query_aliased),
                     contains_eager(ips_query_subq.ports, alias=scans_from_db)
                 ).all()

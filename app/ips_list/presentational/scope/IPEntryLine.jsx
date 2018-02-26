@@ -5,7 +5,10 @@ import {
 	Card,
 	Table,
 	Header,
-	Divider
+	Divider,
+	Container,
+	Popup,
+	Label
 } from 'semantic-ui-react'
 
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
@@ -19,7 +22,7 @@ class IPEntryLine extends React.Component {
 
 	render() {
 		const verbose_host_link = '/project/' + this.props.project_uuid + '/ip/' + this.props.ip.ip_address;
-		
+
 		const footer = (
 			<div>
 	            <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
@@ -47,12 +50,34 @@ class IPEntryLine extends React.Component {
 			)
 		});
 
+		let hostnames = this.props.ip.hostnames;
+		let hostnames_view = null;
+
+			hostnames_view = hostnames.slice(0, 4).map((elem) => {
+				return <Label key={elem + '_' + this.props.ip.ip_address}>{elem}</Label>;
+			});
+			if (hostnames.length > 4) {
+				hostnames_view.push(
+					<Popup key={this.props.ip.ip_address + "_others"}
+						trigger={<Label>...</Label>}
+						content={
+							hostnames.slice(4).map((elem) => {
+								return <Label key={elem + '_' + this.props.ip.ip_address}>{elem}</Label>;
+							})
+						}
+					/>					
+				);
+			}
+
+
 		const description = (
 			<div>
 				<Header>{this.props.ip.ip_address}</Header>
 				<Divider/>
 				<ScopeComment comment={this.props.ip.comment}
 						  	  onCommentSubmit={this.props.onCommentSubmit} />
+
+				<div style={{"wordBreak": "break-all"}}>{hostnames_view}</div>
 
 				<Table basic="very">
 					<Table.Body>
