@@ -60,12 +60,12 @@ class Handlers(object):
 
             if task_type == "scan":
                 # Masscan or nmap updated some of the ips
-                scopes_ids = None
+                scope_ids = None
 
                 if text:
-                    scopes_ids = text
+                    scope_ids = text
 
-                await self.scan_handlers.notify_on_updated_scans(scopes_ids, project_uuid)
+                await self.scan_handlers.notify_on_updated_scans(scope_ids, project_uuid)
 
                 self.data_updated_queue.task_done()
 
