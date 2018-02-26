@@ -22,7 +22,7 @@ class FileHandlers(object):
             await self.send_stats_back(project_uuid)
 
 
-    async def notify_on_updated_files(self, project_uuid, updated_target=None, broadcast=True):
+    async def notify_on_updated_files(self, project_uuid, updated_target=None):
         """ Send a notification that files for specific ids have changed """
         if self.ip_regex.match(updated_target):
             await self.socketio.emit(
