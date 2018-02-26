@@ -29,7 +29,7 @@ class ScopeSetup extends React.Component {
 	}
 
 	render() {
-		let { project, ips, hosts, scans } = this.props;
+		let { project, ips, hosts, scans, files } = this.props;
 
 		return (
 			<div>
@@ -44,6 +44,7 @@ class ScopeSetup extends React.Component {
 					ips={ips}
 					hosts={hosts}
 					scans={scans}
+					files={files}
 				/>
 
 			</div>

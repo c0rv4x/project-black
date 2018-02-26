@@ -20,6 +20,12 @@ class FilesSocketioEventsEmitter {
             "hostname": hostname
         });
     }
+
+    renewStats(project_uuid, hostname) {
+        this.connector.emit('files:stats:get', {
+            "project_uuid": project_uuid
+        });
+    }    
 }
 
 export default FilesSocketioEventsEmitter;

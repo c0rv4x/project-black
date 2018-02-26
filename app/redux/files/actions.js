@@ -1,9 +1,9 @@
-export const RENEW_FILES = 'RENEW_FILES'
+export const RENEW_FILES_STATS = 'RENEW_FILES_STATS'
 
 
-export function renewFiles(message, current_project_uuid) {
+export function renewFilesStats(message, current_project_uuid) {
 	return {
-		type: RENEW_FILES,
+		type: RENEW_FILES_STATS,
 		current_project_uuid: current_project_uuid,
 		message
 	}

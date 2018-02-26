@@ -69,3 +69,14 @@ class FileManager(object):
                 self.files[each_project_uuid][host] = files
 
         self.sessions.destroy_session(session)
+
+    def count(self, project_uuid=None):
+        assert project_uuid is not None
+
+        session = self.sessions.get_new_session()
+
+        amount = session.query(FileDatabase).filter(FileDatabase.project_uuid == project_uuid).count()
+
+        self.sessions.destroy_session(session)
+
+        return amount
