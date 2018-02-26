@@ -3,11 +3,12 @@ import { Statistic } from 'semantic-ui-react'
 
 import IPTable from '../presentational/IPTable.jsx'
 import HostTable from '../presentational/HostTable.jsx'
+import ScanTable from '../presentational/ScanTable.jsx'
 
 
 class ScopeSetup extends React.Component {
 	render() {
-		let { ips, hosts } = this.props;
+		let { ips, hosts, scans } = this.props;
 
 		return (
 			<Statistic.Group widths='four'>
@@ -17,10 +18,9 @@ class ScopeSetup extends React.Component {
 				<HostTable
 					hosts={hosts}
 				/>
-				<Statistic>
-					<Statistic.Value>Some</Statistic.Value>
-					<Statistic.Label>Ports</Statistic.Label>
-				</Statistic>
+				<ScanTable
+					scans={scans}
+				/>
 				<Statistic>
 					<Statistic.Value>Some</Statistic.Value>
 					<Statistic.Label>Files</Statistic.Label>

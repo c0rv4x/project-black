@@ -1,15 +1,18 @@
 import _ from 'lodash';
 
 import { 
-	RENEW_SCANS
+	RENEW_STATS
 } from './actions.js'
 
 
-function renew_scans(state = {}, action) {
+function renew_scans_stats(state = {}, action) {
 	const message = action.message;
+	console.log(message);
 
 	if (message["status"] == 'success') {
-		return message['scans'];
+		return {
+			"amount": message['amount']
+		};
 	} else {
 		/* TODO: add error handling */
 	}
@@ -25,8 +28,8 @@ function scan_reduce(state = {}, action) {
 		}
 		else {	
 			switch (action.type) {
-				case RENEW_SCANS:
-					return renew_scans(state, action);
+				case RENEW_STATS:
+					return renew_scans_stats(state, action);
 				default:
 					return state;
 			}

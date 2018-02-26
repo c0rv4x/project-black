@@ -4,34 +4,17 @@ from black.black.db import Sessions, ProjectDatabase, ScanDatabase
 
 class ScanManager(object):
     def __init__(self):
-        self.scans = {}
-
         self.session_spawner = Sessions()
 
-    def get_scans(self, project_uuid, ips):
-        """ Selects all the scans from the db that are attached
-        to ips """
+    def count(self, project_uuid=None):
+        """ Count amount of scans in the DB for the specific project uuid """
+        assert project_uuid is not None
+
         session = self.session_spawner.get_new_session()
+        amount = session.query(ScanDatabase).filter(
+            ScanDatabase.project_uuid == project_uuid
+            ).count()
 
-        scans = {}
+        self.session_spawner.destroy_session(session)
 
-        for each_ip in ips:
-            scans_db = session.query(ScanDatabase).filter(
-                ScanDatabase.target == each_ip,
-                ScanDatabase.project_uuid == project_uuid
-            ).distinct(ScanDatabase.target, ScanDatabase.port_number).all()
-
-            scans[each_ip] = list(map(lambda each_scan: {
-                "scan_id": each_scan.scan_id,
-                "target": each_scan.target,
-                "port_number": each_scan.port_number,
-                "protocol": each_scan.protocol,
-                "banner": each_scan.banner,
-                "task_id": each_scan.task_id,
-                "project_uuid": each_scan.project_uuid,
-                "date_added": str(each_scan.date_added)
-            }, scans_db))
-
-
-        print(scans)
-        return scans
+        return amount

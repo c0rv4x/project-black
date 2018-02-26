@@ -1,25 +1,15 @@
 import Connector from '../SocketConnector.jsx';
 
 
-let instance = null;
-
 class ScansSocketioEventsEmitter {
-	/* Singleton class for managing events subscription for the scans */
 	constructor() {
-        if(!instance){
-            instance = this;
-
-            this.connector = new Connector('scans');
-        }
-
-        return instance;
+        this.connector = new Connector('scans');
 	}
 
-	renewScans(project_uuid, ips) {
-		this.connector.emit('scans:part:get', {
-			"project_uuid": project_uuid,
-			"ips": ips
-		});
+	renewStats(project_uuid) {
+		this.connector.emit('scans:stats:get', {
+			"project_uuid": project_uuid
+		});		
 	}
 
 }

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import ScopeSetupUpdater from './ScopeSetupUpdater.jsx'
 
 
-function mapStateToProps(state, ownProps){
+function mapStateToProps(state, ownProps) {
 	let project_uuid = ownProps.project_uuid;
 	let filtered_projects = _.filter(state.projects, (x) => {
 		return x.project_uuid == project_uuid
@@ -22,13 +22,16 @@ function mapStateToProps(state, ownProps){
 		}
 	}
 
+	console.log(state);
+
     return {
     	project: project,
     	ips: state.ips,
     	hosts: state.hosts,
         tasks: _.filter(state.tasks.active, (x) => {
         	return x.project_uuid == project['project_uuid']
-        })
+        }),
+        scans: state.scans
     }
 }
 

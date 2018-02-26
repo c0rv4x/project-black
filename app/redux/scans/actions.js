@@ -1,9 +1,10 @@
-export const RENEW_SCANS = 'RENEW_SCANS'
+export const RENEW_STATS = 'RENEW_STATS'
 
 
-export function renewScans(message, current_project_uuid) {
+export function renewStats(message, current_project_uuid) {
+	console.log(123123);
     return { 
-        type: RENEW_SCANS,
+        type: RENEW_STATS,
         current_project_uuid: current_project_uuid,
         message 
     }

@@ -11,12 +11,25 @@ class ScanHandlers(object):
 
     def register_handlers(self):
         """ Register the single handler for returning all scans """
-        @self.socketio.on('scans:part:get', namespace='/ips')
+        @self.socketio.on('scans:stats:get', namespace='/scans')
         async def _cb_handle_custom_event(sio, msg):
             """ When received this message, send back all the scans """
             project_uuid = int(msg.get('project_uuid', None))
-            ips = msg.get('ips', [])
-            await self.send_scans_back(ips, project_uuid)
+
+            await self.send_stats_back(project_uuid)
+
+
+    async def send_stats_back(self, project_uuid=None):
+        amount = self.scan_manager.count(project_uuid)
+
+        await self.socketio.emit(
+            'scans:stats:set', {
+                'status': 'success',
+                'project_uuid': project_uuid,
+                'amount': amount
+            },
+            namespace='/scans'
+        )
 
     async def send_scans_back(self, new_ips, project_uuid=None):
         """ Finds all scans for the project and sends them back """

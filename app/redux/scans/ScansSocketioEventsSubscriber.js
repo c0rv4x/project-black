@@ -1,35 +1,32 @@
 import Notifications from 'react-notification-system-redux'
 
 import { 
-	renewScans, 
+	renewStats, 
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
 import ScansSocketioEventsEmitter from './ScansSocketioEventsEmitter.js';
 
-let instance = null;
 
 class ScansEventsSubsriber {
-	/* Singleton class for managing events subscription for the projects */
 	constructor(store, project_uuid) {
-        if(!instance){
-            instance = this;
+        this.store = store;
+        this.connector = new Connector('scans');
 
-            this.store = store;
-            this.project_uuid = project_uuid;
-            this.connector = new Connector('scans');
+        this.project_uuid = project_uuid;
 
-            this.basic_events_registration();
-        }
+        this.connector.after_connected((x) => {
+        	this.emitter = new ScansSocketioEventsEmitter();
+        	this.emitter.renewStats(this.project_uuid);
+        });
 
-        return instance;
+        this.basic_events_registration();
 	}
 
 	basic_events_registration() {
 		/* Register handlers on basic events */
 
-		// Received all projects in one message
-		this.register_socketio_handler('scans:part:set', renewScans);
+		this.register_socketio_handler('scans:stats:set', renewStats);
 	}
 
 	register_socketio_handler(eventName, callback) {
@@ -40,7 +37,7 @@ class ScansEventsSubsriber {
 			}
 			else {
 				this.store.dispatch(Notifications.error({
-					title: 'Error with updating scans',
+					title: 'Error on scans',
 					message: x.text
 				}));
 			}
