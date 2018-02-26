@@ -19,6 +19,8 @@ class Search extends React.Component {
 				{ value: 'host: %.ru', label: 'host: %.ru'},
 				{ value: 'ip: 8.8.8.8', label: 'ip: 8.8.8.8' },
 				{ value: 'port: 80', label: 'port: 80' },
+				{ value: 'port: %', label: 'port: %' },
+				{ value: 'files: 200', label: 'files: 200' },
 				{ value: 'banner: apache', label: 'banner: apache' }
 			]
 		}

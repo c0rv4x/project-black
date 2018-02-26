@@ -30,8 +30,8 @@ class TableUpdater extends React.Component {
 
 		if ((hosts.update_needed === true) || (!_.isEqual(filters, this.props.filters))) {
 			// this.setLoading(true);
-			this.renewHosts(this.pageNumberHost, filters, this.pageNumberHost, this.pageSize);
-			this.renewIps(this.pageNumberIp, filters, this.pageNumberIp, this.pageSize);
+			this.renewHosts(this.pageNumberHost, filters, this.pageSize);
+			this.renewIps(this.pageNumberIp, filters, this.pageSize);
 		}
 
 		// if (this.state.loading) {
@@ -39,16 +39,21 @@ class TableUpdater extends React.Component {
 		// }
 	}
 
-	renewHosts(page=this.pageNumberHost, filters=this.props.filters) {
+	renewHosts(page=this.pageNumberHost, filters=this.props.filters, pageSize=this.pageSize) {
 		var newFilters = filters;
-		newFilters['files'] = '%';
+		if (filters['files'].length == 0) {
+			filters['files'] = ['%'];
+		}
 
 		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, newFilters, page, this.pageSize);
 	}
 
-	renewIps(page=this.pageNumberIp, filters=this.props.filters) {
+	renewIps(page=this.pageNumberIp, filters=this.props.filters, pageSize=this.pageSize) {
 		var newFilters = filters;
-		newFilters['files'] = '%';		
+		if (filters['files'].length == 0) {
+			filters['files'] = ['%'];
+		}
+		
 		this.ipsEmitter.requestRenewIPs(this.props.project_uuid, newFilters, page, this.pageSize);
 	}
 

@@ -59,7 +59,7 @@ class TablesAccumulator extends React.Component {
 					);
 				}
 			}
-		}		
+		}
 
 		return (
 			<div>
