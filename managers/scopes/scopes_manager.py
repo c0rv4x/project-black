@@ -133,15 +133,13 @@ class ScopeManager(object):
         # Parse filters into an object for more comfortable work
         parsed_filters = Filters.parse_filters(filters)
 
-        ### SCANS ###
+        # Create scans subquery
 
         scans_filters_exist = len(parsed_filters['ports']) != 0
 
         scans_from_db = self.build_scans_subquery(session, project_uuid, parsed_filters)
 
-        ### /SCANS ###
-
-        ### IPS ###
+        # Create IPS subquery
 
         ip_filters_exist = len(parsed_filters['ips']) != 0
 
@@ -153,9 +151,7 @@ class ScopeManager(object):
 
         ips_query_subq = aliased(IPDatabase, ips_query.subquery('all_ips_parsed'))
 
-        ### /IPS ###
-
-        ### FILES ###
+        # Create files subquery
 
         files_filters_exist = len(parsed_filters['files']) != 0
 
@@ -164,11 +160,7 @@ class ScopeManager(object):
             )
         files_query_aliased = aliased(FileDatabase, files_query.subquery('files_filtered'))
 
-        ### /FILES ###
-
-        ### HOSTS ###
-
-        print('^^^^^^^^^^^^^^^^^^^^')
+        # Create hosts subquery
 
         hosts_query = session.query(HostDatabase
             ).filter(
@@ -179,12 +171,10 @@ class ScopeManager(object):
             ).join(files_query_aliased, HostDatabase.files, isouter=(not files_filters_exist)
             )
 
-        print('^^^^^^^^^^^^^^^^^^^^')
 
         hosts_query_subq = aliased(HostDatabase, hosts_query.subquery('hosts_parsed'))
 
-        ### /HOSTS ###
-
+        # Perform pagination
 
         if page_number is None or page_size is None:
             hosts_limited = hosts_query.from_self(HostDatabase.id).distinct(
@@ -196,8 +186,8 @@ class ScopeManager(object):
                 ).subquery('limited_hosts_ids')
 
         selected_hosts = hosts_query.from_self(HostDatabase.id).distinct().count()
-        print('^'*20)
-        # Now select hosts, outer joining them with scans
+
+        # Now select hosts, outer joining them with all other subqueries from the prev step
         hosts_from_db = session.query(HostDatabase
             ).filter(
                 HostDatabase.project_uuid == project_uuid,
@@ -206,14 +196,10 @@ class ScopeManager(object):
             ).join(ips_query_subq, HostDatabase.ip_addresses, isouter=(not ip_filters_exist)
             ).join(scans_from_db, IPDatabase.ports, isouter=(not scans_filters_exist)
             ).join(files_query_aliased, HostDatabase.files, isouter=(not files_filters_exist)
-            # ).join(ips_query_subq, hosts_query_subq.ip_addresses, isouter=(not ip_filters_exist)
-            # ).join(scans_from_db, ips_query_subq.ports, isouter=(not scans_filters_exist)
-            # ).join(files_query_aliased, hosts_query_subq.files, isouter=(not files_filters_exist)
             ).options(
                 contains_eager(HostDatabase.ip_addresses, alias=ips_query_subq).contains_eager(IPDatabase.ports, alias=scans_from_db),
                 contains_eager(HostDatabase.files, alias=files_query_aliased)
             ).all()
-        print('^'*20)
 
         self.session_spawner.destroy_session(session)
 
@@ -236,7 +222,7 @@ class ScopeManager(object):
         }, hosts_from_db))
 
 
-        print("@@@@ Hosts finished", time.time() - t)
+        print("@@@@ Hosts selected in:", time.time() - t)
 
         # Together with hosts list return total amount of hosts in the db
         return {
