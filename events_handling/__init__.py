@@ -55,6 +55,7 @@ class Handlers(object):
                 # This is triggered when dnsscan find something new
                 self.scope_manager.update_from_db(project_uuid)
                 await self.scope_handlers.send_scopes_back(project_uuid, broadcast=True)
+
                 self.data_updated_queue.task_done()
 
             if task_type == "scan":
@@ -65,6 +66,7 @@ class Handlers(object):
                     scopes_ids = text
 
                 await self.scan_handlers.notify_on_updated_scans(scopes_ids, project_uuid)
+
                 self.data_updated_queue.task_done()
 
             if task_type == "file":
@@ -73,8 +75,8 @@ class Handlers(object):
                 if text:
                     new_ids = json.loads(text)
 
-                self.file_manager.update_from_db(project_uuid)
-                await self.file_handlers.send_files_back(project_uuid, broadcast=True)
+                    await self.file_handlers.notify_on_updated_files(project_uuid, new_ids)
+
                 self.data_updated_queue.task_done()
 
         except queue.Empty:

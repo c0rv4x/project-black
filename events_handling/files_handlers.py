@@ -18,19 +18,10 @@ class FileHandlers(object):
 
             await self.send_stats_back(project_uuid)
 
-            # await self.send_files_back(project_uuid, broadcast=hostname is None)
 
-    # async def send_files_back(self, project_uuid=None, broadcast=False):
-    #     """ Get all files and send to all clients """
-    #     await self.socketio.emit(
-    #         'files:all:get:back', {
-    #             'status': 'success',
-    #             'project_uuid': project_uuid,
-    #             'files': self.file_manager.get_files(project_uuid)
-    #         },
-    #         broadcast=broadcast,
-    #         namespace='/files'
-    #     )
+    async def notify_on_updated_files(self, project_uuid, new_ids=None broadcast=True):
+        pass
+
 
     async def send_stats_back(self, project_uuid=None):
         """ Get all files and send to all clients """
