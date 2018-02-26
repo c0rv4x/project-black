@@ -181,5 +181,6 @@ class TaskManager(object):
                 targets = self.scope_manager.get_hosts(filters, project_uuid, hosts_only=True)
 
             tasks = TaskStarter.start_dirsearch(targets, params, project_uuid, self.exchange)
+            self.active_tasks += tasks
 
         return list(map(lambda task: task.get_as_native_object(grab_file_descriptors=False), tasks))
