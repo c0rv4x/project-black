@@ -67,12 +67,14 @@ class DirsearchTask(AsyncTask):
             decoded_data = json.loads(data.decode('utf-8'))
             status = decoded_data['status']
             progress = decoded_data['progress']
-            await self.set_status(status, progress=progress)
 
             if status == 'Finished' or status == 'Aborted':
-                print(self.target, "exited poller")
+                await self.set_status(status, progress=progress, text=self.target)
+
                 self.all_done.release()
                 return
+            else:
+                await self.set_status(status, progress=progress)
 
         self.loop.create_task(self.poll_status(reader))
 
