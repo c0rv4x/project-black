@@ -39,7 +39,7 @@ class MainAccumulator extends React.Component {
 		}
 
 		if (newProps.update_needed) {
-			this.emitter.requestRenewHosts({'host': [this.props.host.hostname]});
+			this.emitter.requestRenewHosts(this.props.project_uuid, {'host': [this.props.host.hostname]});
 		}
 	}
 
