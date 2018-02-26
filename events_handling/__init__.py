@@ -70,12 +70,12 @@ class Handlers(object):
                 self.data_updated_queue.task_done()
 
             if task_type == "file":
-                new_ids = None
+                updated_target = None
 
                 if text:
-                    new_ids = json.loads(text)
+                    updated_target = json.loads(text)
 
-                    await self.file_handlers.notify_on_updated_files(project_uuid, new_ids)
+                    await self.file_handlers.notify_on_updated_files(project_uuid, updated_target)
 
                 self.data_updated_queue.task_done()
 

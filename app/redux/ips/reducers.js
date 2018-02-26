@@ -114,6 +114,15 @@ function updated_ips(state = initialState, action) {
 				if (found) break;
 			}
 		}
+		else if (message.updated_ip_address) {
+			for (var state_ip of state.data) {
+				if (state_ip.ip_address == message.updated_ip_address) {
+					console.log("Got some files for currently displayed data");
+					found = true;
+					break;
+				}
+			}
+		}
 
 		if (found) {
 			var new_state = JSON.parse(JSON.stringify(state));

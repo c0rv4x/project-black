@@ -94,8 +94,9 @@ function updated_ips(state = initialState, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
+		var found = false;
+
 		if (message.updated_ips) {
-			var found = false;
 
 			for (var each_id of message.updated_ips) {
 				for (var state_host of state.data) {
@@ -109,6 +110,16 @@ function updated_ips(state = initialState, action) {
 				}
 				if (found) break;
 			}
+		}
+		else if (message.updated_hostname) {
+			for (var state_host of state.data) {
+				if (state_host.hostname == message.updated_hostname) {
+					console.log("Got some files for currently displayed hosts");
+					found = true;
+					break;
+				}
+			}
+
 		}
 
 		if (found) {

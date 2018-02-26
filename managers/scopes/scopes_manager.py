@@ -91,7 +91,6 @@ class Filters(object):
                     status_code_filters.append(alias.status_code == status_code)
 
             status_code_filter = or_(*status_code_filters)
-            print(status_code_filters, parsed_filters['files'])
 
             files_filters = [status_code_filter]
 
