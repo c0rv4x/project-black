@@ -52,17 +52,19 @@ class Handlers(object):
             task_type, project_uuid, text = self.data_updated_queue.get_nowait()
 
             if task_type == "scope":
+                # This is triggered when dnsscan find something new
                 self.scope_manager.update_from_db(project_uuid)
                 await self.scope_handlers.send_scopes_back(project_uuid, broadcast=True)
                 self.data_updated_queue.task_done()
 
             if task_type == "scan":
+                # Masscan or nmap updated some of the ips
                 new_ids = None
 
                 if text:
                     new_ids = text
 
-                await self.scan_handlers.send_scans_back(new_ids, project_uuid)
+                await self.scan_handlers.notify_on_updated_scans(new_ids, project_uuid)
                 self.data_updated_queue.task_done()
 
             if task_type == "file":

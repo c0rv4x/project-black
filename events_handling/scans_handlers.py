@@ -31,7 +31,7 @@ class ScanHandlers(object):
             namespace='/scans'
         )
 
-    async def send_scans_back(self, new_ips, project_uuid=None):
+    async def notify_on_updated_scans(self, new_ips, project_uuid=None):
         """ Finds all scans for the project and sends them back """
         print("Sending back new_ips {} , {}".format(new_ips, project_uuid))
 
