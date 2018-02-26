@@ -17,8 +17,10 @@ class TasksButtonsTracked extends React.Component {
 		var scheme = this.props.activePortNumber === 443 ? 'https' : 'http';
 		var target = this.props.host.hostname;
 		this.tasksEmitter.requestCreateTask('dirsearch', 
-											[scheme + "://" + target + ':' + this.props.activePortNumber], 
-											{'program': options}, 
+											{'host': [target],
+											 'port:': [this.props.activePortNumber]}, 
+											{'program': options,
+											 'targets': 'hosts'}, 
 											this.props.project_uuid)
 	}
 
@@ -31,23 +33,23 @@ class TasksButtonsTracked extends React.Component {
 						"handler": this.dirbusterStart,
 						"preformed_options": [
 							{
-								"name": "PHP",
+								"name": "PHP fanboy",
 								"options": {
 									"extensions": "php,php5,phps,php.bak",
 									"path": "/"
 								}
 							},
 							{
-								"name": "ASP",
+								"name": "ASP faggot",
 								"options": {
-									"extensions": "asp",
+									"extensions": "asp,aspx",
 									"path": "/"
 								}
 							},
 							{
 								"name": "Personal favourites",
 								"options": {
-									"extensions": "php,asp,txt,conf,log,bak",
+									"extensions": "php,asp,txt,conf,log,bak,sql",
 									"path": "/"
 								}
 							}
@@ -64,10 +66,27 @@ class TasksButtonsTracked extends React.Component {
 								"default_value": "txt,conf,log,bak"
 							},
 							{
+								"name": "cookie",
+								"type": "text",
+								"default_value": ""
+							},
+							{
 								"name": "recursive",
 								"type": "checkbox",
-								"default_value": true
-							}
+								"default_value": false
+							},
+							{
+								"name": "dirsearch_all_ips",
+								"type": "checkbox",
+								"text": "Add all current ips to dirsearch queue",
+								"default_value": false
+							},
+							{
+								"name": "dirsearch_single_ip",
+								"type": "checkbox",
+								"text": "Add one ip from each host to dirsearch queue",
+								"default_value": false
+							}					
 						]
 					}
 				]
