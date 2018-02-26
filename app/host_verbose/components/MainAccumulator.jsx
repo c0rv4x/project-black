@@ -26,6 +26,7 @@ class MainAccumulator extends React.Component {
 		}
 
 		this.tabChange = this.tabChange.bind(this);
+		this.commentSubmitted = this.commentSubmitted.bind(this);
 	}
 
 	componentWillReceiveProps(newProps) {
@@ -50,6 +51,10 @@ class MainAccumulator extends React.Component {
 		});
 	}
 
+	commentSubmitted(comment, _id) {
+		this.emitter.requestUpdateHost(comment, _id, this.props.project_uuid, "host");
+	}
+
 	render() {
 		const { host, tasks, ports, project_uuid } = this.props;
 
@@ -63,7 +68,8 @@ class MainAccumulator extends React.Component {
 				<TasksButtonsTracked project_uuid={project_uuid}
 									 host={host}
 									 activePortNumber={this.state.activePortNumber} />					
-				<ScopeComment comment={host.comment} />
+				<ScopeComment comment={host.comment}
+							  onCommentSubmit={(value) => this.commentSubmitted(value, host.host_id)} />
 
 				<PortsTabs ports={ports}
 					   	   activeTabNumber={this.state.activeTabNumber}
