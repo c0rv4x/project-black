@@ -6,7 +6,8 @@ import {
 	RENEW_HOSTS,
 	UPDATE_HOST,
 	UPDATED_IPS,
-	RESOLVE_HOSTS
+	RESOLVE_HOSTS,
+	HOST_DATA_UPDATED
 } from './actions.js'
 
 
@@ -90,6 +91,36 @@ function update_host(state = initialState, action) {
 
 }
 
+function host_data_updated(state = initialState, action) {
+	const message = action.message;
+
+	if (message["status"] == 'success') {
+		var found = false;
+
+		if (message.updated_hostname) {
+			for (var state_host of state.data) {
+				if (state_host.hostname == message.updated_hostname) {
+					console.log("Got some files for currently displayed hosts");
+					found = true;
+					break;
+				}
+			}
+		}
+
+		if (found) {
+			var new_state = JSON.parse(JSON.stringify(state));
+			new_state.update_needed = true;
+
+			return new_state;
+		}
+		else {
+			return state;
+		}
+	} else {
+		/* TODO: add error handling */
+	}	
+}
+
 function updated_ips(state = initialState, action) {
 	const message = action.message;
 
@@ -97,7 +128,6 @@ function updated_ips(state = initialState, action) {
 		var found = false;
 
 		if (message.updated_ips) {
-
 			for (var each_id of message.updated_ips) {
 				for (var state_host of state.data) {
 					for (var state_ip of state_host.ip_addresses) {
@@ -110,16 +140,6 @@ function updated_ips(state = initialState, action) {
 				}
 				if (found) break;
 			}
-		}
-		else if (message.updated_hostname) {
-			for (var state_host of state.data) {
-				if (state_host.hostname == message.updated_hostname) {
-					console.log("Got some files for currently displayed hosts");
-					found = true;
-					break;
-				}
-			}
-
 		}
 
 		if (found) {
@@ -169,7 +189,9 @@ function host_reduce(state = initialState, action) {
 				case RESOLVE_HOSTS:
 					return resolve_hosts(state, action);
 				case UPDATED_IPS:
-					return updated_ips(state, action);					
+					return updated_ips(state, action);	
+				case HOST_DATA_UPDATED:
+					return host_data_updated(state, action);
 				default:
 					return state;
 			}

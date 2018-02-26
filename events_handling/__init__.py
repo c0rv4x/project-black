@@ -73,7 +73,7 @@ class Handlers(object):
                 updated_target = None
 
                 if text:
-                    updated_target = json.loads(text)
+                    updated_target = text.split(':')[0]
 
                     await self.file_handlers.notify_on_updated_files(project_uuid, updated_target)
 

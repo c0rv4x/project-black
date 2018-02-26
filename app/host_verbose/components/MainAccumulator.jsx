@@ -7,6 +7,8 @@ import Tasks from '../../common/tasks/Tasks.jsx'
 
 import { Header, Divider } from 'semantic-ui-react'
 
+import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter'
+
 
 class MainAccumulator extends React.Component {
 	constructor(props) {
@@ -15,7 +17,13 @@ class MainAccumulator extends React.Component {
 		this.state = {
 			'activeTabNumber': null,
 			'activePortNumber': null
-		}				
+		}
+
+		this.emitter = new HostsSocketioEventsEmitter();
+
+		if (this.props.update_needed) {
+			this.emitter.requestRenewHosts({'host': [this.props.host.hostname]});
+		}
 
 		this.tabChange = this.tabChange.bind(this);
 	}
@@ -27,7 +35,11 @@ class MainAccumulator extends React.Component {
 					activePortNumber: newProps.ports[0].port_number,
 					activeTabNumber: 0
 				});
-			}
+			}		
+		}
+
+		if (newProps.update_needed) {
+			this.emitter.requestRenewHosts({'host': [this.props.host.hostname]});
 		}
 	}
 

@@ -67,8 +67,6 @@ class TaskHandlers(object):
             if len(tasks['finished']) == 0 and len(tasks['active']) == 0:
                 return
 
-            # print(tasks, project_uuid, type(project_uuid))
-            # TODO, make broadcasting
             await self.socketio.emit(
                 'tasks:all:get:back:updated', {
                     "status": "success",

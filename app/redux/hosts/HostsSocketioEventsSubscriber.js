@@ -6,7 +6,8 @@ import {
 	renewHosts,
 	updateHost,
 	resolveHosts,
-	updatedIPs
+	updatedIPs,
+	hostsDataUpdated
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
@@ -41,6 +42,7 @@ class HostsSocketioEventsSubscriber {
 
 		this.register_socketio_handler('hosts:update:back', updateHost);
 		this.register_socketio_handler('hosts:updated:ips', updatedIPs);
+		this.register_socketio_handler('hosts:updated', hostsDataUpdated);
 		this.register_socketio_handler('hosts:create', createHost);
 		this.register_socketio_handler('hosts:delete', deleteHost);
 		this.register_socketio_handler('hosts:resolve:done', resolveHosts);

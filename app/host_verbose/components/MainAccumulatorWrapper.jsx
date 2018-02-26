@@ -50,7 +50,8 @@ function mapStateToProps(state, ownProps){
         project_uuid: project.project_uuid,
         host: host,
         tasks: state.tasks.active,
-        ports: ports
+        ports: ports,
+        update_needed: state.hosts.update_needed
     }
 }
 

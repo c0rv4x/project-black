@@ -35,7 +35,7 @@ class FileHandlers(object):
             )  
         else:
             await self.socketio.emit(
-                'ips:updated', {
+                'hosts:updated', {
                     'status': 'success',
                     'project_uuid': project_uuid,
                     'updated_hostname': updated_target
