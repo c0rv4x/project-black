@@ -99,8 +99,9 @@ function updated_ips(state = initialState, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
+		var found = false;
+
 		if (message.updated_ips) {
-			var found = false;
 
 			for (var each_id of message.updated_ips) {
 				for (var state_ip of state.data) {
