@@ -64,7 +64,7 @@ class Handlers(object):
                 if text:
                     scopes_ids = text
 
-                await self.scan_handlers.notify_on_updated_scans(new_ids, project_uuid)
+                await self.scan_handlers.notify_on_updated_scans(scopes_ids, project_uuid)
                 self.data_updated_queue.task_done()
 
             if task_type == "file":
