@@ -19,9 +19,16 @@ class FileHandlers(object):
             await self.send_stats_back(project_uuid)
 
 
-    async def notify_on_updated_files(self, project_uuid, new_ids=None broadcast=True):
-        pass
-
+    async def notify_on_updated_files(self, project_uuid, scope_ids=None broadcast=True):
+        """ Send a notification that files for specific ids have changed """
+        await self.socketio.emit(
+            'files:stats:set', {
+                'status': 'success',
+                'project_uuid': project_uuid,
+                'scope_ids': scope_ids
+            },
+            namespace='/files'
+        )            
 
     async def send_stats_back(self, project_uuid=None):
         """ Get all files and send to all clients """

@@ -52,7 +52,7 @@ class TaskManager(object):
         """ After the task finishes, we need to check, whether we should push
         some new changes to the front end """
         if task.task_type == "dirsearch":
-            self.data_updated_queue.put(("file", task.project_uuid, None))
+            self.data_updated_queue.put(("file", task.project_uuid, task.text))
         elif task.task_type == "masscan" or task.task_type == "nmap":
             print("Finished task necessities", task.text)
             self.data_updated_queue.put(("scan", task.project_uuid, task.text))
