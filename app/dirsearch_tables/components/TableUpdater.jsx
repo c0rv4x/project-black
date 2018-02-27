@@ -5,11 +5,17 @@ import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.j
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'
 import TablesAccumulator from './TablesAccumulator.jsx'
 
+import { Loader, Dimmer } from 'semantic-ui-react'
+
 
 class TableUpdater extends React.Component {
 
 	constructor(props) {
 		super(props);
+
+		this.state = {
+			loading: false
+		};
 
 		this.ipsEmitter = new IPsSocketioEventsEmitter();
 		this.hostsEmitter = new HostsSocketioEventsEmitter();
@@ -23,16 +29,31 @@ class TableUpdater extends React.Component {
 		this.pageNumberIp = 0;
 		this.pageNumberHost = 0;
 		this.pageType = 'ip';
+
+		this.setLoading.bind(this);
+	}
+
+	setLoading(value) {
+		this.setState({
+			loading: value
+		});
 	}
 
 	componentWillReceiveProps(nextProps) {
 		var { hosts, filters } = nextProps;
 
 		if ((hosts.update_needed === true) || (!_.isEqual(filters, this.props.filters))) {
-			// this.setLoading(true);
-			this.renewHosts(this.pageNumberHost, filters, this.pageSize);
-			this.renewIps(this.pageNumberIp, filters, this.pageSize);
+			this.setLoading(true);
+			setTimeout(() => {
+				this.renewHosts(this.pageNumberHost, filters, this.pageSize);
+				this.renewIps(this.pageNumberIp, filters, this.pageSize);
+			}, 100);
 		}
+
+		if (this.state.loading) {
+			this.setLoading(false);
+		}
+	}
 
 	shouldComponentUpdate(nextProps, nextState) {
 		return (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState));
@@ -140,14 +161,19 @@ class TableUpdater extends React.Component {
 		}
 
 		return (
-			<TablesAccumulator
-				applyFilters={this.props.applyFilters}
-				ips={scopes.ips}
-				hosts={scopes.hosts}
-				selected={scopes.selected}
-				changePage={this.changePage}
-				pageSize={this.pageSize}
-			/>
+			<div>
+			    <Dimmer active={this.state.loading}>
+					<Loader />
+			    </Dimmer>
+				<TablesAccumulator
+					applyFilters={this.props.applyFilters}
+					ips={scopes.ips}
+					hosts={scopes.hosts}
+					selected={scopes.selected}
+					changePage={this.changePage}
+					pageSize={this.pageSize}
+				/>
+			</div>
 		);
 	}
 
