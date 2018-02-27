@@ -323,9 +323,9 @@ class ScopeManager(object):
                 ).subquery('limited_ips_ids')
         else:
             ids_limited = ips_query.from_self(IPDatabase.id, IPDatabase.target
+                ).order_by(IPDatabase.target
                 ).limit(page_size
                 ).offset(page_size * page_number
-                ).order_by(IPDatabase.target
                 ).from_self(IPDatabase.id
                 ).subquery('limited_ips_ids')
 
