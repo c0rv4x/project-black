@@ -34,9 +34,8 @@ class TableUpdater extends React.Component {
 			this.renewIps(this.pageNumberIp, filters, this.pageSize);
 		}
 
-		// if (this.state.loading) {
-		// 	this.setLoading(false);
-		// }
+	shouldComponentUpdate(nextProps, nextState) {
+		return (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState));
 	}
 
 	renewHosts(page=this.pageNumberHost, filters=this.props.filters, pageSize=this.pageSize) {

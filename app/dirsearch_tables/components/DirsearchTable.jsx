@@ -8,6 +8,10 @@ class DirsearchTable extends React.Component {
 		super(props);
 	}
 
+	shouldComponentUpdate(nextProps, nextState) {
+		return (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState));
+	}
+
 	render() {
 		var files = [];
 
