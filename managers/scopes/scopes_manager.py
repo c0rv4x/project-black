@@ -1,7 +1,7 @@
 import uuid
 import aiodns
 import asyncio
-from sqlalchemy import desc, or_
+from sqlalchemy import desc, or_, and_
 from sqlalchemy.orm import aliased, joinedload, subqueryload, contains_eager
 
 from black.black.db import Sessions, IPDatabase, ProjectDatabase, HostDatabase, ScanDatabase, FileDatabase
@@ -49,6 +49,8 @@ class Filters(object):
         filters_exist = parsed_filters['ports'] or parsed_filters['protocols'] or parsed_filters['banners']
         scans_filters = []
 
+        negative_filter_found = False
+
         # If there are no filters, return
         if filters_exist:
             ports_filters_list = []
@@ -56,7 +58,11 @@ class Filters(object):
                 if port_number == '%':
                     ports_filters_list.append(alias.port_number > 0)
                 else:
-                    ports_filters_list.append(alias.port_number == port_number)
+                    if port_number[0] == '!':
+                        negative_filter_found = True
+                        ports_filters_list.append(alias.port_number != port_number[1:])
+                    else:
+                        ports_filters_list.append(alias.port_number == port_number)
 
             protocols_filters_list = []
             for protocol in parsed_filters['protocols']:
@@ -72,7 +78,10 @@ class Filters(object):
                 else:
                     banners_filters_list.append(alias.banner == banner)
 
-            scans_filters = [or_(*ports_filters_list), or_(*protocols_filters_list), or_(*banners_filters_list)]
+            if negative_filter_found:
+                scans_filters = [and_(*ports_filters_list), or_(*protocols_filters_list), or_(*banners_filters_list)]
+            else:
+                scans_filters = [or_(*ports_filters_list), or_(*protocols_filters_list), or_(*banners_filters_list)]
 
         return scans_filters
 
