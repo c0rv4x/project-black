@@ -61,8 +61,8 @@ class TableUpdater extends React.Component {
 
 	renewHosts(page=this.pageNumberHost, filters=this.props.filters, pageSize=this.pageSize) {
 		var newFilters = filters;
-		if (filters['files'].length == 0) {
-			filters['files'] = ['%'];
+		if (!filters['files']) {
+			newFilters['files'] = ['%'];
 		}
 
 		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, newFilters, page, this.pageSize);
@@ -70,10 +70,10 @@ class TableUpdater extends React.Component {
 
 	renewIps(page=this.pageNumberIp, filters=this.props.filters, pageSize=this.pageSize) {
 		var newFilters = filters;
-		if (filters['files'].length == 0) {
-			filters['files'] = ['%'];
+		if (!filters['files']) {
+			newFilters['files'] = ['%'];
 		}
-		
+
 		this.ipsEmitter.requestRenewIPs(this.props.project_uuid, newFilters, page, this.pageSize);
 	}
 
