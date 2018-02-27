@@ -217,11 +217,13 @@ class ScopeManager(object):
 
         if page_number is None or page_size is None:
             hosts_limited = hosts_query.from_self(HostDatabase.id, HostDatabase.target
+                ).distinct(
                 ).order_by(HostDatabase.target
                 ).from_self(HostDatabase.id
                 ).subquery('limited_hosts_ids')
         else:
             hosts_limited = hosts_query.from_self(HostDatabase.id, HostDatabase.target
+                ).distinct(
                 ).order_by(HostDatabase.target
                 ).limit(page_size
                 ).offset(page_size * page_number
@@ -318,11 +320,13 @@ class ScopeManager(object):
         # that ids.
         if page_size is None or page_number is None:
             ids_limited = ips_query.from_self(IPDatabase.id, IPDatabase.target
+                ).distinct(
                 ).order_by(IPDatabase.target
                 ).from_self(IPDatabase.id
                 ).subquery('limited_ips_ids')
         else:
             ids_limited = ips_query.from_self(IPDatabase.id, IPDatabase.target
+                ).distinct(
                 ).order_by(IPDatabase.target
                 ).limit(page_size
                 ).offset(page_size * page_number
