@@ -190,7 +190,6 @@ class ScopeManager(object):
         files_filters_exist = len(parsed_filters['files']) != 0
 
         files_query_aliased = self.build_files_subquery(session, project_uuid, parsed_filters)
-        # files_query_aliased = aliased(FileDatabase, files_query_subquery)
 
         # Create hosts subquery
 
@@ -208,16 +207,19 @@ class ScopeManager(object):
         # Perform pagination
 
         if page_number is None or page_size is None:
-            hosts_limited = hosts_query.from_self(HostDatabase.id).distinct(
+            hosts_limited = hosts_query.from_self(HostDatabase.id, HostDatabase.target
+                ).order_by(HostDatabase.target
+                ).from_self(HostDatabase.id
                 ).subquery('limited_hosts_ids')
         else:
-            hosts_limited = hosts_query.from_self(HostDatabase.id).distinct(
+            hosts_limited = hosts_query.from_self(HostDatabase.id, HostDatabase.target
+                ).order_by(HostDatabase.target
                 ).limit(page_size
                 ).offset(page_size * page_number
+                ).from_self(HostDatabase.id
                 ).subquery('limited_hosts_ids')
 
         selected_hosts = hosts_query.from_self(HostDatabase.id).distinct().count()
-
         # Now select hosts, outer joining them with all other subqueries from the prev step
         hosts_from_db = session.query(HostDatabase
             ).filter(
@@ -230,6 +232,7 @@ class ScopeManager(object):
             ).options(
                 contains_eager(HostDatabase.ip_addresses, alias=ips_query_subq).contains_eager(IPDatabase.ports, alias=scans_from_db),
                 contains_eager(HostDatabase.files, alias=files_query_aliased)
+            ).order_by(HostDatabase.target
             ).all()
 
         self.session_spawner.destroy_session(session)
@@ -291,7 +294,6 @@ class ScopeManager(object):
             ).filter(
                 IPDatabase.project_uuid == project_uuid,
                 *parsed_filters['ips']
-            ).order_by(IPDatabase.target.asc()
             ).from_self(
             ).join(scans_from_db, IPDatabase.ports, isouter=(not scans_filters_exist)
             ).join(files_query_aliased, IPDatabase.files, isouter=(not files_filters_exist)
@@ -306,12 +308,16 @@ class ScopeManager(object):
         # So we select ids of the first N. Then select all the ips, which have
         # that ids.
         if page_size is None or page_number is None:
-            ids_limited = ips_query.from_self(IPDatabase.id).distinct(
+            ids_limited = ips_query.from_self(IPDatabase.id, IPDatabase.target
+                ).order_by(IPDatabase.target
+                ).from_self(IPDatabase.id
                 ).subquery('limited_ips_ids')
         else:
-            ids_limited = ips_query.from_self(IPDatabase.id).distinct(
+            ids_limited = ips_query.from_self(IPDatabase.id, IPDatabase.target
                 ).limit(page_size
                 ).offset(page_size * page_number
+                ).order_by(IPDatabase.target
+                ).from_self(IPDatabase.id
                 ).subquery('limited_ips_ids')
 
         if ips_only:
