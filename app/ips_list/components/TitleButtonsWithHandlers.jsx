@@ -46,22 +46,14 @@ class TitleButtonsWithHandlers extends React.Component {
 											filters,
 											{'program': [params["argv"]]},
 											this.props.project.project_uuid)
-	}	
+	}
 
 	dirbusterStart(options) {
-		for (var each_scope of this.props.scopes) {
-			let ip_address = each_scope.ip_address;
-			let ports = each_scope.scans.map((x) => {
-				return x.port_number;
-			});
-
-			for (var each_port of ports) {
-				this.tasksEmitter.requestCreateTask('dirsearch', 
-													[ip_address + ":" + each_port], 
-													{'program': options}, 
-													this.props.project.project_uuid);				
-			}
-		}
+		this.tasksEmitter.requestCreateTask('dirsearch',
+											this.props.filters,
+											{'program': options,
+											 'targets': 'ips'},
+											this.props.project.project_uuid);
 	}
 
 	render() {
