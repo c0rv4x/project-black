@@ -176,7 +176,12 @@ class TaskManager(object):
 
         elif task_type == 'dirsearch':
             if params['targets'] == 'ips':
-                targets = self.scope_manager.get_ips(filters, project_uuid, ips_ports_only=True)
+                if filters.get('port', None):
+                    filters['port'].append('%')
+                else:
+                    filters['port'] = ['%']
+
+                targets = self.scope_manager.get_ips(filters, project_uuid)
             else:
                 targets = self.scope_manager.get_hosts(filters, project_uuid, hosts_only=True)
 

@@ -68,12 +68,12 @@ class TaskStarter(object):
             ips = targets['ips']
 
             for each_ip in ips:
-                for each_port in each_ip.ports:
+                for each_port in each_ip['scans']:
                     tasks.append(
                         ShadowTask(
                             task_id=None,
                             task_type='dirsearch',
-                            target=each_ip.ip_address + ':' + str(each_port.port_number),
+                            target=each_ip['ip_address'] + ':' + str(each_port['port_number']),
                             params=params,
                             project_uuid=project_uuid,
                             exchange=exchange))                
