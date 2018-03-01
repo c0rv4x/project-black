@@ -339,7 +339,6 @@ class ScopeManager(object):
                 ).filter(
                     IPDatabase.project_uuid == project_uuid,
                     *parsed_filters['ips']
-                ).from_self(
                 ).join(scans_from_db, IPDatabase.ports, isouter=(not scans_filters_exist)
                 ).join(files_query_aliased, IPDatabase.files, isouter=(not files_filters_exist)
                 ).options(
