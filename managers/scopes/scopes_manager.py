@@ -276,7 +276,6 @@ class ScopeManager(object):
             "hosts": hosts
         }
 
-
     def get_ips(self, filters, project_uuid, page_number=None, page_size=None, ips_only=False):
         """ Returns ips that are associated with a given project.
         Not all ips are selected. Only those, that are within the
@@ -292,7 +291,6 @@ class ScopeManager(object):
         scans_from_db = self.build_scans_subquery(session, project_uuid, parsed_filters)
 
         ### /SCANS ###
-
         files_filters = parsed_filters['files']
         files_filters_exist = len(files_filters) != 0
         files_query = session.query(FileDatabase
@@ -338,6 +336,7 @@ class ScopeManager(object):
             ips_from_db = session.query(IPDatabase
                 ).filter(
                     IPDatabase.project_uuid == project_uuid,
+                    IPDatabase.id.in_(ids_limited),
                     *parsed_filters['ips']
                 ).join(scans_from_db, IPDatabase.ports, isouter=(not scans_filters_exist)
                 ).join(files_query_aliased, IPDatabase.files, isouter=(not files_filters_exist)
