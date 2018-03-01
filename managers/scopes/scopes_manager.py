@@ -308,10 +308,7 @@ class ScopeManager(object):
             ).from_self(
             ).join(scans_from_db, IPDatabase.ports, isouter=(not scans_filters_exist)
             ).join(files_query_aliased, IPDatabase.files, isouter=(not files_filters_exist)
-            ).options(
-                contains_eager(IPDatabase.files, alias=files_query_aliased),
-                contains_eager(IPDatabase.ports, alias=scans_from_db)
-            )         
+            )
 
         ips_query_subq = aliased(IPDatabase, ips_query.subquery('all_ips_parsed'))
 
@@ -338,16 +335,19 @@ class ScopeManager(object):
                 ).filter(ips_query_subq.id.in_(ids_limited)
                 ).all()
         else:
-            ips_from_db = session.query(ips_query_subq
-                ).filter(ips_query_subq.id.in_(ids_limited)
-                ).order_by(ips_query_subq.target
-                ).join(scans_from_db, ips_query_subq.ports, isouter=(not scans_filters_exist)
-                ).join(files_query_aliased, ips_query_subq.files, isouter=(not files_filters_exist)
+            ips_from_db = session.query(IPDatabase
+                ).filter(
+                    IPDatabase.project_uuid == project_uuid,
+                    *parsed_filters['ips']
+                ).from_self(
+                ).join(scans_from_db, IPDatabase.ports, isouter=(not scans_filters_exist)
+                ).join(files_query_aliased, IPDatabase.files, isouter=(not files_filters_exist)
                 ).options(
-                    joinedload(ips_query_subq.hostnames),
-                    contains_eager(ips_query_subq.files, alias=files_query_aliased),
-                    contains_eager(ips_query_subq.ports, alias=scans_from_db)
+                    joinedload(IPDatabase.hostnames),
+                    contains_eager(IPDatabase.files, alias=files_query_aliased),
+                    contains_eager(IPDatabase.ports, alias=scans_from_db)
                 ).all()
+
         selected_ips = ips_query.from_self(IPDatabase.id).distinct().count()
 
         self.session_spawner.destroy_session(session)
