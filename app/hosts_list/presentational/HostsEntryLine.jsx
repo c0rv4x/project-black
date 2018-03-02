@@ -51,34 +51,43 @@ class HostsEntryLine extends React.Component {
 			</div>
 		);
 
-		var files_by_statuses = {
-			'2xx': host.files.filter((x) => {
-				return Math.floor(x.status_code / 100) === 2;
-			}).length,
-			'3xx': host.files.filter((x) => {
-				return Math.floor(x.status_code / 100) === 3;
-			}).length,
-			'4xx': host.files.filter((x) => {
-				return Math.floor(x.status_code / 100) === 4 && x.status_code !== 404;
-			}).length,	
-			'5xx': host.files.filter((x) => {
-				return Math.floor(x.status_code / 100) === 5 && x.status_code !== 404;
-			}).length						
-		};
+		let files_by_statuses = {
+			'2xx': [],
+			'3xx': [],
+			'4xx': [],
+			'5xx': []
+		}
+
+		for (var file of host.files) {
+			if (Math.floor(file.status_code / 100) === 3) {
+				files_by_statuses['3xx'].push(file);
+			}
+			else if (Math.floor(file.status_code / 100) === 4) {
+				files_by_statuses['4xx'].push(file);
+			}
+			else if (Math.floor(file.status_code / 100) === 5) {
+				files_by_statuses['5xx'].push(file);
+			}
+			else if (Math.floor(file.status_code / 100) === 2) {
+				files_by_statuses['2xx'].push(file);
+			}
+		}
 
 		const description = (
 			<div>
 				<Header>{host.hostname}</Header>
-				<Divider/>
+				<Divider />
 				<ScopeComment comment={host.comment}
 							  onCommentSubmit={this.props.onCommentSubmit} />
-				Dirsearch: 
+
+				<Divider hidden />
 				<List bulleted>
-					<List.Item>2xx: <strong>{files_by_statuses['2xx']}</strong></List.Item> 
-					<List.Item>3xx: {files_by_statuses['3xx']}</List.Item>
-					<List.Item>4xx: {files_by_statuses['4xx']}</List.Item>
-					<List.Item>5xx: {files_by_statuses['5xx']}</List.Item>
+					<List.Item>2xx: <strong>{files_by_statuses['2xx'].length}</strong></List.Item> 
+					<List.Item>3xx: {files_by_statuses['3xx'].length}</List.Item>
+					<List.Item>4xx: {files_by_statuses['4xx'].length}</List.Item>
+					<List.Item>5xx: {files_by_statuses['5xx'].length}</List.Item>
 				</List>
+
 				<HostsEntryLinePorts host={host} />
 			</div>
 		);

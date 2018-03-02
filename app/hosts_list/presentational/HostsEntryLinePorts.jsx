@@ -47,6 +47,7 @@ class HostsEntryLinePorts extends React.Component {
 
 		return (
 			<div>
+				<Divider hidden />
 				{ports.length !== 0 && <Divider />}
 				{ports.length !== 0 && <br />}
 				{ports}
