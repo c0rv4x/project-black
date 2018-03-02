@@ -1,4 +1,4 @@
-from sqlalchemy import or_, and_
+from black.black.db import HostDatabase, IPDatabase
 
 
 class Filters(object):
