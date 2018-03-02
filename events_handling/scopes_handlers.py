@@ -18,7 +18,8 @@ class IPHandlers(object):
             ip_page_size = msg.get('ip_page_size', 12)
             ip_filters = msg.get('ip_filters')
 
-            await self.send_ips_back(ip_filters, sio, project_uuid, ip_page, ip_page_size)
+            await self.send_ips_back(
+                ip_filters, sio, project_uuid, ip_page, ip_page_size)
 
         @self.socketio.on('ips:single:get', namespace='/ips')
         async def _cb_handle_scope_single_get(sio, msg):
@@ -58,9 +59,15 @@ class IPHandlers(object):
                     namespace='/ips'
                 )
 
-    async def send_ips_back(self, filters, sio=None, project_uuid=None, ip_page=0, ip_page_size=12):
-        """ Collects all relative hosts and ips from the manager and sends them back """
-        ips = self.scope_manager.get_ips(filters, project_uuid, ip_page, ip_page_size)
+    async def send_ips_back(
+        self, filters, sio=None,
+        project_uuid=None, ip_page=0, ip_page_size=12
+    ):
+        """ Collects all relative hosts and ips from
+        the manager and sends them back """
+
+        ips = self.scope_manager.get_ips(
+            filters, project_uuid, ip_page, ip_page_size)
 
         if sio is None:
             await self.socketio.emit(
@@ -110,7 +117,8 @@ class HostHandlers(object):
             host_page_size = msg.get('host_page_size', 12)
             host_filters = msg.get('host_filters', {})
 
-            await self.send_hosts_back(host_filters, sio, project_uuid, host_page, host_page_size)
+            await self.send_hosts_back(
+                host_filters, sio, project_uuid, host_page, host_page_size)
 
         @self.socketio.on('hosts:single:get', namespace='/hosts')
         async def _cb_handle_single_scope_get(sio, msg):
@@ -118,7 +126,7 @@ class HostHandlers(object):
             project_uuid = int(msg.get('project_uuid', None))
             hostname = msg.get('hostname')
 
-            await self.send_hosts_back({'host': [hostname]}, sio, project_uuid)
+            await self.send_single_host_back(hostname, project_uuid, sio)
 
         @self.socketio.on('hosts:resolve', namespace='/hosts')
         async def _cb_handle_scope_resolve(sio, msg):
@@ -164,9 +172,21 @@ class HostHandlers(object):
                     namespace='/hosts'
                 )
 
-    async def send_hosts_back(self, filters, sio=None, project_uuid=None, host_page=0, host_page_size=12):
-        """ Collects all relative hosts and ips from the manager and sends them back """
-        hosts = self.scope_manager.get_hosts(filters, project_uuid, host_page, host_page_size)
+    async def send_single_host_back(
+        self, host, project_uuid=None, sio=None
+    ):
+        """ Applies a filter to get only one host from the db """
+        self.send_hosts_back({'host': [hostname]}, sio, project_uuid)
+
+    async def send_hosts_back(
+        self, filters, sio=None, project_uuid=None,
+        host_page=0, host_page_size=12
+    ):
+        """ Collects all relative hosts and ips from
+        the manager and sends them back """
+
+        hosts = self.scope_manager.get_hosts(
+            filters, project_uuid, host_page, host_page_size)
         if sio is None:
             await self.socketio.emit(
                 'hosts:part:set', {
@@ -246,19 +266,6 @@ class ScopeHandlers(object):
 
                     added = True
                     new_scopes = create_result["new_scopes"]
-
-                    # for ip_address in ips:
-                    #     print("Adding ip {}".format(ip_address))
-                    #     create_result = self.scope_manager.create_ip(
-                    #         str(ip_address), project_uuid
-                    #     )
-
-                    #     if create_result["status"] == "success":
-                    #         new_scope = create_result["new_scope"]
-
-                    #         if new_scope:
-                    #             added = True
-                    #             new_scopes.append(new_scope)
                 else:
                     create_result = {
                         "status": 'error',
@@ -327,31 +334,37 @@ class ScopeHandlers(object):
             scope_type = msg['scope_type']
 
             # Delete new scope (and register it)
-            delete_result = self.scope_manager.delete_scope(scope_id=scope_id, scope_type=scope_type)
+            delete_result = self.scope_manager.delete_scope(
+                scope_id=scope_id, scope_type=scope_type)
 
             if delete_result["status"] == "success":
                 # Send the success result
                 if scope_type == 'ip_address':
                     await self.socketio.emit(
-                        'ips:delete', {'status': 'success',
-                                          '_id': scope_id,
-                                          'project_uuid': project_uuid},
+                        'ips:delete', {
+                            'status': 'success',
+                            '_id': scope_id,
+                            'project_uuid': project_uuid
+                        },
                         namespace='/ips'
                     )
                 else:
                     await self.socketio.emit(
-                        'hosts:delete', {'status': 'success',
-                                          '_id': scope_id,
-                                          'project_uuid': project_uuid},
+                        'hosts:delete', {
+                            'status': 'success',
+                            '_id': scope_id,
+                            'project_uuid': project_uuid
+                        },
                         namespace='/hosts'
                     )                    
             else:
                 # Error occured
                 await self.socketio.emit(
-                    'scopes:delete',
-                    {'status': 'error',
-                     'text': delete_result["text"],
-                     'project_uuid': project_uuid},
+                    'scopes:delete', {
+                        'status': 'error',
+                        'text': delete_result["text"],
+                        'project_uuid': project_uuid
+                    },
                     room=sio,
                     namespace='/scopes'
                 )

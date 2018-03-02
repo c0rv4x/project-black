@@ -9,7 +9,8 @@ class FileHandlers(object):
         self.socketio = socketio
         self.file_manager = file_manager
 
-        self.ip_regex = re.compile('^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$')
+        self.ip_regex = re.compile(
+            '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$')
 
     def register_handlers(self):
         """ Register a single handler for files data """
@@ -20,7 +21,6 @@ class FileHandlers(object):
             hostname = msg.get('hostname', None)
 
             await self.send_stats_back(project_uuid)
-
 
     async def notify_on_updated_files(self, project_uuid, updated_target=None):
         """ Send a notification that files for specific ids have changed """
@@ -41,7 +41,7 @@ class FileHandlers(object):
                     'updated_hostname': updated_target
                 },
                 namespace='/hosts'
-            )  
+            )
 
     async def send_stats_back(self, project_uuid=None):
         """ Get all files and send to all clients """

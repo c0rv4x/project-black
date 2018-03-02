@@ -8,7 +8,6 @@ class ScanHandlers(object):
         self.socketio = socketio
         self.scan_manager = scan_manager
 
-
     def register_handlers(self):
         """ Register the single handler for returning all scans """
         @self.socketio.on('scans:stats:get', namespace='/scans')
@@ -17,7 +16,6 @@ class ScanHandlers(object):
             project_uuid = int(msg.get('project_uuid', None))
 
             await self.send_stats_back(project_uuid)
-
 
     async def send_stats_back(self, project_uuid=None):
         amount = self.scan_manager.count(project_uuid)
