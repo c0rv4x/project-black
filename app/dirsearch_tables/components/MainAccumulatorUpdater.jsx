@@ -8,7 +8,7 @@ import TablesAccumulator from './TablesAccumulator.jsx'
 import { Loader, Dimmer } from 'semantic-ui-react'
 
 
-class TableUpdater extends React.Component {
+class MainAccumulatorUpdater extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -60,12 +60,13 @@ class TableUpdater extends React.Component {
 	}
 
 	renewHosts(page=this.pageNumberHost, filters=this.props.filters, pageSize=this.pageSize) {
+		console.log("Asking to renew hosts", filters);
 		var newFilters = filters;
 		if (!filters['files']) {
 			newFilters['files'] = ['%'];
 		}
 
-		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, newFilters, page, this.pageSize);
+		this.hostsEmitter.requestRenewHosts(this.props.project.project_uuid, newFilters, page, this.pageSize);
 	}
 
 	renewIps(page=this.pageNumberIp, filters=this.props.filters, pageSize=this.pageSize) {
@@ -74,7 +75,7 @@ class TableUpdater extends React.Component {
 			newFilters['files'] = ['%'];
 		}
 
-		this.ipsEmitter.requestRenewIPs(this.props.project_uuid, newFilters, page, this.pageSize);
+		this.ipsEmitter.requestRenewIPs(this.props.project.project_uuid, newFilters, page, this.pageSize);
 	}
 
 	getVisibleScopes() {
@@ -153,11 +154,13 @@ class TableUpdater extends React.Component {
 
 
 	render() {
+		const { ips, hosts, applyFilters, project } = this.props;
+
 		let scopes = this.getVisibleScopes();
 
 		scopes.selected = {
-			ips: this.props.ips.selected_ips,
-			hosts: this.props.hosts.selected_hosts
+			ips: ips.selected_ips,
+			hosts: hosts.selected_hosts
 		}
 
 		return (
@@ -166,10 +169,11 @@ class TableUpdater extends React.Component {
 					<Loader />
 			    </Dimmer>
 				<TablesAccumulator
-					applyFilters={this.props.applyFilters}
+					applyFilters={applyFilters}
 					ips={scopes.ips}
 					hosts={scopes.hosts}
 					selected={scopes.selected}
+					project_name={project.project_name}
 					changePage={this.changePage}
 					pageSize={this.pageSize}
 				/>
@@ -179,4 +183,4 @@ class TableUpdater extends React.Component {
 
 }
 
-export default TableUpdater;
+export default MainAccumulatorUpdater;

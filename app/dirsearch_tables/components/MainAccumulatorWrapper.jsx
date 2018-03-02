@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import MainAccumulator from './MainAccumulator.jsx';
+import MainAccumulatorFilters from './MainAccumulatorFilters.jsx';
 
 
 function mapStateToProps(state, ownProps) {
@@ -33,6 +33,6 @@ function mapStateToProps(state, ownProps) {
 
 const MainAccumulatorWrapper = connect(
 	mapStateToProps
-)(MainAccumulator)
+)(MainAccumulatorFilters)
 
 export default MainAccumulatorWrapper

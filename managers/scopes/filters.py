@@ -1,3 +1,6 @@
+from sqlalchemy import or_, and_
+
+
 class Filters(object):
 
     @staticmethod

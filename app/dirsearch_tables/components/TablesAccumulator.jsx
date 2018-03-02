@@ -6,7 +6,7 @@ import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
 import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
 import Search from '../../common/search/Search.jsx'
 
-import { Card } from 'semantic-ui-react'
+import { Card, Header, Divider } from 'semantic-ui-react'
 
 import DirsearchTable from './DirsearchTable.jsx'
 
@@ -27,9 +27,11 @@ class TablesAccumulator extends React.Component {
 	}
 
 	render() {
+		const { ips, hosts, project_name, applyFilters, changePage } = this.props;
+
 		let tables = [];
 
-		for (var each_ip of this.props.ips) {
+		for (var each_ip of ips) {
 			for (var each_port of each_ip.scans) {
 				let files = each_ip.files.filter((x) => {
 					return x.port_number == each_port.port_number;
@@ -44,7 +46,7 @@ class TablesAccumulator extends React.Component {
 			}
 		}
 
-		for (var each_host of this.props.hosts) {
+		for (var each_host of hosts) {
 			for (var each_ip_address of each_host.ip_addresses) {				
 				for (var each_port of each_ip_address.scans) {
 					let files = each_host.files.filter((x) => {
@@ -63,12 +65,14 @@ class TablesAccumulator extends React.Component {
 
 		return (
 			<div>
-				<Search applyFilters={this.props.applyFilters} />
+				<Divider hidden />
+				<Header as="h2">{project_name}</Header>
+				<Search applyFilters={applyFilters} />
 				<br />
 					{tables}
 				<br />
 				<ReactPaginate pageCount={this.state.pageCount}
-							   clickHandler={this.props.changePage} />
+							   clickHandler={changePage} />
 			</div>			
 		)
 	}

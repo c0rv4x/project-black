@@ -3,8 +3,6 @@ import React from 'react'
 
 import { Button } from 'semantic-ui-react'
 
-import FilteringButtons from '../presentational/FilteringButtons.jsx'
-
 
 class Filtering extends React.Component {
 	constructor(props) {

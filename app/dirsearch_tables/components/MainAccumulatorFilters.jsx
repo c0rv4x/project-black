@@ -1,10 +1,8 @@
-import _ from 'lodash'
 import React from 'react'
 
-import TableUpdater from './TableUpdater.jsx'
+import MainAccumulatorUpdater from './MainAccumulatorUpdater.jsx'
 
-
-class TableFilters extends React.Component {
+class MainAccumulatorFilters extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -19,22 +17,21 @@ class TableFilters extends React.Component {
 	}
 
 	applyFilters(filters) {
+		console.log("Applying filter", filters);
 		this.setState({
 			filters: filters
 		})
 	}
-
+    
 	render() {
 		return (
-			<TableUpdater
+			<MainAccumulatorUpdater
 				 filters={this.state.filters}
 				 applyFilters={this.applyFilters}
 				 {...this.props}
 			/>
 		)
 	}
-
 }
 
-
-export default TableFilters;
+export default MainAccumulatorFilters;

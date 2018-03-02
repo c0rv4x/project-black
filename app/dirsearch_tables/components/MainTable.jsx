@@ -1,8 +1,8 @@
 import _ from 'lodash'
 import React from 'react'
 
-import Filtering from './Filtering.jsx'
-import TableFilters from './TableFilters.jsx'
+import Filtering from '../presentational/Filtering.jsx'
+import TablesAccumulator from './TablesAccumulator.jsx'
 
 
 class MainTable extends React.Component {
@@ -16,17 +16,17 @@ class MainTable extends React.Component {
 		this.filters = {
 			"only_200": {
 				"name" : "Only 200",
-				"filter_function": ((x) => { return Math.floor(x.status_code / 100) === 2 } ),
+				"filter": "200",
 				"active": false
 			},
 			"only_400": {
 				"name" : "Only 400",
-				"filter_function": ((x) => { return x.status_code === 400 } ),
+				"filter": "400",
 				"active": false
 			},
 			"only_401": {
 				"name" : "Only 401",
-				"filter_function": ((x) => { return x.status_code === 401 } ),
+				"filter": "401",
 				"active": false
 			}
 		}
@@ -94,11 +94,11 @@ class MainTable extends React.Component {
 						   triggerFilter={this.triggerFilter.bind(this)} />
 				<br />
 
-				<TableFilters 
+				<TablesAccumulator 
 					ips={this.props.ips}
 				    hosts={this.props.hosts}
 				    files={files_filtered}
-				    project_uuid={project_uuid} 
+					applyFilters={this.props.applyFilters}
 				/>
 			</div>
 		)
