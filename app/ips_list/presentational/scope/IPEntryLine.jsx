@@ -6,8 +6,8 @@ import {
 	Table,
 	Header,
 	Divider,
-	Container,
 	Popup,
+	List,
 	Label
 } from 'semantic-ui-react'
 
@@ -21,7 +21,8 @@ class IPEntryLine extends React.Component {
 	}
 
 	render() {
-		const verbose_host_link = '/project/' + this.props.project_uuid + '/ip/' + this.props.ip.ip_address;
+		const { ip, project_uuid, deleteIP, onCommentSubmit } = this.props;
+		const verbose_host_link = '/project/' + project_uuid + '/ip/' + ip.ip_address;
 
 		const footer = (
 			<div>
@@ -31,12 +32,12 @@ class IPEntryLine extends React.Component {
 					</Button>
 	            </a>
 
-				<Button basic color="red" size="tiny" onClick={this.props.deleteIP}>
+				<Button basic color="red" size="tiny" onClick={deleteIP}>
 					Delete
 				</Button>
 			</div>
 		);
-		const ports = _.map(this.props.ip.scans.sort((a, b) => {
+		const ports = _.map(ip.scans.sort((a, b) => {
 			if (a["port_number"] > b["port_number"]) return 1;
 			if (a["port_number"] < b["port_number"]) return -1;
 			return 0;
@@ -50,34 +51,57 @@ class IPEntryLine extends React.Component {
 			)
 		});
 
-		let hostnames = this.props.ip.hostnames;
+		let hostnames = ip.hostnames;
 		let hostnames_view = null;
 
 			hostnames_view = hostnames.slice(0, 4).map((elem) => {
-				return <Label key={elem + '_' + this.props.ip.ip_address}>{elem}</Label>;
+				return <Label key={elem + '_' + ip.ip_address}>{elem}</Label>;
 			});
 			if (hostnames.length > 4) {
 				hostnames_view.push(
-					<Popup key={this.props.ip.ip_address + "_others"}
+					<Popup key={ip.ip_address + "_others"}
 						trigger={<Label>...</Label>}
 						content={
 							hostnames.slice(4).map((elem) => {
-								return <Label key={elem + '_' + this.props.ip.ip_address}>{elem}</Label>;
+								return <Label key={elem + '_' + ip.ip_address}>{elem}</Label>;
 							})
 						}
 					/>					
 				);
 			}
 
+		let files_by_statuses = {
+			'2xx': ip.files.filter((x) => {
+				return Math.floor(x.status_code / 100) === 2;
+			}).length,
+			'3xx': ip.files.filter((x) => {
+				return Math.floor(x.status_code / 100) === 3;
+			}).length,
+			'4xx': ip.files.filter((x) => {
+				return Math.floor(x.status_code / 100) === 4 && x.status_code !== 404;
+			}).length,	
+			'5xx': ip.files.filter((x) => {
+				return Math.floor(x.status_code / 100) === 5 && x.status_code !== 404;
+			}).length						
+		};
 
 		const description = (
 			<div>
-				<Header>{this.props.ip.ip_address}</Header>
+				<Header>{ip.ip_address}</Header>
 				<Divider/>
-				<ScopeComment comment={this.props.ip.comment}
-						  	  onCommentSubmit={this.props.onCommentSubmit} />
+				<ScopeComment comment={ip.comment}
+						  	  onCommentSubmit={onCommentSubmit} />
 
 				<div style={{"wordBreak": "break-all"}}>{hostnames_view}</div>
+
+				<Divider hidden />
+				<List bulleted>
+					<List.Item>2xx: <strong>{files_by_statuses['2xx']}</strong></List.Item> 
+					<List.Item>3xx: {files_by_statuses['3xx']}</List.Item>
+					<List.Item>4xx: {files_by_statuses['4xx']}</List.Item>
+					<List.Item>5xx: {files_by_statuses['5xx']}</List.Item>
+				</List>
+				<Divider hidden />
 
 				<Table basic="very">
 					<Table.Body>
