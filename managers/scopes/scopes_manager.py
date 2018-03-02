@@ -211,7 +211,7 @@ class ScopeManager(object):
             ).join(files_query_aliased, HostDatabase.files, isouter=(not files_filters_exist)
             )
 
-        hosts_query_subq = aliased(HostDatabase, hosts_query.subquery('hosts_parsed'))
+        # hosts_query_subq = aliased(HostDatabase, hosts_query.subquery('hosts_parsed'))
 
         # Perform pagination
 
