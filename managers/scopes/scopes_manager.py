@@ -122,7 +122,7 @@ class ScopeManager(object):
             .count()
         )
 
-        # Now select hosts, outer joining them with
+        # Now select hosts, joining them with
         # all other subqueries from the prev step
         hosts_from_db = (
             session.query(HostDatabase)
