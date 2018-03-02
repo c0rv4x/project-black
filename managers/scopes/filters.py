@@ -1,3 +1,5 @@
+from black.black.db import HostDatabase, IPDatabase
+
 class Filters(object):
 
     @staticmethod
