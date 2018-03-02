@@ -42,7 +42,6 @@ class Resolver(object):
             host = self.task_queue.get()
             self.resolve_single_host(host)
 
-
     def resolve_single_host(self, host):
         project_uuid = host.get_project_uuid()
         hostname = host.get_hostname()
@@ -57,10 +56,14 @@ class Resolver(object):
                     for address in answer:
                         # Lets find if the new IP already exists in the DB
                         new_ip = str(address)
-                        if not re.match(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', new_ip):
+                        if not re.match(
+                            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', new_ip
+                        ):
                             continue
 
-                        self.result_queue.put_nowait((host, new_ip, project_uuid))
+                        self.result_queue.put_nowait(
+                            (host, new_ip, project_uuid)
+                        )
 
             except dns.resolver.NXDOMAIN as e:
                 return {

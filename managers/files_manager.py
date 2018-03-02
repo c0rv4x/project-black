@@ -14,9 +14,15 @@ class FileManager(object):
         assert project_uuid is not None
 
         session = self.sessions.get_new_session()
-
-        amount = session.query(FileDatabase).filter(FileDatabase.project_uuid == project_uuid).count()
-
+        amount = (
+            session.query(
+                FileDatabase
+            )
+            .filter(
+                FileDatabase.project_uuid == project_uuid
+            )
+            .count()
+        )
         self.sessions.destroy_session(session)
 
         return amount

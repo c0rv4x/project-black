@@ -15,7 +15,7 @@ class TaskStarter(object):
                 ShadowTask(
                     task_id=None,
                     task_type='masscan',
-                    target=','.join(targets[i * 100 : (i + 1) * 100]),
+                    target=','.join(targets[i * 100:(i + 1) * 100]),
                     params=params,
                     project_uuid=project_uuid,
                     exchange=exchange))
@@ -73,7 +73,11 @@ class TaskStarter(object):
                         ShadowTask(
                             task_id=None,
                             task_type='dirsearch',
-                            target=each_ip['ip_address'] + ':' + str(each_port['port_number']),
+                            target=(
+                                each_ip['ip_address'] +
+                                ':' +
+                                str(each_port['port_number'])
+                            ),
                             params=params,
                             project_uuid=project_uuid,
                             exchange=exchange))                
@@ -86,18 +90,21 @@ class TaskStarter(object):
                 for each_ip in each_host['ip_addresses']:
                     for each_port in each_ip['scans']:
                         ports.add(each_port['port_number'])
-                        
+
                 for each_port in ports:
                     tasks.append(
                         ShadowTask(
                             task_id=None,
                             task_type='dirsearch',
-                            target='{}:{}'.format(each_host['hostname'],str(each_port)),
+                            target=(
+                                '{}:{}'.format(
+                                    each_host['hostname'], str(each_port)
+                                )
+                            ),
                             params=params,
                             project_uuid=project_uuid,
                             exchange=exchange))
 
-            
         for task in tasks:
             task.send_start_task()
 
