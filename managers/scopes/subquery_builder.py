@@ -1,3 +1,10 @@
+from sqlalchemy import desc
+from sqlalchemy.orm import aliased, contains_eager
+
+from black.black.db import ScanDatabase, FileDatabase
+from managers.scopes.filters import Filters
+
+
 class SubqueryBuilder:
     @staticmethod
     def build_scans_subquery(session, project_uuid, parsed_filters):
