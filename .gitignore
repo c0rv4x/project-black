@@ -3,3 +3,4 @@ public/
 .env/
 __pycache__/
 black/
+.vscode
