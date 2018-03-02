@@ -1,8 +1,7 @@
 import uuid
 import aiodns
 import asyncio
-from sqlalchemy import desc, or_, and_
-from sqlalchemy.orm import aliased, joinedload, subqueryload, contains_eager
+from sqlalchemy.orm import aliased, joinedload, contains_eager
 
 from black.black.db import (Sessions, IPDatabase, ProjectDatabase,
                             HostDatabase, ScanDatabase, FileDatabase)
