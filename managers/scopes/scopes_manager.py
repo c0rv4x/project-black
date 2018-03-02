@@ -6,129 +6,8 @@ from sqlalchemy.orm import aliased, joinedload, subqueryload, contains_eager
 
 from black.black.db import (Sessions, IPDatabase, ProjectDatabase,
                             HostDatabase, ScanDatabase, FileDatabase)
-
-
-class Filters(object):
-
-    @staticmethod
-    def parse_filters(filters):
-        parsed_filters = {
-            'ips': [],
-            'hosts': [],
-            'ports': [],
-            'banners': [],
-            'protocols': [],
-            'files': []
-        }
-
-        for key in filters.keys():
-            filter_value = filters[key]
-            for each_filter_value in filter_value:
-                if key == 'ip':
-                    if '%' in each_filter_value:
-                        parsed_filters['ips'].append(
-                            IPDatabase.target.like(each_filter_value))
-                    else:
-                        parsed_filters['ips'].append(
-                            IPDatabase.target == each_filter_value)
-                elif key == 'host':
-                    if '%' in each_filter_value:
-                        parsed_filters['hosts'].append(
-                            HostDatabase.target.like(each_filter_value))
-                    else:
-                        parsed_filters['hosts'].append(
-                            HostDatabase.target == each_filter_value)
-                elif key == 'port':
-                    parsed_filters['ports'].append(each_filter_value)
-                elif key == 'banner':
-                    parsed_filters['banners'].append(each_filter_value)
-                elif key == 'protocol':
-                    parsed_filters['protocols'].append(each_filter_value)
-                elif key == 'files':
-                    parsed_filters['files'].append(each_filter_value)
-
-        return parsed_filters
-
-    @staticmethod
-    def build_scans_filters(parsed_filters, alias):
-        filters_exist = (
-            parsed_filters['ports'] or
-            parsed_filters['protocols'] or
-            parsed_filters['banners']
-        )
-        scans_filters = []
-
-        negative_filter_found = False
-
-        # If there are no filters, return
-        if filters_exist:
-            ports_filters_list = []
-            for port_number in parsed_filters['ports']:
-                if port_number == '%':
-                    ports_filters_list.append(alias.port_number > 0)
-                else:
-                    if port_number[0] == '!':
-                        negative_filter_found = True
-                        ports_filters_list.append(
-                            alias.port_number != port_number[1:])
-                    else:
-                        ports_filters_list.append(
-                            alias.port_number == port_number)
-
-            protocols_filters_list = []
-            for protocol in parsed_filters['protocols']:
-                if '%' in protocol:
-                    protocols_filters_list.append(
-                        alias.protocol.ilike(protocol))
-                else:
-                    protocols_filters_list.append(
-                        alias.protocol == protocol)
-
-            banners_filters_list = []
-            for banner in parsed_filters['banners']:
-                if '%' in banner:
-                    banners_filters_list.append(
-                        alias.banner.ilike(banner))
-                else:
-                    banners_filters_list.append(
-                        alias.banner == banner)
-
-            if negative_filter_found:
-                scans_filters = [
-                    and_(*ports_filters_list),
-                    or_(*protocols_filters_list),
-                    or_(*banners_filters_list)
-                ]
-            else:
-                scans_filters = [
-                    or_(*ports_filters_list),
-                    or_(*protocols_filters_list),
-                    or_(*banners_filters_list)
-                ]
-
-        return scans_filters
-
-    @staticmethod
-    def build_files_filters(parsed_filters, alias):
-        filters_exist = parsed_filters['files']
-        files_filters = []
-
-        # If there are no filters, return
-        if filters_exist:
-            status_code_filters = []
-            for status_code in parsed_filters['files']:
-                if status_code == '%':
-                    status_code_filters.append(
-                        alias.status_code > 0)
-                else:
-                    status_code_filters.append(
-                        alias.status_code == status_code)
-
-            status_code_filter = or_(*status_code_filters)
-
-            files_filters = [status_code_filter]
-
-        return files_filters
+from managers.scopes.filters import Filters
+from managers.scopes.subquery_builder import SubqueryBuilder
 
 
 class ScopeManager(object):
@@ -143,74 +22,6 @@ class ScopeManager(object):
         self.hosts = {}
 
         self.session_spawner = Sessions()
-
-    @staticmethod
-    def build_scans_subquery(session, project_uuid, parsed_filters):
-        # Create a query for selection unique, ordered and filtered scans
-
-        # Select distinc scans (we need only the latest)
-        subq = (
-            session.query(
-                ScanDatabase
-            )
-            .filter(ScanDatabase.project_uuid == project_uuid)
-            .order_by(desc(ScanDatabase.date_added))
-            .subquery('project_scans_ordered')
-        )
-        alias_ordered = aliased(ScanDatabase, subq)
-        ordered = session.query(alias_ordered)
-
-        # Create a list of filters which will be applied against scans
-        scans_filters = Filters.build_scans_filters(
-            parsed_filters, alias_ordered)
-
-        scans_ordered_distinct = ordered.distinct(
-            alias_ordered.target, alias_ordered.port_number)
-
-        # Use filters
-        scans_from_db = (
-            scans_ordered_distinct
-            .filter(*scans_filters)
-            .subquery('scans_distinct_filtered')
-        )
-
-        return scans_from_db
-
-    @staticmethod
-    def build_files_subquery(session, project_uuid, parsed_filters):
-        """ Creates a query for selection unique,
-        ordered and filtered files """
-
-        # Select distinc files, let's select unique tuples
-        #   (file_path, status_code, content_length)
-        subq = (
-            session.query(
-                FileDatabase
-            )
-            .filter(FileDatabase.project_uuid == project_uuid)
-            .order_by(desc(FileDatabase.date_added))
-            .subquery('project_files_ordered')
-        )
-        alias_ordered = aliased(FileDatabase, subq)
-        ordered = session.query(alias_ordered)
-
-        # Create a list of filters which will be applied against scans
-        files_filters = Filters.build_files_filters(
-            parsed_filters, alias_ordered)
-
-        files_ordered_distinct = ordered.distinct(
-            alias_ordered.file_path,
-            alias_ordered.status_code,
-            alias_ordered.content_length)
-
-        # Use filters
-        files_from_db = (
-            files_ordered_distinct
-            .filter(*files_filters)
-            .subquery('files_distinct_filtered')
-        )
-
-        return files_from_db
 
     def get_hosts(
         self, filters,  project_uuid,
@@ -232,7 +43,7 @@ class ScopeManager(object):
 
         scans_filters_exist = len(parsed_filters['ports']) != 0
 
-        scans_from_db = self.build_scans_subquery(
+        scans_from_db = SubqueryBuilder.build_scans_subquery(
             session, project_uuid, parsed_filters)
 
         # Create IPS subquery
@@ -256,7 +67,7 @@ class ScopeManager(object):
 
         files_filters_exist = len(parsed_filters['files']) != 0
 
-        files_query_aliased = self.build_files_subquery(
+        files_query_aliased = SubqueryBuilder.build_files_subquery(
             session, project_uuid, parsed_filters)
 
         # Create hosts subquery
@@ -391,7 +202,7 @@ class ScopeManager(object):
         # SCANS
 
         scans_filters_exist = len(parsed_filters['ports']) != 0
-        scans_from_db = self.build_scans_subquery(
+        scans_from_db = SubqueryBuilder.build_scans_subquery(
             session, project_uuid, parsed_filters)
 
         # /SCANS
@@ -520,7 +331,6 @@ class ScopeManager(object):
                 lambda host: host.target, ip_object.hostnames
             ))
 
-        hostnames = [] if no
         return {
             "ip_id": ip_object.id,
             "ip_address": ip_object.target,
