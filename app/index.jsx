@@ -8,6 +8,8 @@ import Routing from './common/main_page/Routing.jsx'
 
 import { Container } from 'semantic-ui-react'
 
+import '../semantic/dist/semantic.min.css';
+
 
 var mainStore = createStore(rdcs);
 
