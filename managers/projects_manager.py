@@ -172,7 +172,8 @@ class ProjectManager(object):
             if project_name:
                 found_project.set_project_name(project_name)
 
-            found_project.comment = comment
+            if comment is not None:
+                found_project.comment = comment
 
             update_result = found_project.update()
 
