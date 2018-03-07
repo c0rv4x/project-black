@@ -5,7 +5,7 @@ import Search from '../../common/search/Search.jsx'
 import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
 import HostsEntryLine from '../presentational/HostsEntryLine.jsx'
 
-import { Card } from 'semantic-ui-react'
+import { Card, Grid, Container } from 'semantic-ui-react'
 
 class HostsTable extends React.Component {
 
@@ -66,16 +66,43 @@ class HostsTable extends React.Component {
 								   deleteScope={() => this.props.deleteScope(x.host_id)} />
 		});
 
+		let hosts_group = [];
+
+		let columns = 3;
+		for (var i = 0; i < scopes.length + columns - 1; i += columns) {
+			console.warn("hosttable:78", "not sure if this works ok, double check plz");
+			let hosts_slice = scopes.slice(i, Math.min(scopes.length, i + columns));
+
+			let host_key_sum = '';
+			let hosts_slice_formatted = hosts_slice.map((host) => {
+				host_key_sum += host.key + ',';
+
+				return (
+					<Grid.Column key={host.key + '__'}>
+						{host}
+					</Grid.Column>
+				);
+			});
+
+			hosts_group = hosts_group.concat(
+				<Grid.Row key={host_key_sum}>
+					{hosts_slice_formatted}
+				</Grid.Row>
+			);
+		}
+
 		return (
 			<div>
 				<Search applyFilters={this.props.applyFilters} />
 				<br />
-				<Card.Group>
-					{scopes}
-				</Card.Group>
+				<Container>
+					<Grid columns={columns}>
+						{hosts_group}
+					</Grid>
+				</Container>
 				<br />
 				<ReactPaginate pageCount={this.state.pageCount}
-							   clickHandler={this.handlePageClick} />	
+							   clickHandler={this.handlePageClick} />
 			</div>
 		)
 	}

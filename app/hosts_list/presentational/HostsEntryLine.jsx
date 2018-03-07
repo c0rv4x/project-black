@@ -93,7 +93,7 @@ class HostsEntryLine extends React.Component {
 		);
 
 		return (
-			<Card color="blue">
+			<Card color="blue" fluid>
 				<Card.Content description={description} />
 				<Card.Content extra>{footer}</Card.Content>
 			</Card>			
