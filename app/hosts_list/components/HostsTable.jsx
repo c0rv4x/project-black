@@ -85,7 +85,7 @@ class HostsTable extends React.Component {
 			});
 
 			hosts_group = hosts_group.concat(
-				<Grid.Row key={host_key_sum}>
+				<Grid.Row stretched key={host_key_sum}>
 					{hosts_slice_formatted}
 				</Grid.Row>
 			);

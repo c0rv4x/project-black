@@ -90,7 +90,7 @@ class IPTable extends React.Component {
 			});
 
 			ips_groups = ips_groups.concat(
-				<Grid.Row key={ip_key_sum}>
+				<Grid.Row stretched key={ip_key_sum}>
 					{ips_slice_formatted}
 				</Grid.Row>
 			);
