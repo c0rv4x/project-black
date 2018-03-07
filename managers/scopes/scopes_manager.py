@@ -198,24 +198,18 @@ class ScopeManager(object):
         # Parse filters into an object for more comfortable work
         parsed_filters = Filters.parse_filters(filters)
 
-        # SCANS
-
+        # Scans
         scans_filters_exist = len(parsed_filters['ports']) != 0
         scans_from_db = SubqueryBuilder.build_scans_subquery(
             session, project_uuid, parsed_filters)
 
-        # /SCANS
-        files_filters = parsed_filters['files']
-        files_filters_exist = len(files_filters) != 0
-        files_query = (
-            session.query(
-                FileDatabase
-            )
-            .filter(FileDatabase.project_uuid == project_uuid)
-        )
-        files_query_aliased = aliased(
-            FileDatabase, files_query.subquery('files_filtered'))
+        # Files
 
+        files_filters_exist = len(parsed_filters['files']) != 0
+
+        files_query_aliased = SubqueryBuilder.build_files_subquery(
+            session, project_uuid, parsed_filters)
+        
         # Now select ips, outer joining them with scans
         ips_query = (
             session.query(IPDatabase)
@@ -223,7 +217,6 @@ class ScopeManager(object):
                 IPDatabase.project_uuid == project_uuid,
                 *parsed_filters['ips']
             )
-            .from_self()
             .join(
                 scans_from_db, IPDatabase.ports,
                 isouter=(not scans_filters_exist)
@@ -291,8 +284,10 @@ class ScopeManager(object):
                         IPDatabase.files, alias=files_query_aliased
                     ),
                     contains_eager(
-                        IPDatabase.ports, alias=scans_from_db)
+                        IPDatabase.ports, alias=scans_from_db
                     )
+                )
+                .order_by(IPDatabase.target)
                 .all()
             )
 
