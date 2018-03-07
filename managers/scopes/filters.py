@@ -1,6 +1,45 @@
-from sqlalchemy import or_, and_
+from sqlalchemy import Integer, or_, and_
 
-from black.black.db import HostDatabase, IPDatabase
+from black.black.db import (
+    HostDatabase, IPDatabase, ScanDatabase, FileDatabase
+)
+
+
+def get_filter_clause(column, plist):
+    '''Return a filter clause under given table column
+
+    Keyword arguments:
+    column -- sql tables' column filter is applied to
+    plist -- list of patterns, like ['*foo*', '!*foo1*']
+    '''
+    clause = []
+    print(type(plist), plist, 11)
+    for pattern in plist:
+        print(122, pattern)
+        if pattern:
+            if isinstance(column.type, Integer):
+                if pattern.startswith('!'):
+                    clause.append(column != int(pattern))
+                else:
+                    if pattern == '%':
+                        clause.append(column > 0)
+                    else:
+                        clause.append(column == int(pattern))
+                        print(111, clause)
+            else:
+                if pattern.startswith('!'):
+                    pattern = pattern[1:]
+                    if '%' in pattern:
+                        clause.append(~column.like(pattern.replace('*', '%')))
+                    else:
+                        clause.append(column != pattern)
+                else:
+                    if '%' in pattern:
+                        clause.append(column.like(pattern.replace('*', '%')))
+                    else:
+                        clause.append(column == pattern)
+
+    return clause
 
 
 class Filters(object):
@@ -20,19 +59,13 @@ class Filters(object):
             filter_value = filters[key]
             for each_filter_value in filter_value:
                 if key == 'ip':
-                    if '%' in each_filter_value:
-                        parsed_filters['ips'].append(
-                            IPDatabase.target.like(each_filter_value))
-                    else:
-                        parsed_filters['ips'].append(
-                            IPDatabase.target == each_filter_value)
+                    parsed_filters['ips'] = get_filter_clause(
+                        IPDatabase.target, each_filter_value
+                    )
                 elif key == 'host':
-                    if '%' in each_filter_value:
-                        parsed_filters['hosts'].append(
-                            HostDatabase.target.like(each_filter_value))
-                    else:
-                        parsed_filters['hosts'].append(
-                            HostDatabase.target == each_filter_value)
+                    parsed_filters['hosts'] = get_filter_clause(
+                        HostDatabase.target, each_filter_value
+                    )
                 elif key == 'port':
                     parsed_filters['ports'].append(each_filter_value)
                 elif key == 'banner':
@@ -53,74 +86,28 @@ class Filters(object):
         )
         scans_filters = []
 
-        negative_filter_found = False
-
-        # If there are no filters, return
         if filters_exist:
-            ports_filters_list = []
-            for port_number in parsed_filters['ports']:
-                if port_number == '%':
-                    ports_filters_list.append(alias.port_number > 0)
-                else:
-                    if port_number[0] == '!':
-                        negative_filter_found = True
-                        ports_filters_list.append(
-                            alias.port_number != port_number[1:])
-                    else:
-                        ports_filters_list.append(
-                            alias.port_number == port_number)
-
-            protocols_filters_list = []
-            for protocol in parsed_filters['protocols']:
-                if '%' in protocol:
-                    protocols_filters_list.append(
-                        alias.protocol.ilike(protocol))
-                else:
-                    protocols_filters_list.append(
-                        alias.protocol == protocol)
-
-            banners_filters_list = []
-            for banner in parsed_filters['banners']:
-                if '%' in banner:
-                    banners_filters_list.append(
-                        alias.banner.ilike(banner))
-                else:
-                    banners_filters_list.append(
-                        alias.banner == banner)
-
-            if negative_filter_found:
-                scans_filters = [
-                    and_(*ports_filters_list),
-                    or_(*protocols_filters_list),
-                    or_(*banners_filters_list)
-                ]
-            else:
-                scans_filters = [
-                    or_(*ports_filters_list),
-                    or_(*protocols_filters_list),
-                    or_(*banners_filters_list)
-                ]
+            scans_filters += get_filter_clause(
+                alias.port_number, parsed_filters['ports']
+            )
+            scans_filters += get_filter_clause(
+                alias.protocol, parsed_filters['protocols']
+            )
+            scans_filters += get_filter_clause(
+                alias.banner, parsed_filters['banners']
+            )
 
         return scans_filters
 
     @staticmethod
     def build_files_filters(parsed_filters, alias):
-        filters_exist = parsed_filters['files']
+        filters_exist = len(parsed_filters['files']) != 0
         files_filters = []
 
         # If there are no filters, return
         if filters_exist:
-            status_code_filters = []
-            for status_code in parsed_filters['files']:
-                if status_code == '%':
-                    status_code_filters.append(
-                        alias.status_code > 0)
-                else:
-                    status_code_filters.append(
-                        alias.status_code == status_code)
-
-            status_code_filter = or_(*status_code_filters)
-
-            files_filters = [status_code_filter]
+            files_filters += get_filter_clause(
+                alias.status_code, parsed_filters['files']
+            )
 
         return files_filters

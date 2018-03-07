@@ -59,6 +59,7 @@ class SubqueryBuilder:
         # Create a list of filters which will be applied against scans
         files_filters = Filters.build_files_filters(
             parsed_filters, alias_ordered)
+        print(files_filters)
 
         files_ordered_distinct = ordered.distinct(
             alias_ordered.file_path,
