@@ -8,7 +8,8 @@ import {
 	Divider,
 	Popup,
 	List,
-	Label
+	Label,
+	Image
 } from 'semantic-ui-react'
 
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'

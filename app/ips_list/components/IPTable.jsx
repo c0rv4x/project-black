@@ -7,7 +7,7 @@ import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.j
 import IPEntryLine from '../presentational/scope/IPEntryLine.jsx'
 import Search from '../../common/search/Search.jsx'
 
-import { Card } from 'semantic-ui-react'
+import { Card, Grid, Container } from 'semantic-ui-react'
 
 
 class IPTable extends React.Component {
@@ -71,13 +71,40 @@ class IPTable extends React.Component {
 								deleteIP={() => this.props.deleteScope(x.ip_id)} />
 		});
 
+		let ips_groups = [];
+
+		let columns = 3;
+		for (var i = 0; i < ips.length + columns - 1; i += columns) {
+			console.warn("IPtable:78", "not sure if this works ok, double check plz");
+			let ips_slice = ips.slice(i, Math.min(ips.length, i + columns));
+
+			let ip_key_sum = '';
+			let ips_slice_formatted = ips_slice.map((ip) => {
+				ip_key_sum += ip.key + ',';
+
+				return (
+					<Grid.Column key={ip.key + '__'}>
+						{ip}
+					</Grid.Column>
+				);
+			});
+
+			ips_groups = ips_groups.concat(
+				<Grid.Row key={ip_key_sum}>
+					{ips_slice_formatted}
+				</Grid.Row>
+			);
+		}
+
 		return (
 			<div>
 				<Search applyFilters={this.props.applyFilters} />
 				<br />
-				<Card.Group>
-					{ips}
-				</Card.Group>
+				<Container>
+					<Grid columns={columns}>
+						{ips_groups}
+					</Grid>
+				</Container>
 				<br />
 				<ReactPaginate pageCount={this.state.pageCount}
 							   clickHandler={this.handlePageClick} />
