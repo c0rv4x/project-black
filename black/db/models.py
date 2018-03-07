@@ -8,7 +8,6 @@ from managers.scopes.host import HostInternal
 from managers.scopes.ip import IP_addr
 
 
-
 class IP_addr(Base):
     """ Kepps the data on scope:
     * Hostnames
@@ -38,7 +37,9 @@ class IP_addr(Base):
     @declared_attr
     def task_id(cls):
         return Column(
-            String, ForeignKey('tasks.task_id', ondelete='SET NULL'), default=None
+            String,
+            ForeignKey('tasks.task_id', ondelete='SET NULL'),
+            default=None
         )
 
     # Date of adding
@@ -49,5 +50,3 @@ class IP_addr(Base):
                         ip_address='%s', project_uuid='%s')>""" % (
             self.ip_id, self.hostnames, self.ip_address, self.project_uuid
         )
-
-

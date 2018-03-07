@@ -9,7 +9,7 @@ class Sessions(object):
     def __init__(self):
         self.engine = create_engine(
             'postgresql+psycopg2://black:black101@127.0.0.1:5432/black',
-            echo=True,
+            # echo=True,
             use_batch_mode=True)
         self.session_builder = sessionmaker(
             bind=self.engine, expire_on_commit=False)
