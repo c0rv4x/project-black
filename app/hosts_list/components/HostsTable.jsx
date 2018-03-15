@@ -70,7 +70,6 @@ class HostsTable extends React.Component {
 
 		let columns = 3;
 		for (var i = 0; i < scopes.length + columns - 1; i += columns) {
-			console.warn("hosttable:78", "not sure if this works ok, double check plz");
 			let hosts_slice = scopes.slice(i, Math.min(scopes.length, i + columns));
 
 			let host_key_sum = '';

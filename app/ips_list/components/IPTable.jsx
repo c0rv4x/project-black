@@ -75,7 +75,6 @@ class IPTable extends React.Component {
 
 		let columns = 3;
 		for (var i = 0; i < ips.length + columns - 1; i += columns) {
-			console.warn("IPtable:78", "not sure if this works ok, double check plz");
 			let ips_slice = ips.slice(i, Math.min(ips.length, i + columns));
 
 			let ip_key_sum = '';
