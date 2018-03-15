@@ -98,13 +98,24 @@ class TitleButtonsWithHandlers extends React.Component {
 									"preformed_options": [
 										{
 											"name": "All Ports",
-											"options": "-p1-65535"
+											"options": {
+												"argv": "-p1-65535"
+											}											
 										},
 										{
 											"name": "Top ports",
-											"options": "--top-ports=2500"
+											"options": {
+												"argv": "--top-ports=2500"
+											}
 										}
-									]
+									],
+									"available_options": [
+										{
+											"name": "argv",
+											"type": "text",
+											"default_value": ""
+										}
+									]									
 						  		},
 						  		{
 						  			"name": "Nmap Only Open Ports",
