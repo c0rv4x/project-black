@@ -13,9 +13,7 @@ def get_filter_clause(column, plist):
     plist -- list of patterns, like ['*foo*', '!*foo1*']
     '''
     clause = []
-    print(type(plist), plist, 11)
     for pattern in plist:
-        print(122, pattern)
         if pattern:
             if isinstance(column.type, Integer):
                 if pattern.startswith('!'):
@@ -25,7 +23,6 @@ def get_filter_clause(column, plist):
                         clause.append(column > 0)
                     else:
                         clause.append(column == int(pattern))
-                        print(111, clause)
             else:
                 if pattern.startswith('!'):
                     pattern = pattern[1:]
@@ -57,23 +54,23 @@ class Filters(object):
 
         for key in filters.keys():
             filter_value = filters[key]
-            for each_filter_value in filter_value:
-                if key == 'ip':
-                    parsed_filters['ips'] = get_filter_clause(
-                        IPDatabase.target, each_filter_value
-                    )
-                elif key == 'host':
-                    parsed_filters['hosts'] = get_filter_clause(
-                        HostDatabase.target, each_filter_value
-                    )
-                elif key == 'port':
-                    parsed_filters['ports'].append(each_filter_value)
-                elif key == 'banner':
-                    parsed_filters['banners'].append(each_filter_value)
-                elif key == 'protocol':
-                    parsed_filters['protocols'].append(each_filter_value)
-                elif key == 'files':
-                    parsed_filters['files'].append(each_filter_value)
+
+            if key == 'ip':
+                parsed_filters['ips'] = get_filter_clause(
+                    IPDatabase.target, filter_value
+                )
+            elif key == 'host':
+                parsed_filters['hosts'] = get_filter_clause(
+                    HostDatabase.target, filter_value
+                )
+            elif key == 'port':
+                parsed_filters['ports'] += filter_value
+            elif key == 'banner':
+                parsed_filters['banners'] += filter_value
+            elif key == 'protocol':
+                parsed_filters['protocols'] += filter_value
+            elif key == 'files':
+                parsed_filters['files'] += filter_value
 
         return parsed_filters
 
