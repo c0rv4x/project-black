@@ -1,6 +1,7 @@
 import uuid
 import aiodns
 import asyncio
+import datetime
 from sqlalchemy.orm import aliased, joinedload, contains_eager
 
 from black.black.db import (Sessions, IPDatabase, ProjectDatabase,
@@ -204,12 +205,11 @@ class ScopeManager(object):
             session, project_uuid, parsed_filters)
 
         # Files
-
         files_filters_exist = len(parsed_filters['files']) != 0
 
         files_query_aliased = SubqueryBuilder.build_files_subquery(
             session, project_uuid, parsed_filters)
-        
+
         # Now select ips, outer joining them with scans
         ips_query = (
             session.query(IPDatabase)
