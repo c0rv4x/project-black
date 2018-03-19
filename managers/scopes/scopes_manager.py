@@ -209,7 +209,7 @@ class ScopeManager(object):
 
         files_query_aliased = SubqueryBuilder.build_files_subquery(
             session, project_uuid, parsed_filters)
-        
+
         # Now select ips, outer joining them with scans
         ips_query = (
             session.query(IPDatabase)

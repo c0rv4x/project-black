@@ -17,6 +17,7 @@ def get_filter_clause(column, plist):
         if pattern:
             if isinstance(column.type, Integer):
                 if pattern.startswith('!'):
+                    pattern = pattern[1:]
                     clause.append(column != int(pattern))
                 else:
                     if pattern == '%':
