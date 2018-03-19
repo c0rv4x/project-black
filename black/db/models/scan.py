@@ -12,8 +12,10 @@ class ScanDatabase(Base):
     # Primary key (probably uuid4)
     scan_id = Column(String, primary_key=True)
 
-    # Target is (probably) host/ip
-    target = Column(String)
+    # The name of the related project
+    target = Column(
+        String, ForeignKey('ips.id', ondelete='CASCADE')
+    )
 
     # TCP port number
     port_number = Column(Integer)
@@ -32,11 +34,10 @@ class ScanDatabase(Base):
 
     # The name of the related project
     project_uuid = Column(
-        String, ForeignKey('projects.project_uuid', ondelete='CASCADE')
+        Integer, ForeignKey('projects.project_uuid', ondelete='CASCADE'), index=True
     )
 
     # Date of added
-    date_added = Column(DateTime, default=datetime.datetime.utcnow)
-    # def __repr__(self):
-    #    return "<Scan(project_uuid='%s'>" % (
-    #                         self.project_uuid)
+    date_added = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    def __repr__(self):
+       return "<Scan(port_number='%s'>" % (self.port_number)

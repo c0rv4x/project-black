@@ -27,8 +27,6 @@ from .lib.output import CLIOutput
 
 class Program(object):
     def __init__(self, url, task_id, project_uuid, socket_path, params_object):
-        self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        self.socket.connect(socket_path)
         self.arguments = ArgumentParser(url, **params_object)
         self.output = CLIOutput()
         self.saver = Saver(task_id, project_uuid)

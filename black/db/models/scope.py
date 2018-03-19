@@ -2,15 +2,15 @@ import datetime
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
-from .scope import Scope, association_table
+from .base import Base, association_table
 
 
-class IPDatabase(Scope):
+class Scope(Base):
     """ Kepps the data on scope:
     * Hostnames
     * IPs
     * Related data (like, 'scope_id' and the project name)  """
-    __tablename__ = 'ips'
+    __tablename__ = 'scopes'
 
     # Primary key (probably uuid4)
     id = Column(String, primary_key=True)
@@ -23,7 +23,7 @@ class IPDatabase(Scope):
     comment = Column(String)
 
     # A list of files which is associated with the current scope
-    files = relationship('FileDatabase', cascade="all, delete-orphan", lazy='select', primaryjoin="IPDatabase.target == foreign(FileDatabase.target)")
+    files = relationship('FileDatabase', cascade="all, delete-orphan", lazy='select', primaryjoin="Scope.target == foreign(FileDatabase.target)")
 
     # The name of the related project
     project_uuid = Column(
@@ -39,24 +39,7 @@ class IPDatabase(Scope):
     # Date of adding
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
 
-    # The hostnames that point to this IP
-    hostnames = relationship(
-        "HostDatabase",
-        secondary=association_table,
-        back_populates="ip_addresses",
-        lazy='noload'
-    )
-
-    # Open ports
-    ports = relationship('ScanDatabase', cascade="all, delete-orphan", lazy='select')
-
-    __mapper_args__ = {
-        'concrete': True
-    }
-
     def __repr__(self):
-        return """
-        <IPDatabase(ip_id='%s', hostnames='%s', ip_address='%s', project_uuid='%s', files='%s')>""" % (
-            self.id, self.hostnames, self.target, self.project_uuid,
-            self.files
+        return """<Scope(ip_id='%s', target='%s', project_uuid='%s')>""" % (
+            self.id, self.target, self.project_uuid
         )

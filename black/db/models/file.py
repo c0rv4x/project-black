@@ -14,7 +14,7 @@ class FileDatabase(Base):
     file_name = Column(String)
 
     # Target (this is either IP or hostname)
-    target = Column(String)
+    target = Column(String, index=True)
 
     # Port
     port_number = Column(Integer)
@@ -36,8 +36,15 @@ class FileDatabase(Base):
 
     # The name of the related project
     project_uuid = Column(
-        String, ForeignKey('projects.project_uuid', ondelete='CASCADE')
+        Integer, ForeignKey('projects.project_uuid', ondelete='CASCADE'), index=True
     )
 
     # Date of added
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
+
+    def __repr__(self):
+        return """
+            <FileDatabase(file_id='%s', target='%s', project_uuid='%s', file_name='%s')>""" % (
+            self.file_id, self.target, self.project_uuid,
+            self.file_name
+        )

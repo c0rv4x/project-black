@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import Column, String, DateTime, ForeignKey
+from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
 from .base import Base
@@ -12,7 +12,7 @@ class ProjectDatabase(Base):
     __tablename__ = 'projects'
 
     # ID of the project (uuid for now)
-    project_uuid = Column(String, primary_key=True)
+    project_uuid = Column(Integer, primary_key=True, autoincrement=True)
 
     # Given name
     project_name = Column(String)
@@ -27,7 +27,7 @@ class ProjectDatabase(Base):
     ips_relationship = relationship('IPDatabase', cascade="all, delete-orphan")
     hosts_relationship = relationship('HostDatabase', cascade="all, delete-orphan")
     tasks_relationship = relationship('TaskDatabase', cascade="all, delete-orphan")
-    # scans_relationship = relationship('Scan', cascade="all, delete-orphan")
+    scans_relationship = relationship('ScanDatabase', cascade="all, delete-orphan")
 
     def __repr__(self):
         return "<Project(project_name='%s')>" % (self.project_name)
