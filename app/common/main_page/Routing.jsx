@@ -15,6 +15,7 @@ import HostsSocketioEventsSubsriber from '../../redux/hosts/HostsSocketioEventsS
 import TasksSocketioEventsSubsriber from '../../redux/tasks/TasksSocketioEventsSubsriber'
 import ScansSocketioEventsSubsriber from '../../redux/scans/ScansSocketioEventsSubscriber'
 import FilesSocketioEventsSubsriber from '../../redux/files/FilesSocketioEventsSubscriber'
+import NotificationsSocketioEventsSubscriber from '../../redux/notifications/NotificationsSocketioEventsSubscriber'
 
 import ProjectsMainComponentWrapper from '../../projects_list/components/ProjectsMainComponentWrapper.js'
 import ProjectsDetailsWrapper from '../../ips_list/components/ProjectDetailsWrapper.js'
@@ -39,7 +40,7 @@ class NavigationTabsWrapper extends React.Component {
         this.hostsSubscriber = new HostsSocketioEventsSubsriber(mainStore, project_uuid);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
-        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);         
+        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);    
     }
 
     render() {
@@ -71,6 +72,7 @@ class Projects extends React.Component {
         var mainStore = this.context.store;
 
         this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore);        
+        this.notificationsSubscriber = new NotificationsSocketioEventsSubscriber(mainStore);        
     }
 
     render() {
@@ -80,6 +82,7 @@ class Projects extends React.Component {
     } 
     componentWillUnmount() {
         this.projectsSubscriber.close();
+        this.notificationsSubscriber.close();
     }       
 }
 

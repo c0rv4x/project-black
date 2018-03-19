@@ -1,4 +1,5 @@
 """ Module only purpose is to create handlers for projects """
+from events_handling.notifications_spawner import send_notification
 
 
 def register_project_handlers(socketio, project_manager):
@@ -13,6 +14,13 @@ def register_project_handlers(socketio, project_manager):
              'projects': project_manager.get_projects()},
             broadcast=True,
             namespace='/projects')
+
+        await send_notification(
+            socketio,
+            "success",
+            "Projects listed",
+            "Successfully listed all projects"
+        )            
 
     @socketio.on('projects:create', namespace='/projects')
     async def handle_project_create(sid, msg):
@@ -31,6 +39,13 @@ def register_project_handlers(socketio, project_manager):
                 },
                 broadcast=True,
                 namespace='/projects')
+
+            await send_notification(
+                "success",
+                socketio,
+                "Project created",
+                "Successfully created project {}".format(project_name)
+            )
         else:
             # Error occured
             await socketio.emit(
@@ -39,6 +54,15 @@ def register_project_handlers(socketio, project_manager):
                  'text': addition_result["text"]},
                 broadcast=True,
                 namespace='/projects')
+
+            await send_notification(
+                "error",
+                socketio,
+                "Project not created",
+                "Error occured while creating project: {}".format(
+                    addition_result["text"]
+                )
+            )
 
     @socketio.on('projects:delete:project_uuid', namespace='/projects')
     async def handle_project_delete(sid, msg):
