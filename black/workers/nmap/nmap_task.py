@@ -140,7 +140,12 @@ class NmapTask(AsyncTask):
 
             scans_ids = self.params["saver"].get('scans_ids', None)
             if scans_ids:
-                target_scan = list(filter(lambda x: data["port_number"] == x["port_number"], scans_ids))[0]
+                target_scan = list(
+                    filter(
+                        lambda x: data["port_number"] == x["port_number"],
+                        scans_ids
+                    )
+                )[0]
                 target_scan_id = target_scan["scan_id"]
                 new_scan = session.query(ScanDatabase).filter(ScanDatabase.scan_id==target_scan_id).first()
 
