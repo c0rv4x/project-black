@@ -24,7 +24,7 @@ export function showNotification(options = {}) {
         const {header = ""} = options;
         const {type = NotificationType.INFO} = options;
         const {id = guid()} = options;
-        const {dismissAfter = 2500} = options;
+        const {dismissAfter = 2500000} = options;
 
         const showPayload = {message, header, type, id};
         dispatch({type : NOTIFICATION_SHOW, payload : showPayload});
