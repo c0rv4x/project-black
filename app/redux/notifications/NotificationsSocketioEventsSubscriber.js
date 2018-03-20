@@ -6,10 +6,11 @@ import Connector from '../SocketConnector.jsx';
 
 class NotificationsSocketioEventsSubscriber {
 	/* Class for managing events subscription for the projects */
-	constructor(store) {
+	constructor(store, project_uuid=null) {
         this.store = store;
-        console.log("creating notifiaction sub");
         this.connector = new Connector('notifications');
+
+        this.project_uuid = project_uuid;
 
         this.basic_events_registration();
 	}
@@ -19,13 +20,16 @@ class NotificationsSocketioEventsSubscriber {
 
         // Received all projects in one message
 		this.register_socketio_handler('notification:new', (message) => {
-            let status, title, text = { message };
-            console.log(message);
-            notifSend({
-                message: message.text,
-                kind: message.status.toLowerCase(),
-                dismissAfter: 3000000
-            })(this.store.dispatch);
+            let { status, title, text, project_uuid } = message;
+
+            if (((this.project_uuid === null) && (project_uuid === null)) || (project_uuid == this.project_uuid)) {
+                console.log("Showing notification", this.project_uuid, project_uuid);
+                notifSend({
+                    message: message.text,
+                    kind: message.status.toLowerCase(),
+                    dismissAfter: 3000000
+                })(this.store.dispatch);
+            }
         });
 	}
 
