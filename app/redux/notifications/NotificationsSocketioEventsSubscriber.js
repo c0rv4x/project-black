@@ -25,9 +25,6 @@ class NotificationsSocketioEventsSubscriber {
                 kind: message.status.toLowerCase(),
                 dismissAfter: 3000000
             })(this.store.dispatch);
-            // showNotification({
-            //     type: message.status.toUpperCase()
-            // })(this.store.dispatch);
         });
 	}
 

@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 
 import NotificationAdapter from '../../redux/notifications/NotificationAdapter.jsx'
 import { Notifs } from 'redux-notifications';
-import NotificationManager from '../../redux/notifications/NotificationManager.jsx'
 
 import ProjectsSocketioEventsSubscriber from '../../redux/projects/ProjectsSocketioEventsSubscriber'
 import IPsSocketioEventsSubsriber from '../../redux/ips/IPsSocketioEventsSubscriber'
