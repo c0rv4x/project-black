@@ -8,6 +8,7 @@ import scan_reduce from './scans/reducers';
 import file_reduce from './files/reducers';
 import filter_reduce from './filters/reducers';
 import notification_reduce from './notifications/reducers';
+import { reducer as notifReducer } from 'redux-notifications';
 
 
 const all_reducers = combineReducers({
@@ -18,7 +19,7 @@ const all_reducers = combineReducers({
 	scans: scan_reduce,
 	files: file_reduce,
 	filters: filter_reduce,
-	notifications: notification_reduce
+	notifs: notifReducer
 });
 
 export default all_reducers;

@@ -6,6 +6,8 @@ import {
 
 import { connect } from 'react-redux'
 
+import NotificationAdapter from '../../redux/notifications/NotificationAdapter.jsx'
+import { Notifs } from 'redux-notifications';
 import NotificationManager from '../../redux/notifications/NotificationManager.jsx'
 
 import ProjectsSocketioEventsSubscriber from '../../redux/projects/ProjectsSocketioEventsSubscriber'
@@ -208,9 +210,7 @@ class Routing extends React.Component {
         return (
             <Router>           
                 <div>
-                    <NotificationManager
-                        notifications={notifications}
-                    />
+                    <Notifs CustomComponent={NotificationAdapter} />
                     <Route exact path="/"
                            component={Projects} />
                     <Route exact path="/project/:project_uuid" 

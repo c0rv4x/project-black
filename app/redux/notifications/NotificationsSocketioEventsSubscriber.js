@@ -1,4 +1,5 @@
-import { showNotification } from './actions';
+import { actions as notifActions } from 'redux-notifications';
+const { notifSend } = notifActions;
 
 import Connector from '../SocketConnector.jsx';
 
@@ -18,11 +19,15 @@ class NotificationsSocketioEventsSubscriber {
         // Received all projects in one message
 		this.register_socketio_handler('notification:new', (message) => {
             let status, title, text = { message };
-            showNotification({
-                header: message.title,
+            console.log(message);
+            notifSend({
                 message: message.text,
-                type: message.status.toUpperCase()
+                kind: message.status.toLowerCase(),
+                dismissAfter: 3000000
             })(this.store.dispatch);
+            // showNotification({
+            //     type: message.status.toUpperCase()
+            // })(this.store.dispatch);
         });
 	}
 

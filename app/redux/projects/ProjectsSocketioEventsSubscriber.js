@@ -47,12 +47,6 @@ class ProjectsSocketioEventsSubscriber {
 			if (x.status == 'success') {
 				this.store.dispatch(callback(x));
 			}
-			else {
-				this.store.dispatch(Notifications.error({
-					title: 'Error with project',
-					message: x.text
-				}));
-			}
 		});
 	}
 
