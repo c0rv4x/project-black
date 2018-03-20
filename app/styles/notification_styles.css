@@ -1,0 +1,58 @@
+.notif-transition-enter {
+    opacity    : 0.01;
+    transition : opacity .5s ease-in;
+  }
+  
+  .notif-transition-enter-active {
+    opacity : 1;
+  }
+  
+  .notif-transition-leave {
+    opacity    : 1;
+    transition : opacity .5s ease-in;
+  }
+  
+  .notif-transition-leave-active {
+    opacity : 0.01;
+  }
+  
+  .notif {
+    position      : relative;
+    font          : 1rem normal Helvetica, sans-serif;
+    overflow      : hidden;
+    border-radius : 4px;
+    margin-bottom : 2px;
+    max-height    : 400px;
+    box-sizing    : border-box;
+    box-shadow    : 0 0 1px 1px rgba(10, 10, 11, .125);
+    padding       : 0.5rem;
+    color         : #fff;
+  }
+  
+  .notif--success {
+    background-color: #64ce83;
+  }
+  
+  .notif--info {
+    background-color: #3ea2ff;
+  }
+  
+  .notif--warning {
+    background-color: #ff7f48;
+  }
+  
+  .notif--danger {
+    background-color: #e74c3c;
+  }
+  
+  .notif__container {
+    position  : fixed;
+    top       : 10px;
+    right     : 10px;
+    /* left      : 0; */
+    z-index   : 1000;
+    width     : 80%;
+    max-width : 400px;
+    margin    : auto;
+  }
+  

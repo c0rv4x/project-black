@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack -d --watch",
+    "dev": "webpack-dev-server --open",
     "build": "webpack -p"
   },
   "repository": {
@@ -35,8 +35,10 @@
     "babel-preset-react": "^6.23.0",
     "bootstrap": "^4.0.0-beta",
     "classnames": "^2.2.5",
+    "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^0.28.7",
     "history": "1.13.x",
+    "html-webpack-plugin": "^3.0.7",
     "lodash": "^4.17.5",
     "react": "^15.6.2",
     "react-addons-perf": "^15.4.2",
@@ -52,6 +54,7 @@
     "react-select": "^1.0.0-rc.5",
     "reactstrap": "^5.0.0-alpha.3",
     "redux": "^3.6.0",
+    "redux-notifications": "^4.0.1",
     "reselect": "^3.0.1",
     "semantic-ui": "^2.3.0",
     "semantic-ui-react": "^0.75.0",
