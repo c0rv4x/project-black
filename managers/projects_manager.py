@@ -152,11 +152,16 @@ class ProjectManager(object):
             project_uuid=project_uuid, project_name=project_name
         )
 
+        if project_name is None:
+            project_name = found_project.get_project_name()
+
         if found_project:
             delete_result = found_project.delete()
 
             if delete_result["status"] == "success":
                 self.projects.remove(found_project)
+
+            delete_result['project_name'] = project_name
 
             return delete_result
 

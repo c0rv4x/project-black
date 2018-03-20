@@ -8,6 +8,7 @@ class NotificationsSocketioEventsSubscriber {
 	/* Class for managing events subscription for the projects */
 	constructor(store) {
         this.store = store;
+        console.log("creating new subscriber");
         this.connector = new Connector('notifications');
 
         this.basic_events_registration();
