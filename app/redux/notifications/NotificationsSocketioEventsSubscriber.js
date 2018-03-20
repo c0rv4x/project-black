@@ -1,5 +1,4 @@
-import { actions as notifActions } from 'redux-notifications';
-const { notifSend } = notifActions;
+import { notificationSend } from './actions';
 
 import Connector from '../SocketConnector.jsx';
 
@@ -24,7 +23,7 @@ class NotificationsSocketioEventsSubscriber {
 
             if (((this.project_uuid === null) && (project_uuid === null)) || (project_uuid == this.project_uuid)) {
                 console.log("Showing notification", this.project_uuid, project_uuid);
-                notifSend({
+                notificationSend({
                     message: message.text,
                     kind: message.status.toLowerCase(),
                     dismissAfter: 3000000
