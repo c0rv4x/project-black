@@ -209,7 +209,7 @@ class ScopeManager(object):
 
         files_query_aliased = SubqueryBuilder.build_files_subquery(
             session, project_uuid, parsed_filters)
-        
+
         # Now select ips, outer joining them with scans
         ips_query = (
             session.query(IPDatabase)
@@ -619,7 +619,42 @@ class ScopeManager(object):
                 filter(lambda x: x.id in scopes_ids, project_hosts)
             )
 
-        resolver = aiodns.DNSResolver(loop=asyncio.get_event_loop())
+        loop = asyncio.get_event_loop()
+
+        try:
+            top_server_name = '.'.join(to_resolve[0].target.split('.')[-2:])
+            resolver = aiodns.DNSResolver(loop=loop)
+            result = await resolver.query(top_server_name, "NS")
+            nameservers = list(map(lambda x: x.host, result))
+
+            futures = []
+            for ns in nameservers:
+                each_future = resolver.query(ns, "A")
+                futures.append(each_future)
+
+            (done_futures, _) = await asyncio.wait(
+                futures, return_when=asyncio.ALL_COMPLETED
+            )
+
+            nameservers_ips = ['8.8.8.8']
+
+            while done_futures:
+                each_future = done_futures.pop()
+
+                try:
+                    result = each_future.result()
+                    nameservers_ips += list(map(lambda x: x.host, result))
+                except Exception as e:
+                    pass
+
+            resolver = aiodns.DNSResolver(
+                loop=loop, nameservers=nameservers_ips
+            )
+
+        except Exception as exc:
+            print(exc, "during resolve")
+            resolver = aiodns.DNSResolver(loop=loop)
+
         futures = []
 
         for each_host in to_resolve:
