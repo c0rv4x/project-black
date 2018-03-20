@@ -40,7 +40,8 @@ class NavigationTabsWrapper extends React.Component {
         this.hostsSubscriber = new HostsSocketioEventsSubsriber(mainStore, project_uuid);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
-        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);    
+        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);   
+        this.notificationsSubscriber = new NotificationsSocketioEventsSubscriber(mainStore, project_uuid);
     }
 
     render() {
@@ -56,6 +57,7 @@ class NavigationTabsWrapper extends React.Component {
         this.tasksSubscriber.close();
         this.scansSubscriber.close();
         this.filesSubscriber.close();
+        this.notificationsSubscriber.close();
     }
 }
 
