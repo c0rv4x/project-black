@@ -19,8 +19,9 @@ class NotificationsSocketioEventsSubscriber {
 		this.register_socketio_handler('notification:new', (message) => {
             let status, title, text = { message };
             showNotification({
-                header: "test",
-                message: "test"
+                header: message.title,
+                message: message.text,
+                type: message.status.toUpperCase()
             })(this.store.dispatch);
         });
 	}

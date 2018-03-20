@@ -1,10 +1,10 @@
-import React, {Component} from "react";
-import {connect} from "react-redux";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import _ from "lodash";
-import { Message } from "semantic-ui-react";
-import {Portal} from 'react-portal';
+import { Message, Container } from "semantic-ui-react";
+import { Portal } from 'react-portal';
 
-import {dismissNotification} from "./actions";
+import { dismissNotification } from "./actions";
 
 
 const NOTIFICATION_CONTAINER_STYLE = {
@@ -17,31 +17,11 @@ const NOTIFICATION_CONTAINER_STYLE = {
     MozBoxSizing: 'border-box',
     boxSizing: 'border-box',
     height: 'auto',
-    top: '0px',
+    top: '10px',
     bottom: 'auto',
     left: 'auto',
     right: '0px'    
 };
-
-
-// const NOTIFICATION_STYLE = {
-//     position: 'relative',
-//     width: '100%',
-//     cursor: 'pointer',
-//     borderRadius: '2px',
-//     fontSize: '13px',
-//     margin: '10px 0 0',
-//     padding: '10px',
-//     display: 'block',
-//     WebkitBoxSizing: 'border-box',
-//     MozBoxSizing: 'border-box',
-//     boxSizing: 'border-box',
-//     opacity: 0,
-//     transition: '0.3s ease-in-out',
-//     WebkitTransform: 'translate3d(0, 0, 0)',
-//     transform: 'translate3d(0, 0, 0)',
-//     willChange: 'transform, opacity',
-// };
 
 
 const Notification = ({message, header, type, id, onCloseClick=_.noop}) => {
