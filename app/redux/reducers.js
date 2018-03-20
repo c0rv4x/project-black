@@ -7,7 +7,6 @@ import task_reduce from './tasks/reducers';
 import scan_reduce from './scans/reducers';
 import file_reduce from './files/reducers';
 import filter_reduce from './filters/reducers';
-import notification_reduce from './notifications/reducers';
 import { reducer as notifReducer } from 'redux-notifications';
 
 
