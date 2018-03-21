@@ -9,6 +9,7 @@ from events_handling.scopes_handlers import ScopeHandlers
 from events_handling.tasks_handlers import TaskHandlers
 from events_handling.scans_handlers import ScanHandlers
 from events_handling.files_handlers import FileHandlers
+from events_handling.notifications_spawner import send_notification
 
 from managers import (
     ProjectManager, ScopeManager, TaskManager,
@@ -52,10 +53,19 @@ class Handlers(object):
         await self.task_handlers.send_tasks_back()
 
         try:
-            task_type, project_uuid, text = self.data_updated_queue.get_nowait()
+            task_data = self.data_updated_queue.get_nowait()
+            task_type, target, project_uuid, text, task_name = task_data
 
             if task_type == "scope":
-                # This is triggered when dnsscan find something new
+                # This is triggered when dnsscan finds something new
+                await send_notification(
+                    self.socketio,
+                    "success",
+                    "Task finished",
+                    "DNSscan for {} finished".format(target),
+                    project_uuid=project_uuid
+                )
+
                 self.scope_manager.update_from_db(project_uuid)
                 await self.scope_handlers.send_scopes_back(
                     project_uuid, broadcast=True)
@@ -64,6 +74,18 @@ class Handlers(object):
 
             if task_type == "scan":
                 # Masscan or nmap updated some of the ips
+                await send_notification(
+                    self.socketio,
+                    "success",
+                    "Task finished",
+                    "{} for {} hosts finished. Found data for {} hosts".format(
+                        task_name.capitalize(),
+                        len(target.split(',')),
+                        len(text)
+                    ),
+                    project_uuid=project_uuid
+                )
+
                 scope_ids = None
 
                 if text:
@@ -80,6 +102,16 @@ class Handlers(object):
 
                 if text:
                     updated_target = text.split(':')[0]
+
+                    await send_notification(
+                        self.socketio,
+                        "success",
+                        "Task finished",
+                        "Dirsearch for {} finished".format(
+                            text
+                        ),
+                        project_uuid=project_uuid
+                    )
 
                     await self.file_handlers.notify_on_updated_files(
                         project_uuid, updated_target)

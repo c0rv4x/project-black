@@ -52,12 +52,18 @@ class TaskManager(object):
         """ After the task finishes, we need to check, whether we should push
         some new changes to the front end """
         if task.task_type == "dirsearch":
-            self.data_updated_queue.put(("file", task.project_uuid, task.text))
+            self.data_updated_queue.put(
+                ("file", task.target, task.project_uuid, task.text, "dirsearch")
+            )
         elif task.task_type == "masscan" or task.task_type == "nmap":
             print("Finished task necessities", task.text)
-            self.data_updated_queue.put(("scan", task.project_uuid, task.text))
+            self.data_updated_queue.put(
+                ("scan", task.target, task.project_uuid, task.text, task.task_type)
+            )
         elif task.task_type == "dnsscan":
-            self.data_updated_queue.put(("scope", task.project_uuid, None))
+            self.data_updated_queue.put(
+                ("scope", task.target, task.project_uuid, None, "dnsscan")
+            )
 
     def parse_new_status(self, message):
         """ Parse the message from the queue, which contains task status,
