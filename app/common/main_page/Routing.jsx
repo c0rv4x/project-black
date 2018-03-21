@@ -210,7 +210,7 @@ class Routing extends React.Component {
         return (
             <Router>           
                 <div>
-                    <Notifications />
+                    <Notifications store={this.context.store} />
                     <Route exact path="/"
                            component={Projects} />
                     <Route exact path="/project/:project_uuid" 

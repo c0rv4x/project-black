@@ -5,23 +5,33 @@ import PropTypes from 'prop-types';
 
 import { Message } from 'semantic-ui-react'
 
+import { notifDismiss } from '../../redux/notifications/actions';
+
+
 // This checks to see if object is immutable and properly access it
 const getter = (obj, propName) => (obj.get ? obj.get(propName) : obj[propName]);
 
 class Notifications extends React.Component {
-    constructor(props) {
+    constructor(props, store) {
         super(props);
     }
 
     render() {
-        const { notifications } = this.props;
-        console.log(notifications);
+        const { notifications, store } = this.props;
         const renderedNotifications = notifications.map((notification) => {
+            let color = 'cyan';
+            let kind = getter(notification, 'kind');
+            let id = getter(notification, 'id');
+
+            if (kind === 'success') color = 'green'
+            else if (kind === 'error') color = 'red'
+
             return (
                 <Message
-                  key={getter(notification, 'id')}
-                  id={getter(notification, 'id')}
-                  kind={getter(notification, 'kind')}
+                  key={id}
+                  id={id}
+                  color={color}
+                  onClick={() => {store.dispatch(notifDismiss(id))}}
                 >
                     {getter(notification, 'message')}
                 </Message>

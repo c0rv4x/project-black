@@ -22,11 +22,10 @@ class NotificationsSocketioEventsSubscriber {
             let { status, title, text, project_uuid } = message;
 
             if (((this.project_uuid === null) && (project_uuid === null)) || (project_uuid == this.project_uuid)) {
-                console.log("Showing notification", this.project_uuid, project_uuid);
                 notificationSend({
                     message: message.text,
                     kind: message.status.toLowerCase(),
-                    dismissAfter: 3000000
+                    dismissAfter: 25000
                 })(this.store.dispatch);
             }
         });
