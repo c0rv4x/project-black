@@ -592,14 +592,16 @@ class ScopeManager(object):
                     HostDatabase.id == scope_id
                 ).one()
 
+            target = db_object.target
+
             db_object.comment = comment
             session.add(db_object)
             session.commit()
             self.session_spawner.destroy_session(session)
         except Exception as exc:
-            return {"status": "error", "text": str(exc)}
+            return {"status": "error", "text": str(exc), "target": target}
         else:
-            return {"status": "success"}
+            return {"status": "success", "target": target}
 
     async def resolve_scopes(self, scopes_ids, project_uuid):
         """ Using all the ids of scopes, resolve the hosts, now we
