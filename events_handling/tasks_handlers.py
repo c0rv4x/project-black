@@ -1,4 +1,5 @@
 """ Keep class for handling tasks events """
+from events_handling.notifications_spawner import send_notification
 
 
 class TaskHandlers(object):
@@ -30,9 +31,20 @@ class TaskHandlers(object):
             )
 
             await self.socketio.emit(
-                'tasks:new', {'status': 'success',
-                              'new_tasks': tasks},
+                'tasks:new',
+                {
+                    'status': 'success',
+                    'new_tasks': tasks
+                },
                 namespace='/tasks'
+            )
+
+            await send_notification(
+                self.socketio,
+                "success",
+                "Tasks created",
+                "Created {} {} tasks".format(len(tasks), task_type),
+                project_uuid=project_uuid
             )
 
         @self.socketio.on('tasks:delete:project_uuid', namespace='/tasks')
@@ -50,9 +62,9 @@ class TaskHandlers(object):
                 project_uuid, get_all=True
             )
 
-            # TODO, make broadcasting
             await self.socketio.emit(
-                'tasks:all:get:back:all', {
+                'tasks:all:get:back:all',
+                {
                     "status": "success",
                     "project_uuid": project_uuid,
                     "tasks": tasks
@@ -68,7 +80,8 @@ class TaskHandlers(object):
                 return
 
             await self.socketio.emit(
-                'tasks:all:get:back:updated', {
+                'tasks:all:get:back:updated',
+                {
                     "status": "success",
                     "project_uuid":  project_uuid,
                     "tasks": tasks
