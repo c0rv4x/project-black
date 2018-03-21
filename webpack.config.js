@@ -9,6 +9,7 @@ const HTMLWebpackPlugin = require('html-webpack-plugin');
 
 const config = {
 	entry: APP_DIR + '/index.jsx',
+	devtool: '#eval-source-map',
 	devServer: {
 		contentBase: path.join(__dirname, "public"),
 		// compress: true,
