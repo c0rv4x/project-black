@@ -480,4 +480,4 @@ class ScopeHandlers(object):
                         delete_result['target']
                     ),
                     project_uuid=project_uuid
-                )                
+                )
