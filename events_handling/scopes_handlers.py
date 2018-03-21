@@ -162,7 +162,7 @@ class HostHandlers(object):
             hosts_ids = msg['hosts_ids']
             project_uuid = msg['project_uuid']
 
-            await self.scope_manager.resolve_scopes(hosts_ids, project_uuid)
+            total_ips, new_ips = await self.scope_manager.resolve_scopes(hosts_ids, project_uuid)
 
             await self.socketio.emit(
                 'hosts:resolve:done', {
@@ -171,6 +171,16 @@ class HostHandlers(object):
                 },
                 namespace='/hosts'
             )
+
+            await send_notification(
+                self.socketio,
+                "success",
+                "Hosts resolved",
+                "Hosts resolved. Found {} ips, {} new".format(
+                    total_ips, new_ips
+                ),
+                project_uuid=project_uuid
+            )            
 
         @self.socketio.on('hosts:update', namespace='/hosts')
         async def _cb_handle_scope_update(sio, msg):

@@ -609,6 +609,9 @@ class ScopeManager(object):
     async def resolve_scopes(self, scopes_ids, project_uuid):
         """ Using all the ids of scopes, resolve the hosts, now we
         resolve ALL the scopes, that are related to the project_uuid """
+        total_ips = 0
+        new_ips = 0
+
         session = self.session_spawner.get_new_session()
 
         # Select all hosts from the db
@@ -687,6 +690,8 @@ class ScopeManager(object):
             for each_result in result:
                 # Well, this is strange, but ip in aiodns is returned in 'host'
                 # field
+                total_ips += 1
+
                 resolved_ip = each_result.host
                 found_ip = self.find_ip_db(resolved_ip, project_uuid)
 
@@ -700,6 +705,7 @@ class ScopeManager(object):
                         host.ip_addresses.append(session.merge(found_ip))
                         session.add(host)
                 else:
+                    new_ips += 1
                     ip_create_result = self.create_ip(
                         resolved_ip, project_uuid, format_ip=False
                     )
@@ -711,3 +717,5 @@ class ScopeManager(object):
                         session.add(host)
         session.commit()
         self.session_spawner.destroy_session(session)
+
+        return (total_ips, new_ips)
