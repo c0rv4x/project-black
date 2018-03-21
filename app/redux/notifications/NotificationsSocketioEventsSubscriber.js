@@ -25,7 +25,7 @@ class NotificationsSocketioEventsSubscriber {
                 notificationSend({
                     message: message.text,
                     kind: message.status.toLowerCase(),
-                    dismissAfter: 2500
+                    dismissAfter: 5000
                 })(this.store.dispatch);
             }
         });
