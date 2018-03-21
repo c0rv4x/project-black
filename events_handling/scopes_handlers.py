@@ -431,6 +431,16 @@ class ScopeHandlers(object):
                         },
                         namespace='/ips'
                     )
+
+                    await send_notification(
+                        self.socketio,
+                        "success",
+                        "IP deleted",
+                        "Deleted {}".format(
+                            delete_result['target']
+                        ),
+                        project_uuid=project_uuid
+                    )
                 else:
                     await self.socketio.emit(
                         'hosts:delete', {
@@ -439,7 +449,17 @@ class ScopeHandlers(object):
                             'project_uuid': project_uuid
                         },
                         namespace='/hosts'
-                    )                    
+                    )
+
+                    await send_notification(
+                        self.socketio,
+                        "success",
+                        "Host deleted",
+                        "Deleted {}".format(
+                            delete_result['target']
+                        ),
+                        project_uuid=project_uuid
+                    )
             else:
                 # Error occured
                 await self.socketio.emit(
@@ -451,3 +471,13 @@ class ScopeHandlers(object):
                     room=sio,
                     namespace='/scopes'
                 )
+
+                await send_notification(
+                    self.socketio,
+                    "error",
+                    "IP not deleted",
+                    "Error while deleting {}".format(
+                        delete_result['target']
+                    ),
+                    project_uuid=project_uuid
+                )                

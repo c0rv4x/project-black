@@ -560,12 +560,14 @@ class ScopeManager(object):
                     .one()
                 )
 
+            target = db_object.target
+
             project_uuid = db_object.project_uuid
             session.delete(db_object)
             session.commit()
             self.session_spawner.destroy_session(session)
         except Exception as exc:
-            return {"status": "error", "text": str(exc)}
+            return {"status": "error", "text": str(exc), "target": target}
         else:
             if scope_type == "ip_address":
                 ips_count = self.ips[project_uuid].get('ips_count', 0)
@@ -575,7 +577,7 @@ class ScopeManager(object):
                 hosts_count = self.hosts[project_uuid].get('hosts_count', 0)
                 hosts_count -= 1
                 self.hosts[project_uuid]['hosts_count'] = hosts_count
-            return {"status": "success"}
+            return {"status": "success", "target": target}
 
     def update_scope(self, scope_id, comment, scope_type):
         """ Update a comment on the scope """
