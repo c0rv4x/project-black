@@ -1,4 +1,4 @@
-from sqlalchemy import desc
+from sqlalchemy import desc, or_
 from sqlalchemy.orm import aliased, contains_eager
 
 from black.black.db import ScanDatabase, FileDatabase
@@ -32,7 +32,7 @@ class SubqueryBuilder:
         # Use filters
         scans_from_db = (
             scans_ordered_distinct
-            .filter(*scans_filters)
+            .filter(or_(*scans_filters))
             .subquery('scans_distinct_filtered')
         )
 
@@ -69,7 +69,7 @@ class SubqueryBuilder:
         # Use filters
         files_from_db = (
             files_ordered_distinct
-            .filter(*files_filters)
+            .filter(or_(*files_filters))
             .subquery('files_distinct_filtered')
         )
 

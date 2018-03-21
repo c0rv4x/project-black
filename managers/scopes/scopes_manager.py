@@ -1,6 +1,7 @@
 import uuid
 import aiodns
 import asyncio
+from sqlalchemy import or_
 from sqlalchemy.orm import aliased, joinedload, contains_eager
 
 from black.black.db import (Sessions, IPDatabase, ProjectDatabase,
@@ -55,7 +56,7 @@ class ScopeManager(object):
             )
             .filter(
                 IPDatabase.project_uuid == project_uuid,
-                *parsed_filters['ips']
+                or_(*parsed_filters['ips'])
             )
         )
 
@@ -77,7 +78,7 @@ class ScopeManager(object):
             )
             .filter(
                 HostDatabase.project_uuid == project_uuid,
-                *parsed_filters['hosts']
+                or_(*parsed_filters['hosts'])
             )
             .join(
                 ips_query_subq, HostDatabase.ip_addresses,
@@ -129,7 +130,7 @@ class ScopeManager(object):
             .filter(
                 HostDatabase.project_uuid == project_uuid,
                 HostDatabase.id.in_(hosts_limited),
-                *parsed_filters['hosts']
+                or_(*parsed_filters['hosts'])
             )
             .join(
                 ips_query_subq, HostDatabase.ip_addresses,
@@ -215,7 +216,7 @@ class ScopeManager(object):
             session.query(IPDatabase)
             .filter(
                 IPDatabase.project_uuid == project_uuid,
-                *parsed_filters['ips']
+                or_(*parsed_filters['ips'])
             )
             .join(
                 scans_from_db, IPDatabase.ports,
@@ -268,7 +269,7 @@ class ScopeManager(object):
                 .filter(
                     IPDatabase.project_uuid == project_uuid,
                     IPDatabase.id.in_(ids_limited),
-                    *parsed_filters['ips']
+                    or_(*parsed_filters['ips'])
                 )
                 .join(
                     scans_from_db, IPDatabase.ports,
