@@ -12,6 +12,7 @@ class NotificationsSocketioEventsSubscriber {
         this.project_uuid = project_uuid;
 
         this.basic_events_registration();
+        console.log("Sub started", project_uuid);
 	}
 
 	basic_events_registration() {
@@ -20,12 +21,13 @@ class NotificationsSocketioEventsSubscriber {
         // Received all projects in one message
 		this.register_socketio_handler('notification:new', (message) => {
             let { status, title, text, project_uuid } = message;
+            console.log('new notification', this.project_uuid, project_uuid);
 
             if (((this.project_uuid === null) && (project_uuid === null)) || (project_uuid == this.project_uuid)) {
                 notificationSend({
                     message: message.text,
                     kind: message.status.toLowerCase(),
-                    dismissAfter: 25000
+                    dismissAfter: 2500
                 })(this.store.dispatch);
             }
         });
