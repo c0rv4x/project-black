@@ -23,9 +23,16 @@ class NmapTask(AsyncTask):
 
     async def start(self):
         """ Launch the task """
-        print(self.params, self.target)
-        self.command = ['nmap', '-oX', '-'] + self.params['program'] + [self.target]
-        print("Start: ",' '.join(self.command))
+        print(self.params)
+        flags_raw = self.params['program'][0].split(' -')
+        flags = [flags_raw[0]]
+
+        if len(flags_raw) > 1:
+            for each_flag in flags_raw[1:]:
+                flags.append('-' + each_flag)
+
+        self.command = ['nmap', '-oX', '-'] + flags + self.params['special'] + [self.target]
+        print("Start: ", ' '.join(self.command))
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
         await self.set_status("Working", 0, "")
