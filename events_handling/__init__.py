@@ -74,22 +74,22 @@ class Handlers(object):
 
             if task_type == "scan":
                 # Masscan or nmap updated some of the ips
+                scope_ids = None
+
+                if text:
+                    scope_ids = json.loads(text)
+
                 await send_notification(
                     self.socketio,
                     "success",
                     "Task finished",
-                    "{} for {} hosts finished. Found data for {} hosts".format(
+                    "{} for {} hosts finished. {} hosts updated".format(
                         task_name.capitalize(),
                         len(target.split(',')),
-                        len(text)
+                        len(scope_ids)
                     ),
                     project_uuid=project_uuid
                 )
-
-                scope_ids = None
-
-                if text:
-                    scope_ids = text
 
                 await self.scan_handlers.notify_on_updated_scans(
                     scope_ids, project_uuid)
