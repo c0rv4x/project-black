@@ -259,6 +259,7 @@ class ScopeManager(object):
                     ips_query_subq.target
                 )
                 .filter(ips_query_subq.id.in_(ids_limited))
+                .distinct()
                 .all()
             )
         else:
