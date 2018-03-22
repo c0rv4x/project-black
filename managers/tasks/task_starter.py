@@ -35,6 +35,8 @@ class TaskStarter(object):
                 "scans_ids": []
             }
 
+            local_params["special"] = []
+
             ports = []
 
             for each_port in ip["scans"]:
@@ -44,7 +46,8 @@ class TaskStarter(object):
                     "scan_id": each_port["scan_id"]
                 })
 
-            local_params['program'].append('-p{}'.format(','.join(ports)))
+            local_params['special'].append('-p{}'.format(','.join(ports)))
+            print("local_params", local_params)
 
             tasks.append(
                 ShadowTask(
