@@ -77,7 +77,10 @@ class Handlers(object):
                 scope_ids = None
 
                 if text:
-                    scope_ids = json.loads(text)
+                    try:
+                        scope_ids = json.loads(text)
+                    except:
+                        pass
 
                 await send_notification(
                     self.socketio,
@@ -86,7 +89,7 @@ class Handlers(object):
                     "{} for {} hosts finished. {} hosts updated".format(
                         task_name.capitalize(),
                         len(target.split(',')),
-                        len(scope_ids)
+                        len(scope_ids) if scope_ids else 0
                     ),
                     project_uuid=project_uuid
                 )
