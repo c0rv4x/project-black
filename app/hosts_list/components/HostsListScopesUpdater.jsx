@@ -45,6 +45,7 @@ class HostsListScopesUpdater extends React.Component {
 		var { hosts, filters } = nextProps;
 
 		if (hosts.update_needed === true) {
+			this.setLoading(true);
 			this.renewHosts(hosts.page, hosts.page_size, filters);
 		}
 		else if (!_.isEqual(filters, this.props.filters)) {
