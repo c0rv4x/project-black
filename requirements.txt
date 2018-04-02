@@ -1,8 +1,7 @@
-aiohttp
-eventlet
 dnspython
 netaddr
 sqlalchemy
 psycopg2
 sanic
 apscheduler
+socketio
