@@ -1,3 +1,3 @@
 [submodule "black"]
 	path = black
-	url = https://gitlab.com/iad42/black_pt_orm
+	url = https://github.com/iad42/black_pt_orm
