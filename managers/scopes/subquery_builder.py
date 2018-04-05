@@ -32,7 +32,7 @@ class SubqueryBuilder:
         # Use filters
         scans_from_db = (
             scans_ordered_distinct
-            .filter(or_(*scans_filters))
+            .filter(scans_filters)
             .subquery('scans_distinct_filtered')
         )
 
@@ -59,7 +59,6 @@ class SubqueryBuilder:
         # Create a list of filters which will be applied against scans
         files_filters = Filters.build_files_filters(
             parsed_filters, alias_ordered)
-        print(files_filters)
 
         files_ordered_distinct = ordered.distinct(
             alias_ordered.file_path,
@@ -69,7 +68,7 @@ class SubqueryBuilder:
         # Use filters
         files_from_db = (
             files_ordered_distinct
-            .filter(or_(*files_filters))
+            .filter(files_filters)
             .subquery('files_distinct_filtered')
         )
 
