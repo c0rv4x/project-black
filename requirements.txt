@@ -4,4 +4,7 @@ sqlalchemy
 psycopg2
 sanic
 apscheduler
-socketio
+python-socketio
+eventlet
+aiodns
+asynqp
