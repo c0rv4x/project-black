@@ -40,15 +40,17 @@ class ScopeManager(object):
         parsed_filters = Filters.parse_filters(filters)
 
         # Create scans subquery
-
-        scans_filters_exist = len(parsed_filters['ports']) != 0
+        if filters.get('port', False) or filters.get('protocol') or filters.get('banner'):
+            scans_filters_exist = True
+        else:
+            scans_filters_exist = False
 
         scans_from_db = SubqueryBuilder.build_scans_subquery(
-            session, project_uuid, parsed_filters)
+            session, project_uuid, filters)
 
         # Create IPS subquery
 
-        ip_filters_exist = len(parsed_filters['ips']) != 0
+        ip_filters_exist = filters.get('ip', False)
 
         ips_query = (
             session.query(
@@ -56,7 +58,7 @@ class ScopeManager(object):
             )
             .filter(
                 IPDatabase.project_uuid == project_uuid,
-                or_(*parsed_filters['ips'])
+                parsed_filters['ips']
             )
         )
 
@@ -65,10 +67,10 @@ class ScopeManager(object):
 
         # Create files subquery
 
-        files_filters_exist = len(parsed_filters['files']) != 0
+        files_filters_exist = filters.get('files', False)
 
         files_query_aliased = SubqueryBuilder.build_files_subquery(
-            session, project_uuid, parsed_filters)
+            session, project_uuid, filters)
 
         # Create hosts subquery
 
@@ -78,7 +80,7 @@ class ScopeManager(object):
             )
             .filter(
                 HostDatabase.project_uuid == project_uuid,
-                or_(*parsed_filters['hosts'])
+                parsed_filters['hosts']
             )
             .join(
                 ips_query_subq, HostDatabase.ip_addresses,
@@ -130,7 +132,7 @@ class ScopeManager(object):
             .filter(
                 HostDatabase.project_uuid == project_uuid,
                 HostDatabase.id.in_(hosts_limited),
-                or_(*parsed_filters['hosts'])
+                parsed_filters['hosts']
             )
             .join(
                 ips_query_subq, HostDatabase.ip_addresses,
@@ -200,23 +202,32 @@ class ScopeManager(object):
         parsed_filters = Filters.parse_filters(filters)
 
         # Scans
-        scans_filters_exist = len(parsed_filters['ports']) != 0
+        if filters.get('port', False) or filters.get('protocol') or filters.get('banner'):
+            scans_filters_exist = True
+        else:
+            scans_filters_exist = False
+
+        # scans_filters_exist = parsed_filters['ports'] is not True
         scans_from_db = SubqueryBuilder.build_scans_subquery(
-            session, project_uuid, parsed_filters)
+            session, project_uuid, filters)
 
         # Files
-
-        files_filters_exist = len(parsed_filters['files']) != 0
+        if filters.get('files', False):
+            files_filters_exist = True
+        else:
+            files_filters_exist = False
+        
+        # files_filters_exist = filters.get('files', False)
 
         files_query_aliased = SubqueryBuilder.build_files_subquery(
-            session, project_uuid, parsed_filters)
+            session, project_uuid, filters)
 
         # Now select ips, outer joining them with scans
         ips_query = (
             session.query(IPDatabase)
             .filter(
                 IPDatabase.project_uuid == project_uuid,
-                or_(*parsed_filters['ips'])
+                parsed_filters['ips']
             )
             .join(
                 scans_from_db, IPDatabase.ports,
@@ -230,7 +241,7 @@ class ScopeManager(object):
 
         ips_query_subq = aliased(
             IPDatabase, ips_query.subquery('all_ips_parsed'))
-
+        print('---------------')
         # From the filtered ips, we need to select only first N of them.
         # So we select ids of the first N. Then select all the ips, which have
         # that ids.
@@ -270,7 +281,7 @@ class ScopeManager(object):
                 .filter(
                     IPDatabase.project_uuid == project_uuid,
                     IPDatabase.id.in_(ids_limited),
-                    or_(*parsed_filters['ips'])
+                    parsed_filters['ips']
                 )
                 .join(
                     scans_from_db, IPDatabase.ports,
@@ -307,6 +318,8 @@ class ScopeManager(object):
                     ips_from_db
                 )
             )
+        print('---------------')
+        # print(ips)
 
         # Together with ips, return amount of total ips in the database
         return {

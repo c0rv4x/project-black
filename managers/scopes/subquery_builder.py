@@ -7,7 +7,7 @@ from managers.scopes.filters import Filters
 
 class SubqueryBuilder:
     @staticmethod
-    def build_scans_subquery(session, project_uuid, parsed_filters):
+    def build_scans_subquery(session, project_uuid, filters):
         # Create a query for selection unique, ordered and filtered scans
 
         # Select distinc scans (we need only the latest)
@@ -24,7 +24,7 @@ class SubqueryBuilder:
 
         # Create a list of filters which will be applied against scans
         scans_filters = Filters.build_scans_filters(
-            parsed_filters, alias_ordered)
+            filters, alias_ordered)
 
         scans_ordered_distinct = ordered.distinct(
             alias_ordered.target, alias_ordered.port_number)
@@ -32,14 +32,14 @@ class SubqueryBuilder:
         # Use filters
         scans_from_db = (
             scans_ordered_distinct
-            .filter(or_(*scans_filters))
+            .filter(scans_filters)
             .subquery('scans_distinct_filtered')
         )
 
         return scans_from_db
 
     @staticmethod
-    def build_files_subquery(session, project_uuid, parsed_filters):
+    def build_files_subquery(session, project_uuid, filters):
         """ Creates a query for selection unique,
         ordered and filtered files """
 
@@ -58,8 +58,7 @@ class SubqueryBuilder:
 
         # Create a list of filters which will be applied against scans
         files_filters = Filters.build_files_filters(
-            parsed_filters, alias_ordered)
-        print(files_filters)
+            filters, alias_ordered)
 
         files_ordered_distinct = ordered.distinct(
             alias_ordered.file_path,
@@ -69,7 +68,7 @@ class SubqueryBuilder:
         # Use filters
         files_from_db = (
             files_ordered_distinct
-            .filter(or_(*files_filters))
+            .filter(files_filters)
             .subquery('files_distinct_filtered')
         )
 
