@@ -41,14 +41,14 @@ class ScopeManager(object):
 
         # Create scans subquery
 
-        scans_filters_exist = parsed_filters['ports'] is not True
+        scans_filters_exist = filters.get('ports', False)
 
         scans_from_db = SubqueryBuilder.build_scans_subquery(
-            session, project_uuid, parsed_filters)
+            session, project_uuid, filters)
 
         # Create IPS subquery
 
-        ip_filters_exist = parsed_filters['ips'] is not True
+        ip_filters_exist = filters.get('ips', False)
 
         ips_query = (
             session.query(
@@ -65,10 +65,10 @@ class ScopeManager(object):
 
         # Create files subquery
 
-        files_filters_exist = parsed_filters['files'] is not True
+        files_filters_exist = filters.get('files', False)
 
         files_query_aliased = SubqueryBuilder.build_files_subquery(
-            session, project_uuid, parsed_filters)
+            session, project_uuid, filters)
 
         # Create hosts subquery
 
@@ -200,19 +200,17 @@ class ScopeManager(object):
         parsed_filters = Filters.parse_filters(filters)
 
         # Scans
-        scans_filters_exist = parsed_filters['ports'] is not True
+        print(filters)
+        scans_filters_exist = filters.get('ports', False)
+        # scans_filters_exist = parsed_filters['ports'] is not True
         scans_from_db = SubqueryBuilder.build_scans_subquery(
-            session, project_uuid, parsed_filters)
-
-        print("+++++")
-        print(scans_filters_exist, parsed_filters['ports'])
+            session, project_uuid, filters)
 
         # Files
-
-        files_filters_exist = parsed_filters['files'] is not True
+        files_filters_exist = filters.get('files', False)
 
         files_query_aliased = SubqueryBuilder.build_files_subquery(
-            session, project_uuid, parsed_filters)
+            session, project_uuid, filters)
 
         # Now select ips, outer joining them with scans
         ips_query = (
@@ -311,7 +309,7 @@ class ScopeManager(object):
                 )
             )
         print('---------------')
-        print(ips)
+        # print(ips)
 
         # Together with ips, return amount of total ips in the database
         return {

@@ -54,7 +54,7 @@ class Filters(object):
             'protocols': True,
             'files': True
         }
-        print(filters)
+
         for key in filters.keys():
             filter_value = filters[key]
 
@@ -66,49 +66,48 @@ class Filters(object):
                 parsed_filters['hosts'] = get_filter_clause(
                     HostDatabase.target, filter_value
                 )
-            elif key == 'port':
-                parsed_filters['ports'] = get_filter_clause(
-                    ScanDatabase.port_number, filter_value
-                )
-            elif key == 'banner':
-                parsed_filters['banners'] = get_filter_clause(
-                    ScanDatabase.banner, filter_value
-                )
-            elif key == 'protocol':
-                parsed_filters['protocols'] = get_filter_clause(
-                    ScanDatabase.protocol, filter_value
-                )
-            elif key == 'files':
-                parsed_filters['files'] += get_filter_clause(
-                    FileDatabase.status_code, filter_value
-                )
+            # elif key == 'port':
+            #     parsed_filters['ports'] = get_filter_clause(
+            #         ScanDatabase.port_number, filter_value
+            #     )
+            # elif key == 'banner':
+            #     parsed_filters['banners'] = get_filter_clause(
+            #         ScanDatabase.banner, filter_value
+            #     )
+            # elif key == 'protocol':
+            #     parsed_filters['protocols'] = get_filter_clause(
+            #         ScanDatabase.protocol, filter_value
+            #     )
+            # elif key == 'files':
+            #     parsed_filters['files'] += get_filter_clause(
+            #         FileDatabase.status_code, filter_value
+            #     )
 
-        print(parsed_filters)
         return parsed_filters
 
     @staticmethod
-    def build_scans_filters(parsed_filters, alias):
+    def build_scans_filters(filters, alias):
+        parsed_filters = {}
+
+        ports = filters.get('ports', [])
+        protocols = filters.get('protocols', [])
+        banners = filters.get('banners', [])
+
+        print(ports)
+
+        parsed_filters['ports'] = get_filter_clause(alias.port_number, ports)
+        parsed_filters['protocols'] = get_filter_clause(alias.protocol, protocols)
+        parsed_filters['banners'] = get_filter_clause(alias.banner, banners)
+    
         filters_exist = (
-            parsed_filters['ports'] is not True or
-            parsed_filters['protocols'] is not True or
-            parsed_filters['banners'] is not True
+            ports or
+            protocols or
+            banners
         )
 
-        scans_clause = None
+        scans_clause = True
 
         if filters_exist:
-            # scans_filters = []
-
-            # scans_filters += get_filter_clause(
-            #     alias.port_number, parsed_filters['ports']
-            # )
-            # scans_filters += get_filter_clause(
-            #     alias.protocol, parsed_filters['protocols']
-            # )
-            # scans_filters += get_filter_clause(
-            #     alias.banner, parsed_filters['banners']
-            # )
-
             scans_clause = and_(
                 parsed_filters['ports'],
                 parsed_filters['protocols'],
@@ -118,11 +117,11 @@ class Filters(object):
         return scans_clause
 
     @staticmethod
-    def build_files_filters(parsed_filters, alias):
-        files_filters = None        
+    def build_files_filters(filters, alias):
+        files_filters = True        
 
         # If there are no filters, return
-        if parsed_filters['files']:
-            files_filters = parsed_filters['files']
+        if filters.get('files', None):
+            files_filters = get_filter_clause(alias.status_code, filters.get('files', []))
 
         return files_filters
