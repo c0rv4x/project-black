@@ -89,11 +89,9 @@ class Filters(object):
     def build_scans_filters(filters, alias):
         parsed_filters = {}
 
-        ports = filters.get('ports', [])
-        protocols = filters.get('protocols', [])
-        banners = filters.get('banners', [])
-
-        print(ports)
+        ports = filters.get('port', [])
+        protocols = filters.get('protocol', [])
+        banners = filters.get('banner', [])
 
         parsed_filters['ports'] = get_filter_clause(alias.port_number, ports)
         parsed_filters['protocols'] = get_filter_clause(alias.protocol, protocols)

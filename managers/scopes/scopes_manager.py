@@ -40,15 +40,17 @@ class ScopeManager(object):
         parsed_filters = Filters.parse_filters(filters)
 
         # Create scans subquery
-
-        scans_filters_exist = filters.get('ports', False)
+        if filters.get('port', False) or filters.get('protocol') or filters.get('banner'):
+            scans_filters_exist = True
+        else:
+            scans_filters_exist = False
 
         scans_from_db = SubqueryBuilder.build_scans_subquery(
             session, project_uuid, filters)
 
         # Create IPS subquery
 
-        ip_filters_exist = filters.get('ips', False)
+        ip_filters_exist = filters.get('ip', False)
 
         ips_query = (
             session.query(
@@ -200,14 +202,22 @@ class ScopeManager(object):
         parsed_filters = Filters.parse_filters(filters)
 
         # Scans
-        print(filters)
-        scans_filters_exist = filters.get('ports', False)
+        if filters.get('port', False) or filters.get('protocol') or filters.get('banner'):
+            scans_filters_exist = True
+        else:
+            scans_filters_exist = False
+
         # scans_filters_exist = parsed_filters['ports'] is not True
         scans_from_db = SubqueryBuilder.build_scans_subquery(
             session, project_uuid, filters)
 
         # Files
-        files_filters_exist = filters.get('files', False)
+        if filters.get('files', False):
+            files_filters_exist = True
+        else:
+            files_filters_exist = False
+        
+        # files_filters_exist = filters.get('files', False)
 
         files_query_aliased = SubqueryBuilder.build_files_subquery(
             session, project_uuid, filters)
