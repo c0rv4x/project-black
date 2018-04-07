@@ -38,6 +38,7 @@ class HeadButtonsTracked extends React.Component {
 		return (
 			<div>
 				<HeadButtons project={this.props.project}
+							 hostsResolved={this.props.hosts.resolve_finished}
 							 resolveScopes={() => this.resolveScopes(null, this.props.project.project_uuid)}/>
 				<ButtonTasks tasks={
 					[
