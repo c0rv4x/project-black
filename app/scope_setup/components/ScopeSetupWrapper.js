@@ -22,7 +22,7 @@ function mapStateToProps(state, ownProps) {
 		}
 	}
 
-    return {
+	return {
     	project: project,
     	ips: state.ips,
     	hosts: state.hosts,
@@ -30,7 +30,8 @@ function mapStateToProps(state, ownProps) {
         	return x.project_uuid == project['project_uuid']
         }),
         scans: state.scans,
-        files: state.files
+		files: state.files,
+		scopes: state.scopes
     }
 }
 

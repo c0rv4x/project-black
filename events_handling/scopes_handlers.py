@@ -360,25 +360,34 @@ class ScopeHandlers(object):
                     }
 
             if error_found:
-                await self.socketio.emit(
-                    'ips:create', {
-                        'status': 'error',
-                        'project_uuid': project_uuid,
-                        'text': error_text
-                    },
-                    namespace='/ips'
+                await send_notification(
+                    self.socketio,
+                    "error",
+                    "Error while adding scopes",
+                    "Error while adding scopes: {}".format(
+                        error_text
+                    ),
+                    project_uuid=project_uuid
                 )
+
                 await self.socketio.emit(
-                    'hosts:create', {
+                    'scopes:create', {
                         'status': 'error',
-                        'project_uuid': project_uuid,
-                        'text': error_text
+                        'project_uuid': project_uuid
                     },
-                    namespace='/hosts'
-                )                
+                    namespace='/scopes'
+                )
+                
+            else:
+                await self.socketio.emit(
+                    'scopes:create', {
+                        'status': 'success',
+                        'project_uuid': project_uuid
+                    },
+                    namespace='/scopes'
+                )
 
             # Send the scope back
-
             if new_hosts:
                 await self.socketio.emit(
                     'hosts:create', {

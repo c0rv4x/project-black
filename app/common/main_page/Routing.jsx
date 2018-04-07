@@ -15,6 +15,7 @@ import TasksSocketioEventsSubsriber from '../../redux/tasks/TasksSocketioEventsS
 import ScansSocketioEventsSubsriber from '../../redux/scans/ScansSocketioEventsSubscriber'
 import FilesSocketioEventsSubsriber from '../../redux/files/FilesSocketioEventsSubscriber'
 import NotificationsSocketioEventsSubscriber from '../../redux/notifications/NotificationsSocketioEventsSubscriber'
+import ScopesSocketioEventsSubscriber from '../../redux/scopes/ScopesSocketioEventsSubscriber'
 
 import ProjectsMainComponentWrapper from '../../projects_list/components/ProjectsMainComponentWrapper.js'
 import ProjectsDetailsWrapper from '../../ips_list/components/ProjectDetailsWrapper.js'
@@ -41,6 +42,7 @@ class NavigationTabsWrapper extends React.Component {
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
         this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);   
         this.notificationsSubscriber = new NotificationsSocketioEventsSubscriber(mainStore, project_uuid);
+        this.scopesSubscriber = new ScopesSocketioEventsSubscriber(mainStore, project_uuid);
     }
 
     render() {
@@ -57,6 +59,7 @@ class NavigationTabsWrapper extends React.Component {
         this.scansSubscriber.close();
         this.filesSubscriber.close();
         this.notificationsSubscriber.close();
+        this.this.scopesSubscriber.close();
     }
 }
 
