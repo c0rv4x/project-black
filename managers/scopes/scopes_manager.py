@@ -1,4 +1,5 @@
 import uuid
+import time
 import aiodns
 import asyncio
 from sqlalchemy import or_
@@ -9,7 +10,9 @@ from black.black.db import (Sessions, IPDatabase, ProjectDatabase,
 from managers.scopes.filters import Filters
 from managers.scopes.subquery_builder import SubqueryBuilder
 
+from common.logger import log
 
+@log
 class ScopeManager(object):
     """ ScopeManager keeps track of all ips and hosts in the system,
     exposing some interfaces for public use. """
@@ -31,7 +34,6 @@ class ScopeManager(object):
         Not all hosts are returned. Only those that are within
         the described page"""
 
-        import time
         t = time.time()
 
         session = self.session_spawner.get_new_session()
@@ -180,11 +182,19 @@ class ScopeManager(object):
             }, each_host.files))
         }, hosts_from_db))
 
-        print("@@@@ Hosts selected in:", time.time() - t)
+        total_db_hosts = self.count_hosts(project_uuid)
+    
+        self.logger.info(
+            "Selecting hosts: from {} hosts, filter: {}. Finished in {}".format(
+                total_db_hosts,
+                filters,
+                time.time() - t
+            )
+        )
 
         # Together with hosts list return total amount of hosts in the db
         return {
-            "total_db_hosts": self.count_hosts(project_uuid),
+            "total_db_hosts": total_db_hosts,
             "selected_hosts": selected_hosts,
             "hosts": hosts
         }
@@ -196,6 +206,8 @@ class ScopeManager(object):
         """ Returns ips that are associated with a given project.
         Not all ips are selected. Only those, that are within the
         described page """
+        t = time.time()
+
         session = self.session_spawner.get_new_session()
 
         # Parse filters into an object for more comfortable work
@@ -241,7 +253,7 @@ class ScopeManager(object):
 
         ips_query_subq = aliased(
             IPDatabase, ips_query.subquery('all_ips_parsed'))
-        print('---------------')
+
         # From the filtered ips, we need to select only first N of them.
         # So we select ids of the first N. Then select all the ips, which have
         # that ids.
@@ -318,12 +330,20 @@ class ScopeManager(object):
                     ips_from_db
                 )
             )
-        print('---------------')
-        # print(ips)
+    
+        total_db_ips = self.count_ips(project_uuid)
+
+        self.logger.info(
+            "Selecting ips: from {} ips, filter: {}. Finished in {}".format(
+                total_db_ips,
+                filters,
+                time.time() - t
+            )
+        )
 
         # Together with ips, return amount of total ips in the database
         return {
-            "total_db_ips": self.count_ips(project_uuid),
+            "total_db_ips": total_db_ips,
             "selected_ips": selected_ips,
             "ips": ips
         }
