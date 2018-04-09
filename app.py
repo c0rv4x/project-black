@@ -9,6 +9,8 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from events_handling import Handlers
 
+from common.logger import init_default
+
 
 def check_authorization(request):
     """ Check if authed """
@@ -59,6 +61,8 @@ async def cb_complex_handler(request, project_uuid=None, host=None):
 async def cb_complex_handler_bundle(request):
     """ Simlpy returns bundle.js """
     return await response.file_stream(os.path.abspath('./public/bundle.js'))
+
+init_default()
 
 SOCKET_IO = socketio.AsyncServer(async_mode='sanic')
 APP = Sanic()
