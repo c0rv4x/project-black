@@ -20,6 +20,7 @@ def init_default(default_format=DEFAULT_FORMAT, level=logging.DEBUG):
 
     console = logging.StreamHandler()
     console.setLevel(logging.WARNING)
+    console.setFormatter(logging.Formatter(default_format))
 
     logging.getLogger('').addHandler(console)
 
