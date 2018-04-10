@@ -8,7 +8,10 @@ from black.black.db import Sessions, TaskDatabase
 from managers.tasks.shadow_task import ShadowTask
 from managers.tasks.task_starter import TaskStarter
 
+from common.logger import log
 
+
+@log
 class TaskManager(object):
     """ TaskManager keeps track of all tasks in the system,
     exposing some interfaces for public use. """
@@ -52,15 +55,36 @@ class TaskManager(object):
         """ After the task finishes, we need to check, whether we should push
         some new changes to the front end """
         if task.task_type == "dirsearch":
+            self.logger.info(
+                "{} dirsearch finished, {}".format(
+                    task.task_id,
+                    task.text
+                )
+            )
+
             self.data_updated_queue.put(
                 ("file", task.target, task.project_uuid, task.text, "dirsearch")
             )
         elif task.task_type == "masscan" or task.task_type == "nmap":
-            print("Finished task necessities", task.text)
+            self.logger.info(
+                "{} {} finished, {}".format(
+                    task.task_id,
+                    task.task_type,
+                    task.text
+                )
+            )
+
             self.data_updated_queue.put(
                 ("scan", task.target, task.project_uuid, task.text, task.task_type)
             )
         elif task.task_type == "dnsscan":
+            self.logger.info(
+                "{} dnsscan finished, {}".format(
+                    task.task_id,
+                    task.text
+                )
+            )
+            
             self.data_updated_queue.put(
                 ("scope", task.target, task.project_uuid, None, "dnsscan")
             )
@@ -84,6 +108,14 @@ class TaskManager(object):
 
                 if new_status != task.status or new_progress != task.progress:
                     task.new_status_known = False
+
+                self.logger.info(
+                    "Task {} updated. {}->{}, {}->{}".format(
+                        task.task_id,
+                        task.status, new_status,
+                        task.progress, new_progress
+                    )
+                )
 
                 task.set_status(new_status, new_progress, new_text, new_stdout, new_stderr)
 
