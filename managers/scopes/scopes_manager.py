@@ -557,12 +557,20 @@ class ScopeManager(object):
 
             self.logger.info(
                 "Added batch ips: {}@{} in {}".format(
-                    ip_address,
+                    ips,
                     project_uuid,
                     time.time() - t
                 )
             )
         except Exception as exc:
+            self.logger.error(
+                "{} adding batch ips: {}@{}".format(
+                    str(exc),
+                    ips,
+                    project_uuid
+                )
+            )
+            
             return {"status": "error", "text": str(exc)}
 
         return results
@@ -584,11 +592,27 @@ class ScopeManager(object):
                 session.commit()
                 self.session_spawner.destroy_session(session)
             except Exception as exc:
+                self.logger.error(
+                    "{} on creating host: {}@{}".format(
+                        str(exc),
+                        hostname,
+                        project_uuid
+                    )
+                )
+                
                 return {"status": "error", "text": str(exc)}
             else:
                 hosts_count = self.hosts[project_uuid].get('hosts_count', 0)
                 hosts_count += 1
                 self.hosts[project_uuid]["hosts_count"] = hosts_count
+
+                self.logger.info(
+                    "Successfully created host: {}@{} -> {}".format(
+                        hostname,
+                        project_uuid,
+                        db_object.id
+                    )
+                )
 
                 return {
                     "status": "success",
@@ -637,6 +661,13 @@ class ScopeManager(object):
             session.commit()
             self.session_spawner.destroy_session(session)
         except Exception as exc:
+            self.logger.error(
+                "{} while deleting scope: {}@{}".format(
+                    str(exc),
+                    scope_id,
+                    project_uuid
+                )
+            )
             return {"status": "error", "text": str(exc), "target": target}
         else:
             if scope_type == "ip_address":
@@ -647,6 +678,14 @@ class ScopeManager(object):
                 hosts_count = self.hosts[project_uuid].get('hosts_count', 0)
                 hosts_count -= 1
                 self.hosts[project_uuid]['hosts_count'] = hosts_count
+
+            self.logger.info(
+                "Successfully deleted scope: {}@{}".format(
+                    scope_id,
+                    project_uuid
+                )
+            )
+
             return {"status": "success", "target": target}
 
     def update_scope(self, scope_id, comment, scope_type):
@@ -671,8 +710,22 @@ class ScopeManager(object):
             session.commit()
             self.session_spawner.destroy_session(session)
         except Exception as exc:
+            self.logger.error(
+                "{} while updating scope: {}".format(
+                    str(exc),
+                    scope_id
+                )
+            )
+
             return {"status": "error", "text": str(exc), "target": target}
         else:
+            self.logger.error(
+                "Successfully updated scope: {}:{}".format(
+                    scope_id,
+                    comment
+                )
+            )
+             
             return {"status": "success", "target": target}
 
     async def resolve_scopes(self, scopes_ids, project_uuid):
@@ -704,6 +757,12 @@ class ScopeManager(object):
             result = await resolver.query(top_server_name, "NS")
             nameservers = list(map(lambda x: x.host, result))
 
+            self.logger.debug(
+                "Scopes resolve, found NSes: {}".format(
+                    nameservers
+                )
+            )
+
             futures = []
             for ns in nameservers:
                 each_future = resolver.query(ns, "A")
@@ -724,12 +783,25 @@ class ScopeManager(object):
                 except Exception as e:
                     pass
 
+            self.logger.debug(
+                "Scopes resolve, resolved NSes: {}".format(
+                    nameservers_ips
+                )
+            )
+
             resolver = aiodns.DNSResolver(
                 loop=loop, nameservers=nameservers_ips
             )
 
         except Exception as exc:
-            print(exc, "during resolve")
+            self.logger.error(
+                "{} during resolve {}@{}".format(
+                    str(exc),
+                    scopes_ids,
+                    project_uuid
+                )
+            )
+
             resolver = aiodns.DNSResolver(loop=loop)
 
         futures = []
@@ -750,11 +822,14 @@ class ScopeManager(object):
                 exc = each_future.exception()
                 result = each_future.result()
                 host = each_future.database_host
-            except Exception:
-                continue
-
-            if exc:
-                print("RESOLVE EXCEPTION", each_future, exc)
+            except Exception as exc:
+                self.logger.error(
+                    "{} during resolve {}@{}".format(
+                        str(exc),
+                        each_future.database_host,
+                        project_uuid
+                    )
+                )
 
             for each_result in result:
                 # Well, this is strange, but ip in aiodns is returned in 'host'
@@ -786,5 +861,12 @@ class ScopeManager(object):
                         session.add(host)
         session.commit()
         self.session_spawner.destroy_session(session)
+
+        self.logger.info(
+            "Successfully resolved {} ips @{}".format(
+                len(to_resolve),
+                project_uuid
+            )
+        )
 
         return (total_ips, new_ips)
