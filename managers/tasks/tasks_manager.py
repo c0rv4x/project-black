@@ -109,7 +109,7 @@ class TaskManager(object):
                 if new_status != task.status or new_progress != task.progress:
                     task.new_status_known = False
 
-                self.logger.info(
+                self.logger.debug(
                     "Task {} updated. {}->{}, {}->{}".format(
                         task.task_id,
                         task.status, new_status,
