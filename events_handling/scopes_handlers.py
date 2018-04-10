@@ -236,7 +236,7 @@ class HostHandlers(object):
         self, host, project_uuid=None, sio=None
     ):
         """ Applies a filter to get only one host from the db """
-        self.send_hosts_back({'host': [hostname]}, sio, project_uuid)
+        await self.send_hosts_back({'host': [host]}, sio, project_uuid)
 
     async def send_hosts_back(
         self, filters, sio=None, project_uuid=None,
