@@ -6,7 +6,10 @@ import json
 from black.black.db import Sessions
 from black.black.db import ProjectDatabase
 
+from common.logger import log
 
+
+@log
 class ProjectInner(object):
     """ Simple class for abstacting information on the project """
 
@@ -53,8 +56,20 @@ class ProjectInner(object):
 
             self._project_uuid = project_db.project_uuid
 
+            print(123)
+            self.logger.warning(
+                "Added project {}, {}".format(
+                    self.get_project_uuid(), self.get_project_name()
+                )
+            )
+
             return {"status": "success", "project": self.to_dict()}
         except Exception as exc:
+            self.logger.error(
+                "{} while adding {}, {}".format(
+                    str(exc), self.get_project_uuid(), self.get_project_name()
+                )
+            )
             return {"status": "error", "text": str(exc)}
 
     def update(self):
@@ -69,8 +84,20 @@ class ProjectInner(object):
 
             session.commit()
             self.sessions.destroy_session(session)
+
+            self.logger.info(
+                "Updated project {}, {}, {}".format(
+                    self.get_project_uuid(), self.get_project_name(), self.comment
+                )
+            )        
             return {"status": "success", "project": self.to_dict()}
         except Exception as exc:
+            self.logger.error(
+                "{} while updating project {}, {}, {}".format(
+                    str(exc), self.get_project_uuid(), self.get_project_name(), self.comment
+                )
+            )
+
             return {"status": "error", "text": str(exc)}
 
     def delete(self):
@@ -84,8 +111,20 @@ class ProjectInner(object):
             session.commit()
             self.sessions.destroy_session(session)
 
+            self.logger.info(
+                "Deleted project {}".format(
+                    self.get_project_uuid()
+                )
+            ) 
+
             return {"status": "success"}
         except Exception as exc:
+            self.logger.error(
+                "{} while deleting project {}".format(
+                    self.get_project_uuid()
+                )
+            )
+
             return {"status": "error", "text": str(exc)}
 
 
@@ -152,11 +191,16 @@ class ProjectManager(object):
             project_uuid=project_uuid, project_name=project_name
         )
 
+        if project_name is None:
+            project_name = found_project.get_project_name()
+
         if found_project:
             delete_result = found_project.delete()
 
             if delete_result["status"] == "success":
                 self.projects.remove(found_project)
+
+            delete_result['project_name'] = project_name
 
             return delete_result
 

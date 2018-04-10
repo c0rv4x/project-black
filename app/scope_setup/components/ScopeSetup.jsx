@@ -1,9 +1,7 @@
 import React from 'react'
-import { Table } from 'react-bootstrap'
 
 import ScopeAdderTracked from '../../ips_list/components/ScopeAdderTracked.jsx'
 import HeadButtonsTracked from './HeadButtonsTracked.jsx'
-import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
 
 import Tasks from '../../common/tasks/Tasks.jsx'
 import ProjectComment from '../../common/project_comment/ProjectComment.jsx'
@@ -15,12 +13,10 @@ class ScopeSetup extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.scopesEmitter = new ScopesSocketioEventsEmitter();		
-
 		this.deleteScope = this.deleteScope.bind(this);
 	}
 
-	shouldComponentUpdate(nextProps, nextState) {
+	shouldComponentUpdate(nextProps) {
 		return !_.isEqual(nextProps, this.props);
 	}
 
@@ -29,16 +25,22 @@ class ScopeSetup extends React.Component {
 	}
 
 	render() {
-		let { project, ips, hosts, scans, files } = this.props;
+		let { project, ips, hosts, scans, files, scopes } = this.props;
+		let scopes_created = null; // TODO!
 
 		return (
 			<div>
 				<br/>
 				<ProjectComment project={project}/>
-				<HeadButtonsTracked project={project}
-									hosts={hosts} />
+				<HeadButtonsTracked
+					project={project}
+					hosts={hosts}
+				/>
 
-				<ScopeAdderTracked project={project} />
+				<ScopeAdderTracked
+					project={project}
+					scopesCreated={scopes.scopes_created}
+				/>
 
 				<Stats
 					ips={ips}

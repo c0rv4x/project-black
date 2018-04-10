@@ -1,4 +1,5 @@
 import React from 'react'
+import { createScope } from '../../../redux/scopes/actions'
 
 import { Form, Button } from 'semantic-ui-react'
 
@@ -8,9 +9,10 @@ class ScopeAdder extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.target = {
-			"errortext": ""
-		}
+		this.state = {
+			"color": "blue",
+			"loading": false
+		};
 	}
 
 	findScopeType() {
@@ -44,7 +46,38 @@ class ScopeAdder extends React.Component {
 		}
 	}
 
+	componentWillReceiveProps(nextProps, nextState) {
+		if (nextProps.scopesCreated == "error") {
+			this.setState({
+				color: "red",
+				loading: false
+			});
+
+			this.context.store.dispatch(
+				createScope(
+					{"status": null, "project_uuid": this.props.project_uuid},
+					this.props.project_uuid
+				)
+			);
+		}
+		else 
+		if (nextProps.scopesCreated == "success") {
+			this.setState({
+				color: "green",
+				loading: false
+			});
+			this.context.store.dispatch(
+				createScope(
+					{"status": null, "project_uuid": this.props.project_uuid},
+					this.props.project_uuid
+				)
+			);
+		}
+	}
+
 	render() {
+		let { color, loading } = this.state;
+
 		return (
 			<Form>
 				<Form.Field>
@@ -55,15 +88,27 @@ class ScopeAdder extends React.Component {
 						   onChange={this.props.handleNewScopeChange} />
 				</Form.Field>
 
-				<Button onClick={() => {
-							this.props.onNewScopeClick(this.props.newScopeInput);
-							
-						}}>
+				<Button
+					color={color}
+					loading={loading}
+					active={loading}
+					onClick={() => {
+						this.setState({
+							color: "orange",
+							loading: true,
+							forceStateColor: true
+						});
+						this.props.onNewScopeClick(this.props.newScopeInput);
+					}}>
 						Add to scope
 				</Button>
 			</Form>
 		)
 	}
+}
+
+ScopeAdder.contextTypes = {
+    store: React.PropTypes.object
 }
 
 export default ScopeAdder;

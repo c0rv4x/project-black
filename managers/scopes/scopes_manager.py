@@ -1,7 +1,9 @@
 import uuid
+import time
 import aiodns
 import asyncio
 import datetime
+from sqlalchemy import or_
 from sqlalchemy.orm import aliased, joinedload, contains_eager
 
 from black.black.db import (Sessions, IPDatabase, ProjectDatabase,
@@ -9,7 +11,9 @@ from black.black.db import (Sessions, IPDatabase, ProjectDatabase,
 from managers.scopes.filters import Filters
 from managers.scopes.subquery_builder import SubqueryBuilder
 
+from common.logger import log
 
+@log
 class ScopeManager(object):
     """ ScopeManager keeps track of all ips and hosts in the system,
     exposing some interfaces for public use. """
@@ -31,7 +35,6 @@ class ScopeManager(object):
         Not all hosts are returned. Only those that are within
         the described page"""
 
-        import time
         t = time.time()
 
         session = self.session_spawner.get_new_session()
@@ -40,15 +43,17 @@ class ScopeManager(object):
         parsed_filters = Filters.parse_filters(filters)
 
         # Create scans subquery
-
-        scans_filters_exist = len(parsed_filters['ports']) != 0
+        if filters.get('port', False) or filters.get('protocol') or filters.get('banner'):
+            scans_filters_exist = True
+        else:
+            scans_filters_exist = False
 
         scans_from_db = SubqueryBuilder.build_scans_subquery(
-            session, project_uuid, parsed_filters)
+            session, project_uuid, filters)
 
         # Create IPS subquery
 
-        ip_filters_exist = len(parsed_filters['ips']) != 0
+        ip_filters_exist = filters.get('ip', False)
 
         ips_query = (
             session.query(
@@ -56,7 +61,7 @@ class ScopeManager(object):
             )
             .filter(
                 IPDatabase.project_uuid == project_uuid,
-                *parsed_filters['ips']
+                parsed_filters['ips']
             )
         )
 
@@ -65,10 +70,10 @@ class ScopeManager(object):
 
         # Create files subquery
 
-        files_filters_exist = len(parsed_filters['files']) != 0
+        files_filters_exist = filters.get('files', False)
 
         files_query_aliased = SubqueryBuilder.build_files_subquery(
-            session, project_uuid, parsed_filters)
+            session, project_uuid, filters)
 
         # Create hosts subquery
 
@@ -78,7 +83,7 @@ class ScopeManager(object):
             )
             .filter(
                 HostDatabase.project_uuid == project_uuid,
-                *parsed_filters['hosts']
+                parsed_filters['hosts']
             )
             .join(
                 ips_query_subq, HostDatabase.ip_addresses,
@@ -130,7 +135,7 @@ class ScopeManager(object):
             .filter(
                 HostDatabase.project_uuid == project_uuid,
                 HostDatabase.id.in_(hosts_limited),
-                *parsed_filters['hosts']
+                parsed_filters['hosts']
             )
             .join(
                 ips_query_subq, HostDatabase.ip_addresses,
@@ -178,11 +183,20 @@ class ScopeManager(object):
             }, each_host.files))
         }, hosts_from_db))
 
-        print("@@@@ Hosts selected in:", time.time() - t)
+        total_db_hosts = self.count_hosts(project_uuid)
+    
+        self.logger.info(
+            "Selecting hosts: from {} hosts, filter: {}. Finished in {}. @{}".format(
+                total_db_hosts,
+                filters,
+                time.time() - t,
+                format(project_uuid)
+            )
+        )
 
         # Together with hosts list return total amount of hosts in the db
         return {
-            "total_db_hosts": self.count_hosts(project_uuid),
+            "total_db_hosts": total_db_hosts,
             "selected_hosts": selected_hosts,
             "hosts": hosts
         }
@@ -194,28 +208,40 @@ class ScopeManager(object):
         """ Returns ips that are associated with a given project.
         Not all ips are selected. Only those, that are within the
         described page """
+        t = time.time()
+
         session = self.session_spawner.get_new_session()
 
         # Parse filters into an object for more comfortable work
         parsed_filters = Filters.parse_filters(filters)
 
         # Scans
-        scans_filters_exist = len(parsed_filters['ports']) != 0
+        if filters.get('port', False) or filters.get('protocol') or filters.get('banner'):
+            scans_filters_exist = True
+        else:
+            scans_filters_exist = False
+
+        # scans_filters_exist = parsed_filters['ports'] is not True
         scans_from_db = SubqueryBuilder.build_scans_subquery(
-            session, project_uuid, parsed_filters)
+            session, project_uuid, filters)
 
         # Files
-        files_filters_exist = len(parsed_filters['files']) != 0
+        if filters.get('files', False):
+            files_filters_exist = True
+        else:
+            files_filters_exist = False
+        
+        # files_filters_exist = filters.get('files', False)
 
         files_query_aliased = SubqueryBuilder.build_files_subquery(
-            session, project_uuid, parsed_filters)
+            session, project_uuid, filters)
 
         # Now select ips, outer joining them with scans
         ips_query = (
             session.query(IPDatabase)
             .filter(
                 IPDatabase.project_uuid == project_uuid,
-                *parsed_filters['ips']
+                parsed_filters['ips']
             )
             .join(
                 scans_from_db, IPDatabase.ports,
@@ -258,6 +284,7 @@ class ScopeManager(object):
                     ips_query_subq.target
                 )
                 .filter(ips_query_subq.id.in_(ids_limited))
+                .distinct()
                 .all()
             )
         else:
@@ -268,7 +295,7 @@ class ScopeManager(object):
                 .filter(
                     IPDatabase.project_uuid == project_uuid,
                     IPDatabase.id.in_(ids_limited),
-                    *parsed_filters['ips']
+                    parsed_filters['ips']
                 )
                 .join(
                     scans_from_db, IPDatabase.ports,
@@ -305,10 +332,21 @@ class ScopeManager(object):
                     ips_from_db
                 )
             )
+    
+        total_db_ips = self.count_ips(project_uuid)
+
+        self.logger.info(
+            "Selecting ips: from {} ips, filter: {}. Finished in {}. @{}".format(
+                total_db_ips,
+                filters,
+                time.time() - t,
+                project_uuid
+            )
+        )
 
         # Together with ips, return amount of total ips in the database
         return {
-            "total_db_ips": self.count_ips(project_uuid),
+            "total_db_ips": total_db_ips,
             "selected_ips": selected_ips,
             "ips": ips
         }
@@ -444,11 +482,27 @@ class ScopeManager(object):
                 session.commit()
                 self.session_spawner.destroy_session(session)
             except Exception as exc:
+                self.logger.error(
+                    "{} while creating ip: {}@{}".format(
+                        str(exc),
+                        ip_address,
+                        project_uuid
+                    )
+                )
+             
                 return {"status": "error", "text": str(exc)}
             else:
                 ips_count = self.ips[project_uuid].get('ips_count', 0)
                 ips_count += 1
                 self.ips[project_uuid]["ips_count"] = ips_count
+
+                self.logger.info(
+                    "Success creating ip: {} -> {}@{}".format(
+                        ip_address,
+                        db_object.id,
+                        project_uuid
+                    )
+                )
 
                 return {
                     "status": "success",
@@ -458,6 +512,13 @@ class ScopeManager(object):
                             no_ports=True, no_files=True
                         ) if format_ip else db_object
                 }
+
+        self.logger.info(
+            "Tried adding duplicate ip: {}@{}".format(
+                ip_address,
+                project_uuid
+            )
+        )
 
         return {"status": "duplicate"}
 
@@ -474,25 +535,49 @@ class ScopeManager(object):
                 to_add.append(ip_address)
 
         try:
+            t = time.time()
             current_date = datetime.datetime.utcnow()
+
+            new_ips = [
+                {
+                    "id": str(uuid.uuid4()),
+                    "target": ip_address,
+                    "comment": "",
+                    "project_uuid": project_uuid,
+                    "task_id": None,
+                    "date_added": current_date
+                } for ip_address in to_add
+            ]
+
             self.session_spawner.engine.execute(
                 IPDatabase.__table__.insert(),
-                [
-                    {
-                        "id": str(uuid.uuid4()),
-                        "target": ip_address,
-                        "comment": "",
-                        "project_uuid": project_uuid,
-                        "task_id": None,
-                        "date_added": current_date
-                    } for ip_address in to_add
-                ]
+                new_ips
             )
 
             ips_count = self.ips[project_uuid].get('ips_count', 0)
             ips_count += len(to_add)
             self.ips[project_uuid]["ips_count"] = ips_count
+
+            for i in new_ips:
+                i["date_added"] = current_date.strftime("%Y-%m-%d %H-%M-%S")
+                results['new_scopes'].append(i)
+
+            self.logger.info(
+                "Added batch ips: {}@{} in {}".format(
+                    ips,
+                    project_uuid,
+                    time.time() - t
+                )
+            )
         except Exception as exc:
+            self.logger.error(
+                "{} adding batch ips: {}@{}".format(
+                    str(exc),
+                    ips,
+                    project_uuid
+                )
+            )
+            
             return {"status": "error", "text": str(exc)}
 
         return results
@@ -514,11 +599,27 @@ class ScopeManager(object):
                 session.commit()
                 self.session_spawner.destroy_session(session)
             except Exception as exc:
+                self.logger.error(
+                    "{} on creating host: {}@{}".format(
+                        str(exc),
+                        hostname,
+                        project_uuid
+                    )
+                )
+                
                 return {"status": "error", "text": str(exc)}
             else:
                 hosts_count = self.hosts[project_uuid].get('hosts_count', 0)
                 hosts_count += 1
                 self.hosts[project_uuid]["hosts_count"] = hosts_count
+
+                self.logger.info(
+                    "Successfully created host: {}@{} -> {}".format(
+                        hostname,
+                        project_uuid,
+                        db_object.id
+                    )
+                )
 
                 return {
                     "status": "success",
@@ -560,12 +661,21 @@ class ScopeManager(object):
                     .one()
                 )
 
+            target = db_object.target
+
             project_uuid = db_object.project_uuid
             session.delete(db_object)
             session.commit()
             self.session_spawner.destroy_session(session)
         except Exception as exc:
-            return {"status": "error", "text": str(exc)}
+            self.logger.error(
+                "{} while deleting scope: {}@{}".format(
+                    str(exc),
+                    scope_id,
+                    project_uuid
+                )
+            )
+            return {"status": "error", "text": str(exc), "target": target}
         else:
             if scope_type == "ip_address":
                 ips_count = self.ips[project_uuid].get('ips_count', 0)
@@ -575,7 +685,15 @@ class ScopeManager(object):
                 hosts_count = self.hosts[project_uuid].get('hosts_count', 0)
                 hosts_count -= 1
                 self.hosts[project_uuid]['hosts_count'] = hosts_count
-            return {"status": "success"}
+
+            self.logger.info(
+                "Successfully deleted scope: {}@{}".format(
+                    scope_id,
+                    project_uuid
+                )
+            )
+
+            return {"status": "success", "target": target}
 
     def update_scope(self, scope_id, comment, scope_type):
         """ Update a comment on the scope """
@@ -592,18 +710,37 @@ class ScopeManager(object):
                     HostDatabase.id == scope_id
                 ).one()
 
+            target = db_object.target
+
             db_object.comment = comment
             session.add(db_object)
             session.commit()
             self.session_spawner.destroy_session(session)
         except Exception as exc:
-            return {"status": "error", "text": str(exc)}
+            self.logger.error(
+                "{} while updating scope: {}".format(
+                    str(exc),
+                    scope_id
+                )
+            )
+
+            return {"status": "error", "text": str(exc), "target": target}
         else:
-            return {"status": "success"}
+            self.logger.error(
+                "Successfully updated scope: {}:{}".format(
+                    scope_id,
+                    comment
+                )
+            )
+             
+            return {"status": "success", "target": target}
 
     async def resolve_scopes(self, scopes_ids, project_uuid):
         """ Using all the ids of scopes, resolve the hosts, now we
         resolve ALL the scopes, that are related to the project_uuid """
+        total_ips = 0
+        new_ips = 0
+
         session = self.session_spawner.get_new_session()
 
         # Select all hosts from the db
@@ -619,7 +756,61 @@ class ScopeManager(object):
                 filter(lambda x: x.id in scopes_ids, project_hosts)
             )
 
-        resolver = aiodns.DNSResolver(loop=asyncio.get_event_loop())
+        loop = asyncio.get_event_loop()
+
+        try:
+            top_server_name = '.'.join(to_resolve[0].target.split('.')[-2:])
+            resolver = aiodns.DNSResolver(loop=loop)
+            result = await resolver.query(top_server_name, "NS")
+            nameservers = list(map(lambda x: x.host, result))
+
+            self.logger.debug(
+                "Scopes resolve, found NSes: {}".format(
+                    nameservers
+                )
+            )
+
+            futures = []
+            for ns in nameservers:
+                each_future = resolver.query(ns, "A")
+                futures.append(each_future)
+
+            (done_futures, _) = await asyncio.wait(
+                futures, return_when=asyncio.ALL_COMPLETED
+            )
+
+            nameservers_ips = ['8.8.8.8']
+
+            while done_futures:
+                each_future = done_futures.pop()
+
+                try:
+                    result = each_future.result()
+                    nameservers_ips += list(map(lambda x: x.host, result))
+                except Exception as e:
+                    pass
+
+            self.logger.debug(
+                "Scopes resolve, resolved NSes: {}".format(
+                    nameservers_ips
+                )
+            )
+
+            resolver = aiodns.DNSResolver(
+                loop=loop, nameservers=nameservers_ips
+            )
+
+        except Exception as exc:
+            self.logger.error(
+                "{} during resolve {}@{}".format(
+                    str(exc),
+                    scopes_ids,
+                    project_uuid
+                )
+            )
+
+            resolver = aiodns.DNSResolver(loop=loop)
+
         futures = []
 
         for each_host in to_resolve:
@@ -638,15 +829,20 @@ class ScopeManager(object):
                 exc = each_future.exception()
                 result = each_future.result()
                 host = each_future.database_host
-            except Exception:
-                continue
-
-            if exc:
-                print("RESOLVE EXCEPTION", each_future, exc)
+            except Exception as exc:
+                self.logger.error(
+                    "{} during resolve {}@{}".format(
+                        str(exc),
+                        each_future.database_host,
+                        project_uuid
+                    )
+                )
 
             for each_result in result:
                 # Well, this is strange, but ip in aiodns is returned in 'host'
                 # field
+                total_ips += 1
+
                 resolved_ip = each_result.host
                 found_ip = self.find_ip_db(resolved_ip, project_uuid)
 
@@ -660,6 +856,7 @@ class ScopeManager(object):
                         host.ip_addresses.append(session.merge(found_ip))
                         session.add(host)
                 else:
+                    new_ips += 1
                     ip_create_result = self.create_ip(
                         resolved_ip, project_uuid, format_ip=False
                     )
@@ -671,3 +868,12 @@ class ScopeManager(object):
                         session.add(host)
         session.commit()
         self.session_spawner.destroy_session(session)
+
+        self.logger.info(
+            "Successfully resolved {} ips @{}".format(
+                len(to_resolve),
+                project_uuid
+            )
+        )
+
+        return (total_ips, new_ips)

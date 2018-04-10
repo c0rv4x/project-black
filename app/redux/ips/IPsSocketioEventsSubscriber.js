@@ -45,18 +45,10 @@ class IPsSocketioEventsSubscriber {
 		this.register_socketio_handler('ips:updated', updatedIPs);
 	}
 
-	register_socketio_handler(eventName, dispatchCallback, callback) {
+	register_socketio_handler(eventName, dispatchCallback) {
 		/* Just a wrapper for connector.listen */
 		this.connector.listen(eventName, (data) => {
-			if (data.status == 'success') {
-				this.store.dispatch(dispatchCallback(data, this.project_uuid));
-			}
-			else {
-				this.store.dispatch(Notifications.error({
-					title: 'Error with ips',
-					message: data.text
-				}));
-			}				
+			this.store.dispatch(dispatchCallback(data, this.project_uuid));
 		});
 	}
 

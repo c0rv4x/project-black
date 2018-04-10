@@ -1,14 +1,24 @@
-var webpack = require('webpack');
-var path = require('path');
+const webpack = require('webpack');
+const path = require('path');
 
-var BUILD_DIR = path.resolve('public/static');
-var APP_DIR = path.resolve('app');
+const BUILD_DIR = path.resolve('public/static');
+const APP_DIR = path.resolve('app');
 
-var config = {
-    // watchOptions: {
-    //     poll: true
-    // },
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const HTMLWebpackPlugin = require('html-webpack-plugin');
+
+const config = {
 	entry: APP_DIR + '/index.jsx',
+	devtool: '#eval-source-map',
+	devServer: {
+		contentBase: path.join(__dirname, "public"),
+		// compress: true,
+		port: 9000
+	},
+	plugins: [
+		// new CleanWebpackPlugin(['public']),
+		new HTMLWebpackPlugin({"template": `${__dirname}/app/index.html`})
+	],
 	module : {
 		loaders : [
 			{
@@ -28,7 +38,8 @@ var config = {
 		]
 	},
 	output: {
-		path: BUILD_DIR,
+		path: path.resolve(__dirname, 'public'),
+		publicPath: '/',
 		filename: 'bundle.js'
 	}
 };

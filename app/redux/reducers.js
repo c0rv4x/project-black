@@ -7,7 +7,9 @@ import task_reduce from './tasks/reducers';
 import scan_reduce from './scans/reducers';
 import file_reduce from './files/reducers';
 import filter_reduce from './filters/reducers';
-import {reducer as notifications} from 'react-notification-system-redux';
+import notification_reduce from './notifications/reducers';
+import scope_reduce from './scopes/reducers';
+
 
 const all_reducers = combineReducers({
 	tasks: task_reduce,
@@ -17,8 +19,8 @@ const all_reducers = combineReducers({
 	scans: scan_reduce,
 	files: file_reduce,
 	filters: filter_reduce,
-	notifications: notifications
+	notifs: notification_reduce,
+	scopes: scope_reduce
 });
-
 
 export default all_reducers;

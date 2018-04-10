@@ -1,4 +1,5 @@
 """ Module only purpose is to create handlers for projects """
+from events_handling.notifications_spawner import send_notification
 
 
 def register_project_handlers(socketio, project_manager):
@@ -9,10 +10,21 @@ def register_project_handlers(socketio, project_manager):
         """ When received this message, send back all the projects """
         await socketio.emit(
             'projects:all:get:back',
-            {'status': 'success',
-             'projects': project_manager.get_projects()},
-            broadcast=True,
-            namespace='/projects')
+            {
+                'status': 'success',
+                'projects': project_manager.get_projects()
+            },
+            namespace='/projects'
+        )
+        print("Sending projects notification", sid)
+
+        await send_notification(
+            socketio,
+            "success",
+            "Project created",
+            "test",
+            sid=sid
+        )
 
     @socketio.on('projects:create', namespace='/projects')
     async def handle_project_create(sid, msg):
@@ -31,14 +43,32 @@ def register_project_handlers(socketio, project_manager):
                 },
                 broadcast=True,
                 namespace='/projects')
+
+            await send_notification(
+                socketio,
+                "success",
+                "Project created",
+                "Created project {}".format(project_name)
+            )
         else:
             # Error occured
             await socketio.emit(
                 'projects:create',
-                {'status': 'error',
-                 'text': addition_result["text"]},
+                {
+                    'status': 'error',
+                    'text': addition_result["text"]
+                },
                 broadcast=True,
                 namespace='/projects')
+
+            await send_notification(
+                socketio,
+                "error",
+                "Project not created",
+                "Error occured while creating project: {}".format(
+                    addition_result["text"]
+                )
+            )
 
     @socketio.on('projects:delete:project_uuid', namespace='/projects')
     async def handle_project_delete(sid, msg):
@@ -49,23 +79,40 @@ def register_project_handlers(socketio, project_manager):
         delete_result = project_manager.delete_project(
             project_uuid=project_uuid)
 
+        project_name = delete_result['project_name']
+
         if delete_result["status"] == "success":
             # Send the success result
             await socketio.emit(
                 'projects:delete',
-                {'status': 'success',
-                 'project_uuid': project_uuid},
-                broadcast=True,
+                {
+                    'status': 'success',
+                    'project_uuid': project_uuid
+                },
                 namespace='/projects')
 
+            await send_notification(
+                socketio,
+                "success",
+                "Project deleted",
+                "Deleted project {}".format(project_name)
+            )
         else:
             # Error occured
             await socketio.emit(
                 'projects:delete',
-                {'status': 'error',
-                 'text': delete_result["text"]},
-                broadcast=True,
+                {
+                    'status': 'error',
+                    'text': delete_result["text"]
+                },
                 namespace='/projects')
+
+            await send_notification(
+                socketio,
+                "error",
+                "Error on project delete",
+                "Error while deleting project {}".format(project_name)
+            )
 
     @socketio.on('projects:update', namespace='/projects')
     async def handle_project_update(sid, msg):
@@ -81,7 +128,8 @@ def register_project_handlers(socketio, project_manager):
         if updating_status["status"] == "success":
             # Send the project back
             await socketio.emit(
-                'projects:update', {
+                'projects:update',
+                {
                     'status': 'success',
                     'new_project': {
                         'project_uuid': project_uuid,
@@ -89,14 +137,27 @@ def register_project_handlers(socketio, project_manager):
                         'comment': comment,
                     }
                 },
-                broadcast=True,
                 namespace='/projects')
 
+            await send_notification(
+                socketio,
+                "success",
+                "Project updated",
+                "Updated project {}".format(project_name)
+            )
         else:
             # Error occured
             await socketio.emit(
                 'projects:update',
-                {'status': 'error',
-                 'text': updating_status["text"]},
-                broadcast=True,
+                {
+                    'status': 'error',
+                    'text': updating_status["text"]
+                },
                 namespace='/projects')
+
+            await send_notification(
+                socketio,
+                "error",
+                "Error while updating project",
+                "Error while updating project {}".format(project_name)
+            )

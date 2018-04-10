@@ -2,6 +2,8 @@
 import asyncio
 from netaddr import IPNetwork
 
+from events_handling.notifications_spawner import send_notification
+
 
 class IPHandlers(object):
 
@@ -19,7 +21,8 @@ class IPHandlers(object):
             ip_filters = msg.get('ip_filters')
 
             await self.send_ips_back(
-                ip_filters, sio, project_uuid, ip_page, ip_page_size)
+                ip_filters, sio, project_uuid, ip_page, ip_page_size
+            )
 
         @self.socketio.on('ips:single:get', namespace='/ips')
         async def _cb_handle_scope_single_get(sio, msg):
@@ -41,22 +44,47 @@ class IPHandlers(object):
             result = self.scope_manager.update_scope(
                 scope_id=ip_id, comment=comment, scope_type='ip_address'
             )
+
+            target = result['target']
+
             if result["status"] == "success":
                 await self.socketio.emit(
                     'ips:update:back',
                     {
-                     "status": "success",
-                     "ip_id": ip_id,
-                     "comment": comment,
-                     "project_uuid": project_uuid},
+                        "status": "success",
+                        "ip_id": ip_id,
+                        "comment": comment,
+                        "project_uuid": project_uuid
+                    },
                     namespace='/ips'
+                )
+
+                await send_notification(
+                    self.socketio,
+                    "success",
+                    "Scope updated",
+                    "Comment for {} has been updated".format(
+                        target
+                    ),
+                    project_uuid=project_uuid
                 )
             else:
                 result['project_uuid'] = project_uuid
+
                 await self.socketio.emit(
                     'ips:update:back',
                     result,
                     namespace='/ips'
+                )
+
+                await send_notification(
+                    self.socketio,
+                    "error",
+                    "Scope not updated",
+                    "Comment for {} updated with an error".format(
+                        target
+                    ),
+                    project_uuid=project_uuid
                 )
 
     async def send_ips_back(
@@ -134,7 +162,7 @@ class HostHandlers(object):
             hosts_ids = msg['hosts_ids']
             project_uuid = msg['project_uuid']
 
-            await self.scope_manager.resolve_scopes(hosts_ids, project_uuid)
+            total_ips, new_ips = await self.scope_manager.resolve_scopes(hosts_ids, project_uuid)
 
             await self.socketio.emit(
                 'hosts:resolve:done', {
@@ -143,6 +171,16 @@ class HostHandlers(object):
                 },
                 namespace='/hosts'
             )
+
+            await send_notification(
+                self.socketio,
+                "success",
+                "Hosts resolved",
+                "Hosts resolved. Found {} ips, {} new".format(
+                    total_ips, new_ips
+                ),
+                project_uuid=project_uuid
+            )            
 
         @self.socketio.on('hosts:update', namespace='/hosts')
         async def _cb_handle_scope_update(sio, msg):
@@ -154,6 +192,8 @@ class HostHandlers(object):
             result = self.scope_manager.update_scope(
                 scope_id=host_id, comment=comment, scope_type='host'
             )
+            target = result['target']
+
             if result["status"] == "success":
                 await self.socketio.emit(
                     'hosts:update:back',
@@ -164,6 +204,16 @@ class HostHandlers(object):
                      "project_uuid": project_uuid},
                     namespace='/hosts'
                 )
+
+                await send_notification(
+                    self.socketio,
+                    "success",
+                    "Host updated",
+                    "Comment for {} updated".format(
+                        target
+                    ),
+                    project_uuid=project_uuid
+                )
             else:
                 result['project_uuid'] = project_uuid
                 await self.socketio.emit(
@@ -172,11 +222,21 @@ class HostHandlers(object):
                     namespace='/hosts'
                 )
 
+                await send_notification(
+                    self.socketio,
+                    "error",
+                    "Host not updated",
+                    "Comment for {} updated with an error".format(
+                        target
+                    ),
+                    project_uuid=project_uuid
+                )
+
     async def send_single_host_back(
         self, host, project_uuid=None, sio=None
     ):
         """ Applies a filter to get only one host from the db """
-        self.send_hosts_back({'host': [hostname]}, sio, project_uuid)
+        await self.send_hosts_back({'host': [host]}, sio, project_uuid)
 
     async def send_hosts_back(
         self, filters, sio=None, project_uuid=None,
@@ -241,7 +301,8 @@ class ScopeHandlers(object):
             scopes = msg['scopes']
             project_uuid = msg['project_uuid']
 
-            new_scopes = []
+            new_ips = []
+            new_hosts = []
 
             error_found = False
             error_text = ""
@@ -253,10 +314,30 @@ class ScopeHandlers(object):
                     create_result = self.scope_manager.create_host(
                         scope['target'], project_uuid
                     )
+
+                    if create_result["status"] == "success":
+                        new_hosts.append(create_result["new_scope"])
+                    else:
+                        error_found = True
+                        new_err = create_result["text"]
+
+                        if new_err not in error_text:
+                            error_text += new_err
+
                 elif scope['type'] == 'ip_address':
                     create_result = self.scope_manager.create_ip(
                         scope['target'], project_uuid
                     )
+
+                    if create_result["status"] == "success":
+                        new_ips.append(create_result["new_scope"])
+                    else:
+                        error_found = True
+                        new_err = create_result["text"]
+
+                        if new_err not in error_text:
+                            error_text += new_err
+
                 elif scope['type'] == 'network':
                     ips = IPNetwork(scope['target'])
 
@@ -264,67 +345,88 @@ class ScopeHandlers(object):
                         list(map(str, ips)), project_uuid
                     )
 
-                    added = True
-                    new_scopes = create_result["new_scopes"]
+                    if create_result["status"] == "success":
+                        new_ips += create_result["new_scopes"]
+                    else:
+                        error_found = True
+                        new_err = create_result["text"]
+
+                        if new_err not in error_text:
+                            error_text += new_err
                 else:
                     create_result = {
                         "status": 'error',
                         "text": "Something bad was sent upon creating scope"
                     }
 
-                if not added and create_result["status"] == "success":
-                    new_scope = create_result["new_scope"]
-
-                    if new_scope:
-                        new_scopes.append(new_scope)
-
-                elif create_result["status"] == "error":
-                    error_found = True
-                    new_err = create_result["text"]
-
-                    if new_err not in error_text:
-                        error_text += new_err
-
             if error_found:
+                await send_notification(
+                    self.socketio,
+                    "error",
+                    "Error while adding scopes",
+                    "Error while adding scopes: {}".format(
+                        error_text
+                    ),
+                    project_uuid=project_uuid
+                )
+
+                await self.socketio.emit(
+                    'scopes:create', {
+                        'status': 'error',
+                        'project_uuid': project_uuid
+                    },
+                    namespace='/scopes'
+                )
+                
+            else:
+                await self.socketio.emit(
+                    'scopes:create', {
+                        'status': 'success',
+                        'project_uuid': project_uuid
+                    },
+                    namespace='/scopes'
+                )
+
+            # Send the scope back
+            if new_hosts:
+                await self.socketio.emit(
+                    'hosts:create', {
+                        'status': 'success',
+                        'project_uuid': project_uuid,
+                        'new_hosts': new_hosts
+                    },
+                    namespace='/hosts'
+                )
+
+                await send_notification(
+                    self.socketio,
+                    "success",
+                    "Hosts added",
+                    "Added {} hosts".format(
+                        len(new_hosts)
+                    ),
+                    project_uuid=project_uuid
+                )
+
+            if new_ips:
                 await self.socketio.emit(
                     'ips:create', {
-                        'status': 'error',
+                        'status': 'success',
                         'project_uuid': project_uuid,
-                        'text': error_text
+                        'new_ips': new_ips
                     },
                     namespace='/ips'
                 )
-                await self.socketio.emit(
-                    'hosts:create', {
-                        'status': 'error',
-                        'project_uuid': project_uuid,
-                        'text': error_text
-                    },
-                    namespace='/hosts'
-                )                
 
-            else:
-                # Send the scope back
-
-                if scope['type'] == 'hostname':
-                    await self.socketio.emit(
-                        'hosts:create', {
-                            'status': 'success',
-                            'project_uuid': project_uuid,
-                            'new_hosts': new_scopes[0:50]
-                        },
-                        namespace='/hosts'
-                    )  
-                
-                else:
-                    await self.socketio.emit(
-                        'ips:create', {
-                            'status': 'success',
-                            'project_uuid': project_uuid,
-                            'new_ips': new_scopes[0:50]
-                        },
-                        namespace='/ips'
-                    )
+                await send_notification(
+                    self.socketio,
+                    "success",
+                    "IPs added",
+                    "Added {} ips".format(
+                        len(new_ips)
+                    ),
+                    project_uuid=project_uuid
+                )
 
         @self.socketio.on('scopes:delete:scope_id', namespace='/scopes')
         async def _cb_handle_scope_delete(sio, msg):
@@ -348,6 +450,16 @@ class ScopeHandlers(object):
                         },
                         namespace='/ips'
                     )
+
+                    await send_notification(
+                        self.socketio,
+                        "success",
+                        "IP deleted",
+                        "Deleted {}".format(
+                            delete_result['target']
+                        ),
+                        project_uuid=project_uuid
+                    )
                 else:
                     await self.socketio.emit(
                         'hosts:delete', {
@@ -356,7 +468,17 @@ class ScopeHandlers(object):
                             'project_uuid': project_uuid
                         },
                         namespace='/hosts'
-                    )                    
+                    )
+
+                    await send_notification(
+                        self.socketio,
+                        "success",
+                        "Host deleted",
+                        "Deleted {}".format(
+                            delete_result['target']
+                        ),
+                        project_uuid=project_uuid
+                    )
             else:
                 # Error occured
                 await self.socketio.emit(
@@ -367,4 +489,14 @@ class ScopeHandlers(object):
                     },
                     room=sio,
                     namespace='/scopes'
+                )
+
+                await send_notification(
+                    self.socketio,
+                    "error",
+                    "IP not deleted",
+                    "Error while deleting {}".format(
+                        delete_result['target']
+                    ),
+                    project_uuid=project_uuid
                 )

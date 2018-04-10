@@ -106,7 +106,6 @@ function updated_ips(state = initialState, action) {
 			for (var each_id of message.updated_ips) {
 				for (var state_ip of state.data) {
 					if (state_ip.ip_id == each_id) {
-						console.log("Got some scans for currently displayed data");
 						found = true;
 						break;
 					}
@@ -117,7 +116,6 @@ function updated_ips(state = initialState, action) {
 		else if (message.updated_ip_address) {
 			for (var state_ip of state.data) {
 				if (state_ip.ip_address == message.updated_ip_address) {
-					console.log("Got some files for currently displayed data");
 					found = true;
 					break;
 				}

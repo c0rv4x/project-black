@@ -6,8 +6,7 @@ import {
 
 import { connect } from 'react-redux'
 
-import Notifications from 'react-notification-system-redux'
-
+import Notifications from '../notifications/Notifications.jsx';
 
 import ProjectsSocketioEventsSubscriber from '../../redux/projects/ProjectsSocketioEventsSubscriber'
 import IPsSocketioEventsSubsriber from '../../redux/ips/IPsSocketioEventsSubscriber'
@@ -15,6 +14,8 @@ import HostsSocketioEventsSubsriber from '../../redux/hosts/HostsSocketioEventsS
 import TasksSocketioEventsSubsriber from '../../redux/tasks/TasksSocketioEventsSubsriber'
 import ScansSocketioEventsSubsriber from '../../redux/scans/ScansSocketioEventsSubscriber'
 import FilesSocketioEventsSubsriber from '../../redux/files/FilesSocketioEventsSubscriber'
+import NotificationsSocketioEventsSubscriber from '../../redux/notifications/NotificationsSocketioEventsSubscriber'
+import ScopesSocketioEventsSubscriber from '../../redux/scopes/ScopesSocketioEventsSubscriber'
 
 import ProjectsMainComponentWrapper from '../../projects_list/components/ProjectsMainComponentWrapper.js'
 import ProjectsDetailsWrapper from '../../ips_list/components/ProjectDetailsWrapper.js'
@@ -39,7 +40,9 @@ class NavigationTabsWrapper extends React.Component {
         this.hostsSubscriber = new HostsSocketioEventsSubsriber(mainStore, project_uuid);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
-        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);         
+        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);   
+        this.notificationsSubscriber = new NotificationsSocketioEventsSubscriber(mainStore, project_uuid);
+        this.scopesSubscriber = new ScopesSocketioEventsSubscriber(mainStore, project_uuid);
     }
 
     render() {
@@ -55,6 +58,8 @@ class NavigationTabsWrapper extends React.Component {
         this.tasksSubscriber.close();
         this.scansSubscriber.close();
         this.filesSubscriber.close();
+        this.notificationsSubscriber.close();
+        this.this.scopesSubscriber.close();
     }
 }
 
@@ -71,6 +76,7 @@ class Projects extends React.Component {
         var mainStore = this.context.store;
 
         this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore);        
+        this.notificationsSubscriber = new NotificationsSocketioEventsSubscriber(mainStore);        
     }
 
     render() {
@@ -80,6 +86,7 @@ class Projects extends React.Component {
     } 
     componentWillUnmount() {
         this.projectsSubscriber.close();
+        this.notificationsSubscriber.close();
     }       
 }
 
@@ -206,9 +213,7 @@ class Routing extends React.Component {
         return (
             <Router>           
                 <div>
-                    <Notifications
-                        notifications={notifications}
-                    />
+                    <Notifications store={this.context.store} />
                     <Route exact path="/"
                            component={Projects} />
                     <Route exact path="/project/:project_uuid" 

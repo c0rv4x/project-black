@@ -1,8 +1,10 @@
-aiohttp
-eventlet
 dnspython
 netaddr
 sqlalchemy
 psycopg2
 sanic
 apscheduler
+python-socketio
+eventlet
+aiodns
+asynqp
