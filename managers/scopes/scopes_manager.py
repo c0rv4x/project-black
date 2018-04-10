@@ -2,6 +2,7 @@ import uuid
 import time
 import aiodns
 import asyncio
+import datetime
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased, joinedload, contains_eager
 
@@ -185,10 +186,11 @@ class ScopeManager(object):
         total_db_hosts = self.count_hosts(project_uuid)
     
         self.logger.info(
-            "Selecting hosts: from {} hosts, filter: {}. Finished in {}".format(
+            "Selecting hosts: from {} hosts, filter: {}. Finished in {}. @{}".format(
                 total_db_hosts,
                 filters,
-                time.time() - t
+                time.time() - t,
+                format(project_uuid)
             )
         )
 
@@ -334,10 +336,11 @@ class ScopeManager(object):
         total_db_ips = self.count_ips(project_uuid)
 
         self.logger.info(
-            "Selecting ips: from {} ips, filter: {}. Finished in {}".format(
+            "Selecting ips: from {} ips, filter: {}. Finished in {}. @{}".format(
                 total_db_ips,
                 filters,
-                time.time() - t
+                time.time() - t,
+                project_uuid
             )
         )
 
@@ -479,11 +482,27 @@ class ScopeManager(object):
                 session.commit()
                 self.session_spawner.destroy_session(session)
             except Exception as exc:
+                self.logger.error(
+                    "{} while creating ip: {}@{}".format(
+                        str(exc),
+                        ip_address,
+                        project_uuid
+                    )
+                )
+             
                 return {"status": "error", "text": str(exc)}
             else:
                 ips_count = self.ips[project_uuid].get('ips_count', 0)
                 ips_count += 1
                 self.ips[project_uuid]["ips_count"] = ips_count
+
+                self.logger.info(
+                    "Success creating ip: {} -> {}@{}".format(
+                        ip_address,
+                        db_object.id,
+                        project_uuid
+                    )
+                )
 
                 return {
                     "status": "success",
@@ -493,6 +512,13 @@ class ScopeManager(object):
                             no_ports=True, no_files=True
                         ) if format_ip else db_object
                 }
+
+        self.logger.info(
+            "Tried adding duplicate ip: {}@{}".format(
+                ip_address,
+                project_uuid
+            )
+        )
 
         return {"status": "duplicate"}
 
@@ -509,6 +535,7 @@ class ScopeManager(object):
                 to_add.append(ip_address)
 
         try:
+            t = time.time()
             current_date = datetime.datetime.utcnow()
             self.session_spawner.engine.execute(
                 IPDatabase.__table__.insert(),
@@ -527,6 +554,14 @@ class ScopeManager(object):
             ips_count = self.ips[project_uuid].get('ips_count', 0)
             ips_count += len(to_add)
             self.ips[project_uuid]["ips_count"] = ips_count
+
+            self.logger.info(
+                "Added batch ips: {}@{} in {}".format(
+                    ip_address,
+                    project_uuid,
+                    time.time() - t
+                )
+            )
         except Exception as exc:
             return {"status": "error", "text": str(exc)}
 
