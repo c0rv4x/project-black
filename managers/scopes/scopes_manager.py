@@ -537,23 +537,30 @@ class ScopeManager(object):
         try:
             t = time.time()
             current_date = datetime.datetime.utcnow()
+
+            new_ips = [
+                {
+                    "id": str(uuid.uuid4()),
+                    "target": ip_address,
+                    "comment": "",
+                    "project_uuid": project_uuid,
+                    "task_id": None,
+                    "date_added": current_date
+                } for ip_address in to_add
+            ]
+
             self.session_spawner.engine.execute(
                 IPDatabase.__table__.insert(),
-                [
-                    {
-                        "id": str(uuid.uuid4()),
-                        "target": ip_address,
-                        "comment": "",
-                        "project_uuid": project_uuid,
-                        "task_id": None,
-                        "date_added": current_date
-                    } for ip_address in to_add
-                ]
+                new_ips
             )
 
             ips_count = self.ips[project_uuid].get('ips_count', 0)
             ips_count += len(to_add)
             self.ips[project_uuid]["ips_count"] = ips_count
+
+            for i in new_ips:
+                i["date_added"] = current_date.strftime("%Y-%m-%d %H-%M-%S")
+                results['new_scopes'].append(i)
 
             self.logger.info(
                 "Added batch ips: {}@{} in {}".format(
