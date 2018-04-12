@@ -1,0 +1,8 @@
+version: '2.1'
+
+services:
+front_black:
+image: front_black
+build: .
+ports:
+  - 5000:5000
