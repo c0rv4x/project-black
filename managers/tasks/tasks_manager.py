@@ -33,7 +33,7 @@ class TaskManager(object):
     async def spawn_asynqp(self):
         """ Spawns all the necessary queues and launches a statuses parser """
         # connect to the RabbitMQ broker
-        connection = await asynqp.connect('postgres-black', 5672, username='guest', password='guest')
+        connection = await asynqp.connect('rabbit_black', 5672, username='guest', password='guest')
 
         # Open a communications channel
         channel = await connection.open_channel()
