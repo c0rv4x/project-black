@@ -19,7 +19,7 @@ class AsyncWorker(Worker):
         """ Init variables """
         # connect to the RabbitMQ broker
         connection = await asynqp.connect(
-            'localhost', 5672, username='guest', password='guest'
+            'rabbit_black', 5672, username='guest', password='guest'
         )
 
         # Open a communications channel
