@@ -827,8 +827,8 @@ class ScopeManager(object):
 
             try:
                 exc = each_future.exception()
-                result = each_future.result()
                 host = each_future.database_host
+                result = each_future.result()
             except Exception as exc:
                 self.logger.error(
                     "{} during resolve {}@{}".format(
