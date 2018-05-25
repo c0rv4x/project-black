@@ -5,8 +5,8 @@ import threading
 import asyncio
 from asyncio.subprocess import PIPE
 from libnmap.parser import NmapParser, NmapParserException
-from black.db import ScanDatabase, Sessions
 
+from black.db import IPDatabase, ScanDatabase, Sessions
 from black.workers.common.async_task import AsyncTask
 from uuid import uuid4
 
@@ -31,7 +31,7 @@ class NmapTask(AsyncTask):
             for each_flag in flags_raw[1:]:
                 flags.append('-' + each_flag)
 
-        self.command = ['nmap', '-oX', '-'] + flags + self.params['special'] + [self.target]
+        self.command = ['nmap', '-oX', '-'] + flags + [self.target] #self.params['special'] + [self.target]
         print("Start: ", ' '.join(self.command))
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
@@ -154,14 +154,38 @@ class NmapTask(AsyncTask):
                     )
                 )[0]
                 target_scan_id = target_scan["scan_id"]
-                new_scan = session.query(ScanDatabase).filter(ScanDatabase.scan_id==target_scan_id).first()
+                new_scan = (
+                    session.query(
+                        ScanDatabase
+                    ).filter(
+                        ScanDatabase.scan_id==target_scan_id
+                    ).first()
+                )
 
                 new_scan.banner = data["banner"]
                 new_scan.protocol = data["protocol"]
             else:
-                new_scan = ScanDatabase()
-                session.add(new_scan)
+                try:
+                    ip = (
+                        session.query(
+                            IPDatabase.id
+                        ).filter(
+                            IPDatabase.target == data["target"],
+                            IPDatabase.project_uuid == data["project_uuid"]
+                        ).one()
+                    )
 
+                    new_scan = ScanDatabase(
+                        scan_id=str(uuid4()),
+                        target=ip,
+                        port_number=data["port_number"],
+                        protocol=data["protocol"],
+                        banner=data["banner"],
+                        project_uuid=data["project_uuid"]
+                    )
+                except Exception as e:
+                    print(e)
+            session.add(new_scan)
             session.commit()
             sessions.destroy_session(session)
 
@@ -187,41 +211,6 @@ class NmapTask(AsyncTask):
                         'project_uuid': self.project_uuid
                     })
 
-                    print(scan_id, 123412341234)
-
                     scans_ids.append(scan_id)
 
         return scans_ids
-
-'''
-        scans = session.query(Scan).filter_by(
-                target=target["hostname"],
-                port_number=target["port"],
-                scan_id=scan_id).all()
-
-            print(scans)
-            if len(scans) > 1:
-                # TODO: add logger
-                print("HEY, error here: screenshotter/db_save.py. Multiple shits")
-                print(scans)
-
-            elif len(scans) == 0:
-                # TODO: add logger
-                print("Hey, error occured: race condition screenshotter/db_save.py")
-            else:
-                scan = scans[0]
-                scan.screenshot_path = screenshot_path
-
-                old_tasks_ids = scan.tasks_ids
-                if old_tasks_ids is None:
-                    new_tasks_ids = [task_id]
-                else:
-                    new_tasks_ids = json.loads(old_tasks_ids)
-                    new_tasks_ids.append(task_id)
-
-                scan.tasks_ids = json.dumps(new_tasks_ids)
-
-                session.commit()
-
-            destroy_session(session)
-'''
