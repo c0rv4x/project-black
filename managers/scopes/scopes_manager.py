@@ -635,7 +635,7 @@ class ScopeManager(object):
                         }
                 }
 
-        return {"status": "duplicate"}
+        return {"status": "duplicate", "text": "duplicate"}
 
     def delete_scope(self, scope_id, scope_type):
         """ Deletes scope by its id """
