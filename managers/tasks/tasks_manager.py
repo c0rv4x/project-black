@@ -121,11 +121,6 @@ class TaskManager(object):
                 if new_status != task.status or new_progress != task.progress:
                     task.new_status_known = False
 
-<<<<<<< HEAD
-                task.set_status(
-                    new_status, new_progress, new_text, new_stdout, new_stderr
-                )
-=======
                 self.logger.debug(
                     "Task {} updated. {}->{}, {}->{}".format(
                         task.task_id,
@@ -135,7 +130,6 @@ class TaskManager(object):
                 )
 
                 task.set_status(new_status, new_progress, new_text, new_stdout, new_stderr)
->>>>>>> master
 
                 if (
                     new_data or
