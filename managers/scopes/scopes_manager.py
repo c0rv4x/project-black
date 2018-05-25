@@ -549,10 +549,11 @@ class ScopeManager(object):
                 } for ip_address in to_add
             ]
 
-            self.session_spawner.engine.execute(
-                IPDatabase.__table__.insert(),
-                new_ips
-            )
+            if new_ips:
+                self.session_spawner.engine.execute(
+                    IPDatabase.__table__.insert(),
+                    new_ips
+                )
 
             ips_count = self.ips[project_uuid].get('ips_count', 0)
             ips_count += len(to_add)
