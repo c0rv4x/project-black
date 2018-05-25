@@ -520,7 +520,7 @@ class ScopeManager(object):
             )
         )
 
-        return {"status": "duplicate"}
+        return {"status": "duplicate", "text": "duplicate"}
 
     def create_batch_ips(self, ips, project_uuid):
         results = {
