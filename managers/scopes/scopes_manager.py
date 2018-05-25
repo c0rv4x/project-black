@@ -648,7 +648,7 @@ class ScopeManager(object):
                         IPDatabase
                     )
                     .filter(IPDatabase.id == scope_id)
-                    .options(contains_eager(IPDatabase.hostnames))
+#                    .options(contains_eager(IPDatabase.hostnames))
                     .one()
                 )
             else:
@@ -657,7 +657,7 @@ class ScopeManager(object):
                         HostDatabase
                     )
                     .filter(HostDatabase.id == scope_id)
-                    .options(contains_eager(HostDatabase.ip_addresses))
+ #                   .options(contains_eager(HostDatabase.ip_addresses))
                     .one()
                 )
 
