@@ -1,4 +1,5 @@
-""" This module contains functionality, that is responsible for managing tasks """
+""" This module contains functionality
+that is responsible for managing tasks """
 import uuid
 import asyncio
 import json
@@ -39,14 +40,23 @@ class TaskManager(object):
         channel = await connection.open_channel()
 
         # Create an exchange on the broker
-        self.exchange = await channel.declare_exchange('tasks.exchange', 'direct')
+        self.exchange = await channel.declare_exchange(
+            'tasks.exchange',
+            'direct'
+        )
 
         # Create queues on the exchange
         self.tasks_queue = await channel.declare_queue('tasks_statuses')
-        await self.tasks_queue.bind(self.exchange, routing_key='tasks_statuses')
+        await self.tasks_queue.bind(
+            self.exchange,
+            routing_key='tasks_statuses'
+        )
 
         for task_type in ['nmap', 'dnsscan', 'dirseach', 'dnsscan']:
-            queue = await channel.declare_queue(task_type + '_tasks', durable=True)
+            queue = await channel.declare_queue(
+                task_type + '_tasks',
+                durable=True
+            )
             await queue.bind(self.exchange, task_type + '_tasks')
 
         await self.tasks_queue.consume(self.parse_new_status)
@@ -119,8 +129,12 @@ class TaskManager(object):
 
                 task.set_status(new_status, new_progress, new_text, new_stdout, new_stderr)
 
-                if new_data or new_status == 'Finished' or new_status == 'Aborted':
-                    self.check_finished_task_necessities(task)                    
+                if (
+                    new_data or
+                    new_status == 'Finished' or
+                    new_status == 'Aborted'
+                ):
+                    self.check_finished_task_necessities(task)
 
                 if new_status == 'Finished' or new_status == 'Aborted':
                     self.active_tasks.remove(task)
@@ -129,7 +143,6 @@ class TaskManager(object):
                 break
 
         message.ack()
-        # channel.basic_ack(delivery_tag=method.delivery_tag)
 
     def update_from_db(self):
         """ Extract all the tasks from the DB """
@@ -172,16 +185,40 @@ class TaskManager(object):
             self.finished_tasks))
 
         if get_all:
-            active = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), active_filtered))
-            finished = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), finished_filtered))
+            active = list(
+                map(
+                    lambda x: x.get_as_native_object(
+                        grab_file_descriptors=False
+                    ),
+                    active_filtered
+                )
+            )
+            finished = list(
+                map(
+                    lambda x: x.get_as_native_object(
+                        grab_file_descriptors=False
+                    ),
+                    finished_filtered
+                )
+            )
 
             return {
                 'active': active,
                 'finished': finished
             }
 
-        active = list(filter(lambda x: x.new_status_known is False, active_filtered))
-        finished = list(filter(lambda x: x.new_status_known is False, finished_filtered))
+        active = list(
+            filter(
+                lambda x: x.new_status_known is False,
+                active_filtered
+            )
+        )
+        finished = list(
+            filter(
+                lambda x: x.new_status_known is False,
+                finished_filtered
+            )
+        )
 
         for each_task in active:
             each_task.new_status_known = True
@@ -189,26 +226,61 @@ class TaskManager(object):
         for each_task in finished:
             each_task.new_status_known = True
 
-        active = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), active))
-        finished = list(map(lambda x: x.get_as_native_object(grab_file_descriptors=False), finished))
+        active = list(
+            map(
+                lambda x: x.get_as_native_object(grab_file_descriptors=False),
+                active
+            )
+        )
+        finished = list(
+            map(
+                lambda x: x.get_as_native_object(grab_file_descriptors=False),
+                finished
+            )
+        )
 
         return {
-            'active': active, 
+            'active': active,
             'finished': finished
-        }            
-
+        }
 
     def create_task(self, task_type, filters, params, project_uuid):
         """ Register the task and send a command to start it """
         if task_type == 'masscan':
-            targets = self.scope_manager.get_ips(filters, project_uuid, ips_only=True)['ips']
-            tasks = TaskStarter.start_masscan(targets, params, project_uuid, self.exchange)
+            targets = self.scope_manager.get_ips(
+                filters,
+                project_uuid,
+                ips_only=True
+            )['ips']
+            tasks = TaskStarter.start_masscan(
+                targets, params, project_uuid, self.exchange
+            )
 
             self.active_tasks += tasks
 
         elif task_type == 'nmap':
-            targets = self.scope_manager.get_ips(filters, project_uuid)['ips']
-            tasks = TaskStarter.start_nmap(targets, params, project_uuid, self.exchange)
+            targets = self.scope_manager.get_ips(
+                filters,
+                project_uuid,
+                ips_only=True
+            )['ips']
+
+            tasks = TaskStarter.start_nmap(
+                targets, params, project_uuid, self.exchange
+            )
+
+            self.active_tasks += tasks
+
+        elif task_type == 'nmap_open':
+            targets = self.scope_manager.get_ips(
+                filters,
+                project_uuid,
+                ips_only=True
+            )['ips']
+
+            tasks = TaskStarter.start_nmap_only_open(
+                targets, params, project_uuid, self.exchange
+            )
 
             self.active_tasks += tasks
 
@@ -221,9 +293,20 @@ class TaskManager(object):
 
                 targets = self.scope_manager.get_ips(filters, project_uuid)
             else:
-                targets = self.scope_manager.get_hosts(filters, project_uuid, hosts_only=True)
+                targets = self.scope_manager.get_hosts(
+                    filters, project_uuid, hosts_only=True
+                )
 
-            tasks = TaskStarter.start_dirsearch(targets, params, project_uuid, self.exchange)
+            tasks = TaskStarter.start_dirsearch(
+                targets, params, project_uuid, self.exchange
+            )
             self.active_tasks += tasks
 
-        return list(map(lambda task: task.get_as_native_object(grab_file_descriptors=False), tasks))
+        return list(
+            map(
+                lambda task: task.get_as_native_object(
+                    grab_file_descriptors=False
+                ),
+                tasks
+            )
+        )

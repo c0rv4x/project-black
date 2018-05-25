@@ -31,6 +31,30 @@ class TaskStarter(object):
 
         for ip in targets:
             local_params = copy.deepcopy(params)
+            local_params["saver"] = {}
+
+            tasks.append(
+                ShadowTask(
+                    task_id=None,
+                    task_type='nmap',
+                    target=ip,
+                    params=local_params,
+                    project_uuid=project_uuid,
+                    exchange=exchange
+                )
+            )
+
+        for task in tasks:
+            task.send_start_task()
+
+        return tasks
+
+    @staticmethod
+    def start_nmap_only_open(targets, params, project_uuid, exchange):
+        tasks = []
+
+        for ip in targets:
+            local_params = copy.deepcopy(params)
             local_params["saver"] = {
                 "scans_ids": []
             }
