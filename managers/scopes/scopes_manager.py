@@ -558,9 +558,9 @@ class ScopeManager(object):
             ips_count += len(to_add)
             self.ips[project_uuid]["ips_count"] = ips_count
 
-            for i in new_ips:
-                i["date_added"] = current_date.strftime("%Y-%m-%d %H-%M-%S")
-                results['new_scopes'].append(i)
+            # for i in new_ips:
+            #     i["date_added"] = current_date.strftime("%Y-%m-%d %H-%M-%S")
+            #     results['new_scopyes'].append(i)
 
             self.logger.info(
                 "Added batch ips: {}@{} in {}".format(
