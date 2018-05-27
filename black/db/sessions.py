@@ -21,3 +21,19 @@ class Sessions(object):
 
     def destroy_session(self, session):
         session.close()
+
+    @contextmanager
+    def get_session(self):
+        """ Easy to use session manager """
+        if self.session_builder is None:
+            raise Exception('Sessionmaker is not initialized.')
+        session = self.session_builder()
+
+        try:
+            yield session
+            session.commit()
+        except:
+            session.rollback()
+            raise
+        finally:
+            session.close()
