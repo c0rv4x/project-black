@@ -4,11 +4,21 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
+from contextlib import contextmanager
+
+from config import CONFIG
+
 
 class Sessions(object):
     def __init__(self):
         self.engine = create_engine(
-            'postgresql+psycopg2://black:black101@postgres_black:5432/black',
+            'postgresql+psycopg2://{}:{}@{}:{}/{}'.format(
+                CONFIG['postgres']['username'],
+                CONFIG['postgres']['password'],
+                CONFIG['postgres']['host'],
+                CONFIG['postgres']['port'],
+                CONFIG['postgres']['database']
+            ),
             # echo=True,
             use_batch_mode=True)
         self.session_builder = sessionmaker(

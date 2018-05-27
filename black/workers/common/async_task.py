@@ -4,6 +4,8 @@ from asyncio import Lock
 from black.db import sessions
 from black.workers.common.task import Task
 
+from config import CONFIG
+
 
 class AsyncTask(Task):
     """ Async class for the task """
@@ -18,7 +20,10 @@ class AsyncTask(Task):
     async def __aenter__(self):
         # connect to the RabbitMQ broker
         self.connection = await asynqp.connect(
-            'rabbit_black', 5672, username='guest', password='guest'
+            CONFIG['rabbit']['host'],
+            CONFIG['rabbit']['port'],
+            username=CONFIG['rabbit']['username'],
+            password=CONFIG['rabbit']['password']
         )
 
         # Open a communications channel

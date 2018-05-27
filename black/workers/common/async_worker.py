@@ -3,6 +3,7 @@ import asyncio
 import asynqp
 
 from .worker import Worker
+from config import CONFIG
 
 
 class AsyncWorker(Worker):
@@ -19,7 +20,10 @@ class AsyncWorker(Worker):
         """ Init variables """
         # connect to the RabbitMQ broker
         connection = await asynqp.connect(
-            'rabbit_black', 5672, username='guest', password='guest'
+            CONFIG['rabbit']['host'],
+            CONFIG['rabbit']['port'],
+            username=CONFIG['rabbit']['username'],
+            password=CONFIG['rabbit']['password']
         )
 
         # Open a communications channel
@@ -97,7 +101,7 @@ class AsyncWorker(Worker):
     def handle_finished_task(self, proc):
         """ After the task is finished, remove it from 'active' list """
         self.active_processes.remove(proc)
-        self.finished_processes.append(proc)
+        # self.finished_processes.append(proc)
 
         self.release_resources()
 
