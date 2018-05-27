@@ -8,3 +8,4 @@ python-socketio
 eventlet
 aiodns
 asynqp
+pyyaml

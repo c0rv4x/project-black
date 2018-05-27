@@ -10,6 +10,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from events_handling import Handlers
 
 from common.logger import init_default
+from config import CONFIG
 
 
 def check_authorization(request):
@@ -21,7 +22,7 @@ def check_authorization(request):
         login = authentication.split(':')[0]
         password = authentication.split(':')[1]
 
-        if login == 'pt' and password == 'blackisbackfuckers':
+        if login == CONFIG['application']['username'] and password == CONFIG['application']['password']:
             return True
 
     return False
@@ -89,4 +90,4 @@ async def cb_instantiate_scheduler(app, loop):
     scheduler.start()
 
 
-APP.run(host='0.0.0.0', port=5000, debug=False)
+APP.run(host=CONFIG['application']['host'], port=CONFIG['application']['port'], debug=False)
