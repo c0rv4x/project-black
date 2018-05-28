@@ -1,7 +1,7 @@
 """ Keeps FileManager, which is reponsible for working with File table """
 from operator import itemgetter
 
-from black.black.db import Sessions, FileDatabase, ProjectDatabase
+from black.db import Sessions, FileDatabase, ProjectDatabase
 
 
 class FileManager(object):

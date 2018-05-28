@@ -1,5 +1,5 @@
 """ Class that keeps info on scans """
-from black.black.db import Sessions, ProjectDatabase, ScanDatabase
+from black.db import Sessions, ProjectDatabase, ScanDatabase
 
 
 class ScanManager(object):

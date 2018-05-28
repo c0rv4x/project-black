@@ -1,7 +1,7 @@
 from sqlalchemy import desc, or_
 from sqlalchemy.orm import aliased, contains_eager
 
-from black.black.db import ScanDatabase, FileDatabase
+from black.db import ScanDatabase, FileDatabase
 from managers.scopes.filters import Filters
 
 

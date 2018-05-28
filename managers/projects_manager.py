@@ -3,8 +3,8 @@ update, add, update and delete the elements. """
 import uuid
 import json
 
-from black.black.db import Sessions
-from black.black.db import ProjectDatabase
+from black.db import Sessions
+from black.db import ProjectDatabase
 
 from common.logger import log
 

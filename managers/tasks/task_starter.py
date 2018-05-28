@@ -1,5 +1,6 @@
 import copy
-from black.black.db import Sessions, IPDatabase
+
+from black.db import Sessions, IPDatabase
 from managers.tasks.shadow_task import ShadowTask
 
 

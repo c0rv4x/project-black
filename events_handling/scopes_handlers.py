@@ -331,6 +331,7 @@ class ScopeHandlers(object):
 
                     if create_result["status"] == "success":
                         new_ips.append(create_result["new_scope"].dict())
+                        print(new_ips)
                     else:
                         error_found = True
                         new_err = create_result["text"]

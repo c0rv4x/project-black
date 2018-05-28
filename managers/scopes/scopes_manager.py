@@ -6,8 +6,8 @@ import datetime
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased, joinedload, contains_eager
 
-from black.black.db import (Sessions, IPDatabase, ProjectDatabase,
-                            HostDatabase, ScanDatabase, FileDatabase)
+from black.db import (Sessions, IPDatabase, ProjectDatabase,
+                        HostDatabase, ScanDatabase, FileDatabase)
 from managers.scopes.filters import Filters
 from managers.scopes.subquery_builder import SubqueryBuilder
 

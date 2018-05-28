@@ -5,7 +5,7 @@ import asyncio
 import json
 import asynqp
 
-from black.black.db import Sessions, TaskDatabase
+from black.db import Sessions, TaskDatabase
 from managers.tasks.shadow_task import ShadowTask
 from managers.tasks.task_starter import TaskStarter
 

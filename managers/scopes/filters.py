@@ -1,6 +1,6 @@
 from sqlalchemy import Integer, or_, and_
 
-from black.black.db import (
+from black.db import (
     HostDatabase, IPDatabase, ScanDatabase, FileDatabase
 )
 
