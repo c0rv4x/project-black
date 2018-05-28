@@ -391,18 +391,6 @@ class ScopeManager(object):
             }, ip_object.files))
         }
 
-    def find_ip_db(self, ip_address, project_uuid):
-        """ Finds ip address in the database """
-
-        session = self.session_spawner.get_new_session()
-        ip_from_db = session.query(IPDatabase).filter(
-            IPDatabase.project_uuid == project_uuid,
-            IPDatabase.target == ip_address
-        ).one_or_none()
-        self.session_spawner.destroy_session(session)
-
-        return ip_from_db
-
     def find_hostname(self, hostname, project_uuid):
         """ Finds hostname in the database """
 
@@ -414,16 +402,6 @@ class ScopeManager(object):
         self.session_spawner.destroy_session(session)
 
         return host_from_db
-
-    def get_one_ip(self, ip_address, project_uuid):
-        """ Returns one nicely formatted ip address with scans """
-
-        ip_from_db = self.find_ip_db(ip_address, project_uuid)
-
-        if ip_from_db is None:
-            return None
-
-        return self.format_ip(ip_from_db)
 
     def count_ips(self, project_uuid):
         """ Counts ip entries in the database (for single project) """
@@ -465,62 +443,10 @@ class ScopeManager(object):
         return self.hosts[project_uuid]["hosts_count"]
 
     def create_ip(self, ip_address, project_uuid, format_ip=True):
-        """ Creating an ip address we should first check whether it is already
-        in the db, then create a new one if necessary """
-
-        if self.find_ip_db(ip_address, project_uuid) is None:
-            try:
-                db_object = IPDatabase(
-                    id=str(uuid.uuid4()),
-                    target=ip_address,
-                    comment="",
-                    project_uuid=project_uuid
-                )
-
-                session = self.session_spawner.get_new_session()
-                session.add(db_object)
-                session.commit()
-                self.session_spawner.destroy_session(session)
-            except Exception as exc:
-                self.logger.error(
-                    "{} while creating ip: {}@{}".format(
-                        str(exc),
-                        ip_address,
-                        project_uuid
-                    )
-                )
-             
-                return {"status": "error", "text": str(exc)}
-            else:
-                ips_count = self.ips[project_uuid].get('ips_count', 0)
-                ips_count += 1
-                self.ips[project_uuid]["ips_count"] = ips_count
-
-                self.logger.info(
-                    "Success creating ip: {} -> {}@{}".format(
-                        ip_address,
-                        db_object.id,
-                        project_uuid
-                    )
-                )
-
-                return {
-                    "status": "success",
-                    "new_scope":
-                        self.format_ip(
-                            db_object, no_hosts=True,
-                            no_ports=True, no_files=True
-                        ) if format_ip else db_object
-                }
-
-        self.logger.info(
-            "Tried adding duplicate ip: {}@{}".format(
-                ip_address,
-                project_uuid
-            )
+        return IPDatabase.create(
+            target=ip_address,
+            project_uuid=project_uuid
         )
-
-        return {"status": "duplicate", "text": "duplicate"}
 
     def create_batch_ips(self, ips, project_uuid):
         results = {
@@ -531,7 +457,10 @@ class ScopeManager(object):
         to_add = []
 
         for ip_address in ips:
-            if self.find_ip_db(ip_address, project_uuid) is None:
+            if IPDatabase.find(
+                target=ip_address,
+                project_uuid=project_uuid
+            ) is None:
                 to_add.append(ip_address)
 
         try:
@@ -586,115 +515,17 @@ class ScopeManager(object):
     def create_host(self, hostname, project_uuid):
         """ Creating a host we should first check whether it is already
         in the db, then create a new one if necessary """
-
-        if self.find_hostname(hostname, project_uuid) is None:
-            try:
-                session = self.session_spawner.get_new_session()
-                db_object = HostDatabase(
-                    id=str(uuid.uuid4()),
-                    target=hostname,
-                    comment="",
-                    project_uuid=project_uuid
-                )
-                session.add(db_object)
-                session.commit()
-                self.session_spawner.destroy_session(session)
-            except Exception as exc:
-                self.logger.error(
-                    "{} on creating host: {}@{}".format(
-                        str(exc),
-                        hostname,
-                        project_uuid
-                    )
-                )
-                
-                return {"status": "error", "text": str(exc)}
-            else:
-                hosts_count = self.hosts[project_uuid].get('hosts_count', 0)
-                hosts_count += 1
-                self.hosts[project_uuid]["hosts_count"] = hosts_count
-
-                self.logger.info(
-                    "Successfully created host: {}@{} -> {}".format(
-                        hostname,
-                        project_uuid,
-                        db_object.id
-                    )
-                )
-
-                return {
-                    "status": "success",
-                    "new_scope":
-                        {
-                            "type": "host",
-                            "host_id": db_object.id,
-                            "hostname": hostname,
-                            "ip_addresses": [],
-                            "comment": "",
-                            "project_uuid": project_uuid
-                        }
-                }
-
-        return {"status": "duplicate", "text": "duplicate"}
+        return HostDatabase.create(
+            target=hostname,
+            project_uuid=project_uuid
+        )
 
     def delete_scope(self, scope_id, scope_type):
         """ Deletes scope by its id """
-
-        try:
-            session = self.session_spawner.get_new_session()
-
-            if scope_type == "ip_address":
-                db_object = (
-                    session.query(
-                        IPDatabase
-                    )
-                    .filter(IPDatabase.id == scope_id)
-#                    .options(contains_eager(IPDatabase.hostnames))
-                    .one()
-                )
-            else:
-                db_object = (
-                    session.query(
-                        HostDatabase
-                    )
-                    .filter(HostDatabase.id == scope_id)
- #                   .options(contains_eager(HostDatabase.ip_addresses))
-                    .one()
-                )
-
-            target = db_object.target
-
-            project_uuid = db_object.project_uuid
-            session.delete(db_object)
-            session.commit()
-            self.session_spawner.destroy_session(session)
-        except Exception as exc:
-            self.logger.error(
-                "{} while deleting scope: {}@{}".format(
-                    str(exc),
-                    scope_id,
-                    project_uuid
-                )
-            )
-            return {"status": "error", "text": str(exc), "target": target}
+        if scope_type == "ip_address":
+            return IPDatabase.delete_scope(scope_id)
         else:
-            if scope_type == "ip_address":
-                ips_count = self.ips[project_uuid].get('ips_count', 0)
-                ips_count -= 1
-                self.ips[project_uuid]['ips_count'] = ips_count
-            else:
-                hosts_count = self.hosts[project_uuid].get('hosts_count', 0)
-                hosts_count -= 1
-                self.hosts[project_uuid]['hosts_count'] = hosts_count
-
-            self.logger.info(
-                "Successfully deleted scope: {}@{}".format(
-                    scope_id,
-                    project_uuid
-                )
-            )
-
-            return {"status": "success", "target": target}
+            return HostDatabase.delete_scope(scope_id)
 
     def update_scope(self, scope_id, comment, scope_type):
         """ Update a comment on the scope """
@@ -845,7 +676,10 @@ class ScopeManager(object):
                 total_ips += 1
 
                 resolved_ip = each_result.host
-                found_ip = self.find_ip_db(resolved_ip, project_uuid)
+                found_ip = IPDatabase.find(
+                    target=resolved_ip,
+                    project_uuid=project_uuid
+                )
 
                 if found_ip:
                     found = False
@@ -857,9 +691,9 @@ class ScopeManager(object):
                         host.ip_addresses.append(session.merge(found_ip))
                         session.add(host)
                 else:
-                    new_ips += 1
-                    ip_create_result = self.create_ip(
-                        resolved_ip, project_uuid, format_ip=False
+                    ip_create_result = IPDatabase.create(
+                        target=resolved_ip,
+                        project_uuid=project_uuid
                     )
 
                     if ip_create_result["status"] == "success":

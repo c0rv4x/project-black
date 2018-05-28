@@ -316,7 +316,7 @@ class ScopeHandlers(object):
                     )
 
                     if create_result["status"] == "success":
-                        new_hosts.append(create_result["new_scope"])
+                        new_hosts.append(create_result["new_scope"].dict())
                     else:
                         error_found = True
                         new_err = create_result["text"]
@@ -330,7 +330,7 @@ class ScopeHandlers(object):
                     )
 
                     if create_result["status"] == "success":
-                        new_ips.append(create_result["new_scope"])
+                        new_ips.append(create_result["new_scope"].dict())
                     else:
                         error_found = True
                         new_err = create_result["text"]
