@@ -79,6 +79,26 @@ class Scope(Base):
         return {"status": "duplicate", "text": "duplicate"}
 
     @classmethod
+    def update(cls, scope_id, comment):
+        try:
+            with cls.session_spawner.get_session() as session:
+                db_object = session.query(cls).filter(
+                    cls.id == scope_id
+                ).one()
+                target = db_object.target
+                db_object.comment = comment
+                session.add(db_object)
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}
+        else:
+            return {"status": "success", "target": target}
+            
+        
+
+
+
+
+    @classmethod
     def count(cls, project_uuid):
         with cls.session_spawner.get_session() as session:
             return session.query(cls).filter(
