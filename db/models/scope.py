@@ -78,6 +78,13 @@ class Scope(Base):
 
         return {"status": "duplicate", "text": "duplicate"}
 
+    @classmethod
+    def count(cls, project_uuid):
+        with cls.session_spawner.get_session() as session:
+            return session.query(cls).filter(
+                cls.project_uuid == project_uuid
+            ).count()
+
     def __repr__(self):
         return """<Scope(ip_id='%s', target='%s', project_uuid='%s')>""" % (
             self.id, self.target, self.project_uuid
