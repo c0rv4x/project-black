@@ -391,56 +391,13 @@ class ScopeManager(object):
             }, ip_object.files))
         }
 
-    def find_hostname(self, hostname, project_uuid):
-        """ Finds hostname in the database """
-
-        session = self.session_spawner.get_new_session()
-        host_from_db = session.query(HostDatabase).filter(
-            HostDatabase.project_uuid == project_uuid,
-            HostDatabase.target == hostname
-        ).one_or_none()
-        self.session_spawner.destroy_session(session)
-
-        return host_from_db
-
     def count_ips(self, project_uuid):
         """ Counts ip entries in the database (for single project) """
-
-        assert project_uuid is not None
-
-        if self.ips.get(project_uuid, None) is None:
-            self.ips[project_uuid] = {}
-
-        if self.ips[project_uuid].get("ips_count", None) is None:
-            session = self.session_spawner.get_new_session()
-
-            self.ips[project_uuid]["ips_count"] = (
-                session.query(IPDatabase).filter(
-                    IPDatabase.project_uuid == project_uuid
-                ).count()
-            )
-
-            self.session_spawner.destroy_session(session)
-
-        return self.ips[project_uuid]["ips_count"]
+        return IPDatabase.count(project_uuid)
 
     def count_hosts(self, project_uuid):
         """ Counts host entries in the database (for single project) """
-
-        if self.hosts.get(project_uuid, None) is None:
-            self.hosts[project_uuid] = {}
-
-        if self.hosts[project_uuid].get("hosts_count", None) is None:
-            session = self.session_spawner.get_new_session()
-
-            self.hosts[project_uuid]["hosts_count"] = (
-                session.query(HostDatabase).filter(
-                    HostDatabase.project_uuid == project_uuid
-                ).count()
-            )
-            self.session_spawner.destroy_session(session)
-
-        return self.hosts[project_uuid]["hosts_count"]
+        return HostDatabase.count(project_uuid)
 
     def create_ip(self, ip_address, project_uuid, format_ip=True):
         return IPDatabase.create(
