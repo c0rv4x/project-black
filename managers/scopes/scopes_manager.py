@@ -486,43 +486,10 @@ class ScopeManager(object):
 
     def update_scope(self, scope_id, comment, scope_type):
         """ Update a comment on the scope """
-
-        try:
-            session = self.session_spawner.get_new_session()
-
-            if scope_type == "ip_address":
-                db_object = session.query(IPDatabase).filter(
-                    IPDatabase.id == scope_id
-                ).one()
-            else:
-                db_object = session.query(HostDatabase).filter(
-                    HostDatabase.id == scope_id
-                ).one()
-
-            target = db_object.target
-
-            db_object.comment = comment
-            session.add(db_object)
-            session.commit()
-            self.session_spawner.destroy_session(session)
-        except Exception as exc:
-            self.logger.error(
-                "{} while updating scope: {}".format(
-                    str(exc),
-                    scope_id
-                )
-            )
-
-            return {"status": "error", "text": str(exc), "target": target}
+        if scope_type == "ip_address":
+            return IPDatabase.update(scope_id, comment)
         else:
-            self.logger.error(
-                "Successfully updated scope: {}:{}".format(
-                    scope_id,
-                    comment
-                )
-            )
-             
-            return {"status": "success", "target": target}
+            return HostDatabase.update(scope_id, comment)
 
     async def resolve_scopes(self, scopes_ids, project_uuid):
         """ Using all the ids of scopes, resolve the hosts, now we
