@@ -1,4 +1,5 @@
 import datetime
+from uuid import uuid4
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
@@ -10,14 +11,14 @@ class HostDatabase(Scope):
     __tablename__ = 'hosts'
 
     # Primary key (probably uuid4)
-    id = Column(String, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
 
     # IP address is a string (probably None, but not sure if
     #    is needed)
     target = Column(String)
 
     # Comment field, as requested by VI
-    comment = Column(String)
+    comment = Column(String, default="")
 
     # A list of files which is associated with the current scope
     files = relationship('FileDatabase', cascade="all, delete-orphan", lazy='select', primaryjoin="HostDatabase.target == foreign(FileDatabase.target)")
@@ -47,6 +48,17 @@ class HostDatabase(Scope):
     __mapper_args__ = {
         'concrete': True
     }
+
+    def dict(self, include_ports=False, include_ips=False, include_files=False):
+        return {
+            "id": self.id,
+            "hostname": self.target,
+            "comment": self.comment,
+            "project_uuid": self.project_uuid,
+            "task_id": self.task_id,
+            "ip_addresses": list(map(lambda hostname: hostname.dict(), self.ip_addresses)) if include_ips else [],
+            "files": list(map(lambda file: file.dict(), self.files)) if include_files else []
+        }
 
     def __repr__(self):
         return """<HostDatabase(host_id='%s', hostname='%s',

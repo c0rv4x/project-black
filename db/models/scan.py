@@ -14,7 +14,7 @@ class ScanDatabase(Base):
 
     # The name of the related project
     target = Column(
-        String, ForeignKey('ips.id', ondelete='CASCADE')
+        Integer, ForeignKey('ips.id', ondelete='CASCADE')
     )
 
     # TCP port number
