@@ -302,7 +302,7 @@ class ScopeManager(object):
                 map(
                     lambda each_ip: each_ip.dict(
                         include_ports=True,
-                        include_hosts=True,
+                        include_hostnames=True,
                         include_files=True
                     ),
                     ips_from_db
