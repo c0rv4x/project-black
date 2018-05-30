@@ -19,12 +19,6 @@ class ScopeManager(object):
     exposing some interfaces for public use. """
 
     def __init__(self):
-        # A little cache for ip metainfo
-        self.ips = {}
-
-        # A little cache for host metainfo
-        self.hosts = {}
-
         self.session_spawner = Sessions()
 
     def get_hosts(
@@ -37,151 +31,132 @@ class ScopeManager(object):
 
         t = time.time()
 
-        session = self.session_spawner.get_new_session()
+        with cls.session_spawner.get_session() as session:
+            # Parse filters into an object for more comfortable work
+            parsed_filters = Filters.parse_filters(filters)
 
-        # Parse filters into an object for more comfortable work
-        parsed_filters = Filters.parse_filters(filters)
+            # Create scans subquery
+            if filters.get('port', False) or filters.get('protocol') or filters.get('banner'):
+                scans_filters_exist = True
+            else:
+                scans_filters_exist = False
 
-        # Create scans subquery
-        if filters.get('port', False) or filters.get('protocol') or filters.get('banner'):
-            scans_filters_exist = True
-        else:
-            scans_filters_exist = False
+            scans_from_db = SubqueryBuilder.build_scans_subquery(
+                session, project_uuid, filters)
 
-        scans_from_db = SubqueryBuilder.build_scans_subquery(
-            session, project_uuid, filters)
+            # Create IPS subquery
 
-        # Create IPS subquery
+            ip_filters_exist = filters.get('ip', False)
 
-        ip_filters_exist = filters.get('ip', False)
-
-        ips_query = (
-            session.query(
-                IPDatabase
+            ips_query = (
+                session.query(
+                    IPDatabase
+                )
+                .filter(
+                    IPDatabase.project_uuid == project_uuid,
+                    parsed_filters['ips']
+                )
             )
-            .filter(
-                IPDatabase.project_uuid == project_uuid,
-                parsed_filters['ips']
+
+            ips_query_subq = aliased(
+                IPDatabase, ips_query.subquery('all_ips_parsed'))
+
+            # Create files subquery
+
+            files_filters_exist = filters.get('files', False)
+
+            files_query_aliased = SubqueryBuilder.build_files_subquery(
+                session, project_uuid, filters)
+
+            # Create hosts subquery
+
+            hosts_query = (
+                session.query(
+                    HostDatabase
+                )
+                .filter(
+                    HostDatabase.project_uuid == project_uuid,
+                    parsed_filters['hosts']
+                )
+                .join(
+                    ips_query_subq, HostDatabase.ip_addresses,
+                    isouter=(not ip_filters_exist)
+                )
+                .join(
+                    scans_from_db, IPDatabase.ports,
+                    isouter=(not scans_filters_exist)
+                )
+                .join(
+                    files_query_aliased, HostDatabase.files,
+                    isouter=(not files_filters_exist)
+                )
             )
-        )
 
-        ips_query_subq = aliased(
-            IPDatabase, ips_query.subquery('all_ips_parsed'))
+            # Perform pagination
+            if page_number is None or page_size is None:
+                hosts_limited = (
+                    hosts_query
+                    .from_self(HostDatabase.id, HostDatabase.target)
+                    .distinct()
+                    .order_by(HostDatabase.target)
+                    .from_self(HostDatabase.id)
+                    .subquery('limited_hosts_ids')
+                )
+            else:
+                hosts_limited = (
+                    hosts_query
+                    .from_self(HostDatabase.id, HostDatabase.target)
+                    .distinct()
+                    .order_by(HostDatabase.target)
+                    .limit(page_size)
+                    .offset(page_size * page_number)
+                    .from_self(HostDatabase.id)
+                    .subquery('limited_hosts_ids')
+                )
 
-        # Create files subquery
-
-        files_filters_exist = filters.get('files', False)
-
-        files_query_aliased = SubqueryBuilder.build_files_subquery(
-            session, project_uuid, filters)
-
-        # Create hosts subquery
-
-        hosts_query = (
-            session.query(
-                HostDatabase
-            )
-            .filter(
-                HostDatabase.project_uuid == project_uuid,
-                parsed_filters['hosts']
-            )
-            .join(
-                ips_query_subq, HostDatabase.ip_addresses,
-                isouter=(not ip_filters_exist)
-            )
-            .join(
-                scans_from_db, IPDatabase.ports,
-                isouter=(not scans_filters_exist)
-            )
-            .join(
-                files_query_aliased, HostDatabase.files,
-                isouter=(not files_filters_exist)
-            )
-        )
-
-        # Perform pagination
-        if page_number is None or page_size is None:
-            hosts_limited = (
+            selected_hosts = (
                 hosts_query
-                .from_self(HostDatabase.id, HostDatabase.target)
-                .distinct()
-                .order_by(HostDatabase.target)
                 .from_self(HostDatabase.id)
-                .subquery('limited_hosts_ids')
-            )
-        else:
-            hosts_limited = (
-                hosts_query
-                .from_self(HostDatabase.id, HostDatabase.target)
                 .distinct()
+                .count()
+            )
+
+            # Now select hosts, joining them with
+            # all other subqueries from the prev step
+            hosts_from_db = (
+                session.query(HostDatabase)
+                .filter(
+                    HostDatabase.project_uuid == project_uuid,
+                    HostDatabase.id.in_(hosts_limited),
+                    parsed_filters['hosts']
+                )
+                .join(
+                    ips_query_subq, HostDatabase.ip_addresses,
+                    isouter=(not ip_filters_exist)
+                )
+                .join(
+                    scans_from_db, IPDatabase.ports,
+                    isouter=(not scans_filters_exist)
+                )
+                .join(
+                    files_query_aliased, HostDatabase.files,
+                    isouter=(not files_filters_exist)
+                )
+                .options(
+                    contains_eager(HostDatabase.ip_addresses, alias=ips_query_subq)
+                    .contains_eager(IPDatabase.ports, alias=scans_from_db),
+                    contains_eager(HostDatabase.files, alias=files_query_aliased))
                 .order_by(HostDatabase.target)
-                .limit(page_size)
-                .offset(page_size * page_number)
-                .from_self(HostDatabase.id)
-                .subquery('limited_hosts_ids')
+                .all()
             )
 
-        selected_hosts = (
-            hosts_query
-            .from_self(HostDatabase.id)
-            .distinct()
-            .count()
-        )
-
-        # Now select hosts, joining them with
-        # all other subqueries from the prev step
-        hosts_from_db = (
-            session.query(HostDatabase)
-            .filter(
-                HostDatabase.project_uuid == project_uuid,
-                HostDatabase.id.in_(hosts_limited),
-                parsed_filters['hosts']
-            )
-            .join(
-                ips_query_subq, HostDatabase.ip_addresses,
-                isouter=(not ip_filters_exist)
-            )
-            .join(
-                scans_from_db, IPDatabase.ports,
-                isouter=(not scans_filters_exist)
-            )
-            .join(
-                files_query_aliased, HostDatabase.files,
-                isouter=(not files_filters_exist)
-            )
-            .options(
-                contains_eager(HostDatabase.ip_addresses, alias=ips_query_subq)
-                .contains_eager(IPDatabase.ports, alias=scans_from_db),
-                contains_eager(HostDatabase.files, alias=files_query_aliased))
-            .order_by(HostDatabase.target)
-            .all()
-        )
-
-        self.session_spawner.destroy_session(session)
 
         # Reformat each hosts to JSON-like objects
-        hosts = list(map(lambda each_host: {
-            "host_id": each_host.id,
-            "hostname": each_host.target,
-            "comment": each_host.comment,
-            "ip_addresses": list(
-                                map(
-                                    lambda each_ip: self.format_ip(
-                                        each_ip, no_hosts=True, no_files=True),
-                                    each_host.ip_addresses
-                                )
-                            ),
-            "files": list(map(lambda each_file: {
-                "file_id": each_file.file_id,
-                "file_name": each_file.file_name,
-                "port_number": each_file.port_number,
-                "file_path": each_file.file_path,
-                "status_code": each_file.status_code,
-                "content_length": each_file.content_length,
-                "task_id": each_file.task_id,
-                "date_added": str(each_file.date_added)
-            }, each_host.files))
-        }, hosts_from_db))
+        hosts = list(map(lambda each_host: each_host.dict(
+            include_ips=True,
+            include_files=True,
+            include_ports=True
+        ), hosts_from_db))
 
         total_db_hosts = self.count_hosts(project_uuid)
     
@@ -210,91 +185,36 @@ class ScopeManager(object):
         described page """
         t = time.time()
 
-        session = self.session_spawner.get_new_session()
+        with cls.session_spawner.get_session() as session:
+            # Parse filters into an object for more comfortable work
+            parsed_filters = Filters.parse_filters(filters)
 
-        # Parse filters into an object for more comfortable work
-        parsed_filters = Filters.parse_filters(filters)
+            # Scans
+            if filters.get('port', False) or filters.get('protocol') or filters.get('banner'):
+                scans_filters_exist = True
+            else:
+                scans_filters_exist = False
 
-        # Scans
-        if filters.get('port', False) or filters.get('protocol') or filters.get('banner'):
-            scans_filters_exist = True
-        else:
-            scans_filters_exist = False
+            # scans_filters_exist = parsed_filters['ports'] is not True
+            scans_from_db = SubqueryBuilder.build_scans_subquery(
+                session, project_uuid, filters)
 
-        # scans_filters_exist = parsed_filters['ports'] is not True
-        scans_from_db = SubqueryBuilder.build_scans_subquery(
-            session, project_uuid, filters)
+            # Files
+            if filters.get('files', False):
+                files_filters_exist = True
+            else:
+                files_filters_exist = False
+            
+            # files_filters_exist = filters.get('files', False)
 
-        # Files
-        if filters.get('files', False):
-            files_filters_exist = True
-        else:
-            files_filters_exist = False
-        
-        # files_filters_exist = filters.get('files', False)
+            files_query_aliased = SubqueryBuilder.build_files_subquery(
+                session, project_uuid, filters)
 
-        files_query_aliased = SubqueryBuilder.build_files_subquery(
-            session, project_uuid, filters)
-
-        # Now select ips, outer joining them with scans
-        ips_query = (
-            session.query(IPDatabase)
-            .filter(
-                IPDatabase.project_uuid == project_uuid,
-                parsed_filters['ips']
-            )
-            .join(
-                scans_from_db, IPDatabase.ports,
-                isouter=(not scans_filters_exist)
-            )
-            .join(
-                files_query_aliased, IPDatabase.files,
-                isouter=(not files_filters_exist)
-            )
-        )
-
-        ips_query_subq = aliased(
-            IPDatabase, ips_query.subquery('all_ips_parsed'))
-
-        # From the filtered ips, we need to select only first N of them.
-        # So we select ids of the first N. Then select all the ips, which have
-        # that ids.
-        if page_size is None or page_number is None:
-            ids_limited = (
-                ips_query.from_self(IPDatabase.id, IPDatabase.target)
-                .distinct()
-                .order_by(IPDatabase.target)
-                .from_self(IPDatabase.id)
-                .subquery('limited_ips_ids')
-            )
-        else:
-            ids_limited = (
-                ips_query.from_self(IPDatabase.id, IPDatabase.target)
-                .distinct()
-                .order_by(IPDatabase.target)
-                .limit(page_size)
-                .offset(page_size * page_number)
-                .from_self(IPDatabase.id)
-                .subquery('limited_ips_ids')
-            )
-
-        if ips_only:
-            ips_from_db = (
-                session.query(
-                    ips_query_subq.target
-                )
-                .filter(ips_query_subq.id.in_(ids_limited))
-                .distinct()
-                .all()
-            )
-        else:
-            ips_from_db = (
-                session.query(
-                    IPDatabase
-                )
+            # Now select ips, outer joining them with scans
+            ips_query = (
+                session.query(IPDatabase)
                 .filter(
                     IPDatabase.project_uuid == project_uuid,
-                    IPDatabase.id.in_(ids_limited),
                     parsed_filters['ips']
                 )
                 .join(
@@ -305,22 +225,74 @@ class ScopeManager(object):
                     files_query_aliased, IPDatabase.files,
                     isouter=(not files_filters_exist)
                 )
-                .options(
-                    joinedload(IPDatabase.hostnames),
-                    contains_eager(
-                        IPDatabase.files, alias=files_query_aliased
-                    ),
-                    contains_eager(
-                        IPDatabase.ports, alias=scans_from_db
-                    )
-                )
-                .order_by(IPDatabase.target)
-                .all()
             )
 
-        selected_ips = ips_query.from_self(IPDatabase.id).distinct().count()
+            ips_query_subq = aliased(
+                IPDatabase, ips_query.subquery('all_ips_parsed'))
 
-        self.session_spawner.destroy_session(session)
+            # From the filtered ips, we need to select only first N of them.
+            # So we select ids of the first N. Then select all the ips, which have
+            # that ids.
+            if page_size is None or page_number is None:
+                ids_limited = (
+                    ips_query.from_self(IPDatabase.id, IPDatabase.target)
+                    .distinct()
+                    .order_by(IPDatabase.target)
+                    .from_self(IPDatabase.id)
+                    .subquery('limited_ips_ids')
+                )
+            else:
+                ids_limited = (
+                    ips_query.from_self(IPDatabase.id, IPDatabase.target)
+                    .distinct()
+                    .order_by(IPDatabase.target)
+                    .limit(page_size)
+                    .offset(page_size * page_number)
+                    .from_self(IPDatabase.id)
+                    .subquery('limited_ips_ids')
+                )
+
+            if ips_only:
+                ips_from_db = (
+                    session.query(
+                        ips_query_subq.target
+                    )
+                    .filter(ips_query_subq.id.in_(ids_limited))
+                    .distinct()
+                    .all()
+                )
+            else:
+                ips_from_db = (
+                    session.query(
+                        IPDatabase
+                    )
+                    .filter(
+                        IPDatabase.project_uuid == project_uuid,
+                        IPDatabase.id.in_(ids_limited),
+                        parsed_filters['ips']
+                    )
+                    .join(
+                        scans_from_db, IPDatabase.ports,
+                        isouter=(not scans_filters_exist)
+                    )
+                    .join(
+                        files_query_aliased, IPDatabase.files,
+                        isouter=(not files_filters_exist)
+                    )
+                    .options(
+                        joinedload(IPDatabase.hostnames),
+                        contains_eager(
+                            IPDatabase.files, alias=files_query_aliased
+                        ),
+                        contains_eager(
+                            IPDatabase.ports, alias=scans_from_db
+                        )
+                    )
+                    .order_by(IPDatabase.target)
+                    .all()
+                )
+
+            selected_ips = ips_query.from_self(IPDatabase.id).distinct().count()
 
         if ips_only:
             ips = list(map(lambda each_ip: each_ip[0], ips_from_db))
@@ -328,7 +300,11 @@ class ScopeManager(object):
             # Reformat the ips to make the JSON-like objects
             ips = list(
                 map(
-                    lambda each_ip: self.format_ip(each_ip),
+                    lambda each_ip: each_ip.dict(
+                        include_ports=True,
+                        include_hosts=True,
+                        include_files=True
+                    ),
                     ips_from_db
                 )
             )
@@ -351,46 +327,6 @@ class ScopeManager(object):
             "ips": ips
         }
 
-    def format_ip(
-        self, ip_object,
-        no_hosts=False, no_ports=False, no_files=False
-    ):
-        """ Getting ip database object, returns the same object, but JSONed """
-        if no_hosts:
-            hostnames = []
-        else:
-            hostnames = list(map(
-                lambda host: host.target, ip_object.hostnames
-            ))
-
-        return {
-            "ip_id": ip_object.id,
-            "ip_address": ip_object.target,
-            "comment": ip_object.comment,
-            "project_uuid": ip_object.project_uuid,
-            "hostnames": hostnames,
-            "scans": [] if no_ports else list(map(lambda each_scan: {
-                "scan_id": each_scan.scan_id,
-                "target": each_scan.target,
-                "port_number": each_scan.port_number,
-                "protocol": each_scan.protocol,
-                "banner": each_scan.banner,
-                "task_id": each_scan.task_id,
-                "project_uuid": each_scan.project_uuid,
-                "date_added": str(each_scan.date_added)
-            }, ip_object.ports)),
-            "files": [] if no_files else list(map(lambda each_file: {
-                "file_id": each_file.file_id,
-                "file_name": each_file.file_name,
-                "port_number": each_file.port_number,
-                "file_path": each_file.file_path,
-                "status_code": each_file.status_code,
-                "content_length": each_file.content_length,
-                "task_id": each_file.task_id,
-                "date_added": str(each_file.date_added)
-            }, ip_object.files))
-        }
-
     def count_ips(self, project_uuid):
         """ Counts ip entries in the database (for single project) """
         return IPDatabase.count(project_uuid)
@@ -399,7 +335,7 @@ class ScopeManager(object):
         """ Counts host entries in the database (for single project) """
         return HostDatabase.count(project_uuid)
 
-    def create_ip(self, ip_address, project_uuid, format_ip=True):
+    def create_ip(self, ip_address, project_uuid):
         return IPDatabase.create(
             target=ip_address,
             project_uuid=project_uuid
@@ -440,14 +376,6 @@ class ScopeManager(object):
                     IPDatabase.__table__.insert(),
                     new_ips
                 )
-
-            ips_count = self.ips[project_uuid].get('ips_count', 0)
-            ips_count += len(to_add)
-            self.ips[project_uuid]["ips_count"] = ips_count
-
-            # for i in new_ips:
-            #     i["date_added"] = current_date.strftime("%Y-%m-%d %H-%M-%S")
-            #     results['new_scopyes'].append(i)
 
             self.logger.info(
                 "Added batch ips: {}@{} in {}".format(
