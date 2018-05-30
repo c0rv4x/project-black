@@ -56,15 +56,16 @@ class IPEntryLine extends React.Component {
 		let hostnames_view = null;
 
 			hostnames_view = hostnames.slice(0, 4).map((elem) => {
-				return <Label key={elem + '_' + ip.ip_address}>{elem}</Label>;
+				return <Label key={elem.hostname + '_' + ip.ip_address}>{elem.hostname}</Label>;
 			});
+
 			if (hostnames.length > 4) {
 				hostnames_view.push(
 					<Popup key={ip.ip_address + "_others"}
 						trigger={<Label>...</Label>}
 						content={
 							hostnames.slice(4).map((elem) => {
-								return <Label key={elem + '_' + ip.ip_address}>{elem}</Label>;
+								return <Label key={elem.hostname + '_' + ip.ip_address}>{elem.hostname}</Label>;
 							})
 						}
 					/>					
