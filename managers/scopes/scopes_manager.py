@@ -31,7 +31,7 @@ class ScopeManager(object):
 
         t = time.time()
 
-        with cls.session_spawner.get_session() as session:
+        with self.session_spawner.get_session() as session:
             # Parse filters into an object for more comfortable work
             parsed_filters = Filters.parse_filters(filters)
 
@@ -185,7 +185,7 @@ class ScopeManager(object):
         described page """
         t = time.time()
 
-        with cls.session_spawner.get_session() as session:
+        with self.session_spawner.get_session() as session:
             # Parse filters into an object for more comfortable work
             parsed_filters = Filters.parse_filters(filters)
 
