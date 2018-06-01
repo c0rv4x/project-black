@@ -51,7 +51,7 @@ class HostDatabase(Scope):
 
     def dict(self, include_ports=False, include_ips=False, include_files=False):
         return {
-            "id": self.id,
+            "host_id": self.id,
             "hostname": self.target,
             "comment": self.comment,
             "project_uuid": self.project_uuid,

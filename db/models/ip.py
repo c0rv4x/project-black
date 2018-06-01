@@ -60,7 +60,7 @@ class IPDatabase(Scope):
 
     def dict(self, include_ports=False, include_hostnames=False, include_files=False):
         return {
-            "id": self.id,
+            "ip_id": self.id,
             "ip_address": self.target,
             "comment": self.comment,
             "project_uuid": self.project_uuid,
