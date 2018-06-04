@@ -87,39 +87,6 @@ class IPHandlers(object):
                     project_uuid=project_uuid
                 )
 
-        @self.socketio.on('ips:get:tasks', namespace='/ips')
-        async def _cb_handle_tasks_get(sio, msg):
-            """ When received this message, send back all the tasks """
-            project_uuid = int(msg.get('project_uuid', None))
-            ips = msg.get('ips', None)
-            await self.send_tasks_back_filtered(project_uuid, ips=ips)
-
-    async def send_tasks_back_filtered(self, project_uuid, ips=None, hosts=None):
-        """ Grab tasks data for scopes and send them back to client """
-        get_result = self.scope_manager.get_tasks_filtered(
-            project_uuid,
-            ips=ips,
-            hosts=hosts
-        )
-
-        if get_result["status"] == "success":
-            await self.socketio.emit(
-                'ips:get:get:back',
-                {
-                    "status": "success",
-                    "project_uuid": project_uuid,
-                    "active": get_result["active"],
-                    "finished": get_result["finished"]
-                },
-                namespace='/ips'
-            )
-        else:
-            await self.socketio.emit(
-                'ips:get:get:back',
-                get_result,
-                namespace='/ips'
-            )
-
     async def send_ips_back(
         self, filters, sio=None,
         project_uuid=None, ip_page=0, ip_page_size=12

@@ -18,13 +18,6 @@ class TaskHandlers(object):
             project_uuid = int(msg.get('project_uuid', None))
             await self.send_tasks_back(project_uuid, send_all=True)
 
-        @self.socketio.on('tasks:get:hosts', namespace='/tasks')
-        async def _cb_handle_tasks_get(sio, msg):
-            """ When received this message, send back all the tasks """
-            project_uuid = int(msg.get('project_uuid', None))
-            hosts = msg.get('hosts', None)
-            await self.send_tasks_back_filtered(project_uuid, hosts=hosts)
-
         @self.socketio.on('tasks:create', namespace='/tasks')
         async def _cb_handle_tasks_create(sio, msg):
             """ When received this message, create a new tasks """

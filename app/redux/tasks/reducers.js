@@ -167,7 +167,7 @@ function task_reduce(state = {'active': [], 'finished': []}, action) {
 				case RENEW_TASKS:
 					return renew_tasks(state, action);
 				case UPDATE_TASKS:
-					return update_tasks(state, action);
+					return update_tasks(state, action);			
 				default:
 					return state;
 			}

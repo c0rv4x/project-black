@@ -5,8 +5,7 @@ import {
 	DELETE_IP, 
 	RENEW_IPS,
 	UPDATED_IPS,
-	UPDATE_IP,
-	GET_TASKS_BY_IPS
+	UPDATE_IP
 } from './actions.js'
 
 
@@ -138,59 +137,6 @@ function updated_ips(state = initialState, action) {
 	}
 }
 
-function get_tasks_by_ips(state = {'active': [], 'finished': []}, action) {
-	const message = action.message;
-
-	if (message["status"] == 'success') {
-		const active_tasks = message['active'].filter((x) => {
-			return x.project_uuid == action.current_project_uuid;
-		});
-
-		var parsed_active_tasks = _.map(_.uniq(active_tasks), (x) => {
-			return {
-				"task_id": x["task_id"],
-				"task_type": x["task_type"],
-				"params": x["params"],
-				"target": x["target"],
-				"status": x["status"],
-				"progress": x["progress"],
-				"project_uuid": x["project_uuid"],
-				"text": x["text"],
-				"stdout": x["stdout"],
-				"stderr": x["stderr"],
-				"date_added": x["date_added"]
-			}
-		});
-
-		const finished_tasks = message['finished'].filter((x) => {
-			return x.project_uuid == action.current_project_uuid;
-		});
-		var parsed_finished_tasks = _.map(_.uniq(finished_tasks), (x) => {
-			return {
-				"task_id": x["task_id"],
-				"task_type": x["task_type"],
-				"params": x["params"],
-				"target": x["target"],
-				"status": x["status"],
-				"progress": x["progress"],
-				"project_uuid": x["project_uuid"],
-				"text": x["text"],
-				"stdout": x["stdout"],
-				"stderr": x["stderr"],
-				"date_added": x["date_added"]
-			}
-		});
-
-		return {
-			'active': parsed_active_tasks,
-			'finished': parsed_finished_tasks
-		};
-	} else {
-		/* TODO: add error handling */
-	}	
-	return state;
-}
-
 function ip_reduce(state = initialState, action) {
 	if (!action.hasOwnProperty('message')) {
 		return state
@@ -209,9 +155,7 @@ function ip_reduce(state = initialState, action) {
 				case UPDATE_IP:
 					return update_ip(state, action);
 				case UPDATED_IPS:
-					return updated_ips(state, action);
-				case GET_TASKS_BY_IPS:
-					return get_tasks_by_ips(state, action);									
+					return updated_ips(state, action);					
 				default:
 					return state;
 			}
