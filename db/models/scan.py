@@ -39,5 +39,18 @@ class ScanDatabase(Base):
 
     # Date of added
     date_added = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
+
+    def dict(self):
+        return {        
+            "scan_id": self.scan_id,
+            "target": self.target,
+            "port_number": self.port_number,
+            "protocol": self.protocol,
+            "banner": self.banner,
+            "task_id": self.task_id,
+            "project_uuid": self.project_uuid
+        }
+
     def __repr__(self):
        return "<Scan(port_number='%s'>" % (self.port_number)
