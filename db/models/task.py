@@ -2,6 +2,7 @@ import datetime
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
 
 from .base import Base
+from black.db.sessions import Sessions
 
 
 class TaskDatabase(Base):
@@ -44,6 +45,50 @@ class TaskDatabase(Base):
     project_uuid = Column(
         Integer, ForeignKey('projects.project_uuid', ondelete='CASCADE'), index=True
     )
+
+    session_spawner = Sessions()
+
+    def dict(self):
+        return {
+            "task_id": self.task_id,
+            "task_type": self.task_type,
+            "target": self.target,
+            "params": self.params,
+            "status": self.status,
+            "progress": self.progress,
+            "text": self.text,
+            "stdout": self.stdout,
+            "stderr": self.stderr,
+            "project_uuid": self.project_uuid
+        }
+
+    @classmethod
+    def get_tasks(cls, project_uuid, ips=None, hosts=None):
+        try:
+            with cls.session_spawner.get_session() as session:
+                tasks = session.query(cls)
+                
+                if ips is not None:
+                    tasks = tasks.filter(
+                        cls.target.in_(ips)
+                    )
+
+                if hosts is not None:
+                    tasks = tasks.filter(
+                        cls.target.in_(hosts)
+                    )                    
+
+                if project_uuid is not None:
+                    tasks = tasks.filter(
+                        cls.project_uuid == project_uuid
+                    )
+
+                finished = tasks.filter(cls.status == 'Finished').all()
+                active = tasks.filter(cls.status != 'Finished').all()
+
+                return {"status": "success", "finished": finished, "active": active}
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}        
 
     # def __repr__(self):
     #    return "<Task(task_id='%s', task_type='%s',)>" % (
