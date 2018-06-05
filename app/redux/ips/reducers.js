@@ -16,6 +16,10 @@ const initialState = {
 	"total_db_ips": 0,
 	"selected_ips": 0,
 	"data": [],
+	"tasks": {
+		"active": [],
+		"finished": []
+	},
 	"update_needed": false
 }
 
@@ -138,15 +142,13 @@ function updated_ips(state = initialState, action) {
 	}
 }
 
-function get_tasks_by_ips(state = {'active': [], 'finished': []}, action) {
+function get_tasks_by_ips(state = initialState, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
-		const active_tasks = message['active'].filter((x) => {
-			return x.project_uuid == action.current_project_uuid;
-		});
+		const active_tasks = message['active'];
 
-		var parsed_active_tasks = _.map(_.uniq(active_tasks), (x) => {
+		var parsed_active_tasks = _.map(active_tasks, (x) => {
 			return {
 				"task_id": x["task_id"],
 				"task_type": x["task_type"],
@@ -162,10 +164,9 @@ function get_tasks_by_ips(state = {'active': [], 'finished': []}, action) {
 			}
 		});
 
-		const finished_tasks = message['finished'].filter((x) => {
-			return x.project_uuid == action.current_project_uuid;
-		});
-		var parsed_finished_tasks = _.map(_.uniq(finished_tasks), (x) => {
+		const finished_tasks = message['finished'];
+
+		var parsed_finished_tasks = _.map(finished_tasks, (x) => {
 			return {
 				"task_id": x["task_id"],
 				"task_type": x["task_type"],
@@ -182,8 +183,16 @@ function get_tasks_by_ips(state = {'active': [], 'finished': []}, action) {
 		});
 
 		return {
-			'active': parsed_active_tasks,
-			'finished': parsed_finished_tasks
+			"page": state["page"],
+			"page_size": state["page_size"],
+			"total_db_ips": state["total_db_ips"],
+			"selected_ips": state["selected_ips"],
+			"data": state["data"],
+			"tasks": {
+				"active": parsed_active_tasks,
+				"finished": parsed_finished_tasks
+			},
+			"update_needed": state["update_needed"]			
 		};
 	} else {
 		/* TODO: add error handling */

@@ -104,7 +104,7 @@ class IPHandlers(object):
 
         if get_result["status"] == "success":
             await self.socketio.emit(
-                'ips:get:get:back',
+                'ips:get:tasks:back',
                 {
                     "status": "success",
                     "project_uuid": project_uuid,
@@ -115,7 +115,7 @@ class IPHandlers(object):
             )
         else:
             await self.socketio.emit(
-                'ips:get:get:back',
+                'ips:get:tasks:back',
                 get_result,
                 namespace='/ips'
             )

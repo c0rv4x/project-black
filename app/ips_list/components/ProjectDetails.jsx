@@ -26,7 +26,7 @@ class ProjectDetails extends React.Component {
   	}
 
   	componentDidUpdate(prevProps) {
-  		let { prevIps } = prevProps;
+  		let prevIps = prevProps.ips;
   		let { ips, project } = this.props;
 
   		if (

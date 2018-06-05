@@ -94,9 +94,36 @@ class IPEntryLine extends React.Component {
 			}
 		}
 
+		const active_tasks = ip.tasks.active.map((task) => {
+			return (
+				<List.Item key={task.task_id}>
+					{task.task_type + " " + task.params.program}
+				</List.Item>
+			)
+		});
+
+		const finished_tasks = ip.tasks.finished.map((task) => {
+			return (
+				<List.Item key={task.task_id}>
+					{task.task_type + " " + task.params.program}
+				</List.Item>
+			)
+		});
+
 		const description = (
 			<div>
-				<Header>{ip.ip_address}</Header>
+				<Header>
+					{ip.ip_address}
+			        <Popup
+			          trigger={<Label>{ip.tasks.active.length + ip.tasks.finished.length}</Label>}
+			          content={
+			          	<List>
+			          		{active_tasks}
+			          		{finished_tasks}
+			          	</List>
+			          }
+			        />					
+				</Header>
 				<Divider/>
 				<ScopeComment comment={ip.comment}
 						  	  onCommentSubmit={onCommentSubmit} />
