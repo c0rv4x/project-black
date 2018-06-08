@@ -56,7 +56,7 @@ class TasksScoped extends React.Component {
 
 		}
 		return (
-			<Modal trigger={<Button size='mini'>{tasks.active.length + tasks.finished.length}</Button>}>
+			<Modal trigger={<Button size='mini'>{tasks.active.length + tasks.finished.length} tasks</Button>}>
 				<Modal.Header>{target}</Modal.Header>
 				<Modal.Content>
 					<Modal.Description>
