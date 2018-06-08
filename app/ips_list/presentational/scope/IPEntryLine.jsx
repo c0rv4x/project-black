@@ -5,14 +5,17 @@ import {
 	Card,
 	Table,
 	Header,
+	Grid,
 	Divider,
 	Popup,
+	Modal,
 	List,
 	Label,
 	Image
 } from 'semantic-ui-react'
 
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
+import TasksScoped from '../../../common/tasks_scoped/TasksScoped.jsx'
 
 
 class IPEntryLine extends React.Component {
@@ -27,6 +30,7 @@ class IPEntryLine extends React.Component {
 
 		const footer = (
 			<div>
+
 	            <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
 					<Button basic size="tiny">
 						Verbose
@@ -94,35 +98,14 @@ class IPEntryLine extends React.Component {
 			}
 		}
 
-		const active_tasks = ip.tasks.active.map((task) => {
-			return (
-				<List.Item key={task.task_id}>
-					{task.task_type + " " + task.params.program}
-				</List.Item>
-			)
-		});
-
-		const finished_tasks = ip.tasks.finished.map((task) => {
-			return (
-				<List.Item key={task.task_id}>
-					{task.task_type + " " + task.params.program}
-				</List.Item>
-			)
-		});
-
 		const description = (
 			<div>
 				<Header>
 					{ip.ip_address}
-			        <Popup
-			          trigger={<Label>{ip.tasks.active.length + ip.tasks.finished.length}</Label>}
-			          content={
-			          	<List>
-			          		{active_tasks}
-			          		{finished_tasks}
-			          	</List>
-			          }
-			        />					
+			        <TasksScoped
+			        	target={ip.ip_address}
+			        	tasks={ip.tasks}
+		        	/>
 				</Header>
 				<Divider/>
 				<ScopeComment comment={ip.comment}

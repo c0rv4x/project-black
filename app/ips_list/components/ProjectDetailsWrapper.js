@@ -35,7 +35,7 @@ function mapStateToProps(state, ownProps) {
             for (var task_raw of state.tasks.active) {
                 let task_splitted = task_raw.target.split(',');
 
-                if (task_splitted.indexOf(ip.ip_address)) {
+                if (task_splitted.indexOf(ip.ip_address) !== -1) {
                     ip.tasks.active.push(task_raw);
                 }
             }
@@ -43,7 +43,7 @@ function mapStateToProps(state, ownProps) {
             for (var task_raw of state.tasks.finished) {
                 let task_splitted = task_raw.target.split(',');
 
-                if (task_splitted.indexOf(ip.ip_address)) {
+                if (task_splitted.indexOf(ip.ip_address) !== -1) {
                     ip.tasks.finished.push(task_raw);
                 }
             }            
