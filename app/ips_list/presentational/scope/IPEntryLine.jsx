@@ -30,6 +30,10 @@ class IPEntryLine extends React.Component {
 
 		const footer = (
 			<div>
+		        <TasksScoped
+		        	target={ip.ip_address}
+		        	tasks={ip.tasks}
+	        	/>
 
 	            <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
 					<Button basic size="tiny">
@@ -102,10 +106,6 @@ class IPEntryLine extends React.Component {
 			<div>
 				<Header>
 					{ip.ip_address}
-			        <TasksScoped
-			        	target={ip.ip_address}
-			        	tasks={ip.tasks}
-		        	/>
 				</Header>
 				<Divider/>
 				<ScopeComment comment={ip.comment}
