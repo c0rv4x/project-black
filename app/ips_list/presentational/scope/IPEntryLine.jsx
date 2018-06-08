@@ -5,14 +5,17 @@ import {
 	Card,
 	Table,
 	Header,
+	Grid,
 	Divider,
 	Popup,
+	Modal,
 	List,
 	Label,
 	Image
 } from 'semantic-ui-react'
 
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
+import TasksScoped from '../../../common/tasks_scoped/TasksScoped.jsx'
 
 
 class IPEntryLine extends React.Component {
@@ -27,6 +30,7 @@ class IPEntryLine extends React.Component {
 
 		const footer = (
 			<div>
+
 	            <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
 					<Button basic size="tiny">
 						Verbose
@@ -96,7 +100,13 @@ class IPEntryLine extends React.Component {
 
 		const description = (
 			<div>
-				<Header>{ip.ip_address}</Header>
+				<Header>
+					{ip.ip_address}
+			        <TasksScoped
+			        	target={ip.ip_address}
+			        	tasks={ip.tasks}
+		        	/>
+				</Header>
 				<Divider/>
 				<ScopeComment comment={ip.comment}
 						  	  onCommentSubmit={onCommentSubmit} />

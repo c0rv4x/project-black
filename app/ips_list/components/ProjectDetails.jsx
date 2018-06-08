@@ -15,6 +15,22 @@ class ProjectDetails extends React.Component {
   		return (!_.isEqual(nextProps, this.props));
   	}
 
+  	componentDidUpdate(prevProps) {
+  		let prevIps = prevProps.ips;
+  		let { ips, project } = this.props;
+
+  		if (
+  			(!prevIps) ||
+  			(prevIps.page != ips.page) ||
+  			(prevIps.page_size != ips.page_size)
+		   )
+  		{
+  			this.emitter.requestTasksByIps(ips.data.map((ip) => {
+  				return ip.ip_address;
+  			}), project.project_uuid);
+  		}
+  	}
+
 	render() {
 		let { ips, hosts, project, filters, applyFilters, setLoading, renewIps } = this.props;
 
