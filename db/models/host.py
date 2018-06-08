@@ -56,7 +56,9 @@ class HostDatabase(Scope):
             "comment": self.comment,
             "project_uuid": self.project_uuid,
             "task_id": self.task_id,
-            "ip_addresses": list(map(lambda hostname: hostname.dict(), self.ip_addresses)) if include_ips else [],
+            "ip_addresses": list(map(
+                lambda hostname: hostname.dict(include_ports=include_ports), self.ip_addresses
+            )) if include_ips else [],
             "files": list(map(lambda file: file.dict(), self.files)) if include_files else []
         }
 
