@@ -7,6 +7,7 @@ import HostsListHead from '../presentational/HostsListHead.jsx'
 import Tasks from '../../common/tasks/Tasks.jsx'
 import HostsTableTracked from './HostsTableTracked.jsx'
 import TasksButtonsTracked from './TasksButtonsTracked.jsx'
+import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'
 
 import { Button } from 'semantic-ui-react'
 
@@ -14,6 +15,15 @@ import { Button } from 'semantic-ui-react'
 class HostsList extends React.Component {
 	constructor(props) {
 		super(props);
+
+		this.emitter = new HostsSocketioEventsEmitter();
+
+  		if (this.props.hosts)
+  		{
+  			this.emitter.requestTasksByHosts(this.props.hosts.data.map((host) => {
+  				return host.hostname;
+  			}), this.props.project_uuid);
+  		}		
 	}
 
 	render() {

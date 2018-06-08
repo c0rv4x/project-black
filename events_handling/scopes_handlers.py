@@ -265,6 +265,40 @@ class HostHandlers(object):
                     project_uuid=project_uuid
                 )
 
+        @self.socketio.on('hosts:get:tasks', namespace='/hosts')
+        async def _cb_handle_tasks_get(sio, msg):
+            """ When received this message, send back all the tasks """
+            project_uuid = int(msg.get('project_uuid', None))
+            hosts = msg.get('hosts', None)
+            await self.send_tasks_back_filtered(project_uuid, hosts=hosts)
+
+
+    async def send_tasks_back_filtered(self, project_uuid, ips=None, hosts=None):
+        """ Grab tasks data for scopes and send them back to client """
+        get_result = self.scope_manager.get_tasks_filtered(
+            project_uuid,
+            ips=ips,
+            hosts=hosts
+        )
+
+        if get_result["status"] == "success":
+            await self.socketio.emit(
+                'hosts:get:tasks:back',
+                {
+                    "status": "success",
+                    "project_uuid": project_uuid,
+                    "active": get_result["active"],
+                    "finished": get_result["finished"]
+                },
+                namespace='/hosts'
+            )
+        else:
+            await self.socketio.emit(
+                'hosts:get:tasks:back',
+                get_result,
+                namespace='/hosts'
+            )            
+
     async def send_single_host_back(
         self, host, project_uuid=None, sio=None
     ):
