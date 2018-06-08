@@ -28,7 +28,7 @@ class TasksScoped extends React.Component {
 			table.push(
 				<Table.Row key={task.task_id}>
 					<Table.Cell>{task.task_type}</Table.Cell>
-					<Table.Cell>{task.params.program}</Table.Cell>
+					<Table.Cell>{JSON.stringify(task.params.program)}</Table.Cell>
 					<Table.Cell>{task.status}</Table.Cell>
 				</Table.Row>
 			);
@@ -39,7 +39,7 @@ class TasksScoped extends React.Component {
 				table.push(
 					<Table.Row key={task.task_id}>
 						<Table.Cell>{task.task_type}</Table.Cell>
-						<Table.Cell>{task.params.program}</Table.Cell>
+						<Table.Cell>{JSON.stringify(task.params.program)}</Table.Cell>
 						<Table.Cell>{task.status}</Table.Cell>
 					</Table.Row>
 				);
@@ -48,7 +48,7 @@ class TasksScoped extends React.Component {
 				table.push(
 					<Table.Row key={task.task_id} negative>
 						<Table.Cell>{task.task_type}</Table.Cell>
-						<Table.Cell>{task.params.program}</Table.Cell>
+						<Table.Cell>{JSON.stringify(task.params.program)}</Table.Cell>
 						<Table.Cell>{task.status}</Table.Cell>
 					</Table.Row>
 				);				
@@ -63,9 +63,9 @@ class TasksScoped extends React.Component {
 						<Table basic='very'>
 							<Table.Header>
 								<Table.Row>
-									<Table.HeaderCell>Type</Table.HeaderCell>
-									<Table.HeaderCell>Options</Table.HeaderCell>
-									<Table.HeaderCell>Status</Table.HeaderCell>
+									<Table.HeaderCell width={3}>Type</Table.HeaderCell>
+									<Table.HeaderCell width={10}>Options</Table.HeaderCell>
+									<Table.HeaderCell width={3}>Status</Table.HeaderCell>
 								</Table.Row>
 							</Table.Header>
 
