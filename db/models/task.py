@@ -1,5 +1,6 @@
 import datetime
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
+from sqlalchemy import or_
 
 from .base import Base
 from black.db.sessions import Sessions
@@ -83,8 +84,8 @@ class TaskDatabase(Base):
                         cls.project_uuid == project_uuid
                     )
 
-                finished = tasks.filter(cls.status == 'Finished').all()
-                active = tasks.filter(cls.status != 'Finished').all()
+                finished = tasks.filter(or_(cls.status == 'Finished', cls.status == 'Aborted')).all()
+                active = tasks.filter(cls.status != 'Finished', cls.status != 'Aborted').all()
 
                 return {"status": "success", "finished": finished, "active": active}
         except Exception as exc:
