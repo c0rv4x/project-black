@@ -362,7 +362,6 @@ class ScopeManager(object):
 
             new_ips = [
                 {
-                    "id": str(uuid.uuid4()),
                     "target": ip_address,
                     "comment": "",
                     "project_uuid": project_uuid,
