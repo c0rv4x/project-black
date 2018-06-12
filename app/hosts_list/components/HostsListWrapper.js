@@ -33,7 +33,7 @@ function mapStateToProps(state, ownProps) {
             };
 
             for (var task_raw of state.tasks.active) {
-                let task_splitted = task_raw.target.split(',');
+                let task_splitted = task_raw.target.split(':');
 
                 if (task_splitted.indexOf(host.hostname) !== -1) {
                     host.tasks.active.push(task_raw);
@@ -41,7 +41,7 @@ function mapStateToProps(state, ownProps) {
             }
 
             for (var task_raw of state.tasks.finished) {
-                let task_splitted = task_raw.target.split(',');
+                let task_splitted = task_raw.target.split(':');
 
                 if (task_splitted.indexOf(host.hostname) !== -1) {
                     host.tasks.finished.push(task_raw);
