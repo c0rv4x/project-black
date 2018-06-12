@@ -70,14 +70,28 @@ class TaskDatabase(Base):
                 tasks = session.query(cls)
                 
                 if ips is not None:
+                    like_filters = map(
+                        lambda ip: cls.target.like("%,{},%"),
+                        ips
+                    ) + map(
+                        lambda ip: cls.target.like("%,{}"),
+                        ips
+                    ) + map(
+                        lambda ip: cls.target.like("{},%"),
+                        ips
+                    )
+
                     tasks = tasks.filter(
-                        cls.target.in_(ips)
+                        or_(
+                            cls.target.in_(ips),
+                            *like_filters
+                        )
                     )
 
                 if hosts is not None:
                     tasks = tasks.filter(
                         cls.target.in_(hosts)
-                    )                    
+                    )
 
                 if project_uuid is not None:
                     tasks = tasks.filter(
