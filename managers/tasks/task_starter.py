@@ -16,7 +16,7 @@ class TaskStarter(object):
                 ShadowTask(
                     task_id=None,
                     task_type='masscan',
-                    target=','.join(targets[i * 100:(i + 1) * 100]),
+                    target=targets[i * 100:(i + 1) * 100],
                     params=params,
                     project_uuid=project_uuid,
                     exchange=exchange))
