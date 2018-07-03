@@ -4,6 +4,8 @@ import json
 import queue
 import asyncio
 
+from common.logger import log
+
 from events_handling.projects_handlers import register_project_handlers
 from events_handling.scopes_handlers import ScopeHandlers
 from events_handling.tasks_handlers import TaskHandlers
@@ -17,6 +19,7 @@ from managers import (
 )
 
 
+@log
 class Handlers(object):
 
     def __init__(self, socketio, app):
@@ -74,13 +77,11 @@ class Handlers(object):
 
             if task_type == "scan":
                 # Masscan or nmap updated some of the ips
-                scope_ids = None
+                targets = None
 
                 if text:
-                    try:
-                        scope_ids = json.loads(text)
-                    except:
-                        pass
+                    self.logger.info("Task updated targets: {}".format(text))
+                    targets = text
 
                 await send_notification(
                     self.socketio,
@@ -88,14 +89,15 @@ class Handlers(object):
                     "Task finished",
                     "{} for {} hosts finished. {} hosts updated".format(
                         task_name.capitalize(),
-                        len(target.split(',')),
-                        len(scope_ids) if scope_ids else 0
+                        len(targets),
+                        len(targets) if targets else 0
                     ),
                     project_uuid=project_uuid
                 )
 
-                await self.scan_handlers.notify_on_updated_scans(
-                    scope_ids, project_uuid)
+                if targets:
+                    await self.scan_handlers.notify_on_updated_scans(
+                        targets, project_uuid)
 
                 self.data_updated_queue.task_done()
 
