@@ -26,6 +26,27 @@ class HostsList extends React.Component {
   		}		
 	}
 
+  	shouldComponentUpdate(nextProps) {
+  		return (!_.isEqual(nextProps, this.props));
+  	}
+
+  	componentDidUpdate(prevProps) {
+  		let prevHosts = prevProps.hosts;
+  		let { hosts, project_uuid, tasks } = this.props;
+
+  		if (
+  			(!prevHosts) ||
+  			(prevHosts.page != hosts.page) ||
+  			(prevHosts.page_size != hosts.page_size) ||
+  			(JSON.stringify(prevProps.tasks) != JSON.stringify(tasks))
+		   )
+  		{
+  			this.emitter.requestTasksByHosts(hosts.data.map((host) => {
+  				return host.hostname;
+  			}), project_uuid);
+  		}
+  	}
+
 	render() {
 		const { hosts, project_uuid, filters } = this.props;
 

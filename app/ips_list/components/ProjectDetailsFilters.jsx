@@ -25,6 +25,7 @@ class ProjectDetailsFilters extends React.Component {
 		return (
 			<ProjectDetailsScopesUpdater
 				 ips={this.props.ips}
+				 tasks={this.props.tasks}
 				 project={this.props.project}
 				 tasks={this.props.tasks}
 				 filters={this.state.filters}

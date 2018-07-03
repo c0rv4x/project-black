@@ -33,7 +33,7 @@ function mapStateToProps(state, ownProps) {
             };
 
             for (var task_raw of state.tasks.active) {
-                let task_splitted = task_raw.target.split(',');
+                let task_splitted = task_raw.target;
 
                 if (task_splitted.indexOf(ip.ip_address) !== -1) {
                     ip.tasks.active.push(task_raw);
@@ -41,7 +41,7 @@ function mapStateToProps(state, ownProps) {
             }
 
             for (var task_raw of state.tasks.finished) {
-                let task_splitted = task_raw.target.split(',');
+                let task_splitted = task_raw.target;
 
                 if (task_splitted.indexOf(ip.ip_address) !== -1) {
                     ip.tasks.finished.push(task_raw);
@@ -52,6 +52,7 @@ function mapStateToProps(state, ownProps) {
 
     return {
         project: project,
+        tasks: state.tasks,
         ips: state.ips,
         tasks: state.tasks.active,
         scans: state.scans
