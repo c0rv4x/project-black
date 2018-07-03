@@ -17,12 +17,13 @@ class ProjectDetails extends React.Component {
 
   	componentDidUpdate(prevProps) {
   		let prevIps = prevProps.ips;
-  		let { ips, project } = this.props;
+  		let { ips, project, tasks } = this.props;
 
   		if (
   			(!prevIps) ||
   			(prevIps.page != ips.page) ||
-  			(prevIps.page_size != ips.page_size)
+  			(prevIps.page_size != ips.page_size) ||
+  			(JSON.stringify(prevProps.tasks) != JSON.stringify(tasks))
 		   )
   		{
   			this.emitter.requestTasksByIps(ips.data.map((ip) => {

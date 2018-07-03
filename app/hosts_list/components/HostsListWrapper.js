@@ -25,6 +25,34 @@ function mapStateToProps(state, ownProps) {
 		}
 	}
 
+    if (state.hosts) {
+        for (var host of state.hosts.data) {
+            host.tasks = {
+                "active": [],
+                "finished": []
+            };
+            for (var task_raw of state.tasks.active) {
+                if (task_raw.task_type == 'dirsearch') {
+                    let task_splitted = task_raw.target.split(':');
+
+                    if (task_splitted.indexOf(host.hostname) !== -1) {
+                        host.tasks.active.push(task_raw);
+                    }
+                }
+            }
+
+            for (var task_raw of state.tasks.finished) {
+                if (task_raw.task_type == 'dirsearch') {
+                    let task_splitted = task_raw.target.split(':');
+
+                    if (task_splitted.indexOf(host.hostname) !== -1) {
+                        host.tasks.finished.push(task_raw);
+                    }
+                }
+            }   
+        }
+    }	
+
     return {
     	project_uuid: project.project_uuid,
     	hosts: state.hosts,

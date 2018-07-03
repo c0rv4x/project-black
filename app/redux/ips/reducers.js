@@ -107,9 +107,9 @@ function updated_ips(state = initialState, action) {
 
 		if (message.updated_ips) {
 
-			for (var each_id of message.updated_ips) {
+			for (var each_ip_address of message.updated_ips) {
 				for (var state_ip of state.data) {
-					if (state_ip.ip_id == each_id) {
+					if (state_ip.ip_address == each_ip_address) {
 						found = true;
 						break;
 					}

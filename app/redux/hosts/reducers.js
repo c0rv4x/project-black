@@ -7,7 +7,8 @@ import {
 	UPDATE_HOST,
 	UPDATED_IPS,
 	RESOLVE_HOSTS,
-	HOST_DATA_UPDATED
+	HOST_DATA_UPDATED,
+	GET_TASKS_BY_HOSTS
 } from './actions.js'
 
 
@@ -157,6 +158,7 @@ function updated_ips(state = initialState, action) {
 		/* TODO: add error handling */
 	}
 }
+
 function resolve_hosts(state = initialState, action) {
 	const message = action.message;
 
@@ -169,6 +171,65 @@ function resolve_hosts(state = initialState, action) {
 	} else {
 		/* TODO: add error handling */
 	}
+}
+
+
+function get_tasks_by_hosts(state = initialState, action) {
+	const message = action.message;
+
+	if (message["status"] == 'success') {
+		const active_tasks = message['active'];
+
+		var parsed_active_tasks = _.map(active_tasks, (x) => {
+			return {
+				"task_id": x["task_id"],
+				"task_type": x["task_type"],
+				"params": x["params"],
+				"target": x["target"],
+				"status": x["status"],
+				"progress": x["progress"],
+				"project_uuid": x["project_uuid"],
+				"text": x["text"],
+				"stdout": x["stdout"],
+				"stderr": x["stderr"],
+				"date_added": x["date_added"]
+			}
+		});
+
+		const finished_tasks = message['finished'];
+
+		var parsed_finished_tasks = _.map(finished_tasks, (x) => {
+			return {
+				"task_id": x["task_id"],
+				"task_type": x["task_type"],
+				"params": x["params"],
+				"target": x["target"],
+				"status": x["status"],
+				"progress": x["progress"],
+				"project_uuid": x["project_uuid"],
+				"text": x["text"],
+				"stdout": x["stdout"],
+				"stderr": x["stderr"],
+				"date_added": x["date_added"]
+			}
+		});
+
+		return {
+			"page": state["page"],
+			"page_size": state["page_size"],
+			"total_db_ips": state["total_db_ips"],
+			"selected_ips": state["selected_ips"],
+			"data": state["data"],
+			"tasks": {
+				"active": parsed_active_tasks,
+				"finished": parsed_finished_tasks
+			},
+			"update_needed": state["update_needed"]			
+		};
+	} else {
+		/* TODO: add error handling */
+	}	
+	return state;
 }
 
 function host_reduce(state = initialState, action) {
@@ -194,6 +255,8 @@ function host_reduce(state = initialState, action) {
 					return updated_ips(state, action);	
 				case HOST_DATA_UPDATED:
 					return host_data_updated(state, action);
+				case GET_TASKS_BY_HOSTS:
+					return get_tasks_by_hosts(state, action);					
 				default:
 					return state;
 			}

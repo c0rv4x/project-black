@@ -26,6 +26,8 @@ import { Link } from 'react-router-dom'
 
 import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import HostsEntryLinePorts from './HostsEntryLinePorts.jsx'
+import TasksScoped from '../../common/tasks_scoped/TasksScoped.jsx'
+
 
 class HostsEntryLine extends React.Component {
 
@@ -39,6 +41,10 @@ class HostsEntryLine extends React.Component {
 
 		const footer = (
 			<div>
+				<TasksScoped
+		        	target={host.hostname}
+		        	tasks={host.tasks}
+		        />
 	            <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
 					<Button basic size="tiny">
 						Verbose

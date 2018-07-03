@@ -7,7 +7,8 @@ import {
 	updateHost,
 	resolveHosts,
 	updatedIPs,
-	hostsDataUpdated
+	hostsDataUpdated,
+	getTasksByHosts
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
@@ -46,6 +47,8 @@ class HostsSocketioEventsSubscriber {
 		this.register_socketio_handler('hosts:create', createHost);
 		this.register_socketio_handler('hosts:delete', deleteHost);
 		this.register_socketio_handler('hosts:resolve:done', resolveHosts);
+		this.register_socketio_handler('hosts:get:tasks:back', getTasksByHosts);
+
 	}
 
 	register_socketio_handler(eventName, dispatchCallback, callback) {
