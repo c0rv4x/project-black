@@ -127,15 +127,16 @@ class NmapTask(AsyncTask):
 
         if self.exit_code == 0:
             try:
-                scans_ids = self.parse_results()
+                target = self.parse_results()
             except Exception as e:
                 print("Set to aborted", "".join(self.stderr))
                 print(str(e))
-                raise(e)
                 await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
+
+                raise(e)
             else:
-                print("Finished: ",scans_ids)
-                await self.set_status("Finished", progress=100, text=scans_ids)
+                print("Finished: ", target)
+                await self.set_status("Finished", progress=100, text=target)
         else:
             print("Not null exit code", ' '.join(self.command))
             print("".join(self.stderr))
@@ -189,7 +190,7 @@ class NmapTask(AsyncTask):
             session.commit()
             sessions.destroy_session(session)
 
-            return new_scan.scan_id
+            return ip.id
 
         stdout = "".join(self.stdout)
 
@@ -199,11 +200,12 @@ class NmapTask(AsyncTask):
             nmap_report = NmapParser.parse(stdout, incomplete=True)
 
         sessions = Sessions()
-        scans_ids = []
+        targets = [self.target]
+        
         for scanned_host in nmap_report.hosts:
             for service_of_host in scanned_host.services:
                 if service_of_host.open():
-                    scan_id = save_scan({
+                    save_scan({
                         'target': str(scanned_host.address),
                         'port_number': int(service_of_host.port),
                         'protocol': str(service_of_host.service),
@@ -211,6 +213,4 @@ class NmapTask(AsyncTask):
                         'project_uuid': self.project_uuid
                     })
 
-                    scans_ids.append(scan_id)
-
-        return scans_ids
+        return targets

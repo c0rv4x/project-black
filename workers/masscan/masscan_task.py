@@ -21,13 +21,13 @@ class MasscanTask(AsyncTask):
         self.stdout = []
         self.stderr = []
 
-        if type(self.target) == list:
-            self.target = ",".join(self.target)
+        # if type(self.target) == list:
+            # self.target = ",".join(self.target)
 
     async def start(self):
         """ Launch the task and readers of stdout, stderr """
         print(self.params, self.target)
-        self.command = ['sudo', 'masscan'] + [self.target] + ['-oX', '-'] + self.params['program']
+        self.command = ['sudo', 'masscan'] + [','.join(self.target)] + ['-oX', '-'] + self.params['program']
 
         try:
             self.proc = await asyncio.create_subprocess_shell(' '.join(self.command), stdout=PIPE, stderr=PIPE)
@@ -169,8 +169,7 @@ class MasscanTask(AsyncTask):
                 print("Save exception", exc)
                 await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
             else:
-                print("Save result=", save_result)
-                await self.set_status("Finished", progress=100, text=json.dumps(save_result))
+                await self.set_status("Finished", progress=100, text=json.dumps(self.target))
         else:
             await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
  
