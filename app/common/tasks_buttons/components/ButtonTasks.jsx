@@ -58,7 +58,7 @@ class ButtonsTasks extends React.Component {
 
 		return (
 			<span>
-				<Dropdown text="Launch Task">
+				<Dropdown text="Launch Task" button>
 					<Dropdown.Menu>
 						{items}
 					</Dropdown.Menu>
