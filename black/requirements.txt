@@ -1,6 +1,0 @@
-psycopg2
-python-libnmap
-selenium
-sqlalchemy
-asynqp
-xmltodict
