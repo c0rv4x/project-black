@@ -6,7 +6,8 @@ import {
 	renewIPs,
 	updateIP,
 	updatedIPs,
-	resolveIPs
+	resolveIPs,
+	getByIps
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
@@ -43,6 +44,9 @@ class IPsSocketioEventsSubscriber {
 		this.register_socketio_handler('ips:create', createIP);
 		this.register_socketio_handler('ips:delete', deleteIP);
 		this.register_socketio_handler('ips:updated', updatedIPs);
+
+		/* This handler receives tasks for current ips */
+		this.register_socketio_handler('ips:get:tasks:back', getByIps);
 	}
 
 	register_socketio_handler(eventName, dispatchCallback) {

@@ -35,6 +35,7 @@ class TasksSocketioEventsSubsriber {
 		this.register_socketio_handler('tasks:all:get:back:updated', updateTasks);
 		this.register_project_new_task();
 		this.register_project_delete_task();
+		this.register_get_tasks_hosts();
 	}
 
 	register_project_new_task() {
@@ -45,6 +46,11 @@ class TasksSocketioEventsSubsriber {
 	register_project_delete_task() {
 		/* Check deleted task */
 		this.register_socketio_handler('tasks:status_change', changeStatusTask);
+	}
+
+	register_get_tasks_hosts() {
+		/* Get tasks for a list of ips (ips are specified by their ids) */
+		// this.register_socketio_handler('tasks:get:hosts:back', getByIps);
 	}
 
 	register_socketio_handler(eventName, callback) {

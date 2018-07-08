@@ -48,6 +48,13 @@ class IPsSocketioEventsEmitter {
 		});
 	}
 
+	requestTasksByIps(ips, project_uuid) {
+		this.connector.emit('ips:get:tasks', {
+			'project_uuid': project_uuid,
+			'ips': ips
+		});
+	}	
+
 }
 
 export default IPsSocketioEventsEmitter;

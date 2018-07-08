@@ -7,7 +7,8 @@ from sqlalchemy import or_
 from sqlalchemy.orm import aliased, joinedload, contains_eager
 
 from black.db import (Sessions, IPDatabase, ProjectDatabase,
-                        HostDatabase, ScanDatabase, FileDatabase)
+                        HostDatabase, ScanDatabase, FileDatabase,
+                        TaskDatabase)
 from managers.scopes.filters import Filters
 from managers.scopes.subquery_builder import SubqueryBuilder
 
@@ -417,6 +418,21 @@ class ScopeManager(object):
             return IPDatabase.update(scope_id, comment)
         else:
             return HostDatabase.update(scope_id, comment)
+
+    def get_tasks_filtered(self, project_uuid, ips=None, hosts=None):
+        """ Get the tasks associated with certain targets """
+        get_result = TaskDatabase.get_tasks(project_uuid, ips, hosts)
+
+        if get_result["status"] == "success":
+            return {
+                "status": "success",
+                "active": list(map(lambda task: task.dict(), get_result["active"])),
+                "finished": list(map(lambda task: task.dict(), get_result["finished"]))
+            }
+        else:
+            self.logger.error(get_result["text"])
+
+            return get_result            
 
     async def resolve_scopes(self, scopes_ids, project_uuid):
         """ Using all the ids of scopes, resolve the hosts, now we
