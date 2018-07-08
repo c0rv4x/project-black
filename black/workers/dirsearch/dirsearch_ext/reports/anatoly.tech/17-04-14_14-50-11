@@ -1,0 +1,4 @@
+200   202B   http://anatoly.tech:80/crossdomain.xml
+200   276B   http://anatoly.tech:80/index.html
+403   580B   http://anatoly.tech:80/test/
+301   194B   http://anatoly.tech:80/test

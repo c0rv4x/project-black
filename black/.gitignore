@@ -1,0 +1,8 @@
+**/*.pyc
+**/*.xml
+**.log
+.env
+.idea
+**/.DS_Store
+black/screenshots/*
+**~
