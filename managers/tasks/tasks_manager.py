@@ -58,7 +58,7 @@ class TaskManager(object):
             routing_key='tasks_statuses'
         )
 
-        for task_type in ['nmap', 'dnsscan', 'dirseach', 'dnsscan']:
+        for task_type in ['nmap', 'dnsscan', 'dirserach', 'masscan']:
             queue = await channel.declare_queue(
                 task_type + '_tasks',
                 durable=True
