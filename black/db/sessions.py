@@ -20,6 +20,7 @@ class Sessions(object):
                 CONFIG['postgres']['database']
             ),
             # echo=True,
+            poolclass=NullPool,
             use_batch_mode=True)
         self.session_builder = sessionmaker(
             bind=self.engine, expire_on_commit=False)
