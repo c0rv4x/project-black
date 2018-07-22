@@ -35,10 +35,15 @@ function mapStateToProps(state, ownProps) {
             // console.log(state.tasks.finished);
 
             for (var task_raw of state.tasks.active) {
-                if ((task_raw.task_type == 'masscan') || (task_raw.task_type == 'nmap')) {
-                    let task_splitted = task_raw.target.split(',');
+                if (task_raw.task_type == 'masscan') {
+                    let task_splitted = task_raw.target;
 
                     if (task_splitted.indexOf(ip.ip_address) !== -1) {
+                        ip.tasks.active.push(task_raw);
+                    }
+                }
+                else if (task_raw.task_type == 'nmap') {
+                    if (task_raw.target == ip.ip_address) {
                         ip.tasks.active.push(task_raw);
                     }
                 }
@@ -52,13 +57,18 @@ function mapStateToProps(state, ownProps) {
             }
 
             for (var task_raw of state.tasks.finished) {
-                if ((task_raw.task_type == 'masscan') || (task_raw.task_type == 'nmap')) {
-                    let task_splitted = task_raw.target.split(',');
+                if (task_raw.task_type == 'masscan') {
+                    let task_splitted = task_raw.target;
 
                     if (task_splitted.indexOf(ip.ip_address) !== -1) {
                         ip.tasks.finished.push(task_raw);
                     }
                 }
+                else if (task_raw.task_type == 'nmap') {
+                    if (task_raw.target == ip.ip_address) {
+                        ip.tasks.finished.push(task_raw);
+                    }
+                }                
                 else if (task_raw.task_type == 'dirsearch') {
                     let task_splitted = task_raw.target.split(':');
 
