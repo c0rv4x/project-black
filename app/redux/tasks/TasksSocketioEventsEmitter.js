@@ -29,6 +29,13 @@ class TasksSocketioEventsEmitter {
 		});
 	}
 
+	requestTasksByHosts(hosts, project_uuid) {
+		this.connector.emit('tasks:get:hosts', {
+			'project_uuid': project_uuid,
+			'hosts': hosts
+		});
+	}	
+
 }
 
 export default TasksSocketioEventsEmitter;

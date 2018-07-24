@@ -5,7 +5,8 @@ import {
 	DELETE_IP, 
 	RENEW_IPS,
 	UPDATED_IPS,
-	UPDATE_IP
+	UPDATE_IP,
+	GET_TASKS_BY_IPS
 } from './actions.js'
 
 
@@ -217,7 +218,9 @@ function ip_reduce(state = initialState, action) {
 				case UPDATE_IP:
 					return update_ip(state, action);
 				case UPDATED_IPS:
-					return updated_ips(state, action);					
+					return updated_ips(state, action);
+				case GET_TASKS_BY_IPS:
+					return get_tasks_by_ips(state, action);									
 				default:
 					return state;
 			}

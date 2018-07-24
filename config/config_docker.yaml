@@ -1,0 +1,18 @@
+application:
+  host: 0.0.0.0
+  port: 5000
+  username: pt
+  password: blackisbackfuckers
+rabbit:
+  host: rabbit_black
+  port: 5672
+  username: guest
+  password: guest
+postgres:
+  host: postgres_black
+  port: 5432
+  username: black
+  password: black101
+  database: black
+logs:
+  directory: logs/
