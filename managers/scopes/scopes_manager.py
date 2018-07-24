@@ -179,7 +179,8 @@ class ScopeManager(object):
 
     def get_ips(
         self, filters, project_uuid,
-        page_number=None, page_size=None, ips_only=False
+        page_number=None, page_size=None, ips_only=False,
+        ips_and_ports=False
     ):
         """ Returns ips that are associated with a given project.
         Not all ips are selected. Only those, that are within the
@@ -262,6 +263,16 @@ class ScopeManager(object):
                     .distinct()
                     .all()
                 )
+            elif ips_and_ports:
+                ips_from_db = (
+                    session.query(
+                        ips_query_subq.target,
+                        ips_query_subq.port_number
+                    )
+                    .filter(ips_query_subq.id.in_(ids_limited))
+                    .distinct()
+                    .all()
+                )                
             else:
                 ips_from_db = (
                     session.query(

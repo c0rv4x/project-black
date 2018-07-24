@@ -31,7 +31,10 @@ class NmapTask(AsyncTask):
             for each_flag in flags_raw[1:]:
                 flags.append('-' + each_flag)
 
-        self.command = ['nmap', '-oX', '-'] + flags + [self.target] #self.params['special'] + [self.target]
+        if self.params.get('special', None):
+            self.command = ['nmap', '-oX', '-'] + flags + self.params["special"] + [self.target]
+        else:
+            self.command = ['nmap', '-oX', '-'] + flags + [self.target]
         print("Start: ", ' '.join(self.command))
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
@@ -185,12 +188,11 @@ class NmapTask(AsyncTask):
                         project_uuid=data["project_uuid"]
                     )
                 except Exception as e:
-                    print(e)
+                    print("Nmap " + e)
+                    raise e
             session.add(new_scan)
             session.commit()
             sessions.destroy_session(session)
-
-            return ip.id
 
         stdout = "".join(self.stdout)
 

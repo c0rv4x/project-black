@@ -280,8 +280,8 @@ class TaskManager(object):
         elif task_type == 'nmap_open':
             targets = self.scope_manager.get_ips(
                 filters,
-                project_uuid,
-                ips_only=True
+                project_uuid
+                # ips_only=True
             )['ips']
 
             tasks = TaskStarter.start_nmap_only_open(

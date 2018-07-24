@@ -41,8 +41,7 @@ class TitleButtonsWithHandlers extends React.Component {
 		else {
 			filters['port'] = ["%"];
 		}
-
-		this.tasksEmitter.requestCreateTask('nmap',
+		this.tasksEmitter.requestCreateTask('nmap_open',
 											filters,
 											{'program': [params["argv"]]},
 											this.props.project.project_uuid)
