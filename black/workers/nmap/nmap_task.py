@@ -188,12 +188,11 @@ class NmapTask(AsyncTask):
                         project_uuid=data["project_uuid"]
                     )
                 except Exception as e:
-                    print(e)
+                    print("Nmap " + e)
+                    raise e
             session.add(new_scan)
             session.commit()
             sessions.destroy_session(session)
-
-            return ip.id
 
         stdout = "".join(self.stdout)
 
