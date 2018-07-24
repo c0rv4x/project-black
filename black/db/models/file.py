@@ -14,7 +14,7 @@ class FileDatabase(Base):
     file_name = Column(String)
 
     # Target (this is either IP or hostname)
-    target = Column(Integer, index=True)
+    target = Column(String, index=True)
 
     # Port
     port_number = Column(Integer)
