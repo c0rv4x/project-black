@@ -36,6 +36,8 @@ class DirsearchTask(AsyncTask):
     async def start(self):
         await self.all_done.acquire()
 
+        await self.set_status('Working', progress=0)
+
         socket_name = '{}.sock'.format(self.task_id)
         self.socket_path = os.path.join(os.getcwd(), socket_name)
 
