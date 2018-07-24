@@ -79,7 +79,13 @@ class TitleButtonsWithHandlers extends React.Component {
 										{
 											"name": "Top N ports",
 											"options": {
-												"argv": "--rate 10000 -p80,23,443,21,22,25,3389,110,445,139,143,53,135,3306,8080,1723,111,995,993,5900,1025,587,8888,199,1720,113,554,256"
+												"argv": "-p80,23,443,21,22,25,3389,110,445,139,143,53,135,3306,8080,1723,111,995,993,5900,1025,587,8888,199,1720,113,554,256"
+											}
+										},										
+										{
+											"name": "Web Only",
+											"options": {
+												"argv": "-p80,443,8080,8443,8000,8008,8088,8800,8880,8888,8808,5000,6000,4000,3000,5000"
 											}
 										}
 									],
@@ -156,7 +162,7 @@ class TitleButtonsWithHandlers extends React.Component {
 										{
 											"name": "Personal favourites",
 											"options": {
-												"extensions": "php,asp,txt,conf,log,bak,sql",
+												"extensions": "php,txt,conf,log,bak,sql,asp,aspx,tar.gz,tar,zip,~",
 												"path": "/"
 											}
 										}
@@ -170,7 +176,7 @@ class TitleButtonsWithHandlers extends React.Component {
 										{
 											"name": "extensions",
 											"type": "text",
-											"default_value": "txt,conf,log,bak"
+											"default_value": "php,txt,conf,log,bak,sql,asp,aspx,tar.gz,tar,zip,~"
 										},
 										{
 											"name": "cookie",
