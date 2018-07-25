@@ -55,7 +55,7 @@ class IPEntryLine extends React.Component {
 				<Table.Row key={x.scan_id + '_' + x.port_number}>
 					<Table.Cell>{x.port_number}</Table.Cell>
 					<Table.Cell>{x.protocol}</Table.Cell>
-					<Table.Cell>{x.banner}</Table.Cell>
+					<Table.Cell width={10}>{x.banner}</Table.Cell>
 				</Table.Row>
 			)
 		});
