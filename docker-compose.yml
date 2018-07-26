@@ -13,8 +13,7 @@ services:
         timeout: 5s
         retries: 20
   postgres:
-    # build: postgres/.
-    image: postgres:10.3
+    build: postgres/.
     container_name: postgres_black
     environment:
       - POSTGRES_USER=black
@@ -28,7 +27,7 @@ services:
       timeout: 5s
       retries: 20
   black:
-    image: front_black
+    image: black
     build: .
     ports:
       - 5000:5000
