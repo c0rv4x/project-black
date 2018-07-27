@@ -12,6 +12,4 @@ RUN ln -s /pgpool_postgres_entrypoint.sh /usr/local/bin/pgpool_postgres_entrypoi
 
 EXPOSE 5433
 
-
 CMD ["pgpool_postgres_entrypoint.sh"]
-# ENTRYPOINT [""]
