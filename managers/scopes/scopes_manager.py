@@ -378,15 +378,28 @@ class ScopeManager(object):
                     "comment": "",
                     "project_uuid": project_uuid,
                     "task_id": None,
-                    "date_added": current_date
+                    "date_added": str(current_date)
                 } for ip_address in to_add
             ]
 
             if new_ips:
-                self.session_spawner.engine.execute(
+                insert_res = self.session_spawner.engine.execute(
                     IPDatabase.__table__.insert(),
                     new_ips
                 )
+
+                with self.session_spawner.get_session() as session:
+                    results["new_scopes"] = list(map(
+                        lambda ip: ip.dict(),
+                        (
+                            session.query(
+                                IPDatabase
+                            ).filter(
+                                IPDatabase.project_uuid == project_uuid,
+                                IPDatabase.target.in_(to_add)
+                            )
+                        )
+                    ))
 
             self.logger.info(
                 "Added batch ips: {}@{} in {}".format(
