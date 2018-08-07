@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
@@ -12,6 +13,10 @@ class TasksButtonsTracked extends React.Component {
 
 		this.dirbusterStart = this.dirbusterStart.bind(this);
 	}
+
+	shouldComponentUpdate(nextProps) {
+		return !_.isEqual(nextProps, this.props);
+	}	
 
 	dirbusterStart(options) {
 		this.tasksEmitter.requestCreateTask('dirsearch',

@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
@@ -16,6 +17,10 @@ class TitleButtonsWithHandlers extends React.Component {
 		this.runNmapOnlyOpen = this.runNmapOnlyOpen.bind(this);
 
 		this.dirbusterStart = this.dirbusterStart.bind(this);
+	}
+
+	shouldComponentUpdate(nextProps) {
+		return !_.isEqual(nextProps, this.props);
 	}
 
 	runMasscan(params) {
