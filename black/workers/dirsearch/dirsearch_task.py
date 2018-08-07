@@ -63,25 +63,26 @@ class DirsearchTask(AsyncTask):
     async def poll_status(self, reader):
         """ Getting a reader, tries to asynchronously read some data
         from that socket and parse it """
-        data = await reader.read(1000)
+        try:
+            data = await reader.read(1000)
 
-        if data:
-            try:
-                decoded_data = json.loads(data.decode('utf-8'))
-                status = decoded_data['status']
-                progress = decoded_data['progress']
+            if data:
+                    decoded_data = json.loads(data.decode('utf-8'))
+                    status = decoded_data['status']
+                    progress = decoded_data['progress']
 
-                if status == 'Finished' or status == 'Aborted':
-                    await self.set_status(status, progress=progress, text=self.target)
+                    if status == 'Finished' or status == 'Aborted':
+                        await self.set_status(status, progress=progress, text=self.target)
 
-                    self.all_done.release()
-                    return
-                else:
-                    await self.set_status(status, progress=progress)
-            except Exception as exc:
-                print("DirsearchTask:poll_status", exc, data)
+                        self.all_done.release()
+                        return
+                    else:
+                        await self.set_status(status, progress=progress)
 
-        self.loop.create_task(self.poll_status(reader))
+            self.loop.create_task(self.poll_status(reader))
+        except Exception as exc:
+            print("DirsearchTask:poll_status", exc, data)
+            
 
     async def wait_for_exit(self):
         """ Asyncronously waits for a process to exit """
