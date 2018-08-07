@@ -3,7 +3,7 @@ version: '2.1'
 services:
   rabbit:
     build: rabbitmq/.
-    container_name: rabbit_black
+    container_name: black_rabbit
     ports: 
         - "15672:15672"
         - "5672:5672"
@@ -14,7 +14,7 @@ services:
         retries: 20
   postgres:
     build: postgres/.
-    container_name: postgres_black
+    container_name: black_postgres
     environment:
       - POSTGRES_USER=black
       - POSTGRES_PASSWORD=black101
