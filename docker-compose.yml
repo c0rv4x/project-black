@@ -26,6 +26,36 @@ services:
       interval: 3s
       timeout: 5s
       retries: 20
+  black_masscan:
+    build:
+      context: .
+      dockerfile: docker_files/masscan.yml
+    container_name: black_masscan
+    depends_on:
+      rabbit:
+        condition: service_healthy      
+      postgres:
+        condition: service_healthy
+  black_nmap:
+    build:
+      context: .
+      dockerfile: docker_files/nmap.yml
+    container_name: black_nmap
+    depends_on:
+      rabbit:
+        condition: service_healthy      
+      postgres:
+        condition: service_healthy 
+  black_dirsearch:
+    build:
+      context: .
+      dockerfile: docker_files/dirsearch.yml
+    container_name: black_dirsearch
+    depends_on:
+      rabbit:
+        condition: service_healthy      
+      postgres:
+        condition: service_healthy                   
   black:
     image: black
     build: .
