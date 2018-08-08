@@ -15,9 +15,14 @@ import {
 const initialState = {
 	"page": 0,
 	"page_size": 12,
+	"resolve_finished": false,
+	"total_db_hosts": 0,
+	"selected_hosts": 0,
 	"data": [],
-	"update_needed": false,
-	"resolve_finished": false
+	"tasks": {
+		"active": [],
+		"finished": []
+	}
 }
 
 function create_host(state = initialState, action) {
@@ -217,8 +222,8 @@ function get_tasks_by_hosts(state = initialState, action) {
 		return {
 			"page": state["page"],
 			"page_size": state["page_size"],
-			"total_db_ips": state["total_db_ips"],
-			"selected_ips": state["selected_ips"],
+			"total_db_hosts": state["total_db_hosts"],
+			"selected_hosts": state["selected_hosts"],
 			"data": state["data"],
 			"tasks": {
 				"active": parsed_active_tasks,
