@@ -43,11 +43,12 @@ class ProjectDetailsScopesUpdater extends React.Component {
 			this.renewIps(nextProps.ips.page, filters);
 		}
 		else if (!_.isEqual(filters, this.props.filters)) {
+			this.setLoading(true);
 			this.renewIps(0, filters);
 		}
 
 		if (this.state.loading) {
-			this.setLoading(false);
+			setTimeout(() => this.setLoading(false), 300);
 		}
 	}
 

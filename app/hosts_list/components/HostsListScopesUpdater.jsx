@@ -49,11 +49,12 @@ class HostsListScopesUpdater extends React.Component {
 			this.renewHosts(hosts.page, hosts.page_size, filters);
 		}
 		else if (!_.isEqual(filters, this.props.filters)) {
+			this.setLoading(true);
 			this.renewHosts(0, hosts.page_size, filters);
 		}
 
 		if (this.state.loading) {
-			this.setLoading(false);
+			setTimeout(() => this.setLoading(false), 300);
 		}
 	}
 
