@@ -17,7 +17,6 @@ class MainAccumulatorFilters extends React.Component {
 	}
 
 	applyFilters(filters) {
-		console.log("Applying filter", filters);
 		this.setState({
 			filters: filters
 		})
