@@ -5,8 +5,8 @@ services:
     build: rabbitmq/.
     container_name: black_rabbit
     ports: 
-        - "15672:15672"
-        - "5672:5672"
+        - "127.0.0.1:15672:15672"
+        - "127.0.0.1:5672:5672"
     healthcheck:
         test: ["CMD", "curl", "-f", "http://localhost:15672"]
         interval: 3s
