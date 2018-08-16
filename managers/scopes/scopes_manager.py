@@ -535,18 +535,28 @@ class ScopeManager(object):
             resolver = aiodns.DNSResolver(loop=loop)
 
         futures = []
+        done_futures_all = []
 
         for each_host in to_resolve:
             each_future = resolver.query(each_host.target, "A")
             each_future.database_host = each_host
             futures.append(each_future)
 
+            if len(futures) >= 10:
+                (done_futures, _) = await asyncio.wait(
+                    futures, return_when=asyncio.ALL_COMPLETED
+                )
+                done_futures_all += done_futures
+                futures = []
+
         (done_futures, _) = await asyncio.wait(
             futures, return_when=asyncio.ALL_COMPLETED
         )
+        done_futures_all += done_futures
+        futures = []                
 
-        while done_futures:
-            each_future = done_futures.pop()
+        while done_futures_all:
+            each_future = done_futures_all.pop()
 
             try:
                 exc = each_future.exception()
