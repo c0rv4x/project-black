@@ -563,13 +563,14 @@ class ScopeManager(object):
                 host = each_future.database_host
                 result = each_future.result()
             except Exception as exc:
-                self.logger.error(
-                    "{} during resolve {}@{}".format(
-                        str(exc),
-                        each_future.database_host,
-                        project_uuid
-                    )
-                )
+                pass
+                # self.logger.error(
+                #     "{} during resolve {}@{}".format(
+                #         str(exc),
+                #         each_future.database_host,
+                #         project_uuid
+                #     )
+                # )
 
             for each_result in result:
                 # Well, this is strange, but ip in aiodns is returned in 'host'
