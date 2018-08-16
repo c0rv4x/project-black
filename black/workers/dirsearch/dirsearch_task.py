@@ -91,3 +91,11 @@ class DirsearchTask(AsyncTask):
         await self.all_done.acquire()
         if os.path.exists(self.socket_path):
             os.remove(self.socket_path)
+
+    async def cancel(self):
+        self.dirsearch_proc.cancel()
+
+        if os.path.exists(self.socket_path):
+            os.remove(self.socket_path)
+
+        await self.set_status("Aborted", progress=0)

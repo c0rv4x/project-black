@@ -179,3 +179,7 @@ class MasscanTask(AsyncTask):
                     self.task_id,
                     self.stdout,
                     self.project_uuid)
+
+    async def cancel(self):
+        self.send_notification("stop")
+        await self.set_status("Aborted", progress=0)
