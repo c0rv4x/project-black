@@ -10,5 +10,6 @@ done
 
 rm /var/run/postgresql/.s.PGSQL.5433
 rm /var/run/postgresql/.s.PGSQL.9898
+rm /var/run/postgresql/pgpool.pid
 
 pgpool -n
