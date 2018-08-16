@@ -556,6 +556,8 @@ class ScopeManager(object):
         futures = []                
 
         while done_futures_all:
+            await asyncio.sleep(0)
+
             each_future = done_futures_all.pop()
 
             try:
