@@ -10,6 +10,7 @@ import ScopeSetupWrapper from '../scope_setup/components/ScopeSetupWrapper.js'
 import ProjectDetailsWrapper from '../ips_list/components/ProjectDetailsWrapper.js'
 import HostsListWrapper from '../hosts_list/components/HostsListWrapper.js'
 import TasksTabWrapper from '../tasks_tab/components/TasksTabWrapper.js'
+import SettingsWrapper from '../settings/components/SettingsWrapper.js'
 
 
 class NavigationTabs extends React.Component {
@@ -53,7 +54,11 @@ class NavigationTabs extends React.Component {
 					window.open(dirsearch_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
 					Dirsearch List
 				</Menu.Item>
-			}
+			},
+			{
+				menuItem: 'Settings',
+				render: (() => <SettingsWrapper project_uuid={this.project_uuid} />)
+			},
 		]
 
 		const { activeIndex } = this.state;

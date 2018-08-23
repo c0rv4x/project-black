@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 
 import Notifications from '../common/notifications/Notifications.jsx';
 
-
 import NavigationTabsWrapper from './NavigationTabsWrapper.jsx'
 import Projects from './Projects.jsx'
 import Host from './Host.jsx'
@@ -38,7 +37,6 @@ class Routing extends React.Component {
                            component={Host} />  
                     <Route exact path="/project/:project_uuid/ip/:ip_address" 
                            component={IP} /> 
-                                                                                
                 </div>
             </Router>
         )
