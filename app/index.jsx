@@ -4,7 +4,7 @@ import { Provider, connect } from 'react-redux'
 import { createStore } from 'redux'
 
 import rdcs from './redux/reducers.js'
-import Routing from './common/main_page/Routing.jsx'
+import Routing from './navigation/Routing.jsx'
 
 import { Container } from 'semantic-ui-react'
 
