@@ -1,3 +1,5 @@
+import DirsaerchPage from '../dirsearch_tables/components/MainAccumulatorWrapper.jsx'
+
 import ProjectsSocketioEventsSubscriber from '../redux/projects/ProjectsSocketioEventsSubscriber'
 import IPsSocketioEventsSubsriber from '../redux/ips/IPsSocketioEventsSubscriber'
 import HostsSocketioEventsSubsriber from '../redux/hosts/HostsSocketioEventsSubscriber'

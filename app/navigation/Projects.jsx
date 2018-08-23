@@ -1,3 +1,6 @@
+import ProjectsMainComponentWrapper from '../projects_list/components/ProjectsMainComponentWrapper.js'
+
+
 import ProjectsSocketioEventsSubscriber from '../redux/projects/ProjectsSocketioEventsSubscriber'
 import NotificationsSocketioEventsSubscriber from '../redux/notifications/NotificationsSocketioEventsSubscriber'
 

@@ -1,3 +1,5 @@
+import NavigationTabs from './NavigationTabs.jsx'
+
 import ProjectsSocketioEventsSubscriber from '../redux/projects/ProjectsSocketioEventsSubscriber'
 import IPsSocketioEventsSubsriber from '../redux/ips/IPsSocketioEventsSubscriber'
 import HostsSocketioEventsSubsriber from '../redux/hosts/HostsSocketioEventsSubscriber'
