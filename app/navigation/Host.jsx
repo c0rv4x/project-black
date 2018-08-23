@@ -1,3 +1,5 @@
+import React from 'react'
+
 import HostPage from '../host_verbose/components/MainAccumulatorWrapper.jsx'
 
 import ProjectsSocketioEventsSubscriber from '../redux/projects/ProjectsSocketioEventsSubscriber'

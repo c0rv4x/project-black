@@ -1,3 +1,5 @@
+import React from 'react'
+
 import DirsaerchPage from '../dirsearch_tables/components/MainAccumulatorWrapper.jsx'
 
 import ProjectsSocketioEventsSubscriber from '../redux/projects/ProjectsSocketioEventsSubscriber'

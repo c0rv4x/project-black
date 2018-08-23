@@ -1,3 +1,5 @@
+import React from 'react'
+
 import NavigationTabs from './NavigationTabs.jsx'
 
 import ProjectsSocketioEventsSubscriber from '../redux/projects/ProjectsSocketioEventsSubscriber'

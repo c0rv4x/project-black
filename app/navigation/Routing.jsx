@@ -37,7 +37,8 @@ class Routing extends React.Component {
                     <Route exact path="/project/:project_uuid/host/:hostname" 
                            component={Host} />  
                     <Route exact path="/project/:project_uuid/ip/:ip_address" 
-                           component={IP} />                                                      
+                           component={IP} /> 
+                                                                                
                 </div>
             </Router>
         )
