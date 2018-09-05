@@ -93,8 +93,10 @@ class MasscanTask(AsyncTask):
             stderr_chunk = await self.proc.stderr.read(1024)
             stderr_chunk_decoded = stderr_chunk.decode('utf-8')
 
-            if stderr_chunk_decoded:
-                await self.append_stderr(stderr_chunk_decoded)
+            # Strip is a hack which allows not stroing long whitespace
+            # strings. This sometimes occurs on long tasks and spoils stderr in the db.
+            if stderr_chunk_decoded and stderr_chunk_decoded.strip():
+                await self.append_stderr(stderr_chunk_decoded.strip())
 
             # Create the task on reading the next chunk of data
             loop = asyncio.get_event_loop()
