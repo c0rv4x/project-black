@@ -120,7 +120,7 @@ class Controller(object):
                                      socket=self.socket)
                 self.wait()
             except SkipTargetInterrupt:
-                self.socket.sendall(bytes(json.dumps({"status":"Finished", "progress":100}), 'utf-8'))
+                self.socket.sendall(bytes(json.dumps({"status":"Finished", "progress":100}) + "SPLITHERE", 'utf-8'))
             finally:
                 self.reportManager.save()
 
@@ -269,7 +269,7 @@ class Controller(object):
             self.fuzzer.start()
             self.processPaths()
 
-        self.socket.sendall(bytes(json.dumps({"status":'Finished', "progress":100}), 'utf-8'))
+        self.socket.sendall(bytes(json.dumps({"status":'Finished', "progress":100}) + "SPLITHERE", 'utf-8'))
 
         return
 
