@@ -71,24 +71,24 @@ class Task(object):
     def append_stdout(self, stdout=""):
         self.stdout.append(stdout)
 
-        session = self.sessions.get_new_session()
-        task_db_object = session.query(TaskDatabase).filter_by(
-            task_id=self.get_id()
-        ).first()
-        task_db_object.stdout = task_db_object.stdout + stdout
-        session.commit()
-        self.sessions.destroy_session(session)
+        # session = self.sessions.get_new_session()
+        # task_db_object = session.query(TaskDatabase).filter_by(
+        #     task_id=self.get_id()
+        # ).first()
+        # task_db_object.stdout = task_db_object.stdout + stdout
+        # session.commit()
+        # self.sessions.destroy_session(session)
 
     def append_stderr(self, stderr=""):
         self.stderr.append(stderr)
 
-        session = self.sessions.get_new_session()
-        task_db_object = session.query(TaskDatabase).filter_by(
-            task_id=self.get_id()
-        ).first()
-        task_db_object.stderr = task_db_object.stderr + stderr
-        session.commit()
-        self.sessions.destroy_session(session)
+        # session = self.sessions.get_new_session()
+        # task_db_object = session.query(TaskDatabase).filter_by(
+        #     task_id=self.get_id()
+        # ).first()
+        # task_db_object.stderr = task_db_object.stderr + stderr
+        # session.commit()
+        # self.sessions.destroy_session(session)
 
     def get_status(self):
         """ Return the status of the current task """
