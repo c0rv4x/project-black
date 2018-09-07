@@ -52,6 +52,9 @@ class Tasks extends React.Component {
 				</div>
 			)			
 		}
+		else {
+			return <div>There are no active tasks</div>;
+		}
 	}
 
 }
