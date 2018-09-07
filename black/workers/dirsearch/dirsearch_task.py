@@ -67,7 +67,7 @@ class DirsearchTask(AsyncTask):
             data = await reader.read(1000)
 
             if data:
-                decoded_data = json.loads(data.decode('utf-8').split("SPLITHERE")[-1])
+                decoded_data = json.loads(data.decode('utf-8').split("SPLITHERE")[-2])
                 status = decoded_data['status']
                 progress = decoded_data['progress']
 
