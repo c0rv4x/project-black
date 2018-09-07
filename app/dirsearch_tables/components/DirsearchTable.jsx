@@ -29,6 +29,7 @@ class DirsearchTable extends React.Component {
 				};
 
 				if (Math.floor(each_file.status_code / 100) == 2) status_code_style.color = '#22CF22';
+				else if (each_file_status_code == 401) status_code_style.color = '#cfcf46';
 				else status_code_style.color = '#333333';
 
 				files.push(
