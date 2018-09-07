@@ -1,3 +1,4 @@
+import re
 import json
 import signal
 import threading
@@ -32,9 +33,9 @@ class NmapTask(AsyncTask):
                 flags.append('-' + each_flag)
 
         if self.params.get('special', None):
-            self.command = ['nmap', '-oX', '-'] + flags + self.params["special"] + [self.target]
+            self.command = ['nmap', '-oX', '-', '--stats-every=1s'] + flags + self.params["special"] + [self.target]
         else:
-            self.command = ['nmap', '-oX', '-'] + flags + [self.target]
+            self.command = ['nmap', '-oX', '-', '--stats-every=1s'] + flags + [self.target]
         print("Start: ", ' '.join(self.command))
         self.proc = await asyncio.create_subprocess_exec(*self.command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
@@ -42,7 +43,7 @@ class NmapTask(AsyncTask):
         loop = asyncio.get_event_loop()
         loop.create_task(self.read_stdout())
         loop.create_task(self.read_stderr())
-        # self.spawn_status_poller()
+        loop.create_task(self.spawn_status_poller())
 
     def send_notification(self, command):
         """ Sends 'command' notification to the current process. """
@@ -114,12 +115,17 @@ class NmapTask(AsyncTask):
             except Exception as _:
                 pass
 
-    def spawn_status_poller(self):
-        thread = threading.Thread(target=self.progress_poller)
-        thread.start()
+    async def spawn_status_poller(self):
+        await self.progress_poller()
 
-    def progress_poller(self):
-        pass
+    async def progress_poller(self):
+        """ write a whitespace to stdin to trigger nmap's progress putter """
+        progress_regex = re.compile('percent="([0-9]{1,3}.[0-9]{1,3})"')
+        if self.status == 'New' or self.status == 'Working':
+            if self.stdout:
+                print(progress_regex.findall(self.stdout[-1]))
+            await asyncio.sleep(1)
+            await self.progress_poller()
 
     async def wait_for_exit(self):
         """ Check if the process exited. If so,
