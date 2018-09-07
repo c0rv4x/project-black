@@ -173,7 +173,7 @@ class Fuzzer(object):
                                         ),
                                     "new_data": self.found_data
                                 }
-                            ), 'utf-8'
+                            ) + "SPLITHERE", 'utf-8'
                         )
                     )
                     self.found_data = False
