@@ -17,7 +17,6 @@ class EachTask extends React.Component {
 		let progresses = [];
 
 		for (let each_task of tasks) {
-			console.log(each_task);
 			if (each_task.status == 'Working') {
 				progresses.push(
 					<Progress
