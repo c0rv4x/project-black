@@ -16,7 +16,13 @@ class EachTask extends React.Component {
 		let { tasks, type } = this.props;
 		let progresses = [];
 
-		for (let each_task of tasks) {
+		let tasks_sorted = tasks.sort((a, b) => {
+			if (a.task_id > b.task_id) return 1;
+			if (a.task_id < b.task_id) return -1;
+			return 0;
+		});
+
+		for (let each_task of tasks_sorted) {
 			if (each_task.status == 'Working') {
 				progresses.push(
 					<Progress
