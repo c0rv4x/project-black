@@ -51,7 +51,7 @@ class TasksButtonsTracked extends React.Component {
 							{
 								"name": "Personal favourites",
 								"options": {
-									"extensions": "php,asp,txt,conf,log,bak,sql",
+									"extensions": "php,txt,conf,log,bak,sql,asp,aspx,tar.gz,tar,zip,~",
 									"path": "/"
 								}
 							}
@@ -65,7 +65,7 @@ class TasksButtonsTracked extends React.Component {
 							{
 								"name": "extensions",
 								"type": "text",
-								"default_value": "txt,conf,log,bak"
+								"default_value": "php,txt,conf,log,bak,sql,asp,aspx,tar.gz,tar,zip,~"
 							},
 							{
 								"name": "cookie",
