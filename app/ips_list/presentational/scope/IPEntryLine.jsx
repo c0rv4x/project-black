@@ -60,25 +60,30 @@ class IPEntryLine extends React.Component {
 			)
 		});
 
-		let hostnames = ip.hostnames;
+		let hostnames = ip.hostnames.sort((a, b) => {
+			if (a.hostname > b.hostname) return 1;
+			if (a.hostname < b.hostname) return -1;
+			return 0;
+		});
 		let hostnames_view = null;
-
-			hostnames_view = hostnames.slice(0, 4).map((elem) => {
-				return <Label key={elem.hostname + '_' + ip.ip_address}>{elem.hostname}</Label>;
+		
+		if (hostnames) {
+			let hostnames_list_items = hostnames.map((x) => {
+				return <List.Item key={x.host_id}>{x.hostname}</List.Item>;
 			});
 
-			if (hostnames.length > 4) {
-				hostnames_view.push(
-					<Popup key={ip.ip_address + "_others"}
-						trigger={<Label>...</Label>}
-						content={
-							hostnames.slice(4).map((elem) => {
-								return <Label key={elem.hostname + '_' + ip.ip_address}>{elem.hostname}</Label>;
-							})
-						}
-					/>					
-				);
-			}
+			hostnames_view = (
+				<Popup 
+					trigger={<Label>{hostnames.length} hosts</Label>}
+					content={
+						<List bulleted>
+							{hostnames_list_items}
+						</List>
+					}
+					position="right center"
+				/>
+			);
+		}
 
 		let files_by_statuses = {
 			'2xx': [],
