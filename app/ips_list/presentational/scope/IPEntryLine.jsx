@@ -74,7 +74,7 @@ class IPEntryLine extends React.Component {
 
 			hostnames_view = (
 				<Popup 
-					trigger={<Label>{hostnames.length} hosts</Label>}
+					trigger={<Label>{hostnames.length} {hostnames.length == 1 && "host"}{hostnames.length != 1 && "hosts"}</Label>}
 					content={
 						<List bulleted>
 							{hostnames_list_items}
