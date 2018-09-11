@@ -35,7 +35,7 @@ class TitleButtonsWithHandlers extends React.Component {
 											this.props.filters, 
 											{'program': [params["argv"]]},
 											this.props.project.project_uuid)
-	}	
+	}
 
 	runNmapOnlyOpen(params) {
 		var filters = this.props.filters;
@@ -58,6 +58,18 @@ class TitleButtonsWithHandlers extends React.Component {
 											{'program': options,
 											 'targets': 'ips'},
 											this.props.project.project_uuid);
+	}
+
+	runPatator(params) {
+		if (filters.hasOwnProperty('port')) {
+            this.tasksEmitter.requestCreateTask('patator', 
+                                                this.props.filters, 
+                                                {'program': [params["argv"]]},
+                                                this.props.project.project_uuid);
+        }
+        else {
+            alert("Select at 1 port before starting patator");
+        }
 	}
 
 	render() {
@@ -206,7 +218,27 @@ class TitleButtonsWithHandlers extends React.Component {
 											"default_value": false
 										}					
 									]
-								}						  		
+								},
+								{
+                                    "name": "Patator",
+                                    "help": "Don't specify any target here, all the hosts will be pulled based on your current filters",
+									"handler": this.patatorStart,
+									"preformed_options": [
+										{
+											"name": "FTP",
+											"options": {
+												"argv": "ftp_login user=FILE0 password=FILE1 0=logins.txt 1=passwords.txt -x ignore:mesg='Login incorrect.' -x ignore,reset,retry:code=500"
+											}
+										}
+									],
+									"available_options": [
+										{
+											"name": "argv",
+											"type": "text",
+											"default_value": ""
+										}
+									]
+								},								
 						  	]
 						  } />
 		)

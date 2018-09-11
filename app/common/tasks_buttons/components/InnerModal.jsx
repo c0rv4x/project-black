@@ -1,6 +1,12 @@
 import _ from 'lodash'
 import React from 'react'
-import { Modal, Button, Popup } from 'semantic-ui-react'
+import {
+	Modal,
+	Button,
+	Popup,
+	Message,
+	Divider
+} from 'semantic-ui-react'
 
 
 import CustomOptions from './CustomOptions.jsx'
@@ -112,9 +118,9 @@ class InnerModal extends React.Component {
 
 				<Modal.Content>
 					{startButtons}
-
-					<br/>
-					<br/>
+					<Divider hidden />
+					{this.props.task.help && <Message>{this.props.task.help}</Message>}
+					<Divider hidden />
 					<CustomOptions inputs={this.state.inputs}
 								   startTaskHandler={this.startTask}
 								   onInputChange={this.onInputChange} />					
