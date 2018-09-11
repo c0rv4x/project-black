@@ -1,6 +1,6 @@
 """ Module that will accumulate all the tasks described """
-from patator.patator_task import PatatorTask
-from common.async_worker import AsyncWorker
+from black.workers.patator.patator_task import PatatorTask
+from black.workers.common.async_worker import AsyncWorker
 
 
 class PatatorWorker(AsyncWorker):

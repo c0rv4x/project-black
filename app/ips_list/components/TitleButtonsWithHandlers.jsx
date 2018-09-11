@@ -15,8 +15,9 @@ class TitleButtonsWithHandlers extends React.Component {
 		this.runMasscan = this.runMasscan.bind(this);
 		this.runNmap = this.runNmap.bind(this);
 		this.runNmapOnlyOpen = this.runNmapOnlyOpen.bind(this);
-
+		
 		this.dirbusterStart = this.dirbusterStart.bind(this);
+		this.runPatator = this.runPatator.bind(this);
 	}
 
 	shouldComponentUpdate(nextProps) {
@@ -61,15 +62,16 @@ class TitleButtonsWithHandlers extends React.Component {
 	}
 
 	runPatator(params) {
-		if (filters.hasOwnProperty('port')) {
+		// if (this.props.filters.hasOwnProperty('port')) {
             this.tasksEmitter.requestCreateTask('patator', 
                                                 this.props.filters, 
-                                                {'program': [params["argv"]]},
+												{'program': [params["argv"]],
+												'targets': 'ips'},
                                                 this.props.project.project_uuid);
-        }
-        else {
-            alert("Select at 1 port before starting patator");
-        }
+        // }
+        // else {
+        //     alert("Select at 1 port before starting patator");
+        // }
 	}
 
 	render() {
@@ -222,7 +224,7 @@ class TitleButtonsWithHandlers extends React.Component {
 								{
                                     "name": "Patator",
                                     "help": "Don't specify any target here, all the hosts will be pulled based on your current filters",
-									"handler": this.patatorStart,
+									"handler": this.runPatator,
 									"preformed_options": [
 										{
 											"name": "FTP",

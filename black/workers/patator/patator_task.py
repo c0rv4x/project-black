@@ -13,13 +13,11 @@ from black.workers.common.async_task import AsyncTask
 
 def start_program(arguments, socket_path=None):
     """ A tiny wrapper which is passed to multiprocessing.Process """
-    print(arguments)
     args = shlex.split(arguments)
-    name = args[1]
-    print(args)
+    name = args[0]
     available = dict(modules)
     ctrl, module = available[name]
-    powder = ctrl(module, [name] + sys.argv[2:], socket_path)
+    powder = ctrl(module, [name] + sys.argv[1:], socket_path)
     powder.fire()
 
 
@@ -40,6 +38,9 @@ class PatatorTask(AsyncTask):
 
     async def start(self):
         await self.all_done.acquire()
+        args = self.params['program'][0] + " host={}".format(self.target)
+        print(args)
+        return
 
         await self.set_status('Working', progress=0)
 

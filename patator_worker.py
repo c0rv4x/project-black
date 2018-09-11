@@ -1,15 +1,14 @@
 """ Module that will accumulate all the tasks described """
-from black.workers.patator.patator_task import PatatorTask
-from black.workers.common.async_worker import AsyncWorker
+import sys
+import asyncio
+from black.workers.patator.patator_worker import PatatorWorker
 
 
-class PatatorWorker(AsyncWorker):
-    """ Name says for itself """
-    def __init__(self):
-        AsyncWorker.__init__(self, 'patator', PatatorTask)
-
-    async def start(self):
-        """ Start all the necessary consumers """
-        await self.initialize()
-        await self.start_tasks_consumer()
-        await self.start_notifications_consumer()
+try:
+	loop = asyncio.get_event_loop()
+	patator = PatatorWorker()
+	loop.create_task(patator.start())
+	loop.run_forever()
+except KeyboardInterrupt:
+	loop.run_until_complete(patator.stop())
+	sys.exit(1)

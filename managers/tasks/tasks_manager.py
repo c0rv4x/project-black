@@ -308,6 +308,25 @@ class TaskManager(object):
             )
             self.active_tasks += tasks
 
+        elif task_type == 'patator':
+            if params['targets'] == 'ips':
+                if filters.get('port', None):
+                    filters['port'].append('%')
+                else:
+                    filters['port'] = ['%']
+
+                targets = self.scope_manager.get_ips(filters, project_uuid)
+            else:
+                targets = self.scope_manager.get_hosts(
+                    filters, project_uuid, hosts_only=True
+                )
+
+            tasks = TaskStarter.start_patator(
+                targets, params, project_uuid, self.exchange
+            )
+            self.active_tasks += tasks
+
+
         return list(
             map(
                 lambda task: task.get_as_native_object(
