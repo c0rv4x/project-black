@@ -35,13 +35,16 @@ class SubqueryBuilder:
             session.query(
                 ScanDatabase
             )
-            .filter(scans_filters)
+            .filter(
+                ScanDatabase.project_uuid == project_uuid,
+                scans_filters
+            )
             .join(
                 ports,
                 and_(
+                    ScanDatabase.date_added == ports.c.latesttime,
                     ScanDatabase.target == ports.c.target,
-                    ScanDatabase.port_number == ports.c.port_number,
-                    ScanDatabase.date_added == ports.c.latesttime
+                    ScanDatabase.port_number == ports.c.port_number
                 )
             )
             .subquery("ports_latest")
