@@ -11,13 +11,13 @@ from black.workers.patator.patator_ext import modules
 from black.workers.common.async_task import AsyncTask
 
 
-def start_program(arguments, socket_path=None):
+def start_program(arguments, socket_path):
     """ A tiny wrapper which is passed to multiprocessing.Process """
     args = shlex.split(arguments)
     name = args[0]
     available = dict(modules)
     ctrl, module = available[name]
-    powder = ctrl(module, [name] + sys.argv[1:], socket_path)
+    powder = ctrl(module, [name] + args[1:], socket_path)
     powder.fire()
 
 
@@ -38,9 +38,10 @@ class PatatorTask(AsyncTask):
 
     async def start(self):
         await self.all_done.acquire()
-        args = self.params['program'][0] + " host={}".format(self.target)
-        print(args)
-        return
+        host, port = self.target.split(':')
+        args = self.params['program'][0] + " host={} port={}".format(host, port)
+        # print(args)
+        # return
 
         await self.set_status('Working', progress=0)
 
@@ -54,8 +55,7 @@ class PatatorTask(AsyncTask):
 
         try:
             self.patator_proc = self.loop.run_in_executor(
-                ProcessPoolExecutor(), start_program, self.target,
-                self.task_id, self.project_uuid, socket_path=self.socket_path
+                ProcessPoolExecutor(), start_program, args, self.socket_path
             )
         except Exception as exc:
             print("Exception starting ProcessPoolExecutor", exc)
@@ -72,6 +72,7 @@ class PatatorTask(AsyncTask):
             data = await reader.read(1000)
 
             if data:
+                # print(data)
                 decoded_data = json.loads(data.decode('utf-8').split("SPLITHERE")[-2])
                 status = decoded_data['status']
                 progress = decoded_data['progress']
@@ -86,7 +87,7 @@ class PatatorTask(AsyncTask):
 
             self.loop.create_task(self.poll_status(reader))
         except Exception as exc:
-            print("DirsearchTask:poll_status", exc, data)
+            print("Patator:poll_status", exc, data)
             self.loop.create_task(self.poll_status(reader))
 
     async def wait_for_exit(self):
@@ -104,21 +105,3 @@ class PatatorTask(AsyncTask):
             os.remove(self.socket_path)
 
         await self.set_status("Aborted", progress=0)
-
-
-def client_connected_cb(self, reader, writer):
-    """ Callback which is called, after unix socket (the socket which is responsible
-    for transporting socket data) receives a new connection """
-    print("Someone connected to the socket")
-
-import asyncio
-if __name__ == '__main__':
-    socket_name = '{}.sock'.format('123321')
-    socket_path = os.path.join(os.getcwd(), socket_name)
-
-    if os.path.exists(socket_path):
-        os.remove(socket_path)
-
-    asyncio.get_event_loop().run_until_complete(asyncio.streams.start_unix_server(client_connected_cb, path=socket_path, loop=asyncio.get_event_loop()))
-
-    start_program(' '.join(sys.argv))

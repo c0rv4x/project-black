@@ -310,9 +310,7 @@ class TaskManager(object):
 
         elif task_type == 'patator':
             if params['targets'] == 'ips':
-                if filters.get('port', None):
-                    filters['port'].append('%')
-                else:
+                if filters.get('port', None) is None:
                     filters['port'] = ['%']
 
                 targets = self.scope_manager.get_ips(filters, project_uuid)

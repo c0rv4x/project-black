@@ -20,6 +20,8 @@ __version__ = '0.7'
 __license__ = 'GPLv2'
 __banner__  = 'Patator v%s (%s)' % (__version__, __git__)
 
+import json
+
 # README {{{
 
 '''
@@ -1406,8 +1408,10 @@ Please read the README inside for more examples and usage information.
     return opts, args
 
   def __init__(self, module, argv, socket_path=None):
-    print(argv)
-    self.socket_path = socket_path
+    self.argv = argv
+    self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    self.socket.connect(socket_path)
+    self.last_update_time = 0   
 
     self.thread_report = []
     self.thread_progress = []
@@ -1635,9 +1639,9 @@ Please read the README inside for more examples and usage information.
 
     self.show_final()
 
-    logger.info('Hits/Done/Skip/Fail/Size: %d/%d/%d/%d/%d, Avg: %d r/s, Time: %s' % (
-      hits_count, done_count, skip_count, fail_count, total_size, speed_avg,
-      pprint_seconds(total_time, '%dh %dm %ds')))
+    # logger.info('Hits/Done/Skip/Fail/Size: %d/%d/%d/%d/%d, Avg: %d r/s, Time: %s' % (
+    #   hits_count, done_count, skip_count, fail_count, total_size, speed_avg,
+    #   pprint_seconds(total_time, '%dh %dm %ds')))
 
     if done_count < total_size:
       resume = []
@@ -1651,6 +1655,19 @@ Please read the README inside for more examples and usage information.
       logger.info('To resume execution, pass --resume %s' % ','.join(resume))
 
     logger.quit()
+    self.socket.sendall(
+        bytes(
+            json.dumps(
+                {
+                    "status":
+                        'Finished',
+                    "progress":
+                        100,
+                    "new_data": ''
+                }
+            ) + "SPLITHERE", 'utf-8'
+        )
+    )    
     while len(multiprocessing.active_children()) > 1:
       sleep(.1)
 
@@ -1690,13 +1707,13 @@ Please read the README inside for more examples and usage information.
       self.ns.quit_now = True
 
     for _, (t, v, _) in self.iter_keys.items():
-
       if t in ('FILE', 'COMBO'):
         size = 0
         files = []
 
         for name in v.split(','):
-          for fpath in sorted(glob.iglob(expand_path(name))):
+          full_name = expand_path(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'wordlists', name))
+          for fpath in sorted(glob.iglob(expand_path(full_name))):
             if not os.path.isfile(fpath):
               return abort("No such file '%s'" % fpath)
 
@@ -2000,22 +2017,11 @@ Please read the README inside for more examples and usage information.
     total_size = self.ns.total_size
     thread_progress = self.thread_progress
     total_count = sum(p.done_count+p.skip_count for p in thread_progress)
-    progress = total_count / total_size
+    # progress = total_count / total_size
 
-    if on_windows():
-      import msvcrt
-      if not msvcrt.kbhit():
-        sleep(.1)
-        return
-
-      command = msvcrt.getche()
-      if command == 'x':
-        command += raw_input()
-
-    else:
-      i, _, _ = select([sys.stdin], [], [], .1)
-      if not i: return
-      command = i[0].readline().strip()
+    i, _, _ = select([sys.stdin], [], [], .1)
+    if not i: return
+    command = i[0].readline().strip()
 
     if command == 'h':
       logger.info('''Available commands:
@@ -2069,14 +2075,31 @@ Please read the README inside for more examples and usage information.
         etc_seconds = datetime.now() + timedelta(seconds=remain_seconds)
         etc_time = etc_seconds.strftime('%H:%M:%S')
 
-      logger.info('Progress: {0:>3}% ({1}/{2}) | Speed: {3:.0f} r/s | ETC: {4} ({5} remaining) {6}'.format(
-        total_count * 100/total_size,
-        total_count,
-        total_size,
-        speed_avg,
-        etc_time,
-        remain_time,
-        self.ns.paused and '| Paused' or ''))
+      cur_time = time()
+      if cur_time - self.last_update_time > 1:
+        self.last_update_time = cur_time
+        self.socket.sendall(
+            bytes(
+                json.dumps(
+                    {
+                        "status":
+                            'Working',
+                        "progress":
+                            total_count * 100/total_size,
+                        "new_data": ''
+                    }
+                ) + "SPLITHERE", 'utf-8'
+            )
+        )
+
+      # logger.info('Progress: {0:>3}% ({1}/{2}) | Speed: {3:.0f} r/s | ETC: {4} ({5} remaining) {6}'.format(
+      #   total_count * 100/total_size,
+      #   total_count,
+      #   total_size,
+      #   speed_avg,
+      #   etc_time,
+      #   remain_time,
+      #   self.ns.paused and '| Paused' or ''))
 
       if command == 'f':
         for i, p in enumerate(thread_progress):
@@ -2270,7 +2293,6 @@ class FTP_login(TCP_Cache):
   Response = Response_Base
 
   def connect(self, host, port, tls, timeout):
-
     if tls == '0':
       fp = FTP(timeout=int(timeout))
     else:
