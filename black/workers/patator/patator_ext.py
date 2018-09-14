@@ -901,19 +901,11 @@ import signal
 import ctypes
 import glob
 from xml.sax.saxutils import escape as xmlescape, quoteattr as xmlquoteattr
-try:
-  # python3+
-  from queue import Empty, Full
-  from urllib.parse import quote, urlencode, urlparse, urlunparse, parse_qsl, quote_plus
-  from io import StringIO
-  from sys import maxsize as maxint
-except ImportError:
-  # python2.6+
-  from Queue import Empty, Full
-  from urllib import quote, urlencode, quote_plus
-  from urlparse import urlparse, urlunparse, parse_qsl
-  from cStringIO import StringIO
-  from sys import maxint
+# python3+
+from queue import Empty, Full
+from urllib.parse import quote, urlencode, urlparse, urlunparse, parse_qsl, quote_plus
+from io import StringIO
+from sys import maxsize as maxint
 
 PY3 = sys.version_info >= (3,)
 if PY3: # http://python3porting.com/problems.html
@@ -1126,13 +1118,13 @@ class RangeIter:
         step = 1
 
     elif typ == 'letters':
-      charset = [c for c in string.letters]
+      charset = [c for c in string.ascii_letters]
 
     elif typ in ('lower', 'lowercase'):
-      charset = [c for c in string.lowercase]
+      charset = [c for c in string.ascii_lowercase]
 
     elif typ in ('upper', 'uppercase'):
-      charset = [c for c in string.uppercase]
+      charset = [c for c in string.ascii_uppercase]
 
     def zrange(start, stop, step, fmt):
       x = start
@@ -3515,10 +3507,7 @@ class Response_HTTP(Response_Base):
     ('clen', 'match Content-Length header (N or N-M or N- or -N)'),
     )
 
-try:
-  from http.server import BaseHTTPRequestHandler
-except ImportError:
-  from BaseHTTPServer import BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler
 
 class HTTPRequestParser(BaseHTTPRequestHandler):
   def __init__(self, fd):
