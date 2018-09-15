@@ -62,16 +62,11 @@ class TitleButtonsWithHandlers extends React.Component {
 	}
 
 	runPatator(params) {
-		// if (this.props.filters.hasOwnProperty('port')) {
-            this.tasksEmitter.requestCreateTask('patator', 
-                                                this.props.filters, 
-												{'program': [params["argv"]],
-												'targets': 'ips'},
-                                                this.props.project.project_uuid);
-        // }
-        // else {
-        //     alert("Select at 1 port before starting patator");
-        // }
+		this.tasksEmitter.requestCreateTask('patator', 
+											this.props.filters, 
+											{'program': [params["argv"]],
+											'targets': 'ips'},
+											this.props.project.project_uuid);
 	}
 
 	render() {
