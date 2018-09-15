@@ -226,7 +226,7 @@ class TitleButtonsWithHandlers extends React.Component {
                                     "help": [
 										{
 											"type": "warning",
-											"condition": !this.props.filters.hasOwnProperty('scans') || this.props.filters.scans.length > 1 || this.props.filters.scans.indexOf('%') !== -1,
+											"condition": !this.props.filters.hasOwnProperty('port') || this.props.filters.port.length > 1 || this.props.filters.port.indexOf('%') !== -1,
 											"text": "You have selected more than one port. It is not recommended to launch patator like this as there can be many different types of applications. Use more specific filters"
 										},
 										{
