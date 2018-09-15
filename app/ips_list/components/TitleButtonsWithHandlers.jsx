@@ -235,7 +235,7 @@ class TitleButtonsWithHandlers extends React.Component {
 										{
 											"name": "FTP",
 											"options": {
-												"argv": "ftp_login user=FILE0 password=FILE1 0=logins.txt 1=passwords.txt -x ignore:mesg='Login incorrect.' -x ignore,reset,retry:code=500"
+												"argv": "ftp_login user=FILE0 password=FILE1 0=logins.txt 1=passwords.txt -x ignore:mesg='Login incorrect.' -x ignore,reset,retry:code=500 -x ignore:code=530"
 											}
 										}
 									],
