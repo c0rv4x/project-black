@@ -119,7 +119,32 @@ class InnerModal extends React.Component {
 				<Modal.Content>
 					{startButtons}
 					<Divider hidden />
-					{this.props.task.help && <Message>{this.props.task.help}</Message>}
+					{
+						this.props.task.help && 
+						this.props.task.help.map((help_notice) => {
+							if (help_notice.condition === true) {
+								if (help_notice.type == 'warning') {
+									return (
+										<Message
+											warning
+											key={this.props.task.help.indexOf(help_notice)}
+										>
+											{help_notice.text}
+										</Message>
+									);
+								}
+								else {
+									return (
+										<Message
+											key={this.props.task.help.indexOf(help_notice)}
+										>
+											{help_notice.text}
+										</Message>
+									);
+								}
+							}
+						})
+					}
 					<Divider hidden />
 					<CustomOptions inputs={this.state.inputs}
 								   startTaskHandler={this.startTask}
