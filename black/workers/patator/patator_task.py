@@ -11,13 +11,13 @@ from black.workers.patator.patator_ext import modules
 from black.workers.common.async_task import AsyncTask
 
 
-def start_program(arguments, socket_path):
+def start_program(arguments, host, port, task_id, project_uuid, socket_path):
     """ A tiny wrapper which is passed to multiprocessing.Process """
     args = shlex.split(arguments)
     name = args[0]
     available = dict(modules)
     ctrl, module = available[name]
-    powder = ctrl(module, [name] + args[1:], socket_path)
+    powder = ctrl(module, [name] + args[1:], host, port, task_id, project_uuid, socket_path)
     powder.fire()
 
 
@@ -40,8 +40,6 @@ class PatatorTask(AsyncTask):
         await self.all_done.acquire()
         host, port = self.target.split(':')
         args = self.params['program'][0] + " host={} port={}".format(host, port)
-        # print(args)
-        # return
 
         await self.set_status('Working', progress=0)
 
@@ -55,7 +53,9 @@ class PatatorTask(AsyncTask):
 
         try:
             self.patator_proc = self.loop.run_in_executor(
-                ProcessPoolExecutor(), start_program, args, self.socket_path
+                ProcessPoolExecutor(), start_program, args,
+                host, port, self.task_id, self.project_uuid, 
+                self.socket_path
             )
         except Exception as exc:
             print("Exception starting ProcessPoolExecutor", exc)

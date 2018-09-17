@@ -1,0 +1,98 @@
+import datetime
+from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
+
+from black.db.sessions import Sessions
+from .base import Base
+
+
+class CredDatabase(Base):
+    """ Keeps data on the found credentials """
+    __tablename__ = "creds"
+
+    # Primary key
+    id = Column(Integer, primary_key=True, autoincrement=True)
+
+    # Status code of the request
+    code = Column(String)
+
+    # Response size
+    size = Column(Integer)
+    
+    # Time taken to complete the request
+    time = Column(String)
+
+    # Login and password divided by ':'
+    candidate = Column(String)
+
+    # Number of the current request in the whole task.
+    # Not sure we need it, but patator keeps it
+    num = Column(Integer)
+
+    # Response message for this request
+    mesg = Column(String)
+
+    # Other info from the requester which did not fit to the above fields
+    other = Column(String)
+
+    # Target (this is either IP or hostname)
+    target = Column(String, index=True)
+
+    # Port
+    port_number = Column(Integer)
+
+    # ID of the related task (the task, which resulted in the current data)
+    task_id = Column(String, ForeignKey('tasks.task_id'))
+
+    # The name of the related project
+    project_uuid = Column(
+        Integer, ForeignKey('projects.project_uuid', ondelete='CASCADE'), index=True
+    )
+
+    # Date of added
+    date_added = Column(DateTime, default=datetime.datetime.utcnow)
+
+    session_spawner = Sessions()
+
+    def dict(self):
+        return {
+            "id": self.id,
+            "code": self.code,
+            "size": self.size,
+            "time": self.time,
+            "candidate": self.candidate,
+            "num": self.num,
+            "mesg": self.mesg,
+            "target": self.target,
+            "port_number": self.port_number,
+            "task_id": self.task_id,
+            "project_uuid": self.project_uuid,
+            "date_added": self.date_added
+        }
+
+    @classmethod
+    def create(cls, code=None, size=None, time=None, candidate=None,
+               num=None, mesg=None, target=None, port_number=None,
+               task_id=None, project_uuid=None, **args):
+
+        db_object = cls(
+            code=code,
+            size=size,
+            time=time,
+            candidate=candidate,
+            num=num,
+            mesg=mesg,
+            target=target,
+            port_number=port_number,
+            task_id=task_id,
+            project_uuid=project_uuid,
+            other=str(args)
+        )
+
+        with cls.session_spawner.get_session() as session:
+            try:
+                session.add(db_object)
+            except Exception as exc:
+                print(str(exc))
+                return {"status": "error", "text": str(exc), "target": target}
+            else:
+                return {"status": "success", "target": target}  

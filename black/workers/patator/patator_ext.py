@@ -21,6 +21,13 @@ __license__ = 'GPLv2'
 __banner__  = 'Patator v%s (%s)' % (__version__, __git__)
 
 import json
+from black.db.sessions import Sessions
+from black.db.models.cred import CredDatabase
+
+TARGET = None
+PORT = None
+TASK_ID = None
+PROJECT_UUID = None
 
 # README {{{
 
@@ -853,12 +860,22 @@ def process_logs(queue, indicatorsfmt, argv, log_dir):
       typ, resp, candidate, num = args
 
       results = [(name, value) for (name, _), value in zip(indicatorsfmt, resp.indicators())]
-      results += [('candidate', candidate), ('num', num), ('mesg', str(resp)), ('target', resp.str_target())]
+      results += [('candidate', candidate), ('num', num), ('mesg', str(resp)), ('_target', resp.str_target())]
+
+      print("Saving", dict(results), CredDatabase.create(
+        **dict(results),
+        target=TARGET,
+        port_number=PORT,
+        task_id=TASK_ID,
+        project_uuid=PROJECT_UUID)
+      )
 
       if typ == 'fail':
-        logger.error(None, extra=dict(results))
+        # logger.error(None, extra=dict(results))
+        pass
       else:
-        logger.info(None, extra=dict(results))
+        # logger.info(None, extra=dict(results))
+        pass
 
     elif action == 'save':
 
@@ -1399,7 +1416,14 @@ Please read the README inside for more examples and usage information.
 
     return opts, args
 
-  def __init__(self, module, argv, socket_path=None):
+  def __init__(self, module, argv, host, port, task_id, project_uuid, socket_path=None):
+    global TARGET, PORT, TASK_ID, PROJECT_UUID
+    print(host, port, task_id, project_uuid, 1111)
+    TARGET = host
+    PORT = port
+    TASK_ID = task_id
+    PROJECT_UUID = project_uuid
+
     self.argv = argv
     self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     self.socket.connect(socket_path)
