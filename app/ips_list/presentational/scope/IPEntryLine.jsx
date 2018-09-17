@@ -85,6 +85,12 @@ class IPEntryLine extends React.Component {
 			);
 		}
 
+		let creds_rendered = null;
+
+		if (ip.creds.length) {
+			creds_rendered = <Label>{ip.creds.length} {ip.creds.length == 1 && "account"}{ip.creds.length != 1 && "accounts"}</Label>;
+		}
+
 		let files_by_statuses = {
 			'2xx': [],
 			'3xx': [],
@@ -116,7 +122,7 @@ class IPEntryLine extends React.Component {
 				<ScopeComment comment={ip.comment}
 						  	  onCommentSubmit={onCommentSubmit} />
 
-				<div style={{"wordBreak": "break-all"}}>{hostnames_view}</div>
+				<div style={{"wordBreak": "break-all"}}>{hostnames_view}{creds_rendered}</div>
 
 				<Divider hidden />
 				<List bulleted>
