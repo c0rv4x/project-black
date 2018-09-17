@@ -74,7 +74,7 @@ class IPEntryLine extends React.Component {
 
 			hostnames_view = (
 				<Popup 
-					trigger={<Label>{hostnames.length} {hostnames.length == 1 && "host"}{hostnames.length != 1 && "hosts"}</Label>}
+					trigger={<Label as="a">Hosts<Label.Detail>{hostnames.length}</Label.Detail></Label>}
 					content={
 						<List bulleted>
 							{hostnames_list_items}
@@ -88,7 +88,39 @@ class IPEntryLine extends React.Component {
 		let creds_rendered = null;
 
 		if (ip.creds.length) {
-			creds_rendered = <Label>{ip.creds.length} {ip.creds.length == 1 && "account"}{ip.creds.length != 1 && "accounts"}</Label>;
+			creds_rendered = (
+				<Modal 
+					trigger={<Label as="a">Accounts<Label.Detail>{ip.creds.length}</Label.Detail></Label>}
+				>
+					<Modal.Header>{ip.ip_address}</Modal.Header>
+					<Modal.Content>
+						<Table>
+							<Table.Header>
+								<Table.Row>
+									<Table.HeaderCell width={1}>Port</Table.HeaderCell>
+									<Table.HeaderCell width={1}>Code</Table.HeaderCell>
+									<Table.HeaderCell width={5}>Candidate</Table.HeaderCell>
+									<Table.HeaderCell width={1}>Size</Table.HeaderCell>
+									<Table.HeaderCell width={6}>Message</Table.HeaderCell>
+								</Table.Row>
+							</Table.Header>
+							<Table.Body>
+								{ip.creds.map((cred) => {
+									return (
+										<Table.Row key={"cred_" + cred.target + "_" + cred.id}>
+											<Table.Cell>{cred.port_number}</Table.Cell>
+											<Table.Cell>{cred.code}</Table.Cell>
+											<Table.Cell>{cred.candidate}</Table.Cell>
+											<Table.Cell>{cred.size}</Table.Cell>
+											<Table.Cell>{cred.mesg}</Table.Cell>
+										</Table.Row>
+									);
+								})}
+							</Table.Body>
+						</Table>
+					</Modal.Content>
+				</Modal>
+			);
 		}
 
 		let files_by_statuses = {
