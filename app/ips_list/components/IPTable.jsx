@@ -40,7 +40,6 @@ class IPTable extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		console.log(nextProps.ips.data[0].creds);
 		if ((nextProps.ips.page !== this.props.ips.page) || (nextProps.ips.page_size !== this.props.ips.page_size)) {
 			this.props.setLoading(false);
 		}
