@@ -66,7 +66,7 @@ class CredDatabase(Base):
             "port_number": self.port_number,
             "task_id": self.task_id,
             "project_uuid": self.project_uuid,
-            "date_added": self.date_added
+            "date_added": str(self.date_added)
         }
 
     @classmethod
@@ -95,4 +95,35 @@ class CredDatabase(Base):
                 print(str(exc))
                 return {"status": "error", "text": str(exc), "target": target}
             else:
-                return {"status": "success", "target": target}  
+                return {"status": "success", "target": target}
+
+    @classmethod
+    def find(cls, project_uuid, targets=None, port_number=None):
+        try:
+            with cls.session_spawner.get_session() as session:
+                creds_request = session.query(cls).filter(
+                    cls.project_uuid == project_uuid
+                )
+
+                if targets:
+                    creds_request = creds_request.filter(cls.target.in_(targets))
+                if port_number:
+                    creds_request = creds_request.filter(cls.port_number == port_number)
+
+                creds = creds_request.all()
+
+                return {"status": "success", "creds": creds}
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}
+
+    @classmethod
+    def count(cls, project_uuid):
+        try:
+            with cls.session_spawner.get_session() as session:
+                amount = session.query(cls).filter(
+                    cls.project_uuid == project_uuid
+                ).count()
+
+                return {"status": "success", "amount": amount}
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}

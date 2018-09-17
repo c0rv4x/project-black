@@ -16,7 +16,6 @@ def register_project_handlers(socketio, project_manager):
             },
             namespace='/projects'
         )
-        print("Sending projects notification", sid)
 
         await send_notification(
             socketio,
