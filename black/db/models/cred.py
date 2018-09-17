@@ -34,6 +34,10 @@ class CredDatabase(Base):
     # Other info from the requester which did not fit to the above fields
     other = Column(String)
 
+    # Name of the module used to bruteforce the target
+    # Can be used to extract the name of the service
+    service = Column(String)
+
     # Target (this is either IP or hostname)
     target = Column(String, index=True)
 
@@ -62,6 +66,8 @@ class CredDatabase(Base):
             "candidate": self.candidate,
             "num": self.num,
             "mesg": self.mesg,
+            "other": self.other,
+            "service": self.service,
             "target": self.target,
             "port_number": self.port_number,
             "task_id": self.task_id,
@@ -71,8 +77,10 @@ class CredDatabase(Base):
 
     @classmethod
     def create(cls, code=None, size=None, time=None, candidate=None,
-               num=None, mesg=None, target=None, port_number=None,
-               task_id=None, project_uuid=None, **args):
+               num=None, mesg=None, service=service, target=None,
+               port_number=None, task_id=None, project_uuid=None,
+               **args
+        ):
 
         db_object = cls(
             code=code,
@@ -81,6 +89,7 @@ class CredDatabase(Base):
             candidate=candidate,
             num=num,
             mesg=mesg,
+            service=service,
             target=target,
             port_number=port_number,
             task_id=task_id,

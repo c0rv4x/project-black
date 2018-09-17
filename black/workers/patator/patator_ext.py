@@ -28,6 +28,7 @@ TARGET = None
 PORT = None
 TASK_ID = None
 PROJECT_UUID = None
+SERVICE_NAME = None
 
 # README {{{
 
@@ -867,7 +868,8 @@ def process_logs(queue, indicatorsfmt, argv, log_dir):
         target=TARGET,
         port_number=PORT,
         task_id=TASK_ID,
-        project_uuid=PROJECT_UUID)
+        project_uuid=PROJECT_UUID,
+        service=SERVICE_NAME)
       )
 
       if typ == 'fail':
@@ -1417,12 +1419,12 @@ Please read the README inside for more examples and usage information.
     return opts, args
 
   def __init__(self, module, argv, host, port, task_id, project_uuid, socket_path=None):
-    global TARGET, PORT, TASK_ID, PROJECT_UUID
-    print(host, port, task_id, project_uuid, 1111)
+    global TARGET, PORT, TASK_ID, PROJECT_UUID, SERVICE_NAME
     TARGET = host
     PORT = port
     TASK_ID = task_id
     PROJECT_UUID = project_uuid
+    SERVICE_NAME = argv[0]
 
     self.argv = argv
     self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)

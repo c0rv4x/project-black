@@ -14,15 +14,10 @@ class CredHandlers(object):
         async def _cb_handle_files_stats(sid, msg):
             """ When received this message, send back count of creds for project """
             project_uuid = int(msg.get('project_uuid', None))
-            print("Getting stats for project_uuid", {
-                    'status': 'success',
-                    'project_uuid': project_uuid,
-                    'amount': self.creds_manager.count(project_uuid)['amount']
-                }, sid)
 
             await self.socketio.emit(
                 'creds:stats:set', 
-                self.creds_manager.count(project_uuid)['amount'],
+                self.creds_manager.count(project_uuid),
                 namespace='/creds',
                 room=sid
             )
