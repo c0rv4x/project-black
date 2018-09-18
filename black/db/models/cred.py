@@ -1,5 +1,6 @@
 import datetime
-from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
+from sqlalchemy import Column, String, DateTime, ForeignKey, Integer, UniqueConstraint
+from sqlalchemy.exc import IntegrityError
 
 from black.db.sessions import Sessions
 from .base import Base
@@ -8,7 +9,11 @@ from .base import Base
 class CredDatabase(Base):
     """ Keeps data on the found credentials """
     __tablename__ = "creds"
-
+    __table_args__ = (
+        UniqueConstraint(
+            'target', 'port_number', 'code', 'candidate', 'mesg', 'project_uuid'
+        ),
+    )
     # Primary key
     id = Column(Integer, primary_key=True, autoincrement=True)
 
@@ -97,14 +102,16 @@ class CredDatabase(Base):
             other=str(args)
         )
 
-        with cls.session_spawner.get_session() as session:
-            try:
+        try:
+            with cls.session_spawner.get_session() as session:
                 session.add(db_object)
-            except Exception as exc:
-                print(str(exc))
-                return {"status": "error", "text": str(exc), "target": target}
-            else:
-                return {"status": "success", "target": target}
+        except IntegrityError:
+            return {"status": "success", "target": target}
+        except Exception as exc:
+            print(str(exc))
+            return {"status": "error", "text": str(exc), "target": target}
+        else:
+            return {"status": "success", "target": target}
 
     @classmethod
     def find(cls, project_uuid, targets=None, port_number=None):

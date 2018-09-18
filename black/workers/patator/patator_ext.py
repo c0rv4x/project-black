@@ -863,15 +863,17 @@ def process_logs(queue, indicatorsfmt, argv, log_dir):
       results = [(name, value) for (name, _), value in zip(indicatorsfmt, resp.indicators())]
       results += [('candidate', candidate), ('num', num), ('mesg', str(resp)), ('_target', resp.str_target())]
 
-      print("Saving", dict(results), CredDatabase.create(
+      save_result = CredDatabase.create(
         **dict(results),
         target=TARGET,
         port_number=PORT,
         task_id=TASK_ID,
         project_uuid=PROJECT_UUID,
-        service=SERVICE_NAME)
+        service=SERVICE_NAME
       )
 
+      print("Saving", dict(results), save_result)
+      
       if typ == 'fail':
         # logger.error(None, extra=dict(results))
         pass
