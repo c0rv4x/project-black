@@ -29,7 +29,7 @@ services:
   black_masscan:
     build:
       context: .
-      dockerfile: docker_files/masscan.yml
+      dockerfile: docker/masscan.yml
     container_name: black_masscan
     depends_on:
       rabbit:
@@ -39,7 +39,7 @@ services:
   black_nmap:
     build:
       context: .
-      dockerfile: docker_files/nmap.yml
+      dockerfile: docker/nmap.yml
     container_name: black_nmap
     depends_on:
       rabbit:
@@ -49,7 +49,7 @@ services:
   black_dirsearch:
     build:
       context: .
-      dockerfile: docker_files/dirsearch.yml
+      dockerfile: docker/dirsearch.yml
     container_name: black_dirsearch
     depends_on:
       rabbit:
@@ -60,7 +60,7 @@ services:
     image: black
     build:
       context: .
-      dockerfile: docker_files/black.yml    
+      dockerfile: docker/black.yml    
     ports:
       - 5000:5000
     depends_on:
