@@ -9,27 +9,16 @@ import {
 function new_task(state = {'active': [], 'finished': []}, action) {
 	const message = action.message;
 
-	if (message["status"] == 'success') {
-		return {
-			'active': state['active'].concat(message['new_tasks']),
-			'finished': state['finished']
-		}
-	} else {
-		/* TODO: add error handling */
-	}	
+	return {
+		'active': state['active'].concat(message['new_tasks']),
+		'finished': state['finished']
+	}
 
 	return state;
 }
 
 
 function change_status_task(state = {'active': [], 'finished': []}, action) {
-	const message = action.message;
-
-	if (message["status"] == 'success') {
-		
-	} else {
-		/* TODO: add error handling */
-	}	
 	return state;
 }
 
