@@ -2,9 +2,6 @@ import _ from 'lodash'
 import { connect } from 'react-redux'
 
 import ProjectDetailsFilters from './ProjectDetailsFilters.jsx'
-import { updateComment as updateProjectComment } from '../../redux/projects/actions'
-import { updateComment as updateScopeComment } from '../../redux/scopes/actions'
-import { updateFilters } from '../../redux/filters/actions'
 
 
 function mapStateToProps(state, ownProps) {

@@ -1,12 +1,10 @@
 import _ from 'lodash'
 import React from 'react'
-import Notifications from 'react-notification-system-redux'
 
 import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
-import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
 import Search from '../../common/search/Search.jsx'
 
-import { Card, Header, Divider } from 'semantic-ui-react'
+import { Header, Divider } from 'semantic-ui-react'
 
 import DirsearchTable from './DirsearchTable.jsx'
 
