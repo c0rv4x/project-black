@@ -10,7 +10,7 @@ def get_filter_clause(column, plist):
 
     Keyword arguments:
     column -- sql tables' column filter is applied to
-    plist -- list of patterns, ilike ['*foo*', '!*foo1*']
+    plist -- list of patterns, like ['*foo*', '!*foo1*']
     '''
     positive_clause = []
     negative_clause = []
@@ -30,12 +30,12 @@ def get_filter_clause(column, plist):
                 if pattern.startswith('!'):
                     pattern = pattern[1:]
                     if '%' in pattern:
-                        negative_clause.append(~column.ilike(pattern.replace('*', '%')))
+                        negative_clause.append(~column.like(pattern.replace('*', '%')))
                     else:
                         negative_clause.append(column != pattern)
                 else:
                     if '%' in pattern:
-                        positive_clause.append(column.ilike(pattern.replace('*', '%')))
+                        positive_clause.append(column.like(pattern.replace('*', '%')))
                     else:
                         positive_clause.append(column == pattern)
 
