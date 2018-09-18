@@ -58,7 +58,9 @@ services:
         condition: service_healthy                   
   black:
     image: black
-    build: .
+    build:
+      context: .
+      dockerfile: docker_files/black.yml    
     ports:
       - 5000:5000
     depends_on:
