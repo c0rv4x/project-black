@@ -92,11 +92,6 @@ class Scope(Base):
             return {"status": "error", "text": str(exc)}
         else:
             return {"status": "success", "target": target}
-            
-        
-
-
-
 
     @classmethod
     def count(cls, project_uuid):

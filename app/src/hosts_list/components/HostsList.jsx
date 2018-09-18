@@ -1,15 +1,10 @@
 import _ from 'lodash'
 import React from 'react'
-import Notifications from 'react-notification-system-redux'
-import { Dimmer, Loader } from 'semantic-ui-react'
 
-import HostsListHead from '../presentational/HostsListHead.jsx'
 import Tasks from '../../common/tasks/Tasks.jsx'
 import HostsTableTracked from './HostsTableTracked.jsx'
 import TasksButtonsTracked from './TasksButtonsTracked.jsx'
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'
-
-import { Button } from 'semantic-ui-react'
 
 
 class HostsList extends React.Component {

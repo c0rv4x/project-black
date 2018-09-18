@@ -28,213 +28,173 @@ const initialState = {
 function create_host(state = initialState, action) {
 	const message = action.message;
 
-	if (message["status"] == 'success') {
-		let new_state = JSON.parse(JSON.stringify(state));
-		let new_hosts = message.new_hosts;
+	let new_state = JSON.parse(JSON.stringify(state));
+	let new_hosts = message.new_hosts;
 
-		new_state.data = new_hosts.concat(new_state.data).slice(0, new_state.page_size);
-		new_state.total_db_hosts += new_hosts.length;
+	new_state.data = new_hosts.concat(new_state.data).slice(0, new_state.page_size);
+	new_state.total_db_hosts += new_hosts.length;
 
-		new_state.update_needed = false;			
+	new_state.update_needed = false;			
 
-		return new_state;
-	} else {
-		/* TODO: add error handling */
-	}
+	return new_state;
 }
 
 function delete_host(state = initialState, action) {
-	const message = action.message;
+	var new_state = JSON.parse(JSON.stringify(state));
+	new_state.update_needed = true;
 
-	if (message["status"] == 'success') {
-		var new_state = JSON.parse(JSON.stringify(state));
-		new_state.update_needed = true;
-
-		return new_state;
-	} else {
-		/* TODO: add error handling */
-	}
+	return new_state;
 }
 
 function renew_hosts(state = initialState, action) {
 	const message = action.message;
 
-	if (message["status"] == 'success') {
-		return {
-			...message.hosts,
-			'update_needed': false
-		}
-	} else {
-		/* TODO: add error handling */
+	return {
+		...message.hosts,
+		'update_needed': false
 	}
 }
 
 function update_host(state = initialState, action) {
 	const message = action.message;
 
-	if (message["status"] == "success") {
-		var { host_id, comment } = message;
+	var { host_id, comment } = message;
 
-		for (var each_host of state.data) {
-			if (each_host.host_id == host_id) {
-				var new_state = JSON.parse(JSON.stringify(state));
+	for (var each_host of state.data) {
+		if (each_host.host_id == host_id) {
+			var new_state = JSON.parse(JSON.stringify(state));
 
-				for (var each_new_host of new_state.data) {
-					if (each_new_host.host_id == host_id) {
-						each_new_host.comment = comment;
-						break;
-					}
+			for (var each_new_host of new_state.data) {
+				if (each_new_host.host_id == host_id) {
+					each_new_host.comment = comment;
+					break;
 				}
-
-				return new_state;
 			}
-		}
 
-		return state;
-	} else {
-		console.error(message);
-		/* TODO: add error handling */
+			return new_state;
+		}
 	}
 
+	return state;
 }
 
 function host_data_updated(state = initialState, action) {
 	const message = action.message;
 
-	if (message["status"] == 'success') {
-		var found = false;
+	var found = false;
 
-		if (message.updated_hostname) {
-			for (var state_host of state.data) {
-				if (state_host.hostname == message.updated_hostname) {
-					console.log("Got some files for currently displayed hosts");
-					found = true;
-					break;
-				}
+	if (message.updated_hostname) {
+		for (var state_host of state.data) {
+			if (state_host.hostname == message.updated_hostname) {
+				console.log("Got some files for currently displayed hosts");
+				found = true;
+				break;
 			}
 		}
+	}
 
-		if (found) {
-			var new_state = JSON.parse(JSON.stringify(state));
-			new_state.update_needed = true;
+	if (found) {
+		var new_state = JSON.parse(JSON.stringify(state));
+		new_state.update_needed = true;
 
-			return new_state;
-		}
-		else {
-			return state;
-		}
-	} else {
-		/* TODO: add error handling */
-	}	
+		return new_state;
+	}
+	else {
+		return state;
+	}
 }
 
 function updated_ips(state = initialState, action) {
 	const message = action.message;
 
-	if (message["status"] == 'success') {
-		var found = false;
+	var found = false;
 
-		if (message.updated_ips) {
-			for (var each_id of message.updated_ips) {
-				for (var state_host of state.data) {
-					for (var state_ip of state_host.ip_addresses) {
-						if (state_ip.ip_id == each_id) {
-							console.log("Got some scans for currently displayed hosts");
-							found = true;
-							break;
-						}
+	if (message.updated_ips) {
+		for (var each_id of message.updated_ips) {
+			for (var state_host of state.data) {
+				for (var state_ip of state_host.ip_addresses) {
+					if (state_ip.ip_id == each_id) {
+						console.log("Got some scans for currently displayed hosts");
+						found = true;
+						break;
 					}
 				}
-				if (found) break;
 			}
+			if (found) break;
 		}
+	}
 
-		if (found) {
-			var new_state = JSON.parse(JSON.stringify(state));
+	if (found) {
+		var new_state = JSON.parse(JSON.stringify(state));
 
-			new_state.update_needed = true;
+		new_state.update_needed = true;
 
-			return new_state;
-		}
-		else {
-			return state;
-		}
-	} else {
-		/* TODO: add error handling */
+		return new_state;
+	}
+	else {
+		return state;
 	}
 }
 
 function resolve_hosts(state = initialState, action) {
-	const message = action.message;
+	var new_state = JSON.parse(JSON.stringify(state));
+	new_state.update_needed = true;
+	new_state.resolve_finished = true;
 
-	if (message["status"] == 'success') {
-		var new_state = JSON.parse(JSON.stringify(state));
-		new_state.update_needed = true;
-		new_state.resolve_finished = true;
-
-		return new_state;
-	} else {
-		/* TODO: add error handling */
-	}
+	return new_state;
 }
 
 
 function get_tasks_by_hosts(state = initialState, action) {
 	const message = action.message;
+	const active_tasks = message['active'];
 
-	if (message["status"] == 'success') {
-		const active_tasks = message['active'];
-
-		var parsed_active_tasks = _.map(active_tasks, (x) => {
-			return {
-				"task_id": x["task_id"],
-				"task_type": x["task_type"],
-				"params": x["params"],
-				"target": x["target"],
-				"status": x["status"],
-				"progress": x["progress"],
-				"project_uuid": x["project_uuid"],
-				"text": x["text"],
-				"stdout": x["stdout"],
-				"stderr": x["stderr"],
-				"date_added": x["date_added"]
-			}
-		});
-
-		const finished_tasks = message['finished'];
-
-		var parsed_finished_tasks = _.map(finished_tasks, (x) => {
-			return {
-				"task_id": x["task_id"],
-				"task_type": x["task_type"],
-				"params": x["params"],
-				"target": x["target"],
-				"status": x["status"],
-				"progress": x["progress"],
-				"project_uuid": x["project_uuid"],
-				"text": x["text"],
-				"stdout": x["stdout"],
-				"stderr": x["stderr"],
-				"date_added": x["date_added"]
-			}
-		});
-
+	var parsed_active_tasks = _.map(active_tasks, (x) => {
 		return {
-			"page": state["page"],
-			"page_size": state["page_size"],
-			"total_db_hosts": state["total_db_hosts"],
-			"selected_hosts": state["selected_hosts"],
-			"data": state["data"],
-			"tasks": {
-				"active": parsed_active_tasks,
-				"finished": parsed_finished_tasks
-			},
-			"update_needed": state["update_needed"]			
-		};
-	} else {
-		/* TODO: add error handling */
-	}	
-	return state;
+			"task_id": x["task_id"],
+			"task_type": x["task_type"],
+			"params": x["params"],
+			"target": x["target"],
+			"status": x["status"],
+			"progress": x["progress"],
+			"project_uuid": x["project_uuid"],
+			"text": x["text"],
+			"stdout": x["stdout"],
+			"stderr": x["stderr"],
+			"date_added": x["date_added"]
+		}
+	});
+
+	const finished_tasks = message['finished'];
+
+	var parsed_finished_tasks = _.map(finished_tasks, (x) => {
+		return {
+			"task_id": x["task_id"],
+			"task_type": x["task_type"],
+			"params": x["params"],
+			"target": x["target"],
+			"status": x["status"],
+			"progress": x["progress"],
+			"project_uuid": x["project_uuid"],
+			"text": x["text"],
+			"stdout": x["stdout"],
+			"stderr": x["stderr"],
+			"date_added": x["date_added"]
+		}
+	});
+
+	return {
+		"page": state["page"],
+		"page_size": state["page_size"],
+		"total_db_hosts": state["total_db_hosts"],
+		"selected_hosts": state["selected_hosts"],
+		"data": state["data"],
+		"tasks": {
+			"active": parsed_active_tasks,
+			"finished": parsed_finished_tasks
+		},
+		"update_needed": state["update_needed"]			
+	};
 }
 
 function host_reduce(state = initialState, action) {

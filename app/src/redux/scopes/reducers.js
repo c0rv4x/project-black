@@ -1,8 +1,7 @@
 import _ from 'lodash';
 
 import { 
-	CREATE_SCOPE, 
-	DELETE_SCOPE
+	CREATE_SCOPE
 } from './actions.js'
 
 
@@ -20,19 +19,6 @@ function create_scope(state = initialState, action) {
 	return new_state;
 }
 
-// function delete_scope(state = initialState, action) {
-// 	const message = action.message;
-
-// 	if (message["status"] == 'success') {
-// 		var new_state = JSON.parse(JSON.stringify(state));
-// 		new_state.update_needed = true;
-
-// 		return new_state;
-// 	} else {
-// 		/* TODO: add error handling */
-// 	}
-// }scopesscopes
-
 function scope_reduce(state = initialState, action) {
 	if (!action.hasOwnProperty('message')) {
 		return state
@@ -44,8 +30,6 @@ function scope_reduce(state = initialState, action) {
 			switch (action.type) {
 				case CREATE_SCOPE:
 					return create_scope(state, action);
-				// case DELETE_SCOPE:
-				// 	return delete_scope(state, action);
 				default:
 					return state;
 			}

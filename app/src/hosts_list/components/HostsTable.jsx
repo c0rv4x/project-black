@@ -5,7 +5,7 @@ import Search from '../../common/search/Search.jsx'
 import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
 import HostsEntryLine from '../presentational/HostsEntryLine.jsx'
 
-import { Card, Grid, Container } from 'semantic-ui-react'
+import { Grid, Container } from 'semantic-ui-react'
 
 class HostsTable extends React.Component {
 

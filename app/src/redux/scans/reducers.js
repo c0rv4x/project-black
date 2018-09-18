@@ -7,15 +7,10 @@ import {
 
 function renew_scans_stats(state = {}, action) {
 	const message = action.message;
-	console.log("Renew scans",message);
 
-	if (message["status"] == 'success') {
-		return {
-			"amount": message['amount']
-		};
-	} else {
-		/* TODO: add error handling */
-	}
+	return {
+		"amount": message['amount']
+	};
 }
 
 function scan_reduce(state = {}, action) {

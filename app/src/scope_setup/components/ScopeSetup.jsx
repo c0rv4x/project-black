@@ -3,7 +3,6 @@ import React from 'react'
 import ScopeAdderTracked from '../../ips_list/components/ScopeAdderTracked.jsx'
 import HeadButtonsTracked from './HeadButtonsTracked.jsx'
 
-import Tasks from '../../common/tasks/Tasks.jsx'
 import ProjectComment from '../../common/project_comment/ProjectComment.jsx'
 
 import Stats from '../presentational/Stats.jsx'

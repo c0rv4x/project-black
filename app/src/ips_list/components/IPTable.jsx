@@ -1,13 +1,12 @@
 import _ from 'lodash'
 import React from 'react'
-import Notifications from 'react-notification-system-redux'
 
 import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
 import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
 import IPEntryLine from '../presentational/scope/IPEntryLine.jsx'
 import Search from '../../common/search/Search.jsx'
 
-import { Card, Grid, Container } from 'semantic-ui-react'
+import { Grid, Container } from 'semantic-ui-react'
 
 
 class IPTable extends React.Component {
