@@ -7,15 +7,10 @@ import {
 
 function renew_stats(state = {}, action) {
 	const message = action.message;
-	console.log('renew files',message);
 
-	if (message["status"] == 'success') {
-		return {
-			"amount": message['amount']
-		};
-	} else {
-		/* TODO: add error handling */
-	}		
+	return {
+		"amount": message['amount']
+	};
 }
 
 function file_reduce(state = {}, action) {
