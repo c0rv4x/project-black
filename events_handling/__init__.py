@@ -11,13 +11,11 @@ from events_handling.scopes_handlers import ScopeHandlers
 from events_handling.tasks_handlers import TaskHandlers
 from events_handling.scans_handlers import ScanHandlers
 from events_handling.files_handlers import FileHandlers
-from events_handling.creds_handlers import CredHandlers
-
 from events_handling.notifications_spawner import send_notification
 
 from managers import (
     ProjectManager, ScopeManager, TaskManager,
-    ScanManager, FileManager, CredManager
+    ScanManager, FileManager
 )
 
 
@@ -33,12 +31,12 @@ class Handlers(object):
 
         self.project_manager = ProjectManager()
         self.scope_manager = ScopeManager()
-        self.task_manager = TaskManager(self.data_updated_queue, self.scope_manager)
+        self.task_manager = TaskManager(
+            self.data_updated_queue, self.scope_manager)
         self.app.add_task(self.task_manager.spawn_asynqp())
 
         self.scan_manager = ScanManager()
         self.file_manager = FileManager()
-        self.creds_manager = CredManager()
 
         register_project_handlers(self.socketio, self.project_manager)
 
@@ -53,9 +51,6 @@ class Handlers(object):
 
         self.task_handlers = TaskHandlers(self.socketio, self.task_manager)
         self.task_handlers.register_handlers()
-
-        self.cred_handlers = CredHandlers(self.socketio, self.creds_manager)
-        self.cred_handlers.register_handlers()
 
     async def sender_loop(self):
         await self.task_handlers.send_tasks_back()

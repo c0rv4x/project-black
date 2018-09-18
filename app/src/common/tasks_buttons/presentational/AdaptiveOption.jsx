@@ -4,8 +4,7 @@ import React from 'react'
 import { 
 	Button,
 	Checkbox,
-	Form,
-	TextArea
+	Form
 } from 'semantic-ui-react'
 
 
@@ -38,13 +37,10 @@ class AdaptiveOption extends React.Component {
 			return (
 				<Form.Field>
 					<label>{_.capitalize(this.props.objectKey)}</label>
-					<TextArea 
-						autoHeight
-						rows={1}
-						type={this.props.value.type}
-						placeholder={this.props.objectKey}
-						value={this.props.value.value}
-						onChange={this.changeInput} />
+					<input type={this.props.value.type}
+						   placeholder={this.props.objectKey}
+						   value={this.props.value.value}
+					   	   onChange={this.changeInput} />
 				</Form.Field>
 			)
 		}

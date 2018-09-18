@@ -3,11 +3,13 @@ import React from 'react'
 import {
     Link
 } from 'react-router-dom'
+import classnames from 'classnames';
 import { Tab, Menu, Icon } from 'semantic-ui-react'
 
 import ScopeSetupWrapper from '../scope_setup/components/ScopeSetupWrapper.js'
 import ProjectDetailsWrapper from '../ips_list/components/ProjectDetailsWrapper.js'
 import HostsListWrapper from '../hosts_list/components/HostsListWrapper.js'
+import TasksTabWrapper from '../tasks_tab/components/TasksTabWrapper.js'
 
 
 class NavigationTabs extends React.Component {
