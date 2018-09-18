@@ -22,4 +22,4 @@ ADD . /app
 RUN python3 -m pip install -r requirements.txt
 RUN python3 -m pip install -r black/requirements.txt
 
-CMD ["python3", "app.py", "docker"]
+CMD ["python3", "server.py", "docker"]
