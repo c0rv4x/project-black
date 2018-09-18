@@ -1,5 +1,6 @@
-from sqlalchemy import desc, or_
+from sqlalchemy import desc, or_, and_
 from sqlalchemy.orm import aliased, contains_eager
+from sqlalchemy.sql.expression import func
 
 from black.db import ScanDatabase, FileDatabase
 from managers.scopes.filters import Filters
@@ -9,31 +10,44 @@ class SubqueryBuilder:
     @staticmethod
     def build_scans_subquery(session, project_uuid, filters):
         # Create a query for selection unique, ordered and filtered scans
-
-        # Select distinc scans (we need only the latest)
-        subq = (
+        ports = (
             session.query(
-                ScanDatabase
+                ScanDatabase.target,
+                ScanDatabase.port_number,
+                func.max(ScanDatabase.date_added).label("latesttime")
             )
-            .filter(ScanDatabase.project_uuid == project_uuid)
-            .order_by(desc(ScanDatabase.date_added))
-            .subquery('project_scans_ordered')
+            .filter(
+                ScanDatabase.project_uuid == project_uuid
+            )
+            .group_by(
+                ScanDatabase.target,
+                ScanDatabase.port_number
+            )
+            .subquery('ports')
         )
-        alias_ordered = aliased(ScanDatabase, subq)
-        ordered = session.query(alias_ordered)
 
         # Create a list of filters which will be applied against scans
         scans_filters = Filters.build_scans_filters(
-            filters, alias_ordered)
+            filters, ScanDatabase
+        )
 
-        scans_ordered_distinct = ordered.distinct(
-            alias_ordered.target, alias_ordered.port_number)
-
-        # Use filters
         scans_from_db = (
-            scans_ordered_distinct
-            .filter(scans_filters)
-            .subquery('scans_distinct_filtered')
+            session.query(
+                ScanDatabase
+            )
+            .filter(
+                ScanDatabase.project_uuid == project_uuid,
+                scans_filters
+            )
+            .join(
+                ports,
+                and_(
+                    ScanDatabase.date_added == ports.c.latesttime,
+                    ScanDatabase.target == ports.c.target,
+                    ScanDatabase.port_number == ports.c.port_number
+                )
+            )
+            .subquery("ports_latest")
         )
 
         return scans_from_db

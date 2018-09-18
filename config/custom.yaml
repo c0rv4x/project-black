@@ -4,13 +4,13 @@ application:
   username: pt
   password: blackisbackfuckers
 rabbit:
-  host: black_rabbit
+  host: 127.0.0.1
   port: 5672
   username: guest
   password: guest
 postgres:
-  host: black_postgres
-  port: 5432
+  host: 127.0.0.1
+  port: 5433
   username: black
   password: black101
   database: black

@@ -378,15 +378,28 @@ class ScopeManager(object):
                     "comment": "",
                     "project_uuid": project_uuid,
                     "task_id": None,
-                    "date_added": current_date
+                    "date_added": str(current_date)
                 } for ip_address in to_add
             ]
 
             if new_ips:
-                self.session_spawner.engine.execute(
+                insert_res = self.session_spawner.engine.execute(
                     IPDatabase.__table__.insert(),
                     new_ips
                 )
+
+                with self.session_spawner.get_session() as session:
+                    results["new_scopes"] = list(map(
+                        lambda ip: ip.dict(),
+                        (
+                            session.query(
+                                IPDatabase
+                            ).filter(
+                                IPDatabase.project_uuid == project_uuid,
+                                IPDatabase.target.in_(to_add)
+                            )
+                        )
+                    ))
 
             self.logger.info(
                 "Added batch ips: {}@{} in {}".format(
@@ -522,31 +535,44 @@ class ScopeManager(object):
             resolver = aiodns.DNSResolver(loop=loop)
 
         futures = []
+        done_futures_all = []
 
         for each_host in to_resolve:
             each_future = resolver.query(each_host.target, "A")
             each_future.database_host = each_host
             futures.append(each_future)
 
+            if len(futures) >= 10:
+                (done_futures, _) = await asyncio.wait(
+                    futures, return_when=asyncio.ALL_COMPLETED
+                )
+                done_futures_all += done_futures
+                futures = []
+
         (done_futures, _) = await asyncio.wait(
             futures, return_when=asyncio.ALL_COMPLETED
         )
+        done_futures_all += done_futures
+        futures = []                
 
-        while done_futures:
-            each_future = done_futures.pop()
+        while done_futures_all:
+            await asyncio.sleep(0)
+
+            each_future = done_futures_all.pop()
 
             try:
                 exc = each_future.exception()
                 host = each_future.database_host
                 result = each_future.result()
             except Exception as exc:
-                self.logger.error(
-                    "{} during resolve {}@{}".format(
-                        str(exc),
-                        each_future.database_host,
-                        project_uuid
-                    )
-                )
+                pass
+                # self.logger.error(
+                #     "{} during resolve {}@{}".format(
+                #         str(exc),
+                #         each_future.database_host,
+                #         project_uuid
+                #     )
+                # )
 
             for each_result in result:
                 # Well, this is strange, but ip in aiodns is returned in 'host'

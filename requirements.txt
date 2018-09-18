@@ -1,8 +1,9 @@
+websockets==5.0.1
 dnspython
 netaddr
 sqlalchemy
 psycopg2
-sanic
+sanic==0.7.0
 apscheduler
 python-socketio
 eventlet

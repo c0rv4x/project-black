@@ -3,32 +3,61 @@ version: '2.1'
 services:
   rabbit:
     build: rabbitmq/.
-    container_name: rabbit_black
+    container_name: black_rabbit
     ports: 
-        - "15672:15672"
-        - "5672:5672"
+        - "127.0.0.1:15672:15672"
+        - "127.0.0.1:5672:5672"
     healthcheck:
         test: ["CMD", "curl", "-f", "http://localhost:15672"]
         interval: 3s
         timeout: 5s
         retries: 20
   postgres:
-    # build: postgres/.
-    image: postgres:10.3
-    container_name: postgres_black
+    build: postgres/.
+    container_name: black_postgres
     environment:
       - POSTGRES_USER=black
       - POSTGRES_PASSWORD=black101
       - POSTGRES_DB=black
     ports: 
-        - "5432:5432"
+        - "127.0.0.1:5432:5433"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 3s
       timeout: 5s
       retries: 20
+  black_masscan:
+    build:
+      context: .
+      dockerfile: docker_files/masscan.yml
+    container_name: black_masscan
+    depends_on:
+      rabbit:
+        condition: service_healthy      
+      postgres:
+        condition: service_healthy
+  black_nmap:
+    build:
+      context: .
+      dockerfile: docker_files/nmap.yml
+    container_name: black_nmap
+    depends_on:
+      rabbit:
+        condition: service_healthy      
+      postgres:
+        condition: service_healthy 
+  black_dirsearch:
+    build:
+      context: .
+      dockerfile: docker_files/dirsearch.yml
+    container_name: black_dirsearch
+    depends_on:
+      rabbit:
+        condition: service_healthy      
+      postgres:
+        condition: service_healthy                   
   black:
-    image: front_black
+    image: black
     build: .
     ports:
       - 5000:5000

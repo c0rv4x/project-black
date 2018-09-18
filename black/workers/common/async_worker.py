@@ -135,3 +135,8 @@ class AsyncWorker(Worker):
                     sent = True
         if not sent:
             raise Exception("Mess with the queues")
+
+    async def stop(self):
+        """ Stops the worker, aborting all the tasks """
+        for task in self.active_processes:
+            await task.cancel()

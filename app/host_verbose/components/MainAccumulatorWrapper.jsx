@@ -41,7 +41,30 @@ function mapStateToProps(state, ownProps){
         }
     }
 
-    let ports_unsorted = _.get(_.get(host.ip_addresses, 0, {}), 'scans', []);
+    // let ports_unsorted = _.get(_.get(host.ip_addresses, 0, {}), 'scans', []);
+    let ports_unsorted = [];
+
+    for (var ip_address of host.ip_addresses) {
+        let scans = _.get(ip_address, 'scans', []);
+        for (var scan of scans) {            
+            let found = false;
+
+            for (var port of ports_unsorted) {
+                if (scan.port_number == port.port_number) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {
+                continue;
+            }
+            else {
+                ports_unsorted.push(scan);
+            }
+        }
+    }
+
     let ports = ports_unsorted.sort((x, y) => {
         return x.port_number > y.port_number;
     });

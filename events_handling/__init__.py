@@ -81,7 +81,10 @@ class Handlers(object):
 
                 if text:
                     self.logger.info("Task updated targets: {}".format(text))
-                    targets = text
+                    try:
+                        targets = json.loads(text)
+                    except:
+                        targets = text
 
                 await send_notification(
                     self.socketio,

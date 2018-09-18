@@ -60,7 +60,6 @@ class MainAccumulatorUpdater extends React.Component {
 	}
 
 	renewHosts(page=this.pageNumberHost, filters=this.props.filters, pageSize=this.pageSize) {
-		console.log("Asking to renew hosts", filters);
 		var newFilters = filters;
 		if (!filters['files']) {
 			newFilters['files'] = ['%'];

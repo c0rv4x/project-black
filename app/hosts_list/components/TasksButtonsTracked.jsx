@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
@@ -12,6 +13,10 @@ class TasksButtonsTracked extends React.Component {
 
 		this.dirbusterStart = this.dirbusterStart.bind(this);
 	}
+
+	shouldComponentUpdate(nextProps) {
+		return !_.isEqual(nextProps, this.props);
+	}	
 
 	dirbusterStart(options) {
 		this.tasksEmitter.requestCreateTask('dirsearch',
@@ -46,7 +51,7 @@ class TasksButtonsTracked extends React.Component {
 							{
 								"name": "Personal favourites",
 								"options": {
-									"extensions": "php,asp,txt,conf,log,bak,sql",
+									"extensions": "php,txt,conf,log,bak,sql,asp,aspx,tar.gz,tar,zip,~",
 									"path": "/"
 								}
 							}
@@ -60,7 +65,7 @@ class TasksButtonsTracked extends React.Component {
 							{
 								"name": "extensions",
 								"type": "text",
-								"default_value": "txt,conf,log,bak"
+								"default_value": "php,txt,conf,log,bak,sql,asp,aspx,tar.gz,tar,zip,~"
 							},
 							{
 								"name": "cookie",

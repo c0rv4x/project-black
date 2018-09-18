@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import { Table } from 'semantic-ui-react'
 
-import EachTask from './EachTask.jsx'
+import TasksGroup from './TasksGroup.jsx'
 
 class Tasks extends React.Component {
 
@@ -15,62 +15,45 @@ class Tasks extends React.Component {
 	}
 
 	render() {
-		var known_task_types = ['dnsscan', 'nmap', 'dirsearch', 'masscan'];
-		var tasks_object = {};
+		let groupped_tasks = {};
 
-		for (var task_type of known_task_types) {
-			tasks_object[task_type] = {
-				"status": "None",
-				// "progress": 0,
-				"progress_sum": 0,
-				"amount": 0
-			};
+		for (let each_task of this.props.tasks) {
+			const { task_type, status, progress } = each_task;
+
+			if (groupped_tasks.hasOwnProperty(task_type)) {
+				groupped_tasks[task_type].push(each_task);
+			}
+			else {
+				groupped_tasks[task_type] = [each_task];
+			}
 		}
 
-		for (var each_task of this.props.tasks) {
-			const task_type = each_task["task_type"];
-			const status = each_task["status"];
-			const progress = each_task["progress"];
-
-			if (tasks_object[task_type]['status'] == "None") {
-				tasks_object[task_type]['status'] = status;
-			}
-			else if (status != "Working") {
-				tasks_object[task_type]['status'] = status;
-			}
-
-			tasks_object[task_type]['progress_sum'] += progress;
-			tasks_object[task_type]['amount'] += 1;
-		}
-
-		var tasks = [];
-		_.forOwn(tasks_object, (value, key) => {
-			tasks.push(<EachTask key={key} task={value} type={key} />);
+		let tasks = [];
+		_.forOwn(groupped_tasks, (value, key) => {
+			tasks.push(<TasksGroup key={key} tasks={value} type={key} />);
 		});
 
 		if (_.get(this.props.tasks, 'length', 0)) {
 			return (
 				<div>
 					<h3>Active tasks</h3>
-					<Table>
-						<thead>
-							<tr>
-								<td>Task Type</td>
-								<td>Status</td>
-								<td>Progress</td>
-							</tr>
-						</thead>
-						<tbody>
+					<Table compact>
+						<Table.Header>
+							<Table.Row>
+								<Table.HeaderCell>Type</Table.HeaderCell>
+								<Table.HeaderCell>Queued Tasks</Table.HeaderCell>
+								<Table.HeaderCell>Progress</Table.HeaderCell>
+							</Table.Row>
+						</Table.Header>
+						<Table.Body>
 							{tasks}
-						</tbody>
+						</Table.Body>
 					</Table>
 				</div>
 			)			
 		}
 		else {
-			return (
-				<div></div>
-			)
+			return <div>There are no active tasks</div>;
 		}
 	}
 
