@@ -1,7 +1,7 @@
 import datetime
 from uuid import uuid4
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, joinedload
 
 from .scope import Scope, association_table
 
@@ -48,6 +48,34 @@ class HostDatabase(Scope):
     __mapper_args__ = {
         'concrete': True
     }
+
+    @classmethod
+    def delete_scope(cls, scope_id):
+        """ Deletes scope by its id """
+
+        try:
+            with cls.session_spawner.get_session() as session:
+                db_object = (
+                    session.query(
+                        HostDatabase
+                    )
+                    .filter(HostDatabase.id == scope_id)
+                    .options(joinedload(HostDatabase.ip_addresses))
+                    .one()
+                )
+
+                target = db_object.target
+
+                # for host in db_object.hostnames:
+                #     host.ip_addresses.remove(db_object)
+                    # session.add(host)
+
+                session.delete(db_object)
+        except Exception as exc:
+            print(str(exc))
+            return {"status": "error", "text": str(exc), "target": scope_id}
+        else:
+            return {"status": "success", "target": target}    
 
     def dict(self, include_ports=False, include_ips=False, include_files=False):
         return {
