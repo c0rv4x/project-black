@@ -26,19 +26,40 @@ class IPEntryLine extends React.Component {
 		this.state = {
 			column: null,
 			data: [],
-			direction: null
+			direction: null,
+			inited: false
 		};
 
 		this.handleSortClick = this.handleSortClick.bind(this);
 	}
 
+	shouldComponentUpdate(nextProps, nextState) {
+  		return ((!_.isEqual(nextProps, this.props)) || ((!_.isEqual(nextState, this.state))) || (!this.state.inited));
+	}
+
+	componentDidMount() {
+		if (!this.state.inited) {
+			this.forceUpdate();
+		}
+	}
+
 	componentDidUpdate(prevProps) {
-		if (prevProps.ip.creds !== this.props.ip.creds) {
+		if (!this.state.inited) {
 			this.setState({
 				column: null,
 				data: this.props.ip.creds,
-				direction: null
+				direction: null,				
+				inited: true
 			});
+		}
+		else {
+			if (prevProps.ip.creds !== this.props.ip.creds) {
+				this.setState({
+					column: null,
+					data: this.props.ip.creds,
+					direction: null
+				});
+			}
 		}
 	}
 
