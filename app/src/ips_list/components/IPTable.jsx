@@ -4,6 +4,7 @@ import Notifications from 'react-notification-system-redux'
 
 import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
 import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
+import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmitter.js'
 import IPEntryLine from '../presentational/scope/IPEntryLine.jsx'
 import Search from '../../common/search/Search.jsx'
 
@@ -24,6 +25,7 @@ class IPTable extends React.Component {
 		}
 
 		this.ipsEmitter = new IPsSocketioEventsEmitter();
+		this.credsEmitter = new CredsSocketioEventsEmitter();
 
 		this.commentSubmitted = this.commentSubmitted.bind(this);
 		this.handlePageClick = this.handlePageClick.bind(this);
@@ -43,6 +45,10 @@ class IPTable extends React.Component {
 		}
 
 		if (nextProps.ips.selected_ips !== this.props.ips.selected_ips) {
+			this.credsEmitter.renewCreds(this.props.project_uuid, nextProps.ips.data.map((ip) => {
+				return ip.ip_address;
+			}));
+
 			this.setState({
 				shownData: nextProps.ips.data,
 				offsetPage: 0,
@@ -50,6 +56,10 @@ class IPTable extends React.Component {
 			});
 		}
 		else {
+			this.credsEmitter.renewCreds(this.props.project_uuid, nextProps.ips.data.map((ip) => {
+				return ip.ip_address;
+			}));
+			
 			this.setState({
 				shownData: nextProps.ips.data,
 				pageCount: Math.ceil(nextProps.ips.selected_ips / this.props.ips.page_size)

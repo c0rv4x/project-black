@@ -10,7 +10,7 @@ import ScansSocketioEventsSubsriber from '../redux/scans/ScansSocketioEventsSubs
 import FilesSocketioEventsSubsriber from '../redux/files/FilesSocketioEventsSubscriber'
 import NotificationsSocketioEventsSubscriber from '../redux/notifications/NotificationsSocketioEventsSubscriber'
 import ScopesSocketioEventsSubscriber from '../redux/scopes/ScopesSocketioEventsSubscriber'
-
+import CredsSocketioEventsSubscriber from '../redux/creds/CredsSocketioEventsSubscriber'
 
 class NavigationTabsWrapper extends React.Component {
     constructor(props) {
@@ -29,6 +29,7 @@ class NavigationTabsWrapper extends React.Component {
         this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);   
         this.notificationsSubscriber = new NotificationsSocketioEventsSubscriber(mainStore, project_uuid);
         this.scopesSubscriber = new ScopesSocketioEventsSubscriber(mainStore, project_uuid);
+        this.credsSubscriber = new CredsSocketioEventsSubscriber(mainStore, project_uuid);
     }
 
     render() {
@@ -46,6 +47,7 @@ class NavigationTabsWrapper extends React.Component {
         this.filesSubscriber.close();
         this.notificationsSubscriber.close();
         this.this.scopesSubscriber.close();
+        this.this.credsSubscriber.close();
     }
 }
 
