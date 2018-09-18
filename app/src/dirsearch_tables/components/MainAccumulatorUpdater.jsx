@@ -124,6 +124,8 @@ class MainAccumulatorUpdater extends React.Component {
 	}
 
 	changePage(pageNumberUnmodified) {
+		this.setLoading(true);
+		window.scrollTo(0, 0);
 		var pageNumber = pageNumberUnmodified - 1;
 
 		const ipPages = Math.ceil(this.props.ips.selected_ips / this.pageSize);
