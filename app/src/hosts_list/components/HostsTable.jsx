@@ -5,7 +5,7 @@ import Search from '../../common/search/Search.jsx'
 import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
 import HostsEntryLine from '../presentational/HostsEntryLine.jsx'
 
-import { Grid, Container } from 'semantic-ui-react'
+import { Grid, Container, Header } from 'semantic-ui-react'
 
 class HostsTable extends React.Component {
 
@@ -26,7 +26,7 @@ class HostsTable extends React.Component {
 
 	componentWillReceiveProps(nextProps) {
 		if ((nextProps.hosts.page !== this.props.hosts.page) || (nextProps.hosts.page_size !== this.props.hosts.page_size)) {
-			this.props.setLoading(false);
+			this.props.triggerSetLoaded(true);
 		}
 
 		if (nextProps.hosts.selected_hosts !== this.props.hosts.selected_hosts) {
@@ -45,7 +45,7 @@ class HostsTable extends React.Component {
 	}
 
 	handlePageClick(page_number) {
-		this.props.setLoading(true);
+		this.props.triggerSetLoaded(false);
 		window.scrollTo(0, 0);
 		this.props.renewHosts(page_number - 1, this.props.hosts.page_size);
 	}
@@ -95,14 +95,21 @@ class HostsTable extends React.Component {
 			<div>
 				<Search applyFilters={this.props.applyFilters} />
 				<br />
-				<Container>
-					<Grid columns={columns}>
-						{hosts_group}
-					</Grid>
-				</Container>
-				<br />
-				<ReactPaginate pageCount={this.state.pageCount}
-							   clickHandler={this.handlePageClick} />
+				{this.props.hosts.data.length === 0 && this.props.hosts.loaded && 
+					<Header as='h2'>No data found.</Header>
+				}
+				{(this.props.hosts.data.length !== 0 || !this.props.hosts.loaded) &&
+					<div>
+						<Container>
+							<Grid columns={columns}>
+								{hosts_group}
+							</Grid>
+						</Container>
+						<br />
+						<ReactPaginate pageCount={this.state.pageCount}
+									clickHandler={this.handlePageClick} />
+					</div>
+				}
 			</div>
 		)
 	}

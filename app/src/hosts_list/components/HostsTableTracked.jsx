@@ -15,7 +15,7 @@ class HostsTableTracked extends React.Component {
 	}
 
 	deleteScope(scope_id) {
-		this.props.setLoading(true);
+		this.props.triggerSetLoaded(false);
 		this.scopesEmitter.requestDeleteScope(scope_id, this.props.project_uuid, "hostname");
 	}
 
@@ -25,7 +25,7 @@ class HostsTableTracked extends React.Component {
 						project_uuid={this.props.project_uuid}
 						deleteScope={this.deleteScope}
 						applyFilters={this.props.applyFilters}
-						setLoading={this.props.setLoading}
+						triggerSetLoaded={this.props.triggerSetLoaded}
 						renewHosts={this.props.renewHosts}
 						requestUpdateHost={this.props.requestUpdateHost} />
 		)

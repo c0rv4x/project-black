@@ -8,11 +8,13 @@ import {
 	UPDATED_IPS,
 	RESOLVE_HOSTS,
 	HOST_DATA_UPDATED,
-	GET_TASKS_BY_HOSTS
+	GET_TASKS_BY_HOSTS,
+	SET_LOADED
 } from './actions.js'
 
 
 const initialState = {
+	"loaded": false,
 	"page": 0,
 	"page_size": 12,
 	"resolve_finished": false,
@@ -52,6 +54,7 @@ function renew_hosts(state = initialState, action) {
 
 	return {
 		...message.hosts,
+		'loaded': true,
 		'update_needed': false
 	}
 }
@@ -192,6 +195,15 @@ function get_tasks_by_hosts(state = initialState, action) {
 	};
 }
 
+function set_loaded(state = initialState, action) {
+	const message = action.message;
+
+	return {
+		...state,
+		loaded: message.value
+	}
+}
+
 function host_reduce(state = initialState, action) {
 	if (!action.hasOwnProperty('message')) {
 		return state
@@ -216,7 +228,9 @@ function host_reduce(state = initialState, action) {
 				case HOST_DATA_UPDATED:
 					return host_data_updated(state, action);
 				case GET_TASKS_BY_HOSTS:
-					return get_tasks_by_hosts(state, action);					
+					return get_tasks_by_hosts(state, action);
+				case SET_LOADED:
+					return set_loaded(state, action);
 				default:
 					return state;
 			}
