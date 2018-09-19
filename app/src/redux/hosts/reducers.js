@@ -137,11 +137,11 @@ function updated_ips(state = initialState, action) {
 }
 
 function resolve_hosts(state = initialState, action) {
-	var new_state = JSON.parse(JSON.stringify(state));
-	new_state.update_needed = true;
-	new_state.resolve_finished = true;
-
-	return new_state;
+	return {
+		...state,
+		update_needed: true,
+		resolve_finished: true
+	};
 }
 
 
