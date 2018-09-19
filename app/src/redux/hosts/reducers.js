@@ -30,13 +30,15 @@ function create_host(state = initialState, action) {
 
 	let new_state = JSON.parse(JSON.stringify(state));
 	let new_hosts = message.new_hosts;
+	let total_db_hosts = state.total_db_hosts + new_hosts.length;
+	let data = new_hosts.concat(state.data).slice(0, state.page_size);
 
-	new_state.data = new_hosts.concat(new_state.data).slice(0, new_state.page_size);
-	new_state.total_db_hosts += new_hosts.length;
-
-	new_state.update_needed = false;			
-
-	return new_state;
+	return {
+		...state,
+		update_needed: false,
+		total_db_hosts: total_db_hosts,
+		data: data
+	};
 }
 
 function delete_host(state = initialState, action) {
