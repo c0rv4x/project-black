@@ -6,7 +6,7 @@ import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.j
 import IPEntryLine from '../presentational/scope/IPEntryLine.jsx'
 import Search from '../../common/search/Search.jsx'
 
-import { Grid, Container } from 'semantic-ui-react'
+import { Grid, Container, Header } from 'semantic-ui-react'
 
 
 class IPTable extends React.Component {
@@ -99,14 +99,21 @@ class IPTable extends React.Component {
 			<div>
 				<Search applyFilters={this.props.applyFilters} />
 				<br />
-				<Container>
-					<Grid columns={columns}>
-						{ips_groups}
-					</Grid>
-				</Container>
-				<br />
-				<ReactPaginate pageCount={this.state.pageCount}
-							   clickHandler={this.handlePageClick} />
+				{this.props.ips.data.length === 0 && this.props.ips.loaded && 
+					<Header as='h2'>No data found.</Header>
+				}
+				{(this.props.ips.data.length !== 0 || !this.props.ips.loaded) &&
+					<div>
+						<Container>
+							<Grid columns={columns}>
+								{ips_groups}
+							</Grid>
+						</Container>
+						<br />
+						<ReactPaginate pageCount={this.state.pageCount}
+									clickHandler={this.handlePageClick} />
+					</div>
+				}
 			</div>
 		)
 	}
