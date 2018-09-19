@@ -22,8 +22,10 @@ function mapStateToProps(state, ownProps) {
 		}
 	}
 
-    if (state.hosts) {
-        for (var host of state.hosts.data) {
+    let new_hosts = JSON.parse(JSON.stringify(state.hosts));
+
+    if (new_hosts) {
+        for (var host of new_hosts.data) {
             host.tasks = {
                 "active": [],
                 "finished": []
@@ -48,11 +50,11 @@ function mapStateToProps(state, ownProps) {
                 }
             }   
         }
-    }	
+    }
 
     return {
     	project_uuid: project.project_uuid,
-    	hosts: state.hosts,
+    	hosts: new_hosts,
         tasks: state.tasks.active
     }
 }
