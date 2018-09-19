@@ -36,7 +36,7 @@ function create_ip(state = initialState, action) {
 		new_state.selected_ips += 1;
 	}
 
-	new_state.update_needed = false;			
+	new_state.update_needed = false;	
 
 	return new_state;
 }
