@@ -183,16 +183,11 @@ function get_tasks_by_hosts(state = initialState, action) {
 	});
 
 	return {
-		"page": state["page"],
-		"page_size": state["page_size"],
-		"total_db_hosts": state["total_db_hosts"],
-		"selected_hosts": state["selected_hosts"],
-		"data": state["data"],
+		...state,
 		"tasks": {
 			"active": parsed_active_tasks,
 			"finished": parsed_finished_tasks
-		},
-		"update_needed": state["update_needed"]			
+		}
 	};
 }
 
