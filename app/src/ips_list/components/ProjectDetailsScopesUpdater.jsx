@@ -33,20 +33,20 @@ class ProjectDetailsScopesUpdater extends React.Component {
 		this.ipsEmitter.requestRenewIPs(this.props.project.project_uuid, filters, ip_page, ips.page_size);
 	}
 
-	componentWillReceiveProps(nextProps) {
-		var { ips, filters } = nextProps;
+	shouldComponentUpdate(nextProps) {
+		return !_.isEqual(nextProps, this.props);
+	}
+
+	componentDidUpdate(prevProps) {
+		var { ips, filters } = this.props;
 
 		if (ips.update_needed === true) {
 			this.triggerSetLoaded(false);
-			this.renewIps(nextProps.ips.page, filters);
+			this.renewIps(this.props.ips.page, filters);
 		}
-		else if (!_.isEqual(filters, this.props.filters)) {
+		else if (!_.isEqual(filters, prevProps.filters)) {
 			this.triggerSetLoaded(false);
 			this.renewIps(0, filters);
-		}
-
-		if (!this.props.ips.loaded) {
-			setTimeout(() => this.triggerSetLoaded(true), 300);
 		}
 	}
 
