@@ -114,7 +114,6 @@ function updated_ips(state = initialState, action) {
 			for (var state_host of state.data) {
 				for (var state_ip of state_host.ip_addresses) {
 					if (state_ip.ip_id == each_id) {
-						console.log("Got some scans for currently displayed hosts");
 						found = true;
 						break;
 					}
