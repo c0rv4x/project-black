@@ -15,7 +15,7 @@ class IPTableTracked extends React.Component {
 	}
 
 	deleteScope(scope_id) {
-		this.props.setLoading(true);
+		this.props.setLoaded(false);
 		this.scopesEmitter.requestDeleteScope(scope_id, this.props.project_uuid, "ip_address");
 	}
 
@@ -25,7 +25,7 @@ class IPTableTracked extends React.Component {
 					 project_uuid={this.props.project_uuid}
 					 deleteScope={this.deleteScope}
 					 applyFilters={this.props.applyFilters}
-					 setLoading={this.props.setLoading}
+					 setLoaded={this.props.setLoaded}
 					 renewIps={this.props.renewIps} />
 		)
 	}

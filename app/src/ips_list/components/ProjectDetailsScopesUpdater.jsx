@@ -4,18 +4,14 @@ import { Dimmer, Loader, Segment } from 'semantic-ui-react'
 
 import ProjectDetails from './ProjectDetails.jsx'
 import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
-
+import { setLoaded } from '../../redux/ips/actions.js'
 
 class ProjectDetailsScopesUpdater extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			loading: false
-		}
-
 		this.ipsEmitter = new IPsSocketioEventsEmitter();
-		this.setLoading = this.setLoading.bind(this);
+		this.triggerSetLoaded = this.triggerSetLoaded.bind(this);
 		this.renewIps = this.renewIps.bind(this);
 
 		if (this.props.ips.update_needed === true) {
@@ -23,10 +19,12 @@ class ProjectDetailsScopesUpdater extends React.Component {
 		}
 	}
 
-	setLoading(value) {
-		this.setState({
-			loading: value
-		});
+	triggerSetLoaded(value) {
+		this.context.store.dispatch(setLoaded({
+			'status': 'success',
+			'value': value,
+			'project_uuid': String(this.props.project.project_uuid)
+		}, String(this.props.project.project_uuid)));
 	}
 
 	renewIps(ip_page=this.props.ips.page, filters=this.props.filters) {
@@ -39,31 +37,37 @@ class ProjectDetailsScopesUpdater extends React.Component {
 		var { ips, filters } = nextProps;
 
 		if (ips.update_needed === true) {
-			this.setLoading(true);
+			this.triggerSetLoaded(false);
 			this.renewIps(nextProps.ips.page, filters);
 		}
 		else if (!_.isEqual(filters, this.props.filters)) {
-			this.setLoading(true);
+			this.triggerSetLoaded(false);
 			this.renewIps(0, filters);
 		}
 
-		if (this.state.loading) {
-			setTimeout(() => this.setLoading(false), 300);
+		if (!this.props.ips.loaded) {
+			setTimeout(() => this.triggerSetLoaded(true), 300);
 		}
 	}
 
 	render() {
 		return (
 			<Segment vertical>
-				<Dimmer active={this.state.loading} inverted>
+				<Dimmer active={!this.props.ips.loaded} inverted>
 					<Loader />
 				</Dimmer>			
-				<ProjectDetails setLoading={this.setLoading}
-								renewIps={this.renewIps}
-								{...this.props} />
+				<ProjectDetails
+					setLoaded={this.triggerSetLoaded}
+					renewIps={this.renewIps}
+					{...this.props}
+				/>
 			</Segment>
 		)
 	}
+}
+
+ProjectDetailsScopesUpdater.contextTypes = {
+    store: React.PropTypes.object
 }
 
 export default ProjectDetailsScopesUpdater;

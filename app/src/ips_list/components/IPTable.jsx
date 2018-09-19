@@ -38,7 +38,7 @@ class IPTable extends React.Component {
 
 	componentWillReceiveProps(nextProps) {
 		if ((nextProps.ips.page !== this.props.ips.page) || (nextProps.ips.page_size !== this.props.ips.page_size)) {
-			this.props.setLoading(false);
+			this.props.setLoaded(true);
 		}
 
 		if (nextProps.ips.selected_ips !== this.props.ips.selected_ips) {
@@ -57,7 +57,7 @@ class IPTable extends React.Component {
 	}	
 
 	handlePageClick(page_number) {
-		this.props.setLoading(true);
+		this.props.setLoaded(false);
 		window.scrollTo(0, 0);
 		this.props.renewIps(page_number - 1);
 	}

@@ -6,11 +6,13 @@ import {
 	RENEW_IPS,
 	UPDATED_IPS,
 	UPDATE_IP,
-	GET_TASKS_BY_IPS
+	GET_TASKS_BY_IPS,
+	SET_LOADED
 } from './actions.js'
 
 
 const initialState = {
+	"loaded": false,
 	"page": 0,
 	"page_size": 12,
 	"total_db_ips": 0,
@@ -55,6 +57,7 @@ function renew_ips(state = initialState, action) {
 
 	return {
 		...message.ips,
+		'loaded': true,
 		'update_needed': false
 	}
 }
@@ -161,19 +164,22 @@ function get_tasks_by_ips(state = initialState, action) {
 	});
 
 	return {
-		"page": state["page"],
-		"page_size": state["page_size"],
-		"total_db_ips": state["total_db_ips"],
-		"selected_ips": state["selected_ips"],
-		"data": state["data"],
+		...state,
 		"tasks": {
 			"active": parsed_active_tasks,
 			"finished": parsed_finished_tasks
-		},
-		"update_needed": state["update_needed"]			
+		}
 	};
+}
 
-	return state;
+function set_loaded(state = initialState, action) {
+	const message = action.message;
+
+	return {
+		...state,
+		loaded: message.value,
+		update_needed: false
+	}
 }
 
 function ip_reduce(state = initialState, action) {
@@ -196,7 +202,9 @@ function ip_reduce(state = initialState, action) {
 				case UPDATED_IPS:
 					return updated_ips(state, action);
 				case GET_TASKS_BY_IPS:
-					return get_tasks_by_ips(state, action);									
+					return get_tasks_by_ips(state, action);
+				case SET_LOADED:
+					return set_loaded(state, action);
 				default:
 					return state;
 			}
