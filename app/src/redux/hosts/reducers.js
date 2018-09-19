@@ -28,7 +28,6 @@ const initialState = {
 function create_host(state = initialState, action) {
 	const message = action.message;
 
-	let new_state = JSON.parse(JSON.stringify(state));
 	let new_hosts = message.new_hosts;
 	let total_db_hosts = state.total_db_hosts + new_hosts.length;
 	let data = new_hosts.concat(state.data).slice(0, state.page_size);
