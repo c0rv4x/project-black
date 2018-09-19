@@ -36,17 +36,17 @@ function create_host(state = initialState, action) {
 
 	return {
 		...state,
-		update_needed: false,
-		total_db_hosts: total_db_hosts,
-		data: data
+		'update_needed': false,
+		'total_db_hosts': total_db_hosts,
+		'data': data
 	};
 }
 
 function delete_host(state = initialState, action) {
-	var new_state = JSON.parse(JSON.stringify(state));
-	new_state.update_needed = true;
-
-	return new_state;
+	return {
+		...state,
+		'update_needed': true
+	};
 }
 
 function renew_hosts(state = initialState, action) {
@@ -98,10 +98,10 @@ function host_data_updated(state = initialState, action) {
 	}
 
 	if (found) {
-		var new_state = JSON.parse(JSON.stringify(state));
-		new_state.update_needed = true;
-
-		return new_state;
+		return {
+			...state,
+			'update_needed': true
+		};
 	}
 	else {
 		return state;
@@ -128,11 +128,10 @@ function updated_ips(state = initialState, action) {
 	}
 
 	if (found) {
-		var new_state = JSON.parse(JSON.stringify(state));
-
-		new_state.update_needed = true;
-
-		return new_state;
+		return {
+			...state,
+			'update_needed': true
+		};
 	}
 	else {
 		return state;
@@ -200,7 +199,7 @@ function set_loaded(state = initialState, action) {
 
 	return {
 		...state,
-		loaded: message.value
+		'loaded': message.value
 	}
 }
 
