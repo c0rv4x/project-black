@@ -24,6 +24,10 @@ class HostsListScopesUpdater extends React.Component {
 		this.requestUpdateHost = this.requestUpdateHost.bind(this);
 	}
 
+	shouldComponentUpdate(nextProps) {
+		return !_.isEqual(nextProps, this.props);
+	}
+
 	triggerSetLoaded(value) {
 		this.context.store.dispatch(setLoaded({
 			'status': 'success',
@@ -40,8 +44,8 @@ class HostsListScopesUpdater extends React.Component {
 		this.hostsEmitter.requestUpdateHost(comment, _id, this.props.project_uuid, "host");
 	}
 
-	componentDidUpdate(nextProps) {
-		var { hosts, filters } = nextProps;
+	componentDidUpdate(prevProps) {
+		var { hosts, filters } = this.props;
 
 		if (hosts.update_needed === true) {
 			this.triggerSetLoaded(false);
@@ -51,10 +55,6 @@ class HostsListScopesUpdater extends React.Component {
 			this.triggerSetLoaded(false);
 			this.renewHosts(0, hosts.page_size, filters);
 		}
-
-		// if (!this.props.hosts.loaded) {
-		// 	setTimeout(() => this.triggerSetLoaded(true), 300);
-		// }
 	}
 
 	render() {
