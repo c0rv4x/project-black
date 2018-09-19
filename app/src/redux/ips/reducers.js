@@ -177,8 +177,7 @@ function set_loaded(state = initialState, action) {
 
 	return {
 		...state,
-		loaded: message.value,
-		update_needed: false
+		loaded: message.value
 	}
 }
 
