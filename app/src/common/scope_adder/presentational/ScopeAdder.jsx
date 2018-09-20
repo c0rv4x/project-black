@@ -1,7 +1,7 @@
 import React from 'react'
 import { createScope } from '../../../redux/scopes/actions'
 
-import { Form, Button } from 'semantic-ui-react'
+import { Form, Button, TextArea, Header } from 'semantic-ui-react'
 
 
 class ScopeAdder extends React.Component {
@@ -81,11 +81,15 @@ class ScopeAdder extends React.Component {
 		return (
 			<Form>
 				<Form.Field>
-					<label>Add new scope</label>
-					<input type="text" 
-						   placeholder="Enter hostname or IP address." 
-						   value={this.props.newScopeInput}
-						   onChange={this.props.handleNewScopeChange} />
+					<Header as="h3">Add new scope</Header>
+					<TextArea 
+						autoHeight
+						rows={1}
+						type="text"
+						placeholder="Newline-separated hosts, ips, networks (CIDR notation)"
+						value={this.props.newScopeInput}
+						onChange={this.props.handleNewScopeChange}
+					/>
 				</Form.Field>
 
 				<Button
