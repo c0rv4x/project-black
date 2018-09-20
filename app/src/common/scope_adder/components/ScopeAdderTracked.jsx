@@ -1,8 +1,8 @@
 import React from 'react'
 
-import ScopesSocketioEventsEmitter from '../../redux/scopes/ScopesSocketioEventsEmitter.js'
+import ScopesSocketioEventsEmitter from '../../../redux/scopes/ScopesSocketioEventsEmitter.js'
 
-import ScopeAdder from '../presentational/scope/ScopeAdder.jsx'
+import ScopeAdder from '../presentational/ScopeAdder.jsx'
 
 class ScopeAdderTracked extends React.Component {
 

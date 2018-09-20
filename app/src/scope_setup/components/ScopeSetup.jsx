@@ -1,6 +1,6 @@
 import React from 'react'
 
-import ScopeAdderTracked from '../../ips_list/components/ScopeAdderTracked.jsx'
+import ScopeAdderTracked from '../../common/scope_adder/components/ScopeAdderTracked.jsx'
 import HeadButtonsTracked from './HeadButtonsTracked.jsx'
 
 import ProjectComment from '../../common/project_comment/ProjectComment.jsx'
