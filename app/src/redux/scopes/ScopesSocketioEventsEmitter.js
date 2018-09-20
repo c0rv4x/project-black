@@ -39,7 +39,7 @@ class ScopesSocketioEventsEmitter {
 	requestCreateScope(scopes, project_uuid) {
 		this.connector.emit('scopes:create', {
 			'project_uuid': project_uuid,
-			'scopes': _.map(scopes.split(','), (x) => {
+			'scopes': _.map(scopes.split('\n'), (x) => {
 				const scope = x.trim();
 
 				return {

@@ -21,8 +21,8 @@ class ScopeAdderTracked extends React.Component {
 		this.submitNewScope = this.submitNewScope.bind(this);
 	}
 
-	handleNewScopeChange(e) {
-		this.setState({ newScopeInput: e.target.value });
+	handleNewScopeChange(text) {
+		this.setState({ newScopeInput: text });
 	}
 
 	submitNewScope(scopes) {
@@ -34,7 +34,9 @@ class ScopeAdderTracked extends React.Component {
 			<div>
 				<ScopeAdder
 					newScopeInput={this.state.newScopeInput}
-					handleNewScopeChange={this.handleNewScopeChange}
+					handleNewScopeChange={(e) => {
+						this.handleNewScopeChange(e.target.value)
+					}}
 					onNewScopeClick={
 						(scopes) => {
 							this.submitNewScope(scopes);
@@ -46,7 +48,9 @@ class ScopeAdderTracked extends React.Component {
 					scopesCreated={this.props.scopesCreated}
 					project_uuid={this.props.project.project_uuid}
 				/>
-				<ScopeUpload>
+				<ScopeUpload
+					fileLoadedHandler={this.handleNewScopeChange}
+				>
 					Upload scope
 				</ScopeUpload>
 			</div>

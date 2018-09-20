@@ -16,9 +16,11 @@ export class FileButton extends Component {
         return (
             <div>
                 <Button
-                    {...this.props}
                     as="label"
-                    htmlFor={this.id} />
+                    htmlFor={this.id}
+                >
+                    {this.props.children}
+                </Button>
                 <input
                     hidden
                     id={this.id}
@@ -32,6 +34,13 @@ export class FileButton extends Component {
     onChangeFile() {
         const fileButton = document.getElementById(this.id);
         const file = fileButton ? fileButton.files[0] : null;
+
+        let reader = new FileReader();
+        reader.onloadend = () => {
+            this.props.fileLoadedHandler(reader.result);
+        }
+        reader.readAsText(file);
+
         if (this.props.onSelect) {
             this.props.onSelect(file);
         }

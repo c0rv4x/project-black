@@ -82,8 +82,11 @@ class ScopeAdder extends React.Component {
 			<Form>
 				<Form.Field>
 					<Header as="h3">Add new scope</Header>
-					<TextArea
-						placeholder="Enter hostname or IP address." 
+					<TextArea 
+						autoHeight
+						rows={1}
+						type="text"
+						placeholder="Newline-separated hosts, ips, networks (CIDR notation)"
 						value={this.props.newScopeInput}
 						onChange={this.props.handleNewScopeChange}
 					/>
