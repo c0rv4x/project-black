@@ -4,6 +4,8 @@ import React from 'react'
 import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'
 import TablesAccumulator from './TablesAccumulator.jsx'
+import { setLoaded as setLoadedIPs } from '../../redux/ips/actions.js'
+import { setLoaded as setLoadedHosts } from '../../redux/hosts/actions.js'
 
 import { Loader, Dimmer } from 'semantic-ui-react'
 
@@ -12,10 +14,6 @@ class MainAccumulatorUpdater extends React.Component {
 
 	constructor(props) {
 		super(props);
-
-		this.state = {
-			loading: false
-		};
 
 		this.ipsEmitter = new IPsSocketioEventsEmitter();
 		this.hostsEmitter = new HostsSocketioEventsEmitter();
@@ -30,28 +28,37 @@ class MainAccumulatorUpdater extends React.Component {
 		this.pageNumberHost = 0;
 		this.pageType = 'ip';
 
-		this.setLoading.bind(this);
+		this.triggerSetLoadedIPs.bind(this);
+		this.triggerSetLoadedHosts.bind(this);
 	}
 
-	setLoading(value) {
-		this.setState({
-			loading: value
-		});
+	triggerSetLoadedIPs(value) {
+		this.context.store.dispatch(setLoadedIPs({
+			'status': 'success',
+			'value': value,
+			'project_uuid': String(this.props.project.project_uuid)
+		}, String(this.props.project.project_uuid)));
 	}
 
-	componentWillReceiveProps(nextProps) {
-		var { hosts, filters } = nextProps;
+	triggerSetLoadedHosts(value) {
+		this.context.store.dispatch(setLoadedHosts({
+			'status': 'success',
+			'value': value,
+			'project_uuid': String(this.props.project.project_uuid)
+		}, String(this.props.project.project_uuid)));
+	}
+
+	componentDidUpdate() {
+		var { hosts, filters } = this.props;
 
 		if ((hosts.update_needed === true) || (!_.isEqual(filters, this.props.filters))) {
-			this.setLoading(true);
+			this.triggerSetLoadedIPs(false);
+			this.triggerSetLoadedHosts(false);
+
 			setTimeout(() => {
 				this.renewHosts(this.pageNumberHost, filters, this.pageSize);
 				this.renewIps(this.pageNumberIp, filters, this.pageSize);
 			}, 100);
-		}
-
-		if (this.state.loading) {
-			this.setLoading(false);
 		}
 	}
 
@@ -124,8 +131,6 @@ class MainAccumulatorUpdater extends React.Component {
 	}
 
 	changePage(pageNumberUnmodified) {
-		this.setLoading(true);
-		window.scrollTo(0, 0);
 		var pageNumber = pageNumberUnmodified - 1;
 
 		const ipPages = Math.ceil(this.props.ips.selected_ips / this.pageSize);
@@ -133,12 +138,15 @@ class MainAccumulatorUpdater extends React.Component {
 
 		if (ipPages > pageNumber) {
 			this.pageType = 'ip';
+			this.triggerSetLoadedIPs(false);
 
 			this.pageNumberIp = pageNumber;
 			this.renewIps();
 		}
 		else if (ipPages == pageNumber) {
 			this.pageType = 'ip/host';
+			this.triggerSetLoadedIPs(false);
+			this.triggerSetLoadedHosts(false);
 
 			this.pageNumberIp = pageNumber;
 			this.pageNumberHost = 0;
@@ -147,10 +155,13 @@ class MainAccumulatorUpdater extends React.Component {
 		}
 		else {
 			this.pageType = 'host';
+			this.triggerSetLoadedHosts(false);
 
 			this.pageNumberHost = pageNumber - ipPages;
 			this.renewHosts();
 		}
+
+		window.scrollTo(0, 0);
 	}
 
 
@@ -164,9 +175,15 @@ class MainAccumulatorUpdater extends React.Component {
 			hosts: hosts.selected_hosts
 		}
 
+		let loaded = true;
+		
+		if      (this.pageType == 'ip')      loaded = ips.loaded
+		else if (this.pageType == 'ip/host') loaded = ips.loaded && hosts.loaded
+		else if (this.pageType == 'host')    loaded = hosts.loaded;
+
 		return (
 			<div>
-			    <Dimmer active={this.state.loading}>
+			    <Dimmer active={!loaded}>
 					<Loader />
 			    </Dimmer>
 				<TablesAccumulator
@@ -181,7 +198,10 @@ class MainAccumulatorUpdater extends React.Component {
 			</div>
 		);
 	}
+}
 
+MainAccumulatorUpdater.contextTypes = {
+    store: React.PropTypes.object
 }
 
 export default MainAccumulatorUpdater;
