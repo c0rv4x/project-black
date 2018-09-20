@@ -6,7 +6,7 @@ export const UPDATED_IPS = 'UPDATED_IPS'
 export const RESOLVE_HOSTS = 'RESOLVE_HOSTS'
 export const HOST_DATA_UPDATED = 'HOST_DATA_UPDATED'
 export const GET_TASKS_BY_HOSTS = 'GET_TASKS_BY_HOSTS'
-export const SET_LOADED = 'SET_LOADED_HOSTS'
+export const SET_LOADED_HOSTS = 'SET_LOADED_HOSTS'
 
 
 export function createHost(message, current_project_uuid) {
@@ -75,7 +75,7 @@ export function getTasksByHosts(message, current_project_uuid) {
 
 export function setLoaded(message, current_project_uuid) {
 	return {
-		type: SET_LOADED,
+		type: SET_LOADED_HOSTS,
 		current_project_uuid: current_project_uuid,
 		message
 	}
