@@ -9,7 +9,7 @@ import {
 	RESOLVE_HOSTS,
 	HOST_DATA_UPDATED,
 	GET_TASKS_BY_HOSTS,
-	SET_LOADED
+	SET_LOADED_HOSTS
 } from './actions.js'
 
 
@@ -228,7 +228,7 @@ function host_reduce(state = initialState, action) {
 					return host_data_updated(state, action);
 				case GET_TASKS_BY_HOSTS:
 					return get_tasks_by_hosts(state, action);
-				case SET_LOADED:
+				case SET_LOADED_HOSTS:
 					return set_loaded(state, action);
 				default:
 					return state;
