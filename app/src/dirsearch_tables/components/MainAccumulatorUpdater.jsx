@@ -48,10 +48,10 @@ class MainAccumulatorUpdater extends React.Component {
 		}, String(this.props.project.project_uuid)));
 	}
 
-	componentDidUpdate() {
+	componentDidUpdate(prevProps) {
 		var { hosts, filters } = this.props;
 
-		if ((hosts.update_needed === true) || (!_.isEqual(filters, this.props.filters))) {
+		if ((hosts.update_needed === true) || (!_.isEqual(filters, prevProps.filters))) {
 			this.triggerSetLoadedIPs(false);
 			this.triggerSetLoadedHosts(false);
 
