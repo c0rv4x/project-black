@@ -78,8 +78,6 @@ def register_project_handlers(socketio, project_manager):
         delete_result = project_manager.delete_project(
             project_uuid=project_uuid)
 
-        project_name = delete_result['project_name']
-
         if delete_result["status"] == "success":
             # Send the success result
             await socketio.emit(
