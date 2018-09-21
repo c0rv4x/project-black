@@ -27,10 +27,9 @@ class ProjectManager(object):
         minimal information for the web. """
         return ProjectDatabase.create(project_name)
 
-    def delete_project(self, project_name=None, project_uuid=None):
+    def delete_project(self, project_uuid=None):
         """ Deletes a new project """
         return ProjectDatabase.delete(
-            project_name=project_name,
             project_uuid=project_uuid
         )
 

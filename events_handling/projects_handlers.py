@@ -16,7 +16,6 @@ def register_project_handlers(socketio, project_manager):
             },
             namespace='/projects'
         )
-        print("Sending projects notification", sid)
 
         await send_notification(
             socketio,
@@ -95,7 +94,7 @@ def register_project_handlers(socketio, project_manager):
                 socketio,
                 "success",
                 "Project deleted",
-                "Deleted project {}".format(project_name)
+                "Deleted project {}".format(delete_result['project_name'])
             )
         else:
             # Error occured
@@ -111,7 +110,7 @@ def register_project_handlers(socketio, project_manager):
                 socketio,
                 "error",
                 "Error on project delete",
-                "Error while deleting project {}".format(project_name)
+                "Error while deleting project {}".format(project_uuid)
             )
 
     @socketio.on('projects:update', namespace='/projects')

@@ -83,22 +83,26 @@ class ProjectDatabase(Base):
             return {"status": "error", "text": str(exc)}
 
     @classmethod
-    def delete(cls, project_name=None, project_uuid=None):
+    def delete(cls, project_uuid=None):
         find_result = cls.find(
-            project_name=project_name,
             project_uuid=project_uuid
         )
 
         if find_result["status"] == "success":
             if find_result["projects"]:
                 project = find_result["projects"][0]
+                project_uuid = project.project_uuid
                 project_name = project.project_name
                 
                 try:
                     with cls.session_spawner.get_session() as session:
                         session.delete(project)
 
-                    return {"status": "success", "project_name": project_name}
+                    return {
+                        "status": "success",
+                        "project_uuid": project_uuid,
+                        "project_name": project_name
+                    }
                 except Exception as exc:
                     return {"status": "error", "text": str(exc)}
             
