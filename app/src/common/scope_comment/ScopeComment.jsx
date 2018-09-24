@@ -19,20 +19,11 @@ class ScopeComment extends React.Component {
 		return ((!_.isEqual(nextProps, this.props)) || (!_.isEqual(nextState, this.state)));
 	}
 
-	componentWillReceiveProps(nextProps) {
-		if ((nextProps.comment !== this.props.comment) && (nextProps.comment !== this.state.beforeModification)) {
-			if (!this.state.focused) {
-				this.setState({
-					scopeComment: nextProps.comment,
-					commentShown: nextProps.comment !== "" && nextProps.comment !== null,
-					beforeModification: nextProps.comment
-				});
-			}
-			else {
-				this.setState({
-					receivedText: nextProps.comment
-				})
-			}
+	componentDidUpdate(prevProps, prevState) {
+		if (this.props.comment !== prevProps.comment) {
+			this.setState({
+				scopeComment: this.props.comment
+			});
 		}
 	}
 
@@ -42,8 +33,10 @@ class ScopeComment extends React.Component {
 
 	render() {
 		return (
-			<ScopeCommentPresentational scopeComment={this.state.scopeComment}
-										commentSubmitted={this.commentSubmitted} />
+			<ScopeCommentPresentational
+				scopeComment={this.state.scopeComment}
+				commentSubmitted={this.commentSubmitted}
+			/>
 		)
 	}
 }
