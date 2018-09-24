@@ -14,10 +14,13 @@ class ScopeCommentPresentational extends React.Component {
 	render() {
 		return (
 			<Form>
-		        <EditableElement value={this.props.scopeComment}
-		        				 onBlur={this.props.commentSubmitted}
-		        				 inputElement={TextArea}
-		        				 element={Segment} />
+		        <EditableElement
+					onChange={this.props.onChange}
+					value={this.props.scopeComment}
+					onBlur={this.props.commentSubmitted}
+					inputElement={TextArea}
+					element={Segment}
+				/>
 	        </Form>
 		)
 	}
