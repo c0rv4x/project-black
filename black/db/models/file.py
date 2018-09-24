@@ -1,11 +1,14 @@
 import datetime
 from .base import Base
-from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
+from sqlalchemy import Column, String, DateTime, ForeignKey, Integer, UniqueConstraint
 
 
 class FileDatabase(Base):
     """ Keeps data on the found file """
     __tablename__ = "files"
+    __table_args__ = (
+        UniqueConstraint('file_path', 'status_code', 'content_length'),
+    )
 
     # Primary key
     file_id = Column(String, primary_key=True)
