@@ -15,6 +15,7 @@ class ScopeCommentPresentational extends React.Component {
 		return (
 			<Form>
 		        <EditableElement
+					onChange={this.props.onChange}
 					value={this.props.scopeComment}
 					onBlur={this.props.commentSubmitted}
 					inputElement={TextArea}
