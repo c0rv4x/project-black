@@ -122,6 +122,8 @@ class ScopeManager(object):
                 .count()
             )
 
+
+            print('-'*20)
             # Now select hosts, joining them with
             # all other subqueries from the prev step
             hosts_from_db = (
@@ -150,6 +152,7 @@ class ScopeManager(object):
                 # .order_by(HostDatabase.target)
                 .all()
             )
+            print('-'*20)
 
 
         # Reformat each hosts to JSON-like objects
