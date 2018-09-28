@@ -3,7 +3,6 @@ import time
 import aiodns
 import asyncio
 import datetime
-from operator import attrgetter
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased, joinedload, contains_eager
 
@@ -160,7 +159,7 @@ class ScopeManager(object):
                 include_files=True,
                 include_ports=True
             ), hosts_from_db)
-        , key=attrgetter('hostname'))
+        , key=lambda x: x['hostname'])
 
         total_db_hosts = self.count_hosts(project_uuid)
     
