@@ -16,8 +16,9 @@ class FileDatabase(Base):
     # Name of the file
     file_name = Column(String)
 
-    # Target (this is either IP or hostname)
-    target = Column(String, index=True)
+    host_id = Column(Integer, ForeignKey('hosts.id'), index=True)
+
+    ip_id = Column(Integer, ForeignKey('ips.id'), index=True)
 
     # Port
     port_number = Column(Integer)
@@ -61,7 +62,7 @@ class FileDatabase(Base):
 
     def __repr__(self):
         return """
-            <FileDatabase(file_id='%s', target='%s', project_uuid='%s', file_name='%s')>""" % (
-            self.file_id, self.target, self.project_uuid,
+            <FileDatabase(file_id='%s', project_uuid='%s', file_name='%s')>""" % (
+            self.file_id, self.project_uuid,
             self.file_name
         )

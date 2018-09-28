@@ -1,13 +1,39 @@
 import uuid
 import urllib
-from black.db import Sessions, FileDatabase
+from black.db import Sessions, FileDatabase, IPDatabase, HostDatabase
 
 class Saver(object):
     def __init__(self, task_id, project_uuid):
         self.task_id = task_id
         self.project_uuid = project_uuid
+        self.target_db_reference = None
 
-        self.sessions = Sessions()
+        self.session_spawner = Sessions()
+
+    def get_id(self, target):
+        if self.target_db_reference is None:
+            with self.session_spawner.get_session() as session:
+                host_id = (
+                    session.query(
+                        HostDatabase.id
+                    ).filter(
+                        HostDatabase.target == target
+                    ).one_or_none()
+                )
+
+                if host_id is not None:
+                    ip_id = None
+                else:
+                    ip_id = (
+                        session.query(
+                            IPDatabase.id
+                        ).filter(
+                            IPDatabase.target == target
+                        ).one_or_none()
+                    )      
+            self.target_db_reference = (ip_id, host_id)
+
+        return self.target_db_reference
 
     def save(self, url, status, response):
         special_note = None
@@ -29,23 +55,23 @@ class Saver(object):
 
             file_name = parsed_url.path
 
-            session = self.sessions.get_new_session()
-            new_file = FileDatabase(
-                file_id=str(uuid.uuid4()),
-                file_name=file_name,
-                target=target,
-                port_number=port_number,
-                file_path=url,
-                status_code=status_code,
-                content_length=content_length,
-                special_note=special_note,
-                task_id=task_id,
-                project_uuid=project_uuid
-            )
+            ip_id, host_id = self.get_id(target)
 
-            session.add(new_file)
-            session.commit()
+            with self.session_spawner.get_session() as session:
+                new_file = FileDatabase(
+                    file_id=str(uuid.uuid4()),
+                    file_name=file_name,
+                    host_id=host_id,
+                    ip_id=ip_id,
+                    port_number=port_number,
+                    file_path=url,
+                    status_code=status_code,
+                    content_length=content_length,
+                    special_note=special_note,
+                    task_id=task_id,
+                    project_uuid=project_uuid
+                )
 
-            self.sessions.destroy_session(session)
+                session.add(new_file)
         except Exception as e:
             print(e)
