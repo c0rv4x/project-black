@@ -3,6 +3,7 @@ import time
 import aiodns
 import asyncio
 import datetime
+from operator import attrgetter
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased, joinedload, contains_eager
 
@@ -147,17 +148,19 @@ class ScopeManager(object):
                     contains_eager(HostDatabase.ip_addresses, alias=ips_query_subq)
                     .contains_eager(IPDatabase.ports, alias=scans_from_db),
                     contains_eager(HostDatabase.files, alias=files_query_aliased))
-                .order_by(HostDatabase.target)
+                # .order_by(HostDatabase.target)
                 .all()
             )
 
 
         # Reformat each hosts to JSON-like objects
-        hosts = list(map(lambda each_host: each_host.dict(
-            include_ips=True,
-            include_files=True,
-            include_ports=True
-        ), hosts_from_db))
+        hosts = sorted(
+                map(lambda each_host: each_host.dict(
+                include_ips=True,
+                include_files=True,
+                include_ports=True
+            ), hosts_from_db)
+        , key=attrgetter('hostname'))
 
         total_db_hosts = self.count_hosts(project_uuid)
     
