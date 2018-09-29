@@ -115,11 +115,17 @@ class Filters(object):
         return scans_clause
 
     @staticmethod
-    def build_files_filters(filters, alias):
+    def build_files_filters(filters, alias, project_uuid=None):
         files_filters = True        
 
         # If there are no filters, return
         if filters.get('files', None):
             files_filters = get_filter_clause(alias.status_code, filters.get('files', []))
+
+        if project_uuid:
+            files_filters = and_(
+                files_filters,
+                get_filter_clause(alias.project_uuid, [str(project_uuid)])
+            )
 
         return files_filters
