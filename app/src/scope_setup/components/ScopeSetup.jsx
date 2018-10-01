@@ -25,7 +25,6 @@ class ScopeSetup extends React.Component {
 
 	render() {
 		let { project, ips, hosts, scans, files, scopes } = this.props;
-		let scopes_created = null; // TODO!
 
 		return (
 			<div>

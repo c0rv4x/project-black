@@ -5,15 +5,22 @@ import {
 } from './actions.js'
 
 
-function renew_stats(state = {}, action) {
+const defaultState = {
+	"amount": 0,
+	"loaded": false
+}
+
+
+function renew_stats(state = defaultState, action) {
 	const message = action.message;
 
 	return {
-		"amount": message['amount']
-	};
+		"amount": message['amount'],
+		"loaded": true
+};
 }
 
-function file_reduce(state = {}, action) {
+function file_reduce(state = defaultState, action) {
 	if (!action.hasOwnProperty('message')) {
 		return state
 	}

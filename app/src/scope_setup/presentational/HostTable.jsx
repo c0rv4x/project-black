@@ -5,14 +5,12 @@ import { Statistic } from 'semantic-ui-react'
 
 
 class HostTable extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
+		const { hosts } = this.props;
+
 		return (
 			<Statistic>
-				<Statistic.Value>{this.props.hosts.total_db_hosts}</Statistic.Value>
+				<Statistic.Value>{hosts.loaded && hosts.total_db_hosts}{!hosts.loaded && "Loading"}</Statistic.Value>
 				<Statistic.Label>hosts</Statistic.Label>
 			</Statistic>			
 		)

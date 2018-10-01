@@ -5,14 +5,12 @@ import { Statistic } from 'semantic-ui-react'
 
 
 class ScanTable extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
+		const { scans } = this.props;
+
 		return (
 			<Statistic>
-				<Statistic.Value>{this.props.scans.amount}</Statistic.Value>
+				<Statistic.Value>{scans.loaded && scans.amount}{!scans.loaded && "Loading"}</Statistic.Value>
 				<Statistic.Label>ports</Statistic.Label>
 			</Statistic>
 		)

@@ -5,14 +5,12 @@ import { Statistic } from 'semantic-ui-react'
 
 
 class FileTable extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
+		const { files } = this.props;
+
 		return (
 			<Statistic>
-				<Statistic.Value>{this.props.files.amount}</Statistic.Value>
+				<Statistic.Value>{files.loaded && files.amount}{!files.loaded && "Loading"}</Statistic.Value>
 				<Statistic.Label>files</Statistic.Label>
 			</Statistic>
 		)
