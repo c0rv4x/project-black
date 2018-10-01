@@ -9,6 +9,8 @@ import ScopeSetupWrapper from '../scope_setup/components/ScopeSetupWrapper.js'
 import ProjectDetailsWrapper from '../ips_list/components/ProjectDetailsWrapper.js'
 import HostsListWrapper from '../hosts_list/components/HostsListWrapper.js'
 
+import Perf from 'react-addons-perf'
+
 
 class NavigationTabs extends React.Component {
 	constructor(props) {
@@ -19,7 +21,19 @@ class NavigationTabs extends React.Component {
 		}
 
 		this.project_uuid = this.props.match.params.project_uuid;
+
 	}
+
+	componentDidMount() {
+		setTimeout(() => {
+		  Perf.start();
+		  setTimeout(() => {
+			Perf.stop();
+			const measurements = Perf.getLastMeasurements();
+			Perf.printInclusive(measurements);
+		  }, 30000);
+		}, 5000);
+	  }
 
 	shouldComponentUpdate(nextProps, nextState) {
 		return ((!_.isEqual(nextProps, this.props)) || (!_.isEqual(nextState, this.state)));
