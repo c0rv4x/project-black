@@ -305,25 +305,28 @@ class ScopeManager(object):
                             IPDatabase.ports, alias=scans_from_db
                         )
                     )
-                    .order_by(IPDatabase.target)
+                    # .order_by(IPDatabase.target)
                     .all()
                 )
 
             selected_ips = ips_query.from_self(IPDatabase.id).distinct().count()
 
         if ips_only:
-            ips = list(map(lambda each_ip: each_ip[0], ips_from_db))
+            ips = sorted(list(map(lambda each_ip: each_ip[0], ips_from_db)), key=lambda x: x['ip_address'])
+            # ips = list(map(lambda each_ip: each_ip[0], ips_from_db))
         else:
             # Reformat the ips to make the JSON-like objects
-            ips = list(
-                map(
-                    lambda each_ip: each_ip.dict(
-                        include_ports=True,
-                        include_hostnames=True,
-                        include_files=True
-                    ),
-                    ips_from_db
-                )
+            ips = sorted(
+                list(
+                    map(
+                        lambda each_ip: each_ip.dict(
+                            include_ports=True,
+                            include_hostnames=True,
+                            include_files=True
+                        ),
+                        ips_from_db
+                    )
+                ), key=lambda x: x['ip_address']
             )
     
         total_db_ips = self.count_ips(project_uuid)
