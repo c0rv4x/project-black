@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 
 import {
@@ -22,6 +23,10 @@ class IPEntryLine extends React.Component {
 
 	constructor(props) {
 		super(props);
+	}
+
+	shouldComponentUpdate(nextProps) {
+		return (!_.isEqual(nextProps['ip'], this.props['ip']));
 	}
 
 	render() {
