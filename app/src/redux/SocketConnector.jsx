@@ -41,7 +41,6 @@ class Connector {
     }
 
     close() {
-        console.log("closing connetor:", this.name)
         connections[this.name].socketio.close();
         delete connections[this.name];
     }
