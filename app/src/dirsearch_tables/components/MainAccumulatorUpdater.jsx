@@ -168,18 +168,32 @@ class MainAccumulatorUpdater extends React.Component {
 	render() {
 		const { ips, hosts, applyFilters, project } = this.props;
 
-		let scopes = this.getVisibleScopes();
-
-		scopes.selected = {
-			ips: ips.selected_ips,
-			hosts: hosts.selected_hosts
-		}
-
 		let loaded = true;
 		
 		if      (this.pageType == 'ip')      loaded = ips.loaded
 		else if (this.pageType == 'ip/host') loaded = ips.loaded && hosts.loaded
 		else if (this.pageType == 'host')    loaded = hosts.loaded;
+
+		let scopes = {};
+		if (loaded) {
+			scopes = this.getVisibleScopes();
+
+			scopes.selected = {
+				ips: ips.selected_ips,
+				hosts: hosts.selected_hosts
+			}
+		}
+
+		else {
+			scopes = {
+				ips: [],
+				hosts: [],
+				selected: {
+					ips: [],
+					hosts: []
+				}	
+			};
+		}
 
 		return (
 			<div>
