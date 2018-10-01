@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import HostVerbose from './HostVerbose.jsx';
+import HostVerboseUpdater from './HostVerboseUpdater.jsx';
 
 
 function mapStateToProps(state, ownProps){
@@ -32,6 +32,7 @@ function mapStateToProps(state, ownProps){
 
     if (filtered_hosts.length) {
         host = filtered_hosts[0];
+        host.loaded = state.hosts.loaded;
     } else {
         host = {
             "hostname": null,
@@ -81,6 +82,6 @@ function mapStateToProps(state, ownProps){
 
 const HostVerboseWrapper = connect(
     mapStateToProps
-)(HostVerbose)
+)(HostVerboseUpdater)
 
 export default HostVerboseWrapper

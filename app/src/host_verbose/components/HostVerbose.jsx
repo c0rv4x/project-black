@@ -5,7 +5,10 @@ import PortsTabs from '../presentational/PortsTabs.jsx'
 import TasksButtonsTracked from './TasksButtonsTracked.jsx'
 import Tasks from '../../common/tasks/Tasks.jsx'
 
-import { Header, Divider } from 'semantic-ui-react'
+import {
+	Divider,
+	Header
+} from 'semantic-ui-react'
 
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter'
 
