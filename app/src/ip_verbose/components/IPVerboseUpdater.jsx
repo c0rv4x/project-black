@@ -9,12 +9,7 @@ import {
 
 
 class IPVerboseUpdater extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
-        console.log(this.props.ip);
         const { loaded } = this.props.ip;
 
 		return (
