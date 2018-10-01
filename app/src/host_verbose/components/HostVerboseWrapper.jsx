@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import MainAccumulator from './MainAccumulator.jsx';
+import HostVerbose from './HostVerbose.jsx';
 
 
 function mapStateToProps(state, ownProps){
@@ -79,8 +79,8 @@ function mapStateToProps(state, ownProps){
 }
 
 
-const MainAccumulatorWrapper = connect(
+const HostVerboseWrapper = connect(
     mapStateToProps
-)(MainAccumulator)
+)(HostVerbose)
 
-export default MainAccumulatorWrapper
+export default HostVerboseWrapper

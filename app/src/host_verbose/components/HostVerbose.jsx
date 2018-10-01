@@ -10,7 +10,7 @@ import { Header, Divider } from 'semantic-ui-react'
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter'
 
 
-class MainAccumulator extends React.Component {
+class HostVerbose extends React.Component {
 	constructor(props) {
 		super(props);
 
@@ -80,4 +80,4 @@ class MainAccumulator extends React.Component {
 	}
 }
 
-export default MainAccumulator;
+export default HostVerbose;
