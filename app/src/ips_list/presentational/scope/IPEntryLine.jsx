@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 
 import {
@@ -80,6 +81,10 @@ class IPEntryLine extends React.Component {
 			data: data.reverse(),
 			direction: direction === 'ascending' ? 'descending' : 'ascending',
 		})
+	}
+
+	shouldComponentUpdate(nextProps) {
+		return (!_.isEqual(nextProps['ip'], this.props['ip']));
 	}
 
 	render() {
