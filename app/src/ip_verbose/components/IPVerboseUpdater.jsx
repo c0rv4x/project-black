@@ -22,7 +22,11 @@ class IPVerboseUpdater extends React.Component {
                 <Dimmer active={!loaded}>
 					<Loader />
 			    </Dimmer>
-                <IPVerbose {...this.props} />
+
+				<IPVerbose
+					loaded={loaded}
+					{...this.props}
+				/>
 			</div>
 		)
 	}

@@ -5,6 +5,8 @@ import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import PortsTabs from '../../host_verbose/presentational/PortsTabs.jsx'
 
 
+import { Divider } from "semantic-ui-react"
+
 class IPVerbose extends React.Component {
 	constructor(props) {
 		super(props);
@@ -55,15 +57,21 @@ class IPVerbose extends React.Component {
 
 		return (
 			<div>
+				<Divider hidden />
 				<h2>{ip.ip_address}</h2>
+				<Divider hidden />
+
 				<ScopeComment
 					comment={ip.comment}
 					onCommentSubmit={(value) => this.commentSubmitted(value, ip.ip_id)} />
 
-				<PortsTabs ports={ports}
-					   	   activeTabNumber={this.state.activeTabNumber}
-					   	   tabChange={this.tabChange}
-					   	   files={ip.files} />
+				<PortsTabs
+					loaded={this.props.loaded}
+					ports={ports}
+					activeTabNumber={this.state.activeTabNumber}
+					tabChange={this.tabChange}
+					files={ip.files}
+				/>
 			</div>
 		)
 	}

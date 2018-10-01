@@ -1,6 +1,10 @@
 import _ from 'lodash'
 import React from 'react'
-import { Tab, Table } from 'semantic-ui-react'
+import {
+	Header,
+	Tab,
+	Table
+} from 'semantic-ui-react'
 
 
 class PortsTabs extends React.Component {
@@ -9,12 +13,12 @@ class PortsTabs extends React.Component {
 	}
 
 	render() {
-		var i = 0;
+		let { ports, loaded } = this.props;
 
-		var panes = [];
+		let panes = [];
 
-		for (var port of this.props.ports) {
-			var filtered_files = _.filter(this.props.files, (y) => {
+		for (let port of ports) {
+			let filtered_files = _.filter(this.props.files, (y) => {
 				return port.port_number == y.port_number;
 			});
 
@@ -25,7 +29,8 @@ class PortsTabs extends React.Component {
 			});
 
 			const files = _.map(filtered_files, (port) => {
-				var result = Math.floor(port.status_code / 100)
+				let result = Math.floor(port.status_code / 100);
+			
 				if (result == 2) {
 					return <Table.Row key={port.file_id}>
 								<Table.Cell style={{'color': '#22CF22'}}>{port.status_code}</Table.Cell>
@@ -58,9 +63,16 @@ class PortsTabs extends React.Component {
 			});		
 		}
 
-		return (
-			<Tab onTabChange={(event, data) => { this.props.tabChange(data.activeIndex)} } panes={panes} />
-		)
+		if (loaded && (panes.length == 0)) {
+			return (
+				<Header as="h3">This host has no ports yet</Header>
+			)
+		}
+		else {
+			return (
+				<Tab onTabChange={(event, data) => { this.props.tabChange(data.activeIndex)} } panes={panes} />
+			)
+		}
 	}
 }
 
