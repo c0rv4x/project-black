@@ -58,11 +58,16 @@ class PortsTabs extends React.Component {
 				menuItem: String(port.port_number),
 				render: () => (
 					<Tab.Pane>
-						<Table>
-							<Table.Body>
-								{files}
-							</Table.Body>
-						</Table>
+						{files.length != 0 &&
+							<Table>
+								<Table.Body>
+									{files}
+								</Table.Body>
+							</Table>
+						}
+						{files.length == 0 && 
+							<Header as="h3">No files for this port</Header>
+						}
 					</Tab.Pane>
 				)
 			});		
