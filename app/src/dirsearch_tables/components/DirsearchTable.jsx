@@ -4,12 +4,8 @@ import { Table } from 'semantic-ui-react'
 
 
 class DirsearchTable extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
-	shouldComponentUpdate(nextProps, nextState) {
-		return (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState));
+	shouldComponentUpdate(nextProps) {
+		return (!_.isEqual(nextProps, this.props));
 	}
 
 	render() {
