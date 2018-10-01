@@ -48,7 +48,10 @@ class DirsearchTable extends React.Component {
 				<Table>
 					<Table.Header>
 						<Table.Row>
-							<Table.HeaderCell colSpan='4'>{this.props.target + ':' + this.props.port_number}</Table.HeaderCell>
+							<Table.HeaderCell width={1}>{this.props.target + ':' + this.props.port_number}</Table.HeaderCell>
+							<Table.HeaderCell></Table.HeaderCell>
+							<Table.HeaderCell width={1}>Bytes</Table.HeaderCell>
+							<Table.HeaderCell>Redirect to</Table.HeaderCell>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
