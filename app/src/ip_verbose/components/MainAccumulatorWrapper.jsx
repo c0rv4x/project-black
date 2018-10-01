@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import MainAccumulator from './MainAccumulator.jsx';
+import IPVerboseUpdater from './IPVerboseUpdater.jsx';
 
 
 function mapStateToProps(state, ownProps){
@@ -34,6 +34,7 @@ function mapStateToProps(state, ownProps){
     }
 
     ip_object = ip_object || { "ip_address": null, "comment": "" };
+    ip_object.loaded = state.ips.loaded;
 
     let ports_unsorted = _.get(ip_object, 'scans', []);
     let ports = ports_unsorted.sort((x, y) => {
@@ -51,6 +52,6 @@ function mapStateToProps(state, ownProps){
 
 const MainAccumulatorWrapper = connect(
     mapStateToProps
-)(MainAccumulator)
+)(IPVerboseUpdater)
 
 export default MainAccumulatorWrapper

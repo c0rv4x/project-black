@@ -5,7 +5,7 @@ import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import PortsTabs from '../../host_verbose/presentational/PortsTabs.jsx'
 
 
-class MainAccumulator extends React.Component {
+class IPVerbose extends React.Component {
 	constructor(props) {
 		super(props);
 
@@ -51,7 +51,7 @@ class MainAccumulator extends React.Component {
 	}
 
 	render() {
-		let { ip, ports, files } = this.props;
+		let { ip, ports } = this.props;
 
 		return (
 			<div>
@@ -69,4 +69,4 @@ class MainAccumulator extends React.Component {
 	}
 }
 
-export default MainAccumulator;
+export default IPVerbose;
