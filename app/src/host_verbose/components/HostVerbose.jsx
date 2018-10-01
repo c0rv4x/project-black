@@ -2,7 +2,6 @@ import React from 'react'
 
 import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import PortsTabs from '../presentational/PortsTabs.jsx'
-import TasksButtonsTracked from './TasksButtonsTracked.jsx'
 
 import {
 	Divider,
@@ -58,7 +57,7 @@ class HostVerbose extends React.Component {
 	}
 
 	render() {
-		const { host, ports, project_uuid } = this.props;
+		const { host, ports } = this.props;
 
 		return (
 			<div>
@@ -66,11 +65,6 @@ class HostVerbose extends React.Component {
 				<Header as="h2">{host.hostname}</Header>
 				<Divider hidden />
 
-				<TasksButtonsTracked project_uuid={project_uuid}
-									 host={host}
-									 activePortNumber={this.state.activePortNumber} />	
-				<Divider hidden />
-				
 				<ScopeComment comment={host.comment}
 							  onCommentSubmit={(value) => this.commentSubmitted(value, host.host_id)} />
 
