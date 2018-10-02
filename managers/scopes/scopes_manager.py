@@ -557,10 +557,11 @@ class ScopeManager(object):
                 done_futures_all += done_futures
                 futures = []
 
-        (done_futures, _) = await asyncio.wait(
-            futures, return_when=asyncio.ALL_COMPLETED
-        )
-        done_futures_all += done_futures
+        if futures:
+            (done_futures, _) = await asyncio.wait(
+                futures, return_when=asyncio.ALL_COMPLETED
+            )
+            done_futures_all += done_futures
         futures = []                
 
         while done_futures_all:
