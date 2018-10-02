@@ -54,14 +54,17 @@ def authorized():
 
 @authorized()
 async def cb_complex_handler(request, project_uuid=None, host=None):
-    """ Simlpy returns index.html """
     return await response.file_stream(os.path.abspath('./public/index.html'))
-
 
 @authorized()
 async def cb_complex_handler_bundle(request):
-    """ Simlpy returns bundle.js """
     return await response.file_stream(os.path.abspath('./public/bundle.js'))
+
+@authorized()
+async def cb_serve_media_file(request, filename=""):
+    # print(request.path)
+    return await response.file_stream(os.path.join('./public', os.path.basename(request.path)))
+
 
 init_default()
 
@@ -77,6 +80,7 @@ APP.add_route(cb_complex_handler, '/project/<project_uuid>/host/<host>')
 APP.add_route(cb_complex_handler, '/project/<project_uuid>/ip/<host>')
 
 APP.add_route(cb_complex_handler_bundle, '/bundle.js')
+APP.add_route(cb_serve_media_file, '/<filename:[a-z0-9]+.(eot|woff|woff2)>')
 
 APP.static('static', './public/static')
 
