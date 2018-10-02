@@ -5,14 +5,12 @@ import { Statistic } from 'semantic-ui-react'
 
 
 class IPTable extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
+		const { ips } = this.props;
+
 		return (
 			<Statistic>
-				<Statistic.Value>{this.props.ips.total_db_ips}</Statistic.Value>
+				<Statistic.Value>{ips.loaded && ips.total_db_ips}{!ips.loaded && "Loading"}</Statistic.Value>
 				<Statistic.Label>ips</Statistic.Label>
 			</Statistic>
 		)

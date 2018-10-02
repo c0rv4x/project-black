@@ -1,6 +1,6 @@
 import React from 'react'
 
-import HostPage from '../host_verbose/components/MainAccumulatorWrapper.jsx'
+import HostPage from '../host_verbose/components/HostVerboseWrapper.jsx'
 
 import ProjectsSocketioEventsSubscriber from '../redux/projects/ProjectsSocketioEventsSubscriber'
 import HostsSocketioEventsSubsriber from '../redux/hosts/HostsSocketioEventsSubscriber'

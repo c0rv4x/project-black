@@ -1,9 +1,7 @@
-const webpack = require('webpack');
 const path = require('path');
 
 const APP_DIR = path.resolve('.');
 
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 
 const config = {
@@ -25,7 +23,10 @@ const config = {
 				include : APP_DIR,
 				loader : 'babel-loader'
 			},
-			{ test: /\.css$/, loader: 'style-loader!css-loader' },
+			{
+				test: /\.css$/,
+				loader: 'style-loader!css-loader'
+			},
 			{
 				test: [/\.eot$/, /\.ttf$/, /\.svg$/, /\.woff$/, /\.woff2$/],
 				loader: require.resolve('file-loader'),

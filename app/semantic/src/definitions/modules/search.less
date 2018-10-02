@@ -72,6 +72,8 @@
   left: 0%;
   transform-origin: center top;
   white-space: normal;
+  text-align: left;
+  text-transform: none;
 
   background: @resultsBackground;
 
@@ -269,6 +271,18 @@
 .ui.search > .results .result.active .description {
   color: @resultActiveDescriptionColor;
 }
+
+/*--------------------
+        Disabled
+----------------------*/
+
+/* Disabled */
+.ui.disabled.search {
+  cursor: default;
+  pointer-events: none;
+  opacity: @disabledOpacity;
+}
+
 
 /*******************************
            Types

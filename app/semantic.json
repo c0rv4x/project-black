@@ -8,15 +8,16 @@
       "themes": "src/themes/"
     },
     "output": {
-      "packaged": "dist/",
-      "uncompressed": "dist/components/",
-      "compressed": "dist/components/",
-      "themes": "dist/themes/"
+      "packaged": "../src/semantic/",
+      "uncompressed": "../src/semantic/components/",
+      "compressed": "../src/semantic/components/",
+      "themes": "../src/semantic/themes/"
     },
     "clean": "dist/"
   },
-  "permission": false,
+  "permission": 744,
   "autoInstall": false,
   "rtl": false,
-  "version": "2.3.0"
+  "components": ["reset", "site", "button", "container", "divider", "flag", "header", "icon", "image", "input", "label", "list", "loader", "placeholder", "rail", "reveal", "segment", "step", "breadcrumb", "form", "grid", "menu", "message", "table", "ad", "card", "comment", "feed", "item", "statistic", "accordion", "checkbox", "dimmer", "dropdown", "embed", "modal", "nag", "popup", "progress", "rating", "search", "shape", "sidebar", "sticky", "tab", "transition", "api", "form", "state", "visibility"],
+  "version": "2.4.0"
 }

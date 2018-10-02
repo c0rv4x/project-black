@@ -41,8 +41,10 @@ class ProjectDetailsScopesUpdater extends React.Component {
 		var { ips, filters } = this.props;
 
 		if (ips.update_needed === true) {
-			this.triggerSetLoaded(false);
-			this.renewIps(this.props.ips.page, filters);
+			if (ips.loaded) {
+				this.triggerSetLoaded(false);
+				this.renewIps(this.props.ips.page, filters);
+			}
 		}
 		else if (!_.isEqual(filters, prevProps.filters)) {
 			this.triggerSetLoaded(false);

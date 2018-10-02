@@ -25,7 +25,8 @@ class Scope(Base):
     comment = Column(String, default="")
 
     # A list of files which is associated with the current scope
-    files = relationship('FileDatabase', cascade="all, delete-orphan", lazy='select', primaryjoin="Scope.target == foreign(FileDatabase.target)")
+    # files = relationship('FileDatabase', cascade="all, delete-orphan", lazy='select', primaryjoin="Scope.target == foreign(FileDatabase.target)")
+    # files = relationship('FileDatabase', cascade="all, delete-orphan", lazy='select')
 
     # The name of the related project
     project_uuid = Column(

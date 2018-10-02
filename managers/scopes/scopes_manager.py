@@ -122,6 +122,8 @@ class ScopeManager(object):
                 .count()
             )
 
+
+            print('-'*20)
             # Now select hosts, joining them with
             # all other subqueries from the prev step
             hosts_from_db = (
@@ -147,17 +149,20 @@ class ScopeManager(object):
                     contains_eager(HostDatabase.ip_addresses, alias=ips_query_subq)
                     .contains_eager(IPDatabase.ports, alias=scans_from_db),
                     contains_eager(HostDatabase.files, alias=files_query_aliased))
-                .order_by(HostDatabase.target)
+                # .order_by(HostDatabase.target)
                 .all()
             )
+            print('-'*20)
 
 
         # Reformat each hosts to JSON-like objects
-        hosts = list(map(lambda each_host: each_host.dict(
-            include_ips=True,
-            include_files=True,
-            include_ports=True
-        ), hosts_from_db))
+        hosts = sorted(
+                map(lambda each_host: each_host.dict(
+                include_ips=True,
+                include_files=True,
+                include_ports=True
+            ), hosts_from_db)
+        , key=lambda x: x['hostname'])
 
         total_db_hosts = self.count_hosts(project_uuid)
     
@@ -300,25 +305,28 @@ class ScopeManager(object):
                             IPDatabase.ports, alias=scans_from_db
                         )
                     )
-                    .order_by(IPDatabase.target)
+                    # .order_by(IPDatabase.target)
                     .all()
                 )
 
             selected_ips = ips_query.from_self(IPDatabase.id).distinct().count()
 
         if ips_only:
-            ips = list(map(lambda each_ip: each_ip[0], ips_from_db))
+            ips = sorted(list(map(lambda each_ip: each_ip[0], ips_from_db)))
+            # ips = list(map(lambda each_ip: each_ip[0], ips_from_db))
         else:
             # Reformat the ips to make the JSON-like objects
-            ips = list(
-                map(
-                    lambda each_ip: each_ip.dict(
-                        include_ports=True,
-                        include_hostnames=True,
-                        include_files=True
-                    ),
-                    ips_from_db
-                )
+            ips = sorted(
+                list(
+                    map(
+                        lambda each_ip: each_ip.dict(
+                            include_ports=True,
+                            include_hostnames=True,
+                            include_files=True
+                        ),
+                        ips_from_db
+                    )
+                ), key=lambda x: x['ip_address']
             )
     
         total_db_ips = self.count_ips(project_uuid)
@@ -549,10 +557,11 @@ class ScopeManager(object):
                 done_futures_all += done_futures
                 futures = []
 
-        (done_futures, _) = await asyncio.wait(
-            futures, return_when=asyncio.ALL_COMPLETED
-        )
-        done_futures_all += done_futures
+        if futures:
+            (done_futures, _) = await asyncio.wait(
+                futures, return_when=asyncio.ALL_COMPLETED
+            )
+            done_futures_all += done_futures
         futures = []                
 
         while done_futures_all:

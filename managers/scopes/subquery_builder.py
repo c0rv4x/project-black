@@ -72,7 +72,7 @@ class SubqueryBuilder:
 
         # Create a list of filters which will be applied against scans
         files_filters = Filters.build_files_filters(
-            filters, alias_ordered)
+            filters, alias_ordered, project_uuid=project_uuid)
 
         # files_ordered_distinct = ordered.distinct(
         #     alias_ordered.file_path,
