@@ -62,7 +62,6 @@ async def cb_complex_handler_bundle(request):
 
 @authorized()
 async def cb_serve_media_file(request, filename=""):
-    # print(request.path)
     return await response.file_stream(os.path.join('./public', os.path.basename(request.path)))
 
 
