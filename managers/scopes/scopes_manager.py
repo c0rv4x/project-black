@@ -312,7 +312,7 @@ class ScopeManager(object):
             selected_ips = ips_query.from_self(IPDatabase.id).distinct().count()
 
         if ips_only:
-            ips = sorted(list(map(lambda each_ip: each_ip[0], ips_from_db)), key=lambda x: x['ip_address'])
+            ips = sorted(list(map(lambda each_ip: each_ip[0], ips_from_db)))
             # ips = list(map(lambda each_ip: each_ip[0], ips_from_db))
         else:
             # Reformat the ips to make the JSON-like objects
