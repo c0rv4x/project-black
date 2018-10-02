@@ -26,7 +26,7 @@ class IPEntryLine extends React.Component {
 	}
 
 	shouldComponentUpdate(nextProps) {
-		return (!_.isEqual(nextProps, this.props));
+		return (!_.isEqual(nextProps['ip'], this.props['ip']));
 	}
 
 	render() {
