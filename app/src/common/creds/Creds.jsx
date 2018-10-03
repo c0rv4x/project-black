@@ -1,6 +1,11 @@
 import React from 'react'
 
+import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmitter'
+
 import {
+    Button,
+    Dropdown,
+    Grid,
     Label,
     Modal,
     Table
@@ -31,19 +36,21 @@ class Creds extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
+        const { scope, project_uuid } = this.props;
+
 		if (!this.state.inited) {
 			this.setState({
 				column: null,
-				data: this.props.ip.creds,
+				data: scope.creds.values,
 				direction: null,				
 				inited: true
 			});
 		}
 		else {
-			if (prevProps.ip.creds !== this.props.ip.creds) {
+			if (prevProps.scope.creds.values !== scope.creds.values) {
 				this.setState({
 					column: null,
-					data: this.props.ip.creds,
+					data: scope.creds.values,
 					direction: null
 				});
 			}
@@ -71,14 +78,49 @@ class Creds extends React.Component {
 
     render() {
         if (this.state.data.length) {
-            const { ip } = this.props;
+            const { scope, project_uuid } = this.props;
             const { column, data, direction } = this.state;
-        
+
+            let ports = [];
+
+            for (let cred of data) {
+                let port_number = cred.port_number;
+
+                if (ports.indexOf(port_number) === -1) {
+                    ports.push(port_number);
+                }
+            }
+
             return (
                 <Modal 
-                    trigger={<Label as="a">Accounts<Label.Detail>{ip.creds.length}</Label.Detail></Label>}
+                    trigger={<Label as="a">Accounts<Label.Detail>{scope.creds.values.length}</Label.Detail></Label>}
                 >
-                    <Modal.Header>{ip.ip_address}</Modal.Header>
+                    <Modal.Header>
+                        <Grid className="ui-header">
+                            <Grid.Column floated='left'>
+                                {scope.target}
+                            </Grid.Column>
+                            <Grid.Column textAlign='right' floated='right' width={3} >
+                                <Dropdown text='Clear' icon='trash' size="big" labeled button className='icon'>
+                                    <Dropdown.Menu>
+                                    {
+                                        ports.map((port_number) => {
+                                            return (
+                                                <Dropdown.Item
+                                                    key={port_number}
+                                                    onClick={() => {
+                                                    }}
+                                                >
+                                                    {port_number} port
+                                                </Dropdown.Item>
+                                            );
+                                        })
+                                    }
+                                    </Dropdown.Menu>
+                                </Dropdown>                            
+                            </Grid.Column>                            
+                        </Grid>
+                    </Modal.Header>
                     <Modal.Content>
                         <Table sortable>
                             <Table.Header>

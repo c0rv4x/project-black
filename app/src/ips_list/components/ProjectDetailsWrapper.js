@@ -23,13 +23,14 @@ function mapStateToProps(state, ownProps) {
     }
 
     let creds_dict = {};
-
     for (let cred of _.get(state.creds, "current_values", [])) {
         if (creds_dict.hasOwnProperty(cred.target)) {
-            creds_dict[cred.target].push(cred);
+            creds_dict[cred.target]["values"].push(cred);
         }
         else {
-            creds_dict[cred.target] = [cred];
+            creds_dict[cred.target] = {
+                "values": [cred]
+            };
         }
     }
 
@@ -37,7 +38,10 @@ function mapStateToProps(state, ownProps) {
 
     if (ips) {
         for (var ip of ips.data) {
-            ip.creds = [];
+            ip.target = ip.ip_address;
+            ip.creds = {
+                "values": []
+            };
 
             if (creds_dict.hasOwnProperty(ip.ip_address)) {
                 ip.creds = creds_dict[ip.ip_address];
