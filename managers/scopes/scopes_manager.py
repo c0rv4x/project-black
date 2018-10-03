@@ -312,7 +312,7 @@ class ScopeManager(object):
             selected_ips = ips_query.from_self(IPDatabase.id).distinct().count()
 
         if ips_only:
-            ips = sorted(list(map(lambda each_ip: each_ip[0], ips_from_db)), key=lambda x: x['ip_address'])
+            ips = sorted(list(map(lambda each_ip: each_ip[0], ips_from_db)))
             # ips = list(map(lambda each_ip: each_ip[0], ips_from_db))
         else:
             # Reformat the ips to make the JSON-like objects
@@ -557,10 +557,11 @@ class ScopeManager(object):
                 done_futures_all += done_futures
                 futures = []
 
-        (done_futures, _) = await asyncio.wait(
-            futures, return_when=asyncio.ALL_COMPLETED
-        )
-        done_futures_all += done_futures
+        if futures:
+            (done_futures, _) = await asyncio.wait(
+                futures, return_when=asyncio.ALL_COMPLETED
+            )
+            done_futures_all += done_futures
         futures = []                
 
         while done_futures_all:
