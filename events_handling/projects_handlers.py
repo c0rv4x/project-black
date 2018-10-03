@@ -17,14 +17,6 @@ def register_project_handlers(socketio, project_manager):
             namespace='/projects'
         )
 
-        await send_notification(
-            socketio,
-            "success",
-            "Project created",
-            "test",
-            sid=sid
-        )
-
     @socketio.on('projects:create', namespace='/projects')
     async def handle_project_create(sid, msg):
         """ When received this message, create a new projects """

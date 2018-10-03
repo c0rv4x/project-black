@@ -20,6 +20,18 @@ class CredManager(object):
 
         return find_result
 
+    def delete(self, project_uuid, targets=None, port_number=None):
+        delete_result = CredDatabase.delete(project_uuid=project_uuid, targets=targets, port_number=port_number)
+
+        if delete_result["status"] == "success":
+            return {
+                "status": "success",
+                # "creds": list(map(lambda x: x.dict(), find_result["creds"])),
+                "project_uuid": project_uuid
+            }
+
+        return delete_result
+
     def count(self, project_uuid):
         """ Counts the amount of creds records for a specific project """
         count_result = CredDatabase.count(project_uuid=project_uuid)

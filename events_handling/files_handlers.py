@@ -29,7 +29,7 @@ class FileHandlers(object):
                 'ips:updated', {
                     'status': 'success',
                     'project_uuid': project_uuid,
-                    'updated_ip_address': updated_target
+                    'updated_ips': [updated_target]
                 },
                 namespace='/ips'
             )  

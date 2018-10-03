@@ -133,6 +133,27 @@ class CredDatabase(Base):
             return {"status": "error", "text": str(exc)}
 
     @classmethod
+    def delete(cls, project_uuid, targets=None, port_number=None):
+        try:
+            with cls.session_spawner.get_session() as session:
+                creds_request = session.query(cls).filter(
+                    cls.project_uuid == project_uuid
+                )
+
+                if targets:
+                    creds_request = creds_request.filter(cls.target.in_(targets))
+                if port_number:
+                    creds_request = creds_request.filter(cls.port_number == port_number)
+
+                for cred in creds_request.all():
+                    session.delete(cred)
+
+                return {"status": "success"}
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}
+
+
+    @classmethod
     def count(cls, project_uuid):
         try:
             with cls.session_spawner.get_session() as session:

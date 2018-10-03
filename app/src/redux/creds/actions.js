@@ -1,5 +1,6 @@
 export const RENEW_CREDS_STATS = 'RENEW_CREDS_STATS'
 export const RENEW_CREDS = 'RENEW_CREDS'
+export const DELETED_CREDS = 'DELETED_CREDS'
 
 
 export function renewCredsStats(message, current_project_uuid) {
@@ -13,6 +14,14 @@ export function renewCredsStats(message, current_project_uuid) {
 export function renewCreds(message, current_project_uuid) {
 	return {
 		type: RENEW_CREDS,
+		current_project_uuid: current_project_uuid,
+		message
+	}
+}
+
+export function deletedCreds(message, current_project_uuid) {
+	return {
+		type: DELETED_CREDS,
 		current_project_uuid: current_project_uuid,
 		message
 	}

@@ -93,6 +93,19 @@ class TaskManager(object):
             self.data_updated_queue.put(
                 ("scan", task.target, task.project_uuid, task.text, task.task_type)
             )
+        elif task.task_type == "patator":
+            self.logger.info(
+                "{} {} finished, {}".format(
+                    task.task_id,
+                    task.task_type,
+                    task.text
+                )
+            )
+
+            self.data_updated_queue.put(
+                ("creds", task.target, task.project_uuid, task.text, task.task_type)
+            )
+
         elif task.task_type == "dnsscan":
             self.logger.info(
                 "{} dnsscan finished, {}".format(

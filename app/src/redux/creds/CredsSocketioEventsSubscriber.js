@@ -2,7 +2,8 @@ import Notifications from 'react-notification-system-redux'
 
 import { 
     renewCreds,
-    renewCredsStats
+    renewCredsStats,
+    deletedCreds
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
@@ -31,6 +32,7 @@ class CredsEventsSubsriber {
 
         this.register_socketio_handler('creds:stats:set', renewCredsStats);
         this.register_socketio_handler('creds:get:back', renewCreds);
+        this.register_socketio_handler('creds:delete:back', deletedCreds);
     }
 
     register_socketio_handler(eventName, callback) {
