@@ -4,6 +4,7 @@ import { Dimmer, Loader, Segment } from 'semantic-ui-react'
 
 import ProjectDetails from './ProjectDetails.jsx'
 import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
+import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmitter.js'
 import { setLoaded } from '../../redux/ips/actions.js'
 
 class ProjectDetailsScopesUpdater extends React.Component {
@@ -11,11 +12,18 @@ class ProjectDetailsScopesUpdater extends React.Component {
 		super(props);
 
 		this.ipsEmitter = new IPsSocketioEventsEmitter();
+		this.credsEmitter = new CredsSocketioEventsEmitter();
+
 		this.triggerSetLoaded = this.triggerSetLoaded.bind(this);
 		this.renewIps = this.renewIps.bind(this);
+		this.renewCreds = this.renewCreds.bind(this);
 
 		if (this.props.ips.update_needed === true) {
 			this.renewIps();
+		}
+		else {
+			console.log("Constructor renewing creds");
+			this.renewCreds();
 		}
 	}
 
@@ -33,6 +41,10 @@ class ProjectDetailsScopesUpdater extends React.Component {
 		this.ipsEmitter.requestRenewIPs(this.props.project.project_uuid, filters, ip_page, ips.page_size);
 	}
 
+	renewCreds(ips=this.props.ips.data) {
+		this.credsEmitter.renewCreds(this.props.project.project_uuid, ips.map((ip) => {return ip.ip_address}));
+	}
+
 	shouldComponentUpdate(nextProps) {
 		return !_.isEqual(nextProps, this.props);
 	}
@@ -44,9 +56,16 @@ class ProjectDetailsScopesUpdater extends React.Component {
 			this.triggerSetLoaded(false);
 			this.renewIps(this.props.ips.page, filters);
 		}
-		else if (!_.isEqual(filters, prevProps.filters)) {
-			this.triggerSetLoaded(false);
-			this.renewIps(0, filters);
+		else {
+			if ((prevProps.ips.update_needed === true) || (!_.isEqual(ips.data, prevProps.ips.data))) {
+				console.log("componentdidupdate is renewing creds");
+				this.renewCreds();
+			}
+
+			if (!_.isEqual(filters, prevProps.filters)) {
+				this.triggerSetLoaded(false);
+				this.renewIps(0, filters);
+			}
 		}
 	}
 
