@@ -79,7 +79,7 @@ class TaskManager(object):
             )
 
             self.data_updated_queue.put(
-                ("file", task.target, task.project_uuid, task.text, "dirsearch")
+                ("file", task.target, task.project_uuid, task.text, "dirsearch", task.status)
             )
         elif task.task_type == "masscan" or task.task_type == "nmap":
             self.logger.info(

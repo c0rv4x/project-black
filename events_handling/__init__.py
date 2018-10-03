@@ -122,7 +122,7 @@ class Handlers(object):
 
                     await send_notification(
                         self.socketio,
-                        "success",
+                        "success" if task_status == "Finished" else "error",
                         "Task finished",
                         "Dirsearch for {} finished".format(
                             text
