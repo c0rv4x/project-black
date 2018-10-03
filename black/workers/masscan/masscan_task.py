@@ -27,24 +27,22 @@ class MasscanTask(AsyncTask):
     async def start(self):
         """ Launch the task and readers of stdout, stderr """
         print(self.params, self.target)
-        self.command = ['sudo', 'masscan'] + [','.join(self.target)] + ['-oX', '-'] + self.params['program']
-
         try:
+            self.command = ['sudo', 'masscan'] + [','.join(self.target)] + ['-oX', '-'] + self.params['program']
+
             self.proc = await asyncio.create_subprocess_shell(' '.join(self.command), stdout=PIPE, stderr=PIPE)
-        except Exception as e:
-            await self.set_status("Aborted", progress=-1, text=str(e))
-            print(e)
-            raise e
 
-        await self.set_status("Working", progress=0)
- 
-        # Launch readers
-        loop = asyncio.get_event_loop()
-        loop.create_task(self.read_stdout())
-        loop.create_task(self.read_stderr())
+            await self.set_status("Working", progress=0)
+    
+            # Launch readers
+            loop = asyncio.get_event_loop()
+            loop.create_task(self.read_stdout())
+            loop.create_task(self.read_stderr())
 
-        # Launch status poller
-        loop.create_task(self.spawn_status_poller())
+            # Launch status poller
+            loop.create_task(self.spawn_status_poller())
+        except Exception as exc:
+            await self.set_status("Aborted", 0, str(exc))
 
     def send_notification(self, command):
         """ Sends 'command' notification to the current process. """
