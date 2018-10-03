@@ -117,10 +117,7 @@ class IPEntryLine extends React.Component {
 
 				<div style={{"wordBreak": "break-all"}}>
 					{hostnames_view}
-					<Creds
-						scope={ip}
-						project_uuid={project_uuid}
-					/>
+					<Creds ip={ip} />
 				</div>
 
 				<Divider hidden />

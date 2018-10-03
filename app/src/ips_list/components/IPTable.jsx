@@ -15,20 +15,16 @@ class IPTable extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.ipsEmitter = new IPsSocketioEventsEmitter();
-		this.credsEmitter = new CredsSocketioEventsEmitter();
-
 		if (this.props.ips) {
 			this.state = {
 				shownData: this.props.ips.data,
 				offsetPage: this.props.ips.page,
 				pageCount: Math.ceil(this.props.ips.selected_ips / this.props.ips.page_size)
 			}
-
-			this.credsEmitter.renewCreds(this.props.project_uuid, this.props.ips.data.map((ip) => {
-				return ip.ip_address;
-			}));			
 		}
+
+		this.ipsEmitter = new IPsSocketioEventsEmitter();
+		this.credsEmitter = new CredsSocketioEventsEmitter();
 
 		this.commentSubmitted = this.commentSubmitted.bind(this);
 		this.handlePageClick = this.handlePageClick.bind(this);
@@ -42,52 +38,33 @@ class IPTable extends React.Component {
 		return (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState));
 	}
 
-	componentDidUpdate(prevProps) {
-		if ((this.props.ips.page !== prevProps.ips.page) || (this.props.ips.page_size !== prevProps.ips.page_size)) {
+	componentWillReceiveProps(nextProps) {
+		if ((nextProps.ips.page !== this.props.ips.page) || (nextProps.ips.page_size !== this.props.ips.page_size)) {
 			this.props.setLoaded(true);
-		}		
-
-		if (!_.isEqual(this.props.ips.data, prevProps.ips.data)) {
-			console.log('renewing creds');
-			this.credsEmitter.renewCreds(this.props.project_uuid, this.props.ips.data.map((ip) => {
-				return ip.ip_address;
-			}));
 		}
 
-		this.setState({
-			shownData: this.props.ips.data,
-			offsetPage: 0,
-			pageCount: Math.ceil(this.props.ips.selected_ips / this.props.ips.page_size)
-		});	
-	}
+		if (nextProps.ips.selected_ips !== this.props.ips.selected_ips) {
+			this.credsEmitter.renewCreds(this.props.project_uuid, nextProps.ips.data.map((ip) => {
+				return ip.ip_address;
+			}));
 
-	componentWillReceiveProps(nextProps) {
-		// if ((nextProps.ips.page !== this.props.ips.page) || (nextProps.ips.page_size !== this.props.ips.page_size)) {
-		// 	this.props.setLoaded(true);
-		// }
-
-		// if (nextProps.ips.selected_ips !== this.props.ips.selected_ips) {
-		// 	this.credsEmitter.renewCreds(this.props.project_uuid, nextProps.ips.data.map((ip) => {
-		// 		return ip.ip_address;
-		// 	}));
-
-		// 	this.setState({
-		// 		shownData: nextProps.ips.data,
-		// 		offsetPage: 0,
-		// 		pageCount: Math.ceil(nextProps.ips.selected_ips / this.props.ips.page_size)
-		// 	});
-		// }
-		// else {
-		// 	this.credsEmitter.renewCreds(this.props.project_uuid, nextProps.ips.data.map((ip) => {
-		// 		return ip.ip_address;
-		// 	}));
+			this.setState({
+				shownData: nextProps.ips.data,
+				offsetPage: 0,
+				pageCount: Math.ceil(nextProps.ips.selected_ips / this.props.ips.page_size)
+			});
+		}
+		else {
+			this.credsEmitter.renewCreds(this.props.project_uuid, nextProps.ips.data.map((ip) => {
+				return ip.ip_address;
+			}));
 			
-		// 	this.setState({
-		// 		shownData: nextProps.ips.data,
-		// 		pageCount: Math.ceil(nextProps.ips.selected_ips / this.props.ips.page_size)
-		// 	});
-		// }
-	}
+			this.setState({
+				shownData: nextProps.ips.data,
+				pageCount: Math.ceil(nextProps.ips.selected_ips / this.props.ips.page_size)
+			});
+		}
+	}	
 
 	handlePageClick(page_number) {
 		this.props.setLoaded(false);

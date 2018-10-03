@@ -62,9 +62,9 @@ class Handlers(object):
 
         try:
             task_data = self.data_updated_queue.get_nowait()
-            data_type, target, project_uuid, text, task_name = task_data
+            task_type, target, project_uuid, text, task_name = task_data
 
-            if data_type == "scope":
+            if task_type == "scope":
                 # This is triggered when dnsscan finds something new
                 await send_notification(
                     self.socketio,
@@ -80,7 +80,7 @@ class Handlers(object):
 
                 self.data_updated_queue.task_done()
 
-            elif data_type == "scan":
+            if task_type == "scan":
                 # Masscan or nmap updated some of the ips
                 targets = None
 
@@ -109,7 +109,7 @@ class Handlers(object):
 
                 self.data_updated_queue.task_done()
 
-            elif data_type == "file":
+            if task_type == "file":
                 # Dirbuster found some files
                 updated_target = None
 
@@ -131,26 +131,5 @@ class Handlers(object):
 
                 self.data_updated_queue.task_done()
 
-            elif data_type == "creds":
-                print(text, "creds_ handelrerer")
-                if text:
-                    updated_target = text.split(':')[0]
-                    print(updated_target)
-                    await send_notification(
-                        self.socketio,
-                        "success",
-                        "Task finished",
-                        "Patator for {} finished".format(
-                            text
-                        ),
-                        project_uuid=project_uuid
-                    )
-
-                    await self.cred_handlers.notify_on_updated_creds(
-                        project_uuid, updated_target)
-
-                self.data_updated_queue.task_done()                
-            else:
-                print(data_type)
         except queue.Empty:
             pass

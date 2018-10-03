@@ -1,11 +1,6 @@
 import React from 'react'
 
-import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmitter'
-
 import {
-    Button,
-    Dropdown,
-    Grid,
     Label,
     Modal,
     Table
@@ -23,15 +18,12 @@ class Creds extends React.Component {
             inited: false
         };
 
-        this.handleSortClick = this.handleSortClick.bind(this);
-        
-        this.emitter = new CredsSocketioEventsEmitter();
+		this.handleSortClick = this.handleSortClick.bind(this);
     }
 
 	shouldComponentUpdate(nextProps, nextState) {
         return ((!_.isEqual(nextProps, this.props)) || ((!_.isEqual(nextState, this.state))) || (!this.state.inited));
     }
-
 	componentDidMount() {
 		if (!this.state.inited) {
 			this.forceUpdate();
@@ -39,25 +31,19 @@ class Creds extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-        const { scope, project_uuid } = this.props;
-
-        if (scope.creds.update_needed) {
-            this.emitter.renewCreds(project_uuid, [scope.target]);
-        }
-
 		if (!this.state.inited) {
 			this.setState({
 				column: null,
-				data: scope.creds.values,
+				data: this.props.ip.creds,
 				direction: null,				
 				inited: true
 			});
 		}
 		else {
-			if (prevProps.scope.creds.values !== scope.creds.values) {
+			if (prevProps.ip.creds !== this.props.ip.creds) {
 				this.setState({
 					column: null,
-					data: scope.creds.values,
+					data: this.props.ip.creds,
 					direction: null
 				});
 			}
@@ -85,50 +71,14 @@ class Creds extends React.Component {
 
     render() {
         if (this.state.data.length) {
-            const { scope, project_uuid } = this.props;
+            const { ip } = this.props;
             const { column, data, direction } = this.state;
-
-            let ports = [];
-
-            for (let cred of data) {
-                let port_number = cred.port_number;
-
-                if (ports.indexOf(port_number) === -1) {
-                    ports.push(port_number);
-                }
-            }
-
+        
             return (
                 <Modal 
-                    trigger={<Label as="a">Accounts<Label.Detail>{scope.creds.values.length}</Label.Detail></Label>}
+                    trigger={<Label as="a">Accounts<Label.Detail>{ip.creds.length}</Label.Detail></Label>}
                 >
-                    <Modal.Header>
-                        <Grid className="ui-header">
-                            <Grid.Column floated='left'>
-                                {scope.target}
-                            </Grid.Column>
-                            <Grid.Column textAlign='right' floated='right' width={3} >
-                                <Dropdown text='Clear' icon='trash' size="big" labeled button className='icon'>
-                                    <Dropdown.Menu>
-                                    {
-                                        ports.map((port_number) => {
-                                            return (
-                                                <Dropdown.Item
-                                                    key={port_number}
-                                                    onClick={() => {
-                                                        this.emitter.requestDeleteCreds(project_uuid, scope.target, port_number)
-                                                    }}
-                                                >
-                                                    {port_number} port
-                                                </Dropdown.Item>
-                                            );
-                                        })
-                                    }
-                                    </Dropdown.Menu>
-                                </Dropdown>                            
-                            </Grid.Column>                            
-                        </Grid>
-                    </Modal.Header>
+                    <Modal.Header>{ip.ip_address}</Modal.Header>
                     <Modal.Content>
                         <Table sortable>
                             <Table.Header>

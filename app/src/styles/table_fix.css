@@ -11,6 +11,3 @@ div[id^="progress_task_"] {
 .ui.page.modals.transition.visible {
   display: flex !important;
 }
-.ui-header {
-  line-height: 2
-}

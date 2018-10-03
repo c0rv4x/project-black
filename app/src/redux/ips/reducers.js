@@ -54,7 +54,6 @@ function delete_ip(state = initialState, action) {
 
 function renew_ips(state = initialState, action) {
 	const message = action.message;
-	console.log('updated_uis');
 
 	return {
 		...message.ips,
@@ -186,6 +185,7 @@ function ip_reduce(state = initialState, action) {
 	if (!action.hasOwnProperty('message')) {
 		return state
 	}
+
 	else {
 		if (action.message && action.current_project_uuid != action.message.project_uuid) { return state; }
 		else {
