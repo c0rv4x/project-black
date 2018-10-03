@@ -57,7 +57,7 @@ class Handlers(object):
 
         try:
             task_data = self.data_updated_queue.get_nowait()
-            task_type, target, project_uuid, text, task_name = task_data
+            task_type, target, project_uuid, text, task_name, task_status = task_data
 
             if task_type == "scope":
                 # This is triggered when dnsscan finds something new
@@ -86,17 +86,26 @@ class Handlers(object):
                     except:
                         targets = text
 
-                await send_notification(
-                    self.socketio,
-                    "success",
-                    "Task finished",
-                    "{} for {} hosts finished. {} hosts updated".format(
-                        task_name.capitalize(),
-                        len(targets),
-                        len(targets) if targets else 0
-                    ),
-                    project_uuid=project_uuid
-                )
+                if task_status == "Finished":
+                    await send_notification(
+                        self.socketio,
+                        "success",
+                        "Task finished",
+                        "{} for {} hosts finished. {} hosts updated".format(
+                            task_name.capitalize(),
+                            len(targets) if targets else 0,
+                            len(targets) if targets else 0
+                        ),
+                        project_uuid=project_uuid
+                    )
+                else:
+                    await send_notification(
+                        self.socketio,
+                        "Error",
+                        "Task failed",
+                        "{}: {}".format(task_name.capitalize(), text),
+                        project_uuid=project_uuid
+                    )
 
                 if targets:
                     await self.scan_handlers.notify_on_updated_scans(

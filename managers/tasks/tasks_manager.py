@@ -91,7 +91,7 @@ class TaskManager(object):
             )
 
             self.data_updated_queue.put(
-                ("scan", task.target, task.project_uuid, task.text, task.task_type)
+                ("scan", task.target, task.project_uuid, task.text, task.task_type, task.status)
             )
         elif task.task_type == "dnsscan":
             self.logger.info(
