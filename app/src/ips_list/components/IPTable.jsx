@@ -38,33 +38,25 @@ class IPTable extends React.Component {
 		return (!_.isEqual(nextProps, this.props) || !_.isEqual(this.state, nextState));
 	}
 
-	componentWillReceiveProps(nextProps) {
-		if ((nextProps.ips.page !== this.props.ips.page) || (nextProps.ips.page_size !== this.props.ips.page_size)) {
+	componentDidUpdate(prevProps) {
+		if ((this.props.ips.page !== prevProps.ips.page) || (this.props.ips.page_size !== prevProps.ips.page_size)) {
 			this.props.setLoaded(true);
 		}
 
-		if (nextProps.ips.selected_ips !== this.props.ips.selected_ips) {
-			this.credsEmitter.renewCreds(this.props.project_uuid, nextProps.ips.data.map((ip) => {
-				return ip.ip_address;
-			}));
-
+		if (this.props.ips.selected_ips !== prevProps.ips.selected_ips) {
 			this.setState({
-				shownData: nextProps.ips.data,
+				shownData: this.props.ips.data,
 				offsetPage: 0,
-				pageCount: Math.ceil(nextProps.ips.selected_ips / this.props.ips.page_size)
+				pageCount: Math.ceil(this.props.ips.selected_ips / this.props.ips.page_size)
 			});
 		}
 		else {
-			this.credsEmitter.renewCreds(this.props.project_uuid, nextProps.ips.data.map((ip) => {
-				return ip.ip_address;
-			}));
-			
 			this.setState({
-				shownData: nextProps.ips.data,
-				pageCount: Math.ceil(nextProps.ips.selected_ips / this.props.ips.page_size)
+				shownData: this.props.ips.data,
+				pageCount: Math.ceil(this.props.ips.selected_ips / this.props.ips.page_size)
 			});
 		}
-	}	
+	}
 
 	handlePageClick(page_number) {
 		this.props.setLoaded(false);
