@@ -22,7 +22,7 @@ class ProjectDetailsScopesUpdater extends React.Component {
 			this.renewIps();
 		}
 		else {
-			console.log("Constructor renewing creds");
+			// console.log("Constructor renewing creds");
 			this.renewCreds();
 		}
 	}
@@ -58,7 +58,7 @@ class ProjectDetailsScopesUpdater extends React.Component {
 		}
 		else {
 			if ((prevProps.ips.update_needed === true) || (!_.isEqual(ips.data, prevProps.ips.data))) {
-				console.log("componentdidupdate is renewing creds");
+				// console.log("componentdidupdate is renewing creds");
 				this.renewCreds();
 			}
 

@@ -23,12 +23,21 @@ class Creds extends React.Component {
             inited: false
         };
 
-		this.handleSortClick = this.handleSortClick.bind(this);
+        this.credsEmitter = new CredsSocketioEventsEmitter();
+        this.handleSortClick = this.handleSortClick.bind(this);
+        this.deleteCreds = this.deleteCreds.bind(this);
+    }
+
+    deleteCreds(port_number) {
+        const { scope, project_uuid } = this.props;
+
+        this.credsEmitter.deleteCreds(project_uuid, scope.target, port_number);
     }
 
 	shouldComponentUpdate(nextProps, nextState) {
         return ((!_.isEqual(nextProps, this.props)) || ((!_.isEqual(nextState, this.state))) || (!this.state.inited));
     }
+
 	componentDidMount() {
 		if (!this.state.inited) {
 			this.forceUpdate();
@@ -36,7 +45,7 @@ class Creds extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-        const { scope, project_uuid } = this.props;
+        const { scope } = this.props;
 
 		if (!this.state.inited) {
 			this.setState({
@@ -109,6 +118,7 @@ class Creds extends React.Component {
                                                 <Dropdown.Item
                                                     key={port_number}
                                                     onClick={() => {
+                                                        this.deleteCreds(port_number);
                                                     }}
                                                 >
                                                     {port_number} port

@@ -143,3 +143,27 @@ class CredDatabase(Base):
                 return {"status": "success", "amount": amount}
         except Exception as exc:
             return {"status": "error", "text": str(exc)}
+
+    @classmethod
+    def delete(cls, project_uuid, targets, port_number):
+        try:
+            with cls.session_spawner.get_session() as session:
+                to_delete_creds = session.query(cls).filter(
+                    cls.project_uuid == project_uuid
+                )
+
+                if targets:
+                    to_delete_creds = to_delete_creds.filter(
+                        cls.target.in_(targets)
+                    )
+
+                if port_number:
+                    to_delete_creds = to_delete_creds.filter(
+                        cls.port_number == port_number
+                    )
+
+                to_delete_creds.delete('fetch')
+
+                return {"status": "success"}
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}

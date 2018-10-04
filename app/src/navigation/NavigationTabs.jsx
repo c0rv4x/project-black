@@ -24,16 +24,16 @@ class NavigationTabs extends React.Component {
 
 	}
 
-	componentDidMount() {
-		setTimeout(() => {
-		  Perf.start();
-		  setTimeout(() => {
-			Perf.stop();
-			const measurements = Perf.getLastMeasurements();
-			Perf.printInclusive(measurements);
-		  }, 30000);
-		}, 5000);
-	  }
+	// componentDidMount() {
+	// 	setTimeout(() => {
+	// 	  Perf.start();
+	// 	  setTimeout(() => {
+	// 		Perf.stop();
+	// 		const measurements = Perf.getLastMeasurements();
+	// 		Perf.printInclusive(measurements);
+	// 	  }, 30000);
+	// 	}, 5000);
+	//   }
 
 	shouldComponentUpdate(nextProps, nextState) {
 		return ((!_.isEqual(nextProps, this.props)) || (!_.isEqual(nextState, this.state)));

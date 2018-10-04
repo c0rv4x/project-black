@@ -1,4 +1,5 @@
 """ Keeps class with creds handlers """
+from events_handling.notifications_spawner import send_notification
 
 
 class CredHandlers(object):
@@ -34,3 +35,40 @@ class CredHandlers(object):
                 namespace='/creds',
                 room=sid   
             )
+
+        @self.socketio.on('creds:delete', namespace='/creds')
+        async def _cb_handle_files_delete(sid, msg):
+            """ Delete all creds specified by project_uuid, targets and port_number """
+            project_uuid = int(msg.get('project_uuid', None))
+            targets = msg.get('targets', None)
+            port_number = int(msg.get('port_number', None))
+
+            print("deleting", targets,port_number)
+            delete_result = self.creds_manager.delete(
+                project_uuid=project_uuid, targets=targets, port_number=port_number)
+            print(delete_result)
+
+            if delete_result["status"] == "success":
+                # Send the success result
+                await self.socketio.emit(
+                    'ips:updated', {
+                        'status': 'success',
+                        'project_uuid': project_uuid,
+                        'updated_ips': targets
+                    },
+                    namespace='/ips'
+                )
+
+                await send_notification(
+                    self.socketio,
+                    "success",
+                    "Creds deleted",
+                    "Deleted creds for {}".format(targets)
+                )
+            else:
+                await send_notification(
+                    self.socketio,
+                    "error",
+                    "Error on creds delete",
+                    "Error while deleting creds {}".format(project_uuid)
+                )

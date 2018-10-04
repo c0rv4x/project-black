@@ -19,6 +19,14 @@ class CredsSocketioEventsEmitter {
             "targets": targets
         });        
     }
+
+    deleteCreds(project_uuid, target, port_number) {
+        this.connector.emit('creds:delete', {
+            "project_uuid": project_uuid,
+            "targets": [target],
+            "port_number": port_number
+        });    
+    }
 }
 
 export default CredsSocketioEventsEmitter;

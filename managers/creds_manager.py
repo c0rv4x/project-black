@@ -32,3 +32,14 @@ class CredManager(object):
             }            
 
         return count_result
+
+    def delete(self, project_uuid, targets, port_number):
+        delete_result = CredDatabase.delete(project_uuid=project_uuid, targets=targets, port_number=port_number)
+
+        if delete_result["status"] == "success":
+            return {
+                "status": "success",
+                "project_uuid": project_uuid
+            }
+
+        return delete_result
