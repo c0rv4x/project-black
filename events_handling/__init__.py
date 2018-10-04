@@ -1,5 +1,6 @@
 """ This module keeps a sexy class that initialises all the handlers and
 starts task_poller. """
+import re
 import json
 import queue
 import asyncio
@@ -130,6 +131,41 @@ class Handlers(object):
                         project_uuid, updated_target)
 
                 self.data_updated_queue.task_done()
+
+            if task_type == "creds":
+                updated_target = target.split(':')[0]
+
+                await send_notification(
+                    self.socketio,
+                    "success",
+                    "Task finished",
+                    "Patator for {} finished".format(
+                        target
+                    ),
+                    project_uuid=project_uuid
+                )
+
+                if re.match(r'^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$', updated_target):
+                    await self.socketio.emit(
+                        'ips:updated', {
+                            'status': 'success',
+                            'project_uuid': project_uuid,
+                            'updated_ips': [updated_target]
+                        },
+                        namespace='/ips'
+                    )  
+                else:
+                    await self.socketio.emit(
+                        'hosts:updated', {
+                            'status': 'success',
+                            'project_uuid': project_uuid,
+                            'updated_hostname': updated_target
+                        },
+                        namespace='/hosts'
+                    )
+
+                self.data_updated_queue.task_done()
+
 
         except queue.Empty:
             pass
