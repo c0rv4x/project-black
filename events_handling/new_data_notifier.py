@@ -112,6 +112,27 @@ class Notifier:
 
             await self.send_updated_files_notification(project_uuid, updated_target)
 
+    async def send_updated_files_notification(self, project_uuid, updated_target=None):
+        """ Send a notification that files for specific ids have changed """
+        if self.ip_regex.match(updated_target):
+            await self.socketio.emit(
+                'ips:updated', {
+                    'status': 'success',
+                    'project_uuid': project_uuid,
+                    'updated_ip_address': updated_target
+                },
+                namespace='/ips'
+            )  
+        else:
+            await self.socketio.emit(
+                'hosts:updated', {
+                    'status': 'success',
+                    'project_uuid': project_uuid,
+                    'updated_hostname': updated_target
+                },
+                namespace='/hosts'
+            )
+
     async def notify_on_creds(self, target, project_uuid, task_status):
         updated_target = target.split(':')[0]
 
