@@ -2,7 +2,7 @@ from common.logger import log
 
 
 @log
-class Notifier:
+class NotificationCreator:
     def __init__(self, queue):
         self.queue = queue
 
