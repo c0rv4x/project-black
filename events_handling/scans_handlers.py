@@ -28,26 +28,3 @@ class ScanHandlers(object):
             },
             namespace='/scans'
         )
-
-    async def notify_on_updated_scans(self, new_ips, project_uuid=None):
-        """ Finds all scans for the project and sends them back """
-        print("Sending back new_ips {} , {}".format(new_ips, project_uuid))
-
-        if new_ips:
-            await self.socketio.emit(
-                'ips:updated', {
-                    'status': 'success',
-                    'project_uuid': project_uuid,
-                    'updated_ips': new_ips
-                },
-                namespace='/ips'
-            )
-
-            await self.socketio.emit(
-                'hosts:updated:ips', {
-                    'status': 'success',
-                    'project_uuid': project_uuid,
-                    'updated_ips': new_ips
-                },
-                namespace='/hosts'
-            )
