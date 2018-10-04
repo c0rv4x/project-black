@@ -1,4 +1,6 @@
 """ Keeps class with creds handlers """
+import re
+
 from events_handling.notifications_spawner import send_notification
 
 
@@ -8,6 +10,10 @@ class CredHandlers(object):
     def __init__(self, socketio, creds_manager):
         self.socketio = socketio
         self.creds_manager = creds_manager
+
+        self.ip_regex = re.compile(
+            '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$'
+        )
 
     def register_handlers(self):
         """ Register all handlers for credentials """
@@ -48,14 +54,24 @@ class CredHandlers(object):
 
             if delete_result["status"] == "success":
                 # Send the success result
-                await self.socketio.emit(
-                    'ips:updated', {
-                        'status': 'success',
-                        'project_uuid': project_uuid,
-                        'updated_ips': targets
-                    },
-                    namespace='/ips'
-                )
+                if self.ip_regex.match(targets[0]):
+                    await self.socketio.emit(
+                        'ips:updated', {
+                            'status': 'success',
+                            'project_uuid': project_uuid,
+                            'updated_ips': targets
+                        },
+                        namespace='/ips'
+                    )
+                else:
+                    await self.socketio.emit(
+                        'hosts:updated', {
+                            'status': 'success',
+                            'project_uuid': project_uuid,
+                            'updated_hosts': targets
+                        },
+                        namespace='/hosts'
+                    )
 
                 await send_notification(
                     self.socketio,
