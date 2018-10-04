@@ -9,9 +9,8 @@ import ScopeSetupWrapper from '../scope_setup/components/ScopeSetupWrapper.js'
 import ProjectDetailsWrapper from '../ips_list/components/ProjectDetailsWrapper.js'
 import HostsListWrapper from '../hosts_list/components/HostsListWrapper.js'
 
-import Perf from 'react-addons-perf'
 
-import Perf from 'react-addons-perf'
+// import Perf from 'react-addons-perf'
 
 
 class NavigationTabs extends React.Component {
