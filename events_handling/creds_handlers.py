@@ -43,10 +43,8 @@ class CredHandlers(object):
             targets = msg.get('targets', None)
             port_number = int(msg.get('port_number', None))
 
-            print("deleting", targets,port_number)
             delete_result = self.creds_manager.delete(
                 project_uuid=project_uuid, targets=targets, port_number=port_number)
-            print(delete_result)
 
             if delete_result["status"] == "success":
                 # Send the success result
