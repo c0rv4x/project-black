@@ -1,5 +1,6 @@
 """ This module keeps a sexy class that initialises all the handlers and
 starts task_poller. """
+import re
 import json
 import queue
 import asyncio
@@ -11,11 +12,13 @@ from events_handling.scopes_handlers import ScopeHandlers
 from events_handling.tasks_handlers import TaskHandlers
 from events_handling.scans_handlers import ScanHandlers
 from events_handling.files_handlers import FileHandlers
+from events_handling.creds_handlers import CredHandlers
+
 from events_handling.notifications_spawner import send_notification
 
 from managers import (
     ProjectManager, ScopeManager, TaskManager,
-    ScanManager, FileManager
+    ScanManager, FileManager, CredManager
 )
 
 
@@ -31,12 +34,12 @@ class Handlers(object):
 
         self.project_manager = ProjectManager()
         self.scope_manager = ScopeManager()
-        self.task_manager = TaskManager(
-            self.data_updated_queue, self.scope_manager)
+        self.task_manager = TaskManager(self.data_updated_queue, self.scope_manager)
         self.app.add_task(self.task_manager.spawn_asynqp())
 
         self.scan_manager = ScanManager()
         self.file_manager = FileManager()
+        self.creds_manager = CredManager()
 
         register_project_handlers(self.socketio, self.project_manager)
 
@@ -51,6 +54,9 @@ class Handlers(object):
 
         self.task_handlers = TaskHandlers(self.socketio, self.task_manager)
         self.task_handlers.register_handlers()
+
+        self.cred_handlers = CredHandlers(self.socketio, self.creds_manager)
+        self.cred_handlers.register_handlers()
 
     async def sender_loop(self):
         await self.task_handlers.send_tasks_back()
@@ -134,6 +140,41 @@ class Handlers(object):
                         project_uuid, updated_target)
 
                 self.data_updated_queue.task_done()
+
+            if task_type == "creds":
+                updated_target = target.split(':')[0]
+
+                await send_notification(
+                    self.socketio,
+                    "success",
+                    "Task finished",
+                    "Patator for {} finished".format(
+                        target
+                    ),
+                    project_uuid=project_uuid
+                )
+
+                if re.match(r'^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$', updated_target):
+                    await self.socketio.emit(
+                        'ips:updated', {
+                            'status': 'success',
+                            'project_uuid': project_uuid,
+                            'updated_ips': [updated_target]
+                        },
+                        namespace='/ips'
+                    )  
+                else:
+                    await self.socketio.emit(
+                        'hosts:updated', {
+                            'status': 'success',
+                            'project_uuid': project_uuid,
+                            'updated_hostname': updated_target
+                        },
+                        namespace='/hosts'
+                    )
+
+                self.data_updated_queue.task_done()
+
 
         except queue.Empty:
             pass

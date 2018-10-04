@@ -104,6 +104,18 @@ class TaskManager(object):
             self.data_updated_queue.put(
                 ("scope", task.target, task.project_uuid, None, "dnsscan")
             )
+        elif task.task_type == "patator":
+            self.logger.info(
+                "{} patator finished, {}".format(
+                    task.task_id,
+                    task.text
+                )
+            )
+            
+            self.data_updated_queue.put(
+                ("creds", task.target, task.project_uuid, None, task.task_type)
+            )
+        
 
     def parse_new_status(self, message):
         """ Parse the message from the queue, which contains task status,
@@ -307,6 +319,23 @@ class TaskManager(object):
                 targets, params, project_uuid, self.exchange
             )
             self.active_tasks += tasks
+
+        elif task_type == 'patator':
+            if params['targets'] == 'ips':
+                if filters.get('port', None) is None:
+                    filters['port'] = ['%']
+
+                targets = self.scope_manager.get_ips(filters, project_uuid)
+            else:
+                targets = self.scope_manager.get_hosts(
+                    filters, project_uuid, hosts_only=True
+                )
+
+            tasks = TaskStarter.start_patator(
+                targets, params, project_uuid, self.exchange
+            )
+            self.active_tasks += tasks
+
 
         return list(
             map(

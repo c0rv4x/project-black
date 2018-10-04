@@ -6,27 +6,20 @@ import {
 	Card,
 	Table,
 	Header,
-	Grid,
 	Divider,
 	Popup,
-	Modal,
 	List,
-	Label,
-	Image
+	Label
 } from 'semantic-ui-react'
 
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
 import TasksScoped from '../../../common/tasks_scoped/TasksScoped.jsx'
+import Creds from '../../../common/creds/Creds.jsx'
 
 
 class IPEntryLine extends React.Component {
-
-	constructor(props) {
-		super(props);
-	}
-
 	shouldComponentUpdate(nextProps) {
-		return (!_.isEqual(nextProps, this.props));
+		return (!_.isEqual(nextProps['ip'], this.props['ip']));
 	}
 
 	render() {
@@ -79,7 +72,7 @@ class IPEntryLine extends React.Component {
 
 			hostnames_view = (
 				<Popup 
-					trigger={<Label>{hostnames.length} {hostnames.length == 1 && "host"}{hostnames.length != 1 && "hosts"}</Label>}
+					trigger={<Label as="a">Hosts<Label.Detail>{hostnames.length}</Label.Detail></Label>}
 					content={
 						<List bulleted>
 							{hostnames_list_items}
@@ -89,6 +82,7 @@ class IPEntryLine extends React.Component {
 				/>
 			);
 		}
+
 
 		let files_by_statuses = {
 			'2xx': [],
@@ -121,7 +115,13 @@ class IPEntryLine extends React.Component {
 				<ScopeComment comment={ip.comment}
 						  	  onCommentSubmit={onCommentSubmit} />
 
-				<div style={{"wordBreak": "break-all"}}>{hostnames_view}</div>
+				<div style={{"wordBreak": "break-all"}}>
+					{hostnames_view}
+					<Creds
+						scope={ip}
+						project_uuid={project_uuid}
+					/>
+				</div>
 
 				<Divider hidden />
 				<List bulleted>

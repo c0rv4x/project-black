@@ -87,15 +87,26 @@ function host_data_updated(state = initialState, action) {
 
 	var found = false;
 
-	if (message.updated_hostname) {
-		for (var state_host of state.data) {
-			if (state_host.hostname == message.updated_hostname) {
-				console.log("Got some files for currently displayed hosts");
+	if (message.updated_hosts) {
+		for (var each_host of message.updated_hosts) {
+			for (var state_host of state.data) {
+				if (state_host.hostname == each_host) {
+					console.log("Got some files for currently displayed hosts");
+					found = true;
+					break;
+				}
+			}
+		}
+	}
+	else if (message.updated_hostname) {
+		for (var state_ip of state.data) {
+			if (state_ip.hostname == message.updated_hostname) {
 				found = true;
 				break;
 			}
 		}
 	}
+
 
 	if (found) {
 		return {

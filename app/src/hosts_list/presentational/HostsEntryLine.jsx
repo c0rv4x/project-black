@@ -1,43 +1,23 @@
- import React from 'react'
-// import { 
-// 	Button, 
-// 	Panel, 
-// 	Glyphicon,
-// 	ListGroup,
-// 	ListGroupItem,
-// 	Row,
-// 	Col,
-// 	Card,
-// 	CardHeader,
-// 	CardBody
-// } from 'reactstrap'
+import React from 'react'
 
 import {
 	Button,
 	Card,
-	Grid,
-	Segment,
 	List,
 	Header,
 	Divider
 } from 'semantic-ui-react'
 
-import { Link } from 'react-router-dom'
-
 import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import HostsEntryLinePorts from './HostsEntryLinePorts.jsx'
 import TasksScoped from '../../common/tasks_scoped/TasksScoped.jsx'
+import Creds from '../../common/creds/Creds.jsx'
 
 
 class HostsEntryLine extends React.Component {
-
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
-		const { host } = this.props;
-		const verbose_host_link = '/project/' + this.props.project_uuid + '/host/' + host.hostname;
+		const { host, project_uuid, deleteScope, onCommentSubmit } = this.props;
+		const verbose_host_link = '/project/' + project_uuid + '/host/' + host.hostname;
 
 		const footer = (
 			<div>
@@ -51,7 +31,7 @@ class HostsEntryLine extends React.Component {
 					</Button>
 	            </a>
 
-				<Button basic color="red" size="tiny" onClick={this.props.deleteScope}>
+				<Button basic color="red" size="tiny" onClick={deleteScope}>
 					Delete
 				</Button>
 			</div>
@@ -84,7 +64,12 @@ class HostsEntryLine extends React.Component {
 				<Header>{host.hostname}</Header>
 				<Divider />
 				<ScopeComment comment={host.comment}
-							  onCommentSubmit={this.props.onCommentSubmit} />
+							  onCommentSubmit={onCommentSubmit} />
+
+				<Creds
+					scope={host}
+					project_uuid={project_uuid}
+				/>
 
 				<Divider hidden />
 				<List bulleted>

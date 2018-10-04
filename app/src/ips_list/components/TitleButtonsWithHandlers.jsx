@@ -15,8 +15,9 @@ class TitleButtonsWithHandlers extends React.Component {
 		this.runMasscan = this.runMasscan.bind(this);
 		this.runNmap = this.runNmap.bind(this);
 		this.runNmapOnlyOpen = this.runNmapOnlyOpen.bind(this);
-
+		
 		this.dirbusterStart = this.dirbusterStart.bind(this);
+		this.runPatator = this.runPatator.bind(this);
 	}
 
 	shouldComponentUpdate(nextProps) {
@@ -35,7 +36,7 @@ class TitleButtonsWithHandlers extends React.Component {
 											this.props.filters, 
 											{'program': [params["argv"]]},
 											this.props.project.project_uuid)
-	}	
+	}
 
 	runNmapOnlyOpen(params) {
 		var filters = this.props.filters;
@@ -57,6 +58,14 @@ class TitleButtonsWithHandlers extends React.Component {
 											this.props.filters,
 											{'program': options,
 											 'targets': 'ips'},
+											this.props.project.project_uuid);
+	}
+
+	runPatator(params) {
+		this.tasksEmitter.requestCreateTask('patator', 
+											this.props.filters, 
+											{'program': [params["argv"]],
+											'targets': 'ips'},
 											this.props.project.project_uuid);
 	}
 
@@ -206,7 +215,38 @@ class TitleButtonsWithHandlers extends React.Component {
 											"default_value": false
 										}					
 									]
-								}						  		
+								},
+								{
+                                    "name": "Patator",
+                                    "help": [
+										{
+											"type": "warning",
+											"condition": !this.props.filters.hasOwnProperty('port') || this.props.filters.port.length > 1 || this.props.filters.port.indexOf('%') !== -1,
+											"text": "You have selected more than one port. It is not recommended to launch patator like this as there can be many different types of applications. Use more specific filters"
+										},
+										{
+											"type": "info",
+											"condition": true,
+											"text": "Don't specify any target here, all the hosts will be pulled based on your current filters"
+										}
+									],
+									"handler": this.runPatator,
+									"preformed_options": [
+										{
+											"name": "FTP",
+											"options": {
+												"argv": "ftp_login user=FILE0 password=FILE1 0=logins.txt 1=passwords.txt -x ignore:mesg='Login incorrect.' -x ignore,reset,retry:code=500 -x ignore:code=530"
+											}
+										}
+									],
+									"available_options": [
+										{
+											"name": "argv",
+											"type": "text",
+											"default_value": ""
+										}
+									]
+								},								
 						  	]
 						  } />
 		)
