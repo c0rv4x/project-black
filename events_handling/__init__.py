@@ -66,7 +66,7 @@ class Handlers(object):
 
         try:
             task_data = self.data_updated_queue.get_nowait()
-            self.notifier.notify(task_data)
+            await self.notifier.notify(task_data)
             self.data_updated_queue.task_done()
 
         except queue.Empty:

@@ -11,7 +11,7 @@ class Notifier:
 
         self.ip_regex = re.compile('^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$')
 
-    def notify(self, task):
+    async def notify(self, task):
         data_type, target, project_uuid, text, task_name, task_status = task
             # if data_type == "scope":
             #     # This is triggered when dnsscan finds something new
@@ -31,13 +31,13 @@ class Notifier:
 
 
         if data_type == "scan":
-            self.notify_on_scans(project_uuid, text, task_name, task_status)
+            await self.notify_on_scans(project_uuid, text, task_name, task_status)
         if data_type == "file":
-            self.notify_on_files(project_uuid, text, task_status)
+            await self.notify_on_files(project_uuid, text, task_status)
         if data_type == "creds":
-            self.notify_on_creds(project_uuid, target, task_status)
+            await self.notify_on_creds(project_uuid, target, task_status)
 
-    def notify_on_scans(self, project_uuid, text, task_name, task_status):
+    async def notify_on_scans(self, project_uuid, text, task_name, task_status):
         targets = None
 
         if text:
@@ -69,9 +69,9 @@ class Notifier:
             )
 
         if targets:
-            await self.send_scans_notifications(targets, project_uuid)
+            await self.send_scans_updated_notifications(targets, project_uuid)
 
-    async def send_scans_notifications(self, new_ips, project_uuid=None):
+    async def send_scans_updated_notifications(self, new_ips, project_uuid=None):
         """ Send notification which notes that the `updated_ips` have updated scans.
         The notification is sent both to hosts and ips to make sure the page gets reloaded """
         if new_ips:
@@ -93,7 +93,7 @@ class Notifier:
                 namespace='/hosts'
             )
 
-    def notify_on_files(self, project_uuid, text, task_status):
+    async def notify_on_files(self, project_uuid, text, task_status):
         # Dirbuster found some files
         updated_target = None
 
@@ -110,10 +110,9 @@ class Notifier:
                 project_uuid=project_uuid
             )
 
-            await self.file_handlers.notify_on_updated_files(
-                project_uuid, updated_target)
+            await self.send_updated_files_notification(project_uuid, updated_target)
 
-    def notify_on_creds(self, target, project_uuid, task_status):
+    async def notify_on_creds(self, target, project_uuid, task_status):
         updated_target = target.split(':')[0]
 
         await send_notification(
