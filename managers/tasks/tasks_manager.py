@@ -8,7 +8,7 @@ import asynqp
 from black.db import Sessions, TaskDatabase
 from managers.tasks.shadow_task import ShadowTask
 from managers.tasks.task_starter import TaskStarter
-from managers.tasks.finished_task_notifier import Notifier
+from managers.tasks.finished_task_notification_creator import NotificationCreator
 
 from common.logger import log
 from config import CONFIG
@@ -21,7 +21,7 @@ class TaskManager(object):
 
     def __init__(self, data_updated_queue, scope_manager):
         self.data_updated_queue = data_updated_queue
-        self.notifier = Notifier(self.data_updated_queue)
+        self.notification_creator = NotificationCreator(self.data_updated_queue)
 
         self.scope_manager = scope_manager
 
@@ -106,7 +106,7 @@ class TaskManager(object):
                     new_status == 'Finished' or
                     new_status == 'Aborted'
                 ):
-                    self.notifier.finished(task)
+                    self.notification_creator.finished(task)
 
                 if new_status == 'Finished' or new_status == 'Aborted':
                     self.active_tasks.remove(task)
