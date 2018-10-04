@@ -22,10 +22,31 @@ function mapStateToProps(state, ownProps) {
 		}
 	}
 
+    let creds_dict = {};
+    for (let cred of _.get(state.creds, "current_values", [])) {
+        if (creds_dict.hasOwnProperty(cred.target)) {
+            creds_dict[cred.target]["values"].push(cred);
+        }
+        else {
+            creds_dict[cred.target] = {
+                "values": [cred]
+            };
+        }
+    }
+
     let new_hosts = JSON.parse(JSON.stringify(state.hosts));
 
     if (new_hosts) {
         for (var host of new_hosts.data) {
+            host.target = host.hostname;
+            host.creds = {
+                "values": []
+            };
+
+            if (creds_dict.hasOwnProperty(host.hostname)) {
+                host.creds = creds_dict[host.hostname];
+            }
+
             host.tasks = {
                 "active": [],
                 "finished": []
