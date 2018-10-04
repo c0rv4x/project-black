@@ -61,12 +61,14 @@ class CredHandlers(object):
                     self.socketio,
                     "success",
                     "Creds deleted",
-                    "Deleted creds for {}".format(targets)
+                    "Deleted creds for {}".format(targets),
+                    project_uuid=project_uuid
                 )
             else:
                 await send_notification(
                     self.socketio,
                     "error",
                     "Error on creds delete",
-                    "Error while deleting creds {}".format(project_uuid)
+                    "Error while deleting creds {}".format(project_uuid),
+                    project_uuid=project_uuid
                 )
