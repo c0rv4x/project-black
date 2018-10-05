@@ -50,9 +50,9 @@ class ProjectDetails extends React.Component {
 				<Tasks tasks={this.props.tasks} />
 				<br/>
 
-				<TitleButtonsWithHandlers scopes={ips.data}
-									      project={project} 
-									      filters={this.props.filters} />
+				<TitleButtonsWithHandlers
+					project={project} 
+					filters={this.props.filters} />
 
 				<IPTableTracked ips={ips}
 								project_uuid={project.project_uuid}
