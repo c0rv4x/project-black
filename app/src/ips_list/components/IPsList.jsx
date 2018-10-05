@@ -7,7 +7,7 @@ import Tasks from '../../common/tasks/Tasks.jsx'
 import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
 
 
-class ProjectDetails extends React.Component {
+class IPsList extends React.Component {
 	constructor(props) {
 		super(props);
 
@@ -65,4 +65,4 @@ class ProjectDetails extends React.Component {
 	}
 }
 
-export default ProjectDetails;
+export default IPsList;

@@ -1,9 +1,9 @@
 import React from 'react'
 
-import ProjectDetailsScopesUpdater from './ProjectDetailsScopesUpdater.jsx'
+import IPsListScopesUpdater from './IPsListScopesUpdater.jsx'
 
 
-class ProjectDetailsFilters extends React.Component {
+class IPsListFilters extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -23,7 +23,7 @@ class ProjectDetailsFilters extends React.Component {
 
 	render() {
 		return (
-			<ProjectDetailsScopesUpdater
+			<IPsListScopesUpdater
 				 ips={this.props.ips}
 				 tasks={this.props.tasks}
 				 project={this.props.project}
@@ -36,4 +36,4 @@ class ProjectDetailsFilters extends React.Component {
 }
 
 
-export default ProjectDetailsFilters;
+export default IPsListFilters;

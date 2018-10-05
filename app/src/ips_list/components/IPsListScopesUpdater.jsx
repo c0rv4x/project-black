@@ -3,12 +3,12 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import { Dimmer, Loader, Segment } from 'semantic-ui-react'
 
-import ProjectDetails from './ProjectDetails.jsx'
+import IPsList from './IPsList.jsx'
 import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
 import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmitter.js'
 import { setLoaded } from '../../redux/ips/actions.js'
 
-class ProjectDetailsScopesUpdater extends React.Component {
+class IPsListScopesUpdater extends React.Component {
 	constructor(props) {
 		super(props);
 
@@ -78,7 +78,7 @@ class ProjectDetailsScopesUpdater extends React.Component {
 				<Dimmer active={!this.props.ips.loaded} inverted>
 					<Loader />
 				</Dimmer>			
-				<ProjectDetails
+				<IPsList
 					setLoaded={this.triggerSetLoaded}
 					renewIps={this.renewIps}
 					{...this.props}
@@ -88,8 +88,8 @@ class ProjectDetailsScopesUpdater extends React.Component {
 	}
 }
 
-ProjectDetailsScopesUpdater.contextTypes = {
+IPsListScopesUpdater.contextTypes = {
     store: PropTypes.object
 }
 
-export default ProjectDetailsScopesUpdater;
+export default IPsListScopesUpdater;

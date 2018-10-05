@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { connect } from 'react-redux'
 
-import ProjectDetailsFilters from './ProjectDetailsFilters.jsx'
+import IPsListFilters from './IPsListFilters.jsx'
 
 
 function mapStateToProps(state, ownProps) {
@@ -125,8 +125,8 @@ function mapStateToProps(state, ownProps) {
 }
 
 
-const ProjectDetailsWrapper = connect(
+const IPsListWrapper = connect(
     mapStateToProps
-)(ProjectDetailsFilters)
+)(IPsListFilters)
 
-export default ProjectDetailsWrapper
+export default IPsListWrapper

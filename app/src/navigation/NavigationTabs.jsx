@@ -6,7 +6,7 @@ import {
 import { Tab, Menu, Icon } from 'semantic-ui-react'
 
 import ScopeSetupWrapper from '../scope_setup/components/ScopeSetupWrapper.js'
-import ProjectDetailsWrapper from '../ips_list/components/ProjectDetailsWrapper.js'
+import IPsListWrapper from '../ips_list/components/IPsListWrapper.js'
 import HostsListWrapper from '../hosts_list/components/HostsListWrapper.js'
 
 
@@ -55,7 +55,7 @@ class NavigationTabs extends React.Component {
 			},
 			{
 				menuItem: 'IP List',
-				render: (() => <ProjectDetailsWrapper project_uuid={this.project_uuid} />)
+				render: (() => <IPsListWrapper project_uuid={this.project_uuid} />)
 			},
 			{
 				menuItem: 'Hosts List',
