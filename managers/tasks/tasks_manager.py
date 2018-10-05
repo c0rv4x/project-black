@@ -68,10 +68,9 @@ class TaskManager(object):
             )
             await queue.bind(self.exchange, task_type + '_tasks')
 
-        await self.tasks_queue.consume(self.parse_new_status)
+        await self.tasks_queue.consume(self.handle_status_message)
 
-
-    def parse_new_status(self, message):
+    def handle_status_message(self, message):
         """ Parse the message from the queue, which contains task status,
         updates the relevant ShadowTask and, we notify the upper module that
         it must update the scan results. """
