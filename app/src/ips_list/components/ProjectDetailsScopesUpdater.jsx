@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types';
 import { Dimmer, Loader, Segment } from 'semantic-ui-react'
 
 import ProjectDetails from './ProjectDetails.jsx'
@@ -88,7 +89,7 @@ class ProjectDetailsScopesUpdater extends React.Component {
 }
 
 ProjectDetailsScopesUpdater.contextTypes = {
-    store: React.PropTypes.object
+    store: PropTypes.object
 }
 
 export default ProjectDetailsScopesUpdater;

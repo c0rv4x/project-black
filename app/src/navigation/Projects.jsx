@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 
 import ProjectsMainComponentWrapper from '../projects_list/components/ProjectsMainComponentWrapper.js'
 
@@ -30,7 +31,7 @@ class Projects extends React.Component {
 }
 
 Projects.contextTypes = {
-    store: React.PropTypes.object
+    store: PropTypes.object
 }
 
 export default Projects;

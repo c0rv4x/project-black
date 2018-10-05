@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 
 import HostPage from '../host_verbose/components/HostVerboseWrapper.jsx'
 
@@ -44,7 +45,7 @@ class Host extends React.Component {
 }
 
 Host.contextTypes = {
-    store: React.PropTypes.object
+    store: PropTypes.object
 }
 
 export default Host;

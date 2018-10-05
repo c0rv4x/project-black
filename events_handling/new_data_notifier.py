@@ -133,7 +133,7 @@ class Notifier:
                 namespace='/hosts'
             )
 
-    async def notify_on_creds(self, target, project_uuid, task_status):
+    async def notify_on_creds(self, project_uuid, target, task_status):
         updated_target = target.split(':')[0]
 
         await send_notification(

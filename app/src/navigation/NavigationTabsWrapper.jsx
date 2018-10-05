@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 
 import NavigationTabs from './NavigationTabs.jsx'
 
@@ -52,7 +53,7 @@ class NavigationTabsWrapper extends React.Component {
 }
 
 NavigationTabsWrapper.contextTypes = {
-    store: React.PropTypes.object
+    store: PropTypes.object
 }
 
 export default NavigationTabsWrapper;

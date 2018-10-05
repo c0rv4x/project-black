@@ -8,9 +8,9 @@ div[id^="progress_task_"] {
     margin-bottom: 0!important;
     margin-top: 0!important;
 }
-.ui.page.modals.transition.visible {
+/* .ui.page.modals.transition.visible {
   display: flex !important;
-}
+} */
 .ui-header {
   line-height: 2
 }

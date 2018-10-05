@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types';
 
 import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'
@@ -215,7 +216,7 @@ class MainAccumulatorUpdater extends React.Component {
 }
 
 MainAccumulatorUpdater.contextTypes = {
-    store: React.PropTypes.object
+    store: PropTypes.object
 }
 
 export default MainAccumulatorUpdater;

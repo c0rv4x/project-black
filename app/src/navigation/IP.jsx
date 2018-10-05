@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 
 import IPPage from '../ip_verbose/components/MainAccumulatorWrapper.jsx'
 
@@ -45,7 +46,7 @@ class IP extends React.Component {
 }
 
 IP.contextTypes = {
-    store: React.PropTypes.object
+    store: PropTypes.object
 }
 
 export default IP;
