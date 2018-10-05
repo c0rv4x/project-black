@@ -169,6 +169,8 @@ class HostHandlers(object):
         self.socketio = socketio
         self.scope_manager = scope_manager
 
+        self.register_handlers()
+
     def register_handlers(self):
         @self.socketio.on('hosts:part:get', namespace='/hosts')
         async def _cb_handle_scopes_get(sio, msg):
@@ -354,13 +356,13 @@ class ScopeHandlers(object):
         self.socketio = socketio
         self.scope_manager = scope_manager
 
+        self.register_handlers()
+
     def register_handlers(self):
         """ Register all handlers """
 
         ip = IPHandlers(self.socketio, self.scope_manager)
-        ip.register_handlers()
         host = HostHandlers(self.socketio, self.scope_manager)
-        host.register_handlers()
 
         @self.socketio.on('scopes:create', namespace='/scopes')
         async def _cb_handle_scope_create(sio, msg):
