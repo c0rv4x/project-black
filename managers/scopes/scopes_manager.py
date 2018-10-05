@@ -36,19 +36,17 @@ class ScopeManager(object):
             # Parse filters into an object for more comfortable work
             parsed_filters = Filters.parse_filters(filters)
 
-            # Create scans subquery
-            if filters.get('port', False) or filters.get('protocol') or filters.get('banner'):
-                scans_filters_exist = True
-            else:
-                scans_filters_exist = False
-
+            # Scans
+            scans_filters_exist = (
+                filters.get('port', False) or
+                filters.get('protocol', False) or
+                filters.get('banner', False)
+            )
             scans_from_db = SubqueryBuilder.build_scans_subquery(
                 session, project_uuid, filters)
 
             # Create IPS subquery
-
             ip_filters_exist = filters.get('ip', False)
-
             ips_query = (
                 session.query(
                     IPDatabase
@@ -63,14 +61,11 @@ class ScopeManager(object):
                 IPDatabase, ips_query.subquery('all_ips_parsed'))
 
             # Create files subquery
-
             files_filters_exist = filters.get('files', False)
-
             files_query_aliased = SubqueryBuilder.build_files_subquery(
                 session, project_uuid, filters)
 
             # Create hosts subquery
-
             hosts_query = (
                 session.query(
                     HostDatabase
@@ -122,8 +117,6 @@ class ScopeManager(object):
                 .count()
             )
 
-
-            print('-'*20)
             # Now select hosts, joining them with
             # all other subqueries from the prev step
             hosts_from_db = (
@@ -149,11 +142,8 @@ class ScopeManager(object):
                     contains_eager(HostDatabase.ip_addresses, alias=ips_query_subq)
                     .contains_eager(IPDatabase.ports, alias=scans_from_db),
                     contains_eager(HostDatabase.files, alias=files_query_aliased))
-                # .order_by(HostDatabase.target)
                 .all()
             )
-            print('-'*20)
-
 
         # Reformat each hosts to JSON-like objects
         hosts = sorted(
@@ -197,27 +187,20 @@ class ScopeManager(object):
             parsed_filters = Filters.parse_filters(filters)
 
             # Scans
-            if filters.get('port', False) or filters.get('protocol') or filters.get('banner'):
-                scans_filters_exist = True
-            else:
-                scans_filters_exist = False
-
-            # scans_filters_exist = parsed_filters['ports'] is not True
+            scans_filters_exist = (
+                filters.get('port', False) or
+                filters.get('protocol', False) or
+                filters.get('banner', False)
+            )
             scans_from_db = SubqueryBuilder.build_scans_subquery(
                 session, project_uuid, filters)
 
             # Files
-            if filters.get('files', False):
-                files_filters_exist = True
-            else:
-                files_filters_exist = False
-            
-            # files_filters_exist = filters.get('files', False)
-
+            files_filters_exist = filters.get('files', False)
             files_query_aliased = SubqueryBuilder.build_files_subquery(
                 session, project_uuid, filters)
 
-            # Now select ips, outer joining them with scans
+            # Select IPs + Scans which passed the filters
             ips_query = (
                 session.query(IPDatabase)
                 .filter(
@@ -237,9 +220,9 @@ class ScopeManager(object):
             ips_query_subq = aliased(
                 IPDatabase, ips_query.subquery('all_ips_parsed'))
 
-            # From the filtered ips, we need to select only first N of them.
-            # So we select ids of the first N. Then select all the ips, which have
-            # that ids.
+            # From the filtered ips, we need to select only first N IPs.
+            # So we select the first N ids. Then select all the ips, which have
+            # that ids joining that with all the other fields.
             if page_size is None or page_number is None:
                 ids_limited = (
                     ips_query.from_self(IPDatabase.id, IPDatabase.target)
@@ -305,7 +288,6 @@ class ScopeManager(object):
                             IPDatabase.ports, alias=scans_from_db
                         )
                     )
-                    # .order_by(IPDatabase.target)
                     .all()
                 )
 
@@ -313,9 +295,7 @@ class ScopeManager(object):
 
         if ips_only:
             ips = sorted(list(map(lambda each_ip: each_ip[0], ips_from_db)))
-            # ips = list(map(lambda each_ip: each_ip[0], ips_from_db))
         else:
-            # Reformat the ips to make the JSON-like objects
             ips = sorted(
                 list(
                     map(
