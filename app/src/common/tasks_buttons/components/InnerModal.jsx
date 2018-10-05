@@ -30,19 +30,21 @@ class InnerModal extends React.Component {
 		return ((!_.isEqual(nextProps, this.props)) || (!_.isEqual(nextState, this.state)));
 	}
 
-	componentDidUpdate() {
-		var inputs = {};
-		_.map(this.props.task.available_options, (x) => {
-			inputs[x.name] = {
-				type: x.type,
-				value: x.default_value,
-				default_value: x.default_value,
-			};				
-		});
+	componentDidUpdate(prevProps) {
+		if (!_.isEqual(prevProps, this.props)) {
+			let inputs = {};
+			_.map(this.props.task.available_options, (x) => {
+				inputs[x.name] = {
+					type: x.type,
+					value: x.default_value,
+					default_value: x.default_value,
+				};				
+			});
 
-		this.setState({
-			inputs: inputs
-		});
+			this.setState({
+				inputs: inputs
+			});
+		}		
 	}
 
 	startTask() {
@@ -82,7 +84,7 @@ class InnerModal extends React.Component {
 
 	onInputChange(name, value) {
 		// TODO: change this
-		var inputs = this.state.inputs;
+		let inputs = JSON.parse(JSON.stringify(this.state.inputs));
 		inputs[name].value = value;
 
 		this.setState({
@@ -91,13 +93,15 @@ class InnerModal extends React.Component {
 	}
 
 	render() {
-		const startButtons = _.map(this.props.task.preformed_options, (x) => {
-			var options = [];
+		const { task, open, openModal, closeModal } = this.props;
+
+		const startButtons = _.map(task.preformed_options, (x) => {
+			let options = [];
 			_.forOwn(x.options, (value, key) => {
 				options.push(<div key={key}><strong>{key}:</strong> {value}</div>);
 			});
 
-			var button = (
+			let button = (
 				<span>
 					<Button size="small"
 					        id={"button_" + x.name}
@@ -115,7 +119,7 @@ class InnerModal extends React.Component {
 		});
 
 		return (
-			<Modal open={this.props.open} onOpen={this.props.openModal} onClose={this.props.closeModal} >
+			<Modal open={open} onOpen={openModal} onClose={closeModal} >
 				<Modal.Header>
 					Choose one of the prepared options or create your own
 				</Modal.Header>
@@ -124,14 +128,14 @@ class InnerModal extends React.Component {
 					{startButtons}
 					<Divider hidden />
 					{
-						this.props.task.help && 
-						this.props.task.help.map((help_notice) => {
+						task.help && 
+						task.help.map((help_notice) => {
 							if (help_notice.condition === true) {
 								if (help_notice.type == 'warning') {
 									return (
 										<Message
 											warning
-											key={this.props.task.help.indexOf(help_notice)}
+											key={task.help.indexOf(help_notice)}
 										>
 											{help_notice.text}
 										</Message>
@@ -140,7 +144,7 @@ class InnerModal extends React.Component {
 								else {
 									return (
 										<Message
-											key={this.props.task.help.indexOf(help_notice)}
+											key={task.help.indexOf(help_notice)}
 										>
 											{help_notice.text}
 										</Message>
