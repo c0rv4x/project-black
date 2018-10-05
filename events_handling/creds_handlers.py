@@ -1,25 +1,20 @@
-""" Keeps class with creds handlers """
 import re
 
 from events_handling.notifications_spawner import send_notification
 
 
 class CredHandlers(object):
-    """ The name says for itself"""
-
     def __init__(self, socketio, creds_manager):
         self.socketio = socketio
         self.creds_manager = creds_manager
 
         self.ip_regex = re.compile(
-            '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$'
+            '^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$'
         )
 
         self.register_handlers()
 
-
     def register_handlers(self):
-        """ Register all handlers for credentials """
         @self.socketio.on('creds:stats:get', namespace='/creds')
         async def _cb_handle_files_stats(sid, msg):
             """ When received this message, send back count of creds for project """
@@ -34,7 +29,7 @@ class CredHandlers(object):
 
         @self.socketio.on('creds:get', namespace='/creds')
         async def _cb_handle_files_get(sid, msg):
-            """ When received this message, send back count of creds for project """
+            """ When received this message, send back all creds for project AND targets """
             project_uuid = int(msg.get('project_uuid', None))
             targets = msg.get('targets', None)
 
@@ -56,8 +51,10 @@ class CredHandlers(object):
                 project_uuid=project_uuid, targets=targets, port_number=port_number)
 
             if delete_result["status"] == "success":
-                # Send the success result
                 if self.ip_regex.match(targets[0]):
+                    # Creds can only be referenced to ip OR host, not both.
+                    # That's why we should distinguish the cases to send the
+                    #   appropriate notification
                     await self.socketio.emit(
                         'ips:updated', {
                             'status': 'success',

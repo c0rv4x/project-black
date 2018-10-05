@@ -1,9 +1,4 @@
-""" Simplt keeps handlers for scans (open ports) """
-
-
 class ScanHandlers(object):
-    """ This class is really simple to read """
-
     def __init__(self, socketio, scan_manager):
         self.socketio = socketio
         self.scan_manager = scan_manager
@@ -11,10 +6,9 @@ class ScanHandlers(object):
         self.register_handlers()
 
     def register_handlers(self):
-        """ Register the single handler for returning all scans """
         @self.socketio.on('scans:stats:get', namespace='/scans')
         async def _cb_handle_custom_event(sio, msg):
-            """ When received this message, send back all the scans """
+            """ When received this message, send stats of the scans """
             project_uuid = int(msg.get('project_uuid', None))
 
             await self.send_stats_back(project_uuid)

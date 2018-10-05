@@ -1,4 +1,3 @@
-""" Module keeps class of scope handlers """
 import asyncio
 from netaddr import IPNetwork
 
@@ -31,8 +30,6 @@ class IPHandlers(object):
             """ When received this message, send back all the scopes """
             project_uuid = int(msg.get('project_uuid', None))
             ip_address = msg.get('ip_address')
-
-            print("Getting single ip", ip_address)
 
             await self.send_ips_back({'ip': [ip_address]}, sio, project_uuid)
 
@@ -94,6 +91,7 @@ class IPHandlers(object):
             """ When received this message, send back all the tasks """
             project_uuid = int(msg.get('project_uuid', None))
             ips = msg.get('ips', None)
+
             await self.send_tasks_back_filtered(project_uuid, ips=ips)
 
     async def send_tasks_back_filtered(self, project_uuid, ips=None, hosts=None):

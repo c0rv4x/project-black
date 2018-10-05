@@ -7,7 +7,7 @@ import asyncio
 
 from common.logger import log
 
-from events_handling.projects_handlers import register_project_handlers
+from events_handling.projects_handlers import ProjectHandlers
 from events_handling.scopes_handlers import ScopeHandlers
 from events_handling.tasks_handlers import TaskHandlers
 from events_handling.scans_handlers import ScanHandlers
@@ -41,7 +41,7 @@ class Handlers(object):
         self.file_manager = FileManager()
         self.creds_manager = CredManager()
 
-        register_project_handlers(self.socketio, self.project_manager)
+        ProjectHandlers(self.socketio, self.project_manager)
 
         self.scope_handlers = ScopeHandlers(self.socketio, self.scope_manager)
         self.scan_handlers = ScanHandlers(self.socketio, self.scan_manager)
