@@ -44,13 +44,16 @@ function mapStateToProps(state, ownProps) {
             };
 
             if (creds_dict.hasOwnProperty(ip.ip_address)) {
-                ip.creds = creds_dict[ip.ip_address].sort((a, b) => {
+                let creds_sorted = creds_dict[ip.ip_address]['values'].sort((a, b) => {
                     if (a.port_number < b.port_number) return -1;
                     if (a.port_number > b.port_number) return 1;
                     if (a.candidate < b.candidate) return -1;
                     if (a.candidate > b.candidate) return 1;
                     return 0
                 });
+                ip.creds = {
+                    'values': creds_sorted
+                };
             }
 
             ip.tasks = {
