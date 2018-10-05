@@ -15,7 +15,7 @@ class IPHandlers(object):
     def register_handlers(self):
         @self.socketio.on('ips:part:get', namespace='/ips')
         async def _cb_handle_scopes_get(sio, msg):
-            """ When received this message, send back all the scopes """
+            """ When received this message, send back all the ips """
             project_uuid = int(msg.get('project_uuid', None))
             ip_page = msg.get('ip_page', 0)
             ip_page_size = msg.get('ip_page_size', 12)
@@ -27,7 +27,7 @@ class IPHandlers(object):
 
         @self.socketio.on('ips:single:get', namespace='/ips')
         async def _cb_handle_scope_single_get(sio, msg):
-            """ When received this message, send back all the scopes """
+            """ When received this message, send back a single ip address """
             project_uuid = int(msg.get('project_uuid', None))
             ip_address = msg.get('ip_address')
 
@@ -130,37 +130,21 @@ class IPHandlers(object):
         ips = self.scope_manager.get_ips(
             filters, project_uuid, ip_page, ip_page_size)
 
-        if sio is None:
-            await self.socketio.emit(
-                'ips:part:set', {
-                    'status': 'success',
-                    'project_uuid': project_uuid,
-                    'ips': {
-                        'page': ip_page,
-                        'page_size': ip_page_size,
-                        'data': ips['ips'],
-                        'selected_ips': ips['selected_ips'],
-                        'total_db_ips': ips['total_db_ips']
-                    }
-                },
-                namespace='/ips'
-            )
-        else:
-            await self.socketio.emit(
-                'ips:part:set', {
-                    'status': 'success',
-                    'project_uuid': project_uuid,
-                    'ips': {
-                        'page': ip_page,
-                        'page_size': ip_page_size,
-                        'data': ips['ips'],
-                        'selected_ips': ips['selected_ips'],
-                        'total_db_ips': ips['total_db_ips']
-                    }
-                },
-                room=sio,
-                namespace='/ips'
-            )
+        await self.socketio.emit(
+            'ips:part:set', {
+                'status': 'success',
+                'project_uuid': project_uuid,
+                'ips': {
+                    'page': ip_page,
+                    'page_size': ip_page_size,
+                    'data': ips['ips'],
+                    'selected_ips': ips['selected_ips'],
+                    'total_db_ips': ips['total_db_ips']
+                }
+            },
+            room=sio,
+            namespace='/ips'
+        )
 
 
 class HostHandlers(object):
@@ -224,12 +208,12 @@ class HostHandlers(object):
             comment = msg['comment']
             project_uuid = msg['project_uuid']
 
-            result = self.scope_manager.update_scope(
+            update_result = self.scope_manager.update_scope(
                 scope_id=host_id, comment=comment, scope_type='host'
             )
-            target = result['target']
+            target = update_result['target']
 
-            if result["status"] == "success":
+            if update_result["status"] == "success":
                 await self.socketio.emit(
                     'hosts:update:back',
                     {
@@ -250,10 +234,10 @@ class HostHandlers(object):
                     project_uuid=project_uuid
                 )
             else:
-                result['project_uuid'] = project_uuid
+                update_result['project_uuid'] = project_uuid
                 await self.socketio.emit(
                     'hosts:update:back',
-                    result,
+                    update_result,
                     namespace='/hosts'
                 )
 
@@ -272,6 +256,7 @@ class HostHandlers(object):
             """ When received this message, send back all the tasks """
             project_uuid = int(msg.get('project_uuid', None))
             hosts = msg.get('hosts', None)
+
             await self.send_tasks_back_filtered(project_uuid, hosts=hosts)
 
 
@@ -316,42 +301,25 @@ class HostHandlers(object):
 
         hosts = self.scope_manager.get_hosts(
             filters, project_uuid, host_page, host_page_size)
-        if sio is None:
-            await self.socketio.emit(
-                'hosts:part:set', {
-                    'status': 'success',
-                    'project_uuid': project_uuid,
-                    'hosts': {
-                        'page': host_page,
-                        'page_size': host_page_size,
-                        'data': hosts['hosts'],
-                        'total_db_hosts': hosts['total_db_hosts'],
-                        'selected_hosts': hosts['selected_hosts']
-                    }
-                },
-                namespace='/hosts'
-            )
-        else:
-            await self.socketio.emit(
-                'hosts:part:set', {
-                    'status': 'success',
-                    'project_uuid': project_uuid,
-                    'hosts': {
-                        'page': host_page,
-                        'page_size': host_page_size,
-                        'data': hosts['hosts'],
-                        'total_db_hosts': hosts['total_db_hosts'],
-                        'selected_hosts': hosts['selected_hosts']
-                    }
-                },
-                room=sio,
-                namespace='/hosts'
-            )
+
+        await self.socketio.emit(
+            'hosts:part:set', {
+                'status': 'success',
+                'project_uuid': project_uuid,
+                'hosts': {
+                    'page': host_page,
+                    'page_size': host_page_size,
+                    'data': hosts['hosts'],
+                    'total_db_hosts': hosts['total_db_hosts'],
+                    'selected_hosts': hosts['selected_hosts']
+                }
+            },
+            room=sio,
+            namespace='/hosts'
+        )
 
 
 class ScopeHandlers(object):
-    """ Registers all handlers related to scopes """
-
     def __init__(self, socketio, scope_manager):
         self.socketio = socketio
         self.scope_manager = scope_manager
@@ -359,10 +327,8 @@ class ScopeHandlers(object):
         self.register_handlers()
 
     def register_handlers(self):
-        """ Register all handlers """
-
-        ip = IPHandlers(self.socketio, self.scope_manager)
-        host = HostHandlers(self.socketio, self.scope_manager)
+        IPHandlers(self.socketio, self.scope_manager)
+        HostHandlers(self.socketio, self.scope_manager)
 
         @self.socketio.on('scopes:create', namespace='/scopes')
         async def _cb_handle_scope_create(sio, msg):
@@ -377,7 +343,6 @@ class ScopeHandlers(object):
             error_text = ""
 
             for scope in scopes:
-                added = False
                 # Create newly added scope
                 if scope['type'] == 'hostname':
                     create_result = self.scope_manager.create_host(
