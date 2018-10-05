@@ -22,7 +22,7 @@ class ProjectDetails extends React.Component {
 	}
 
   	shouldComponentUpdate(nextProps) {
-  		return (!_.isEqual(nextProps, this.props));
+  		return !_.isEqual(nextProps, this.props);
   	}
 
   	componentDidUpdate(prevProps) {

@@ -44,7 +44,13 @@ function mapStateToProps(state, ownProps) {
             };
 
             if (creds_dict.hasOwnProperty(ip.ip_address)) {
-                ip.creds = creds_dict[ip.ip_address];
+                ip.creds = creds_dict[ip.ip_address].sort((a, b) => {
+                    if (a.port_number < b.port_number) return -1;
+                    if (a.port_number > b.port_number) return 1;
+                    if (a.candidate < b.candidate) return -1;
+                    if (a.candidate > b.candidate) return 1;
+                    return 0
+                });
             }
 
             ip.tasks = {
@@ -94,7 +100,16 @@ function mapStateToProps(state, ownProps) {
                         ip.tasks.finished.push(task_raw);
                     }                    
                 }
-            }            
+            }
+
+            // TODO: sort tasks of each ip to make sure that _.isEqual don't return false
+            // every time
+
+            ip.scans = ip.scans.sort((a, b) => {
+                if (a.port_number < b.port_number) return -1;
+                if (a.port_number > b.port_number) return 1;
+                return 0
+            });
         }
     }
 
@@ -102,8 +117,7 @@ function mapStateToProps(state, ownProps) {
         project: project,
         tasks: state.tasks,
         ips: ips,
-        tasks: state.tasks.active,
-        scans: state.scans
+        tasks: state.tasks.active
     }
 }
 
