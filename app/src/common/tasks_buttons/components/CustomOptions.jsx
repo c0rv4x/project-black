@@ -19,17 +19,19 @@ class CustomOptions extends React.Component {
 
 		_.forOwn(this.props.inputs, (value, key) => {
 			options.push(
-				<AdaptiveOption key={key}
-								objectKey={key}
-								value={value}
-								onInputChange={this.props.onInputChange} />
+				<AdaptiveOption
+					key={key}
+					objectKey={key}
+					value={value}
+					onInputChange={this.props.onInputChange}
+				/>
 			);
 		});
 		return (
 			<div>
 				<Form>		
 					{options}
-					<Button color="blue" onClick={() => {console.log('starting');this.props.startTaskHandler();}}>Start Task</Button>
+					<Button color="blue" onClick={this.props.startTaskHandler}>Start Task</Button>
 				</Form>
 			</div>
 		)

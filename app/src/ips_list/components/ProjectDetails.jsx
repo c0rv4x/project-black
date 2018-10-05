@@ -43,16 +43,16 @@ class ProjectDetails extends React.Component {
   	}
 
 	render() {
-		let { ips, hosts, project, filters, applyFilters, setLoaded, renewIps } = this.props;
+		let { ips, tasks, project, filters, applyFilters, setLoaded, renewIps } = this.props;
 
 		return (
 			<div>
-				<Tasks tasks={this.props.tasks} />
+				<Tasks tasks={tasks} />
 				<br/>
 
 				<TitleButtonsWithHandlers
 					project={project} 
-					filters={this.props.filters} />
+					filters={filters} />
 
 				<IPTableTracked ips={ips}
 								project_uuid={project.project_uuid}

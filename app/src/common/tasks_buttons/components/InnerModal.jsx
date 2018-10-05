@@ -26,9 +26,13 @@ class InnerModal extends React.Component {
 		this.onInputChange = this.onInputChange.bind(this);
 	}
 
-	componentWillReceiveProps(nextProps) {
+	shouldComponentUpdate(nextProps, nextState) {
+		return ((!_.isEqual(nextProps, this.props)) || (!_.isEqual(nextState, this.state)));
+	}
+
+	componentDidUpdate() {
 		var inputs = {};
-		_.map(nextProps.task.available_options, (x) => {
+		_.map(this.props.task.available_options, (x) => {
 			inputs[x.name] = {
 				type: x.type,
 				value: x.default_value,
