@@ -52,7 +52,7 @@ function mapStateToProps(state, ownProps) {
                 "finished": []
             };
             for (var task_raw of state.tasks.active) {
-                if (task_raw.task_type == 'dirsearch') {
+                if ((task_raw.task_type == 'dirsearch') || (task_raw.task_type == 'patator')) {
                     let task_splitted = task_raw.target.split(':');
 
                     if (task_splitted.indexOf(host.hostname) !== -1) {
@@ -62,14 +62,14 @@ function mapStateToProps(state, ownProps) {
             }
 
             for (var task_raw of state.tasks.finished) {
-                if (task_raw.task_type == 'dirsearch') {
+                if ((task_raw.task_type == 'dirsearch') || (task_raw.task_type == 'patator')) {
                     let task_splitted = task_raw.target.split(':');
 
                     if (task_splitted.indexOf(host.hostname) !== -1) {
                         host.tasks.finished.push(task_raw);
                     }
                 }
-            }   
+            }            
         }
     }
 

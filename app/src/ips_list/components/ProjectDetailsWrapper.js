@@ -74,7 +74,7 @@ function mapStateToProps(state, ownProps) {
                         ip.tasks.active.push(task_raw);
                     }
                 }
-                else if (task_raw.task_type == 'dirsearch') {
+                else if ((task_raw.task_type == 'dirsearch') || (task_raw.task_type == 'patator')) {
                     let task_splitted = task_raw.target.split(':');
 
                     if (task_splitted.indexOf(ip.ip_address) !== -1) {
@@ -96,7 +96,7 @@ function mapStateToProps(state, ownProps) {
                         ip.tasks.finished.push(task_raw);
                     }
                 }                
-                else if (task_raw.task_type == 'dirsearch') {
+                else if ((task_raw.task_type == 'dirsearch') || (task_raw.task_type == 'patator')) {
                     let task_splitted = task_raw.target.split(':');
 
                     if (task_splitted.indexOf(ip.ip_address) !== -1) {
