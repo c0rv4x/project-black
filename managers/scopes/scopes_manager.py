@@ -462,7 +462,8 @@ class ScopeManager(object):
         if scopes_ids is None:
             to_resolve = project_hosts
         else:
-            # This should not work for now, but TODO: make it actually work
+            # Yet we cannot resolve only specific hosts.
+            # TODO: add such possibility
             to_resolve = list(
                 filter(lambda x: x.id in scopes_ids, project_hosts)
             )
@@ -555,17 +556,8 @@ class ScopeManager(object):
                 result = each_future.result()
             except Exception as exc:
                 pass
-                # self.logger.error(
-                #     "{} during resolve {}@{}".format(
-                #         str(exc),
-                #         each_future.database_host,
-                #         project_uuid
-                #     )
-                # )
 
             for each_result in result:
-                # Well, this is strange, but ip in aiodns is returned in 'host'
-                # field
                 total_ips += 1
 
                 resolved_ip = each_result.host
@@ -594,6 +586,7 @@ class ScopeManager(object):
 
                         host.ip_addresses.append(newly_created_ip)
                         session.add(host)
+
         session.commit()
         self.session_spawner.destroy_session(session)
 
