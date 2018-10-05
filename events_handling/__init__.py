@@ -44,20 +44,10 @@ class Handlers(object):
         register_project_handlers(self.socketio, self.project_manager)
 
         self.scope_handlers = ScopeHandlers(self.socketio, self.scope_manager)
-        self.scope_handlers.register_handlers()
-
         self.scan_handlers = ScanHandlers(self.socketio, self.scan_manager)
-        self.scan_handlers.register_handlers()
-
         self.file_handlers = FileHandlers(self.socketio, self.file_manager)
-        self.file_handlers.register_handlers()
-
         self.task_handlers = TaskHandlers(self.socketio, self.task_manager)
-        self.task_handlers.register_handlers()
-
         self.cred_handlers = CredHandlers(self.socketio, self.creds_manager)
-        self.cred_handlers.register_handlers()
-
 
         self.notifier = Notifier(self.socketio)
 

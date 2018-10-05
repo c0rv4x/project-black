@@ -15,6 +15,9 @@ class CredHandlers(object):
             '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$'
         )
 
+        self.register_handlers()
+
+
     def register_handlers(self):
         """ Register all handlers for credentials """
         @self.socketio.on('creds:stats:get', namespace='/creds')

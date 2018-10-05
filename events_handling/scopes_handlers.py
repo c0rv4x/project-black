@@ -11,6 +11,8 @@ class IPHandlers(object):
         self.socketio = socketio
         self.scope_manager = scope_manager
 
+        self.register_handlers()
+
     def register_handlers(self):
         @self.socketio.on('ips:part:get', namespace='/ips')
         async def _cb_handle_scopes_get(sio, msg):

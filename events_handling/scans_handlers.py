@@ -8,6 +8,8 @@ class ScanHandlers(object):
         self.socketio = socketio
         self.scan_manager = scan_manager
 
+        self.register_handlers()
+
     def register_handlers(self):
         """ Register the single handler for returning all scans """
         @self.socketio.on('scans:stats:get', namespace='/scans')

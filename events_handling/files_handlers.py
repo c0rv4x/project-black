@@ -6,6 +6,8 @@ class FileHandlers(object):
         self.socketio = socketio
         self.file_manager = file_manager
 
+        self.register_handlers()
+
     def register_handlers(self):
         """ Register a single handler for files data """
         @self.socketio.on('files:stats:get', namespace='/files')

@@ -9,6 +9,8 @@ class TaskHandlers(object):
         self.socketio = socketio
         self.task_manager = task_manager
 
+        self.register_handlers()
+
     def register_handlers(self):
         @self.socketio.on('tasks:all:get', namespace='/tasks')
         async def _cb_handle_tasks_get(sio, msg):
