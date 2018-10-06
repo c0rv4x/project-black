@@ -146,13 +146,16 @@ class ScopeManager(object):
             )
 
         # Reformat each hosts to JSON-like objects
-        hosts = sorted(
-                map(lambda each_host: each_host.dict(
-                include_ips=True,
-                include_files=True,
-                include_ports=True
-            ), hosts_from_db)
-        , key=lambda x: x['hostname'])
+        hosts = (
+            sorted(
+                map(
+                    lambda each_host: each_host.dict(
+                        include_ips=True,
+                        include_ports=True
+                    ), hosts_from_db),
+                key=lambda x: x['hostname']
+            )
+        )
 
         total_db_hosts = self.count_hosts(project_uuid)
     
@@ -301,8 +304,8 @@ class ScopeManager(object):
                     map(
                         lambda each_ip: each_ip.dict(
                             include_ports=True,
-                            include_hostnames=True,
-                            include_files=True
+                            include_hostnames=True
+                            # include_files=True
                         ),
                         ips_from_db
                     )
