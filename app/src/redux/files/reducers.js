@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { 
-	RENEW_FILES_STATS
+	RENEW_TOTAL_AMOUNT
 } from './actions.js'
 
 
@@ -11,7 +11,7 @@ const defaultState = {
 }
 
 
-function renew_stats(state = defaultState, action) {
+function renew_total_amount(state = defaultState, action) {
 	const message = action.message;
 
 	return {
@@ -28,8 +28,8 @@ function file_reduce(state = defaultState, action) {
 		if (action.message && action.current_project_uuid != action.message.project_uuid) { return state; }
 		else {	
 			switch (action.type) {
-				case RENEW_FILES_STATS:
-					return renew_stats(state, action);
+				case RENEW_TOTAL_AMOUNT:
+					return renew_total_amount(state, action);
 				default:
 					return state;
 			}

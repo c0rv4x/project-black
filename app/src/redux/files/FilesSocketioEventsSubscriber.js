@@ -19,7 +19,7 @@ class FilesEventsSubsriber {
         this.connector.after_connected((x) => {
             this.emitter = new FilesSocketioEventsEmitter();
 
-            this.emitter.renewStats(this.project_uuid);
+            this.emitter.renewCount(this.project_uuid);
         });
 
         this.basic_events_registration();
@@ -29,7 +29,7 @@ class FilesEventsSubsriber {
         /* Register handlers on basic events */
 
         // Received all projects in one message
-        this.register_socketio_handler('files:stats:set', renewFilesStats);
+        this.register_socketio_handler('files:count:set', renewTotalAmount);
     }
 
     register_socketio_handler(eventName, callback) {

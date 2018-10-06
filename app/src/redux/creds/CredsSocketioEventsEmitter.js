@@ -7,7 +7,7 @@ class CredsSocketioEventsEmitter {
         this.connector = new Connector('creds');
     }
 
-    renewStats(project_uuid) {
+    renewCount(project_uuid) {
         this.connector.emit('creds:stats:get', {
             "project_uuid": project_uuid
         });

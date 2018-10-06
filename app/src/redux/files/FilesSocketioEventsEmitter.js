@@ -21,8 +21,8 @@ class FilesSocketioEventsEmitter {
         });
     }
 
-    renewStats(project_uuid, hostname) {
-        this.connector.emit('files:stats:get', {
+    renewCount(project_uuid) {
+        this.connector.emit('files:count:get', {
             "project_uuid": project_uuid
         });
     }    

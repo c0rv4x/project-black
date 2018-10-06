@@ -7,17 +7,17 @@ class FileHandlers(object):
         self.register_handlers()
 
     def register_handlers(self):
-        @self.socketio.on('files:stats:get', namespace='/files')
+        @self.socketio.on('files:count:get', namespace='/files')
         async def _cb_handle_files_get(sio, msg):
             """ When received this message, send back all the files """
             project_uuid = int(msg.get('project_uuid', None))
 
-            await self.send_stats_back(project_uuid)
+            await self.send_count_back(project_uuid)
 
-    async def send_stats_back(self, project_uuid=None):
+    async def send_count_back(self, project_uuid=None):
         """ Get all files and send to all clients """
         await self.socketio.emit(
-            'files:stats:set', {
+            'files:count:set', {
                 'status': 'success',
                 'project_uuid': project_uuid,
                 'amount': self.file_manager.count(project_uuid)
