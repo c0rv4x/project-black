@@ -263,7 +263,7 @@ class TaskManager(object):
                 targets = self.scope_manager.get_ips_with_ports(filters, project_uuid)
             else:
                 targets = self.scope_manager.get_hosts_with_ports(
-                    filters, project_uuid, hosts_only=True
+                    filters, project_uuid
                 )
 
             tasks = TaskStarter.start_dirsearch(
@@ -279,7 +279,7 @@ class TaskManager(object):
                 targets = self.scope_manager.get_ips_with_ports(filters, project_uuid)
             else:
                 targets = self.scope_manager.get_hosts_with_ports(
-                    filters, project_uuid, hosts_only=True
+                    filters, project_uuid
                 )
 
             tasks = TaskStarter.start_patator(
