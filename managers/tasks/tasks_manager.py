@@ -222,12 +222,12 @@ class TaskManager(object):
                 filters,
                 project_uuid
             )
-            print(targets)
-            # tasks = TaskStarter.start_masscan(
-            #     targets, params, project_uuid, self.exchange
-            # )
 
-            # self.active_tasks += tasks
+            tasks = TaskStarter.start_masscan(
+                targets, params, project_uuid, self.exchange
+            )
+
+            self.active_tasks += tasks
 
         elif task_type == 'nmap':
             targets = self.scope_manager.get_ips(
@@ -245,7 +245,6 @@ class TaskManager(object):
             targets = self.scope_manager.get_ips(
                 filters,
                 project_uuid
-                # ips_only=True
             )['ips']
 
             tasks = TaskStarter.start_nmap_only_open(
