@@ -73,10 +73,10 @@ class HostsEntryLine extends React.Component {
 
 				<Divider hidden />
 				<List bulleted>
-					<List.Item>2xx: <strong>{files_by_statuses['2xx'].length}</strong></List.Item> 
-					<List.Item>3xx: {files_by_statuses['3xx'].length}</List.Item>
-					<List.Item>4xx: {files_by_statuses['4xx'].length}</List.Item>
-					<List.Item>5xx: {files_by_statuses['5xx'].length}</List.Item>
+					<List.Item>2xx: <strong>{files_by_statuses['2xx']}</strong></List.Item> 
+					<List.Item>3xx: {files_by_statuses['3xx']}</List.Item>
+					<List.Item>4xx: {files_by_statuses['4xx']}</List.Item>
+					<List.Item>5xx: {files_by_statuses['5xx']}</List.Item>
 				</List>
 
 				<HostsEntryLinePorts host={host} />
