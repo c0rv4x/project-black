@@ -58,11 +58,7 @@ class IPEntryLine extends React.Component {
 			)
 		});
 
-		let hostnames = ip.hostnames.sort((a, b) => {
-			if (a.hostname > b.hostname) return 1;
-			if (a.hostname < b.hostname) return -1;
-			return 0;
-		});
+		let hostnames = ip.hostnames;
 		let hostnames_view = null;
 		
 		if (hostnames) {
