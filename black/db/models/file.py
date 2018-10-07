@@ -50,6 +50,8 @@ class FileDatabase(Base):
     def dict(self):
         return {
             "file_id": self.file_id,
+            "host_id": self.host_id,
+            "ip_id": self.ip_id,
             "file_name": self.file_name,
             "port_number": self.port_number,
             "file_path": self.file_path,

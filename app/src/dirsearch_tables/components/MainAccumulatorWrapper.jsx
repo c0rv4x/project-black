@@ -21,9 +21,10 @@ function mapStateToProps(state, ownProps) {
 			"comment": ""
 		}
 	}
-
-    return {
-    	project: project,
+console.log(state.files);
+	return {
+		project: project,
+		project_uuid,
     	ips: state.ips,
     	hosts: state.hosts,
     	files: state.files

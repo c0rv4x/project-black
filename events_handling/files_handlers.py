@@ -66,22 +66,29 @@ class FileHandlers(object):
         async def _cb_handle_files_data_get(sio, msg):
             """ Returns dicts with files for selected targets """
             project_uuid = int(msg.get('project_uuid', None))
-            host_ids = msg.get('host_ids', [])
+            host = msg.get('host')
+            port_number = int(msg.get('port_number'))
+            limit = int(msg.get('limit'))
+            offset = int(msg.get('offset'))
 
-            get_result = self.file_manager.get_files_hosts(host_ids)
-
+            get_result = self.file_manager.get_files_hosts(host, port_number, limit, offset)
             if get_result["status"] == "success":
                 await self.socketio.emit(
-                    'files:stats:add', {
+                    'files:add:hosts', {
                         'status': 'success',
                         'project_uuid': project_uuid,
-                        'files': get_result['files']
+                        'host': host,
+                        'port_number': port_number,                        
+                        'files': list(map(
+                            lambda file: file.dict(),
+                            get_result['files']
+                        ))
                     },
                     namespace='/files'
                 )                
             else:
                 await self.socketio.emit(
-                    'files:stats:add',
+                    'files:add',
                     get_result,
                     namespace='/files'
                 )  
@@ -90,25 +97,33 @@ class FileHandlers(object):
         async def _cb_handle_files_data_get(sio, msg):
             """ Returns dicts with files for selected targets """
             project_uuid = int(msg.get('project_uuid', None))
-            ip_ids = msg.get('ip_ids', [])
+            ip = msg.get('ip')
+            port_number = int(msg.get('port_number'))
+            limit = int(msg.get('limit'))
+            offset = int(msg.get('offset'))
 
-            get_result = self.file_manager.get_files_ips(ip_ids)
-            print(get_result)
+            get_result = self.file_manager.get_files_ips(ip, port_number, limit, offset)
             if get_result["status"] == "success":
                 await self.socketio.emit(
-                    'files:stats:add', {
+                    'files:add:ips', {
                         'status': 'success',
                         'project_uuid': project_uuid,
-                        'files': get_result['files']
+                        'ip': ip,
+                        'port_number': port_number,
+                        'files': list(map(
+                            lambda file: file.dict(),
+                            get_result['files']
+                        ))
                     },
                     namespace='/files'
                 )                
             else:
                 await self.socketio.emit(
-                    'files:stats:add',
+                    'files:add',
                     get_result,
                     namespace='/files'
-                )  
+                )
+
     async def send_count_back(self, project_uuid=None):
 
         """ Get all files and send to all clients """

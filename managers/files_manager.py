@@ -69,7 +69,7 @@ class FileManager(object):
         except Exception as exc:
             return {"status": "error", "text": str(exc)}
 
-    def get_files_hosts(self, host_ids, limit, offset):
+    def get_files_hosts(self, host_id, port_number, limit, offset):
         try:
             files = []
 
@@ -78,7 +78,10 @@ class FileManager(object):
                     session.query(
                         FileDatabase,
                     )
-                    .filter(FileDatabase.host_id.in_(host_ids))
+                    .filter(
+                        FileDatabase.host_id == host_id,
+                        FileDatabase.port_number == port_number
+                    )
                     .order_by(FileDatabase.status_code, FileDatabase.file_name)
                     .limit(limit)
                     .offset(offset)
@@ -89,22 +92,26 @@ class FileManager(object):
         except Exception as exc:
             return {"status": "error", "text": str(exc)}
 
-    def get_files_ips(self, ip_ids, limit, offset):
+    def get_files_ips(self, ip, port_number, limit, offset):
         try:
             files = []
 
             with self.sessions.get_session() as session:
+                print("Starting {}, {}".format(ip, port_number))
                 files = (
                     session.query(
                         FileDatabase,
                     )
-                    .filter(FileDatabase.ip_id.in_(ip_ids))
+                    .filter(
+                        FileDatabase.ip_id == ip,
+                        FileDatabase.port_number == port_number
+                    )
                     .order_by(FileDatabase.status_code, FileDatabase.file_name)
                     .limit(limit)
                     .offset(offset)
                     .all()
                 )
-
+                print(files)
             return {"status": "success", "files": files}
         except Exception as exc:
             return {"status": "error", "text": str(exc)}

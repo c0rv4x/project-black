@@ -36,29 +36,28 @@ class MainAccumulatorUpdater extends React.Component {
 		this.getFilesIps = this.getFilesIps.bind(this);
 		this.getFilesHosts = this.getFilesHosts.bind(this);
 
-		this.getFilesIps();
-		this.getFilesHosts();
+		// this.getFilesIps();
+		// this.getFilesHosts();
 	}
 
 	triggerSetLoadedIPs(value) {
 		this.context.store.dispatch(setLoadedIPs({
 			'status': 'success',
 			'value': value,
-			'project_uuid': String(this.props.project.project_uuid)
-		}, String(this.props.project.project_uuid)));
+			'project_uuid': String(this.props.project_uuid)
+		}, String(this.props.project_uuid)));
 	}
 
 	triggerSetLoadedHosts(value) {
 		this.context.store.dispatch(setLoadedHosts({
 			'status': 'success',
 			'value': value,
-			'project_uuid': String(this.props.project.project_uuid)
-		}, String(this.props.project.project_uuid)));
+			'project_uuid': String(this.props.project_uuid)
+		}, String(this.props.project_uuid)));
 	}
 
 	componentDidUpdate(prevProps) {
 		var { ips, hosts, filters } = this.props;
-		console.log("updated to", ips);
 
 		if (hosts.update_needed) {
 			if (hosts.loaded) {
@@ -87,13 +86,13 @@ class MainAccumulatorUpdater extends React.Component {
 			}, 100);
 		}
 
-		if (!_.isEqual(ips.data, prevProps.ips.data)) {
-			this.getFilesIps();
-		}
+		// if (!_.isEqual(ips.data, prevProps.ips.data)) {
+		// 	this.getFilesIps();
+		// }
 		 
-		if (!_.isEqual(hosts.data, prevProps.hosts.data)) {
-			this.getFilesHosts();
-		}
+		// if (!_.isEqual(hosts.data, prevProps.hosts.data)) {
+		// 	this.getFilesHosts();
+		// }
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -106,7 +105,7 @@ class MainAccumulatorUpdater extends React.Component {
 			newFilters['files'] = ['%'];
 		}
 
-		this.hostsEmitter.requestRenewHosts(this.props.project.project_uuid, newFilters, page, this.pageSize);
+		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, newFilters, page, this.pageSize);
 	}
 
 	renewIps(page=this.pageNumberIp, filters=this.props.filters, pageSize=this.pageSize) {
@@ -115,19 +114,27 @@ class MainAccumulatorUpdater extends React.Component {
 			newFilters['files'] = ['%'];
 		}
 
-		this.ipsEmitter.requestRenewIPs(this.props.project.project_uuid, newFilters, page, this.pageSize);
+		this.ipsEmitter.requestRenewIPs(this.props.project_uuid, newFilters, page, this.pageSize);
 	}
 
-	getFilesHosts(hosts=this.props.hosts.data) {
-		if (hosts) {
-			this.filesEmitter.requestFilesHosts(this.props.project.project_uuid, hosts.map((host) => {return host.host_id;}));
-		}
+	getFilesHosts(host, port_number, limit=3, offset=0) {
+		this.filesEmitter.requestFilesHosts(
+			this.props.project_uuid,
+			host,
+			port_number,
+			limit,
+			offset
+		);
 	}
 
-	getFilesIps(ips=this.props.ips.data) {
-		if (ips) {
-			this.filesEmitter.requestFilesIps(this.props.project.project_uuid, ips.map((ip) => {return ip.ip_id;}));
-		}
+	getFilesIps(ip, port_number, limit=3, offset=0) {
+		this.filesEmitter.requestFilesIps(
+			this.props.project_uuid,
+			ip,
+			port_number,
+			limit,
+			offset
+		);
 	}
 
 	getVisibleScopes() {
@@ -212,7 +219,7 @@ class MainAccumulatorUpdater extends React.Component {
 
 
 	render() {
-		const { ips, hosts, applyFilters, project } = this.props;
+		const { files, ips, hosts, applyFilters, project, project_uuid } = this.props;
 
 		let loaded = true;
 		
@@ -248,12 +255,16 @@ class MainAccumulatorUpdater extends React.Component {
 			    </Dimmer>
 				<TablesAccumulator
 					applyFilters={applyFilters}
+					files={files.files}
 					ips={scopes.ips}
 					hosts={scopes.hosts}
 					selected={scopes.selected}
 					project_name={project.project_name}
+					project_uuid={project_uuid}
 					changePage={this.changePage}
 					pageSize={this.pageSize}
+					getFilesHosts={this.getFilesHosts}
+					getFilesIps={this.getFilesIps}
 				/>
 			</div>
 		);
