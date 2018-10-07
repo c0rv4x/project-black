@@ -220,21 +220,20 @@ class TaskManager(object):
         if task_type == 'masscan':
             targets = self.scope_manager.get_ips(
                 filters,
-                project_uuid,
-                ips_only=True
-            )['ips']
-            tasks = TaskStarter.start_masscan(
-                targets, params, project_uuid, self.exchange
+                project_uuid
             )
+            print(targets)
+            # tasks = TaskStarter.start_masscan(
+            #     targets, params, project_uuid, self.exchange
+            # )
 
-            self.active_tasks += tasks
+            # self.active_tasks += tasks
 
         elif task_type == 'nmap':
             targets = self.scope_manager.get_ips(
                 filters,
-                project_uuid,
-                ips_only=True
-            )['ips']
+                project_uuid
+            )
 
             tasks = TaskStarter.start_nmap(
                 targets, params, project_uuid, self.exchange
@@ -262,7 +261,7 @@ class TaskManager(object):
                 else:
                     filters['port'] = ['%']
 
-                targets = self.scope_manager.get_ips(filters, project_uuid)
+                targets = self.scope_manager.get_ips_with_ports(filters, project_uuid)
             else:
                 targets = self.scope_manager.get_hosts_with_ports(
                     filters, project_uuid, hosts_only=True
@@ -278,7 +277,7 @@ class TaskManager(object):
                 if filters.get('port', None) is None:
                     filters['port'] = ['%']
 
-                targets = self.scope_manager.get_ips(filters, project_uuid)
+                targets = self.scope_manager.get_ips_with_ports(filters, project_uuid)
             else:
                 targets = self.scope_manager.get_hosts_with_ports(
                     filters, project_uuid, hosts_only=True

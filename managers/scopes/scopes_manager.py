@@ -198,10 +198,75 @@ class ScopeManager(object):
             "hosts": hosts
         }
 
-    def get_ips(
+    def get_ips(self, filters, project_uuid):
+        """ Select all ips which are relative to the project
+        specified by project_uuid and which are passing the filters """
+        t = time.time()
+
+        with self.session_spawner.get_session() as session:
+            # Parse filters into an object for more comfortable work
+            parsed_filters = Filters.parse_filters(filters)
+
+            # Scans
+            scans_filters_exist = (
+                filters.get('port', False) or
+                filters.get('protocol', False) or
+                filters.get('banner', False)
+            )
+            scans_from_db = SubqueryBuilder.build_scans_subquery(
+                session, project_uuid, filters)
+
+            # Files
+            files_filters_exist = filters.get('files', False)
+            files_query_aliased = SubqueryBuilder.build_files_subquery(
+                session, project_uuid, filters)
+
+            # Select IPs + Scans which passed the filters
+            ips_query = (
+                session.query(IPDatabase.target)
+                .filter(
+                    IPDatabase.project_uuid == project_uuid,
+                    parsed_filters['ips']
+                )
+            )
+
+            if scans_filters_exist:
+                ips_query = (
+                    ips_query
+                    .join(
+                        scans_from_db, IPDatabase.ports,
+                        isouter=False
+                    )
+                )
+
+            if files_filters_exist:
+                ips_query = (
+                    ips_query
+                    .join(
+                        files_query_aliased, IPDatabase.files,
+                        isouter=False
+                    )                    
+                )
+
+            ips_from_db = (
+                ips_query
+                .distinct()
+                .all()
+            )
+
+        self.logger.info(
+            "Selecting ips only: filter: {}. Finished in {}. @{}".format(
+                filters,
+                time.time() - t,
+                project_uuid
+            )
+        )
+
+        return list(map(lambda x: x[0], ips_from_db))
+
+    def get_ips_with_ports(
         self, filters, project_uuid,
-        page_number=None, page_size=None, ips_only=False,
-        ips_and_ports=False
+        page_number=None, page_size=None
     ):
         """ Returns ips that are associated with a given project.
         Not all ips are selected. Only those, that are within the
@@ -268,73 +333,50 @@ class ScopeManager(object):
                     .subquery('limited_ips_ids')
                 )
 
-            if ips_only:
-                ips_from_db = (
-                    session.query(
-                        ips_query_subq.target
-                    )
-                    .filter(ips_query_subq.id.in_(ids_limited))
-                    .distinct()
-                    .all()
+            ips_from_db = (
+                session.query(
+                    IPDatabase
                 )
-            elif ips_and_ports:
-                ips_from_db = (
-                    session.query(
-                        ips_query_subq.target,
-                        ips_query_subq.port_number
-                    )
-                    .filter(ips_query_subq.id.in_(ids_limited))
-                    .distinct()
-                    .all()
-                )                
-            else:
-                ips_from_db = (
-                    session.query(
-                        IPDatabase
-                    )
-                    .filter(
-                        IPDatabase.project_uuid == project_uuid,
-                        IPDatabase.id.in_(ids_limited),
-                        parsed_filters['ips']
-                    )
-                    .join(
-                        scans_from_db, IPDatabase.ports,
-                        isouter=(not scans_filters_exist)
-                    )
-                    .join(
-                        files_query_aliased, IPDatabase.files,
-                        isouter=(not files_filters_exist)
-                    )
-                    .options(
-                        joinedload(IPDatabase.hostnames),
-                        contains_eager(
-                            IPDatabase.files, alias=files_query_aliased
-                        ),
-                        contains_eager(
-                            IPDatabase.ports, alias=scans_from_db
-                        )
-                    )
-                    .all()
+                .filter(
+                    IPDatabase.project_uuid == project_uuid,
+                    IPDatabase.id.in_(ids_limited),
+                    parsed_filters['ips']
                 )
+                .join(
+                    scans_from_db, IPDatabase.ports,
+                    isouter=(not scans_filters_exist)
+                )
+                .join(
+                    files_query_aliased, IPDatabase.files,
+                    isouter=(not files_filters_exist)
+                )
+                .options(
+                    joinedload(IPDatabase.hostnames),
+                    contains_eager(
+                        IPDatabase.files, alias=files_query_aliased
+                    ),
+                    contains_eager(
+                        IPDatabase.ports, alias=scans_from_db
+                    )
+                )
+                .all()
+            )
 
             selected_ips = ips_query.from_self(IPDatabase.id).distinct().count()
 
-        if ips_only:
-            ips = sorted(list(map(lambda each_ip: each_ip[0], ips_from_db)))
-        else:
-            ips = sorted(
-                list(
-                    map(
-                        lambda each_ip: each_ip.dict(
-                            include_ports=True,
-                            include_hostnames=True
-                            # include_files=True
-                        ),
-                        ips_from_db
-                    )
-                ), key=lambda x: x['ip_address']
-            )
-    
+        ips = sorted(
+            list(
+                map(
+                    lambda each_ip: each_ip.dict(
+                        include_ports=True,
+                        include_hostnames=True
+                        # include_files=True
+                    ),
+                    ips_from_db
+                )
+            ), key=lambda x: x['ip_address']
+        )
+
         total_db_ips = self.count_ips(project_uuid)
 
         self.logger.info(
