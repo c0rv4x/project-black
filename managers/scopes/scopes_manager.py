@@ -22,13 +22,15 @@ class ScopeManager(object):
     def __init__(self):
         self.session_spawner = Sessions()
 
-    def get_hosts(
+    def get_hosts_with_ports(
         self, filters,  project_uuid,
-        page_number=None, page_size=None, hosts_only=False
+        page_number=None, page_size=None
     ):
         """ Returns hosts associated with a given project.
         Not all hosts are returned. Only those that are within
-        the described page"""
+        the described page.
+        The hosts are filtered by host/ip/scans/files properties.
+        IPs and scans are included in the result, but not files"""
 
         t = time.time()
 
@@ -82,11 +84,16 @@ class ScopeManager(object):
                     scans_from_db, IPDatabase.ports,
                     isouter=(not scans_filters_exist)
                 )
-                .join(
-                    files_query_aliased, HostDatabase.files,
-                    isouter=(not files_filters_exist)
-                )
             )
+
+            if files_filters_exist:
+                hosts_query = (
+                    hosts_query
+                    .join(
+                        files_query_aliased, HostDatabase.files,
+                        isouter=False
+                    )
+                ) 
 
             # Perform pagination
             if page_number is None or page_size is None:
@@ -96,7 +103,7 @@ class ScopeManager(object):
                     .distinct()
                     .order_by(HostDatabase.target)
                     .from_self(HostDatabase.id)
-                    .subquery('limited_hosts_ids')
+                    .subquery('paginated_hosts_ids')
                 )
             else:
                 hosts_limited = (
@@ -107,7 +114,7 @@ class ScopeManager(object):
                     .limit(page_size)
                     .offset(page_size * page_number)
                     .from_self(HostDatabase.id)
-                    .subquery('limited_hosts_ids')
+                    .subquery('paginated_hosts_ids')
                 )
 
             selected_hosts = (
@@ -119,7 +126,7 @@ class ScopeManager(object):
 
             # Now select hosts, joining them with
             # all other subqueries from the prev step
-            hosts_from_db = (
+            hosts_ips_scans_query = (
                 session.query(HostDatabase)
                 .filter(
                     HostDatabase.project_uuid == project_uuid,
@@ -134,16 +141,29 @@ class ScopeManager(object):
                     scans_from_db, IPDatabase.ports,
                     isouter=(not scans_filters_exist)
                 )
-                .join(
-                    files_query_aliased, HostDatabase.files,
-                    isouter=(not files_filters_exist)
-                )
-                .options(
-                    contains_eager(HostDatabase.ip_addresses, alias=ips_query_subq)
-                    .contains_eager(IPDatabase.ports, alias=scans_from_db),
-                    contains_eager(HostDatabase.files, alias=files_query_aliased))
-                .all()
             )
+
+            if files_filters_exist:
+                hosts_from_db = (
+                    hosts_ips_scans_query
+                    .join(
+                        files_query_aliased, HostDatabase.files,
+                        isouter=False
+                    )
+                    .options(
+                        contains_eager(HostDatabase.ip_addresses, alias=ips_query_subq)
+                        .contains_eager(IPDatabase.ports, alias=scans_from_db),
+                        contains_eager(HostDatabase.files, alias=files_query_aliased))
+                    .all()
+                )
+            else:
+                hosts_from_db = (
+                    hosts_ips_scans_query
+                    .options(
+                        contains_eager(HostDatabase.ip_addresses, alias=ips_query_subq)
+                        .contains_eager(IPDatabase.ports, alias=scans_from_db))
+                    .all()                    
+                )
 
         # Reformat each hosts to JSON-like objects
         hosts = (

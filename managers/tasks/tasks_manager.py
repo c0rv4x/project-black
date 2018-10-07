@@ -264,7 +264,7 @@ class TaskManager(object):
 
                 targets = self.scope_manager.get_ips(filters, project_uuid)
             else:
-                targets = self.scope_manager.get_hosts(
+                targets = self.scope_manager.get_hosts_with_ports(
                     filters, project_uuid, hosts_only=True
                 )
 
@@ -280,7 +280,7 @@ class TaskManager(object):
 
                 targets = self.scope_manager.get_ips(filters, project_uuid)
             else:
-                targets = self.scope_manager.get_hosts(
+                targets = self.scope_manager.get_hosts_with_ports(
                     filters, project_uuid, hosts_only=True
                 )
 

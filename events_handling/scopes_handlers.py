@@ -299,7 +299,7 @@ class HostHandlers(object):
         """ Collects all relative hosts and ips from
         the manager and sends them back """
 
-        hosts = self.scope_manager.get_hosts(
+        hosts = self.scope_manager.get_hosts_with_ports(
             filters, project_uuid, host_page, host_page_size)
 
         await self.socketio.emit(
