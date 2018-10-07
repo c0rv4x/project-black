@@ -33,11 +33,11 @@ class MainAccumulatorUpdater extends React.Component {
 
 		this.triggerSetLoadedIPs = this.triggerSetLoadedIPs.bind(this);
 		this.triggerSetLoadedHosts = this.triggerSetLoadedHosts.bind(this);
-		this.renewFilesIps = this.renewFilesIps.bind(this);
-		this.renewFilesHosts = this.renewFilesHosts.bind(this);
+		this.getFilesIps = this.getFilesIps.bind(this);
+		this.getFilesHosts = this.getFilesHosts.bind(this);
 
-		this.renewFilesIps();
-		this.renewFilesHosts();
+		this.getFilesIps();
+		this.getFilesHosts();
 	}
 
 	triggerSetLoadedIPs(value) {
@@ -88,11 +88,11 @@ class MainAccumulatorUpdater extends React.Component {
 		}
 
 		if (!_.isEqual(ips.data, prevProps.ips.data)) {
-			this.renewFilesIps();
+			this.getFilesIps();
 		}
 		 
 		if (!_.isEqual(hosts.data, prevProps.hosts.data)) {
-			this.renewFilesHosts();
+			this.getFilesHosts();
 		}
 	}
 
@@ -118,13 +118,13 @@ class MainAccumulatorUpdater extends React.Component {
 		this.ipsEmitter.requestRenewIPs(this.props.project.project_uuid, newFilters, page, this.pageSize);
 	}
 
-	renewFilesHosts(hosts=this.props.hosts.data) {
+	getFilesHosts(hosts=this.props.hosts.data) {
 		if (hosts) {
 			this.filesEmitter.requestFilesHosts(this.props.project.project_uuid, hosts.map((host) => {return host.host_id;}));
 		}
 	}
 
-	renewFilesIps(ips=this.props.ips.data) {
+	getFilesIps(ips=this.props.ips.data) {
 		if (ips) {
 			this.filesEmitter.requestFilesIps(this.props.project.project_uuid, ips.map((ip) => {return ip.ip_id;}));
 		}
