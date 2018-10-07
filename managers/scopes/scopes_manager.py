@@ -31,6 +31,9 @@ class ScopeManager(object):
         the described page.
         The hosts are filtered by host/ip/scans/files properties.
         IPs and scans are included in the result, but not files"""
+        # TODO: this method should not extract files, we need files
+        # solely to make sure we imply the correct filtering mechanism
+        # when `files` filter is used
 
         t = time.time()
 
