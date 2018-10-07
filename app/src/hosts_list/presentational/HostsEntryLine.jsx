@@ -38,10 +38,25 @@ class HostsEntryLine extends React.Component {
 		);
 
 		let files_by_statuses = {
-			'2xx': [],
-			'3xx': [],
-			'4xx': [],
-			'5xx': []
+			'2xx': 0,
+			'3xx': 0,
+			'4xx': 0,
+			'5xx': 0
+		}
+
+		for (let status_code of Object.keys(host.files)) {
+			if (Math.floor(status_code / 100) === 3) {
+				files_by_statuses['3xx'] += host.files[status_code];
+			}
+			else if (Math.floor(status_code / 100) === 4) {
+				files_by_statuses['4xx'] += host.files[status_code];
+			}
+			else if (Math.floor(status_code / 100) === 5) {
+				files_by_statuses['5xx'] += host.files[status_code];
+			}
+			else if (Math.floor(status_code / 100) === 2) {
+				files_by_statuses['2xx'] += host.files[status_code];
+			}
 		}
 
 		const description = (

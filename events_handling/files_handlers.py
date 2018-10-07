@@ -36,7 +36,31 @@ class FileHandlers(object):
                     'files:stats:add',
                     get_result,
                     namespace='/files'
+                )
+
+        @self.socketio.on('files:stats:get:host', namespace='/files')
+        async def _cb_handle_files_stats_get(sio, msg):
+            """ Returns dicts with statistics on files for selected targets """
+            project_uuid = int(msg.get('project_uuid', None))
+            host_ids = msg.get('host_ids', [])
+
+            get_result = self.file_manager.get_stats_hosts(project_uuid, host_ids)
+
+            if get_result["status"] == "success":
+                await self.socketio.emit(
+                    'files:stats:add', {
+                        'status': 'success',
+                        'project_uuid': project_uuid,
+                        'stats': get_result['stats']
+                    },
+                    namespace='/files'
                 )                
+            else:
+                await self.socketio.emit(
+                    'files:stats:add',
+                    get_result,
+                    namespace='/files'
+                )       
 
     async def send_count_back(self, project_uuid=None):
         """ Get all files and send to all clients """

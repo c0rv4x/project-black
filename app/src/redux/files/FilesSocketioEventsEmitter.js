@@ -27,10 +27,10 @@ class FilesSocketioEventsEmitter {
         });
     }
 
-    requestStatsHost(project_uuid, host_id) {
+    requestStatsHost(project_uuid, host_ids) {
         this.connector.emit('files:stats:get:host', {
             "project_uuid": project_uuid,
-            "host_id": host_id
+            "host_ids": host_ids
         });
     }
 

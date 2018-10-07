@@ -46,3 +46,25 @@ class FileManager(object):
             return {"status": "success", "stats": stats}
         except Exception as exc:
             return {"status": "error", "text": str(exc)}
+
+    def get_stats_hosts(self, project_uuid, host_ids):
+        stats = {}
+
+        try:
+            with self.sessions.get_session() as session:
+                for host_id in host_ids:
+                    files_stats = (
+                        session.query(
+                            FileDatabase.status_code,
+                            func.count(FileDatabase.status_code)
+                        )
+                        .filter(FileDatabase.host_id == host_id)
+                        .group_by(FileDatabase.status_code)
+                        .all()
+                    )
+
+                    stats[host_id] = dict(files_stats)
+                    
+            return {"status": "success", "stats": stats}
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}            

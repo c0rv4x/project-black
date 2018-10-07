@@ -6,6 +6,7 @@ import { Dimmer, Loader, Segment } from 'semantic-ui-react'
 import HostsList from './HostsList.jsx'
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'
 import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmitter.js'
+import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
 import { setLoaded } from '../../redux/hosts/actions.js'
 
 
@@ -15,18 +16,21 @@ class HostsListScopesUpdater extends React.Component {
 
 		this.hostsEmitter = new HostsSocketioEventsEmitter();
 		this.credsEmitter = new CredsSocketioEventsEmitter();
+		this.filesEmitter = new FilesSocketioEventsEmitter();
 		this.triggerSetLoaded = this.triggerSetLoaded.bind(this);
 
 		if (this.props.hosts.update_needed === true) {
 			this.renewHosts();
+				this.renewFiles();
 		}
 		else {
-			// console.log("Constructor renewing creds");
 			this.renewCreds();
+			this.renewFiles();
 		}
 
 		this.renewHosts = this.renewHosts.bind(this);
 		this.renewCreds = this.renewCreds.bind(this);
+		this.renewFiles = this.renewFiles.bind(this);
 		this.requestUpdateHost = this.requestUpdateHost.bind(this);
 	}
 
@@ -50,6 +54,10 @@ class HostsListScopesUpdater extends React.Component {
 		this.credsEmitter.renewCreds(this.props.project_uuid, hosts.map((host) => {return host.hostname}));
 	}
 
+	renewFiles(hosts=this.props.hosts.data) {
+		this.filesEmitter.requestStatsHost(this.props.project_uuid, hosts.map((host) => {return host.host_id}));
+	}
+
 	requestUpdateHost(comment, _id) {
 		this.hostsEmitter.requestUpdateHost(comment, _id, this.props.project_uuid, "host");
 	}
@@ -65,8 +73,8 @@ class HostsListScopesUpdater extends React.Component {
 		}
 		else {
 			if ((prevProps.hosts.update_needed === true) || (!_.isEqual(hosts.data, prevProps.hosts.data))) {
-				// console.log("componentdidupdate is renewing creds");
 				this.renewCreds();
+				this.renewFiles();
 			}
 			if (!_.isEqual(filters, prevProps.filters)) {
 				this.triggerSetLoaded(false);

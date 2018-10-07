@@ -47,6 +47,14 @@ function mapStateToProps(state, ownProps) {
                 host.creds = creds_dict[host.hostname];
             }
 
+            if (state.files.stats.hasOwnProperty(host.host_id)) {
+                host.files = state.files.stats[host.host_id];
+            }
+            else {
+                host.files = []
+            }
+
+
             host.tasks = {
                 "active": [],
                 "finished": []
