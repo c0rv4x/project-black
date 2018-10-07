@@ -27,7 +27,6 @@ function renew_total_amount(state = defaultState, action) {
 
 function add_new_stats(state = defaultState, action) {
 	const message = action.message;
-	console.log(message['stats']);
 
 	// TODO: merge message['stats'] with the previous state
 	// This can help if we need to reload statsics on a single file
