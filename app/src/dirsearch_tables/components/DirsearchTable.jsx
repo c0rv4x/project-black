@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Button, Table } from 'semantic-ui-react'
+import { Button, Icon, Label, Table } from 'semantic-ui-react'
 
 
 class DirsearchTable extends React.Component {
@@ -9,7 +9,7 @@ class DirsearchTable extends React.Component {
 	}
 
 	render() {
-		const { files, total_count, target_id, target, port_number } = this.props;
+		const { files, stats, target_id, target, port_number } = this.props;
 
 		let files_rows = [];
 		if (files) {
@@ -33,7 +33,7 @@ class DirsearchTable extends React.Component {
 			}
 		}
 
-		if (total_count) {
+		if (stats.total) {
 			return (
 				<Table>
 					<Table.Header>
@@ -46,18 +46,38 @@ class DirsearchTable extends React.Component {
 					</Table.Header>
 					<Table.Body>
 						{files_rows}
-						<Table.Row key={target + ':' + port_number + "_load_more"}>
-								<Table.Cell>{total_count}</Table.Cell>
-								<Table.Cell><Button onClick={() => {
-									this.props.requestMore(
-										target_id,
-										port_number,
-										5,
-										0
-									);
-								}}>Load more</Button></Table.Cell>
-						</Table.Row>
 					</Table.Body>
+					<Table.Footer fullWidth>
+						<Table.Row>
+							<Table.HeaderCell colSpan='4'>
+								{stats[200] && 
+									<Label color="green" size="medium">{stats[200]}x 200</Label>
+								}
+								{stats[301] && 
+									<Label size="medium">{stats[301]}x 301</Label>
+								}
+								{stats[302] && 
+									<Label size="medium">{stats[302]}x 302</Label>
+								}																
+								{stats[400] && 
+									<Label size="medium">{stats[400]}x 400</Label>
+								}						
+								{stats[401] && 
+									<Label color="yellow" size="medium">{stats[401]}x 401</Label>
+								}								
+								<Label size="medium">{stats.total} files</Label>
+								<Button
+									floated="right"
+									size="tiny"
+									onClick={() => {
+										this.props.requestMore(target_id, port_number, 5, 0);
+									}}
+								>
+									<Icon name='plus' /> Load more
+								</Button>
+							</Table.HeaderCell>
+						</Table.Row>
+					</Table.Footer>					
 				</Table>
 			)
 		}

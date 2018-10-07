@@ -35,8 +35,7 @@ class TablesAccumulator extends React.Component {
 			for (var each_port of each_ip.scans) {
 				const files_for_ip_port = _.get(files_for_ip, each_port.port_number, []);
 				const stats_for_ip_port = _.get(stats_for_ip, each_port.port_number, {});
-				const total_count = _.get(stats_for_ip_port, 'total', 0);
-				console.log(stats_for_ip_port, total_count);
+				// const total_count = _.get(stats_for_ip_port, 'total', 0);
 
 				tables.push(
 					<DirsearchTable key={each_ip.ip_id + "_" + each_port.scan_id} 
@@ -44,7 +43,7 @@ class TablesAccumulator extends React.Component {
 									target_id={each_ip.ip_id}
 									port_number={each_port.port_number}
 									files={files_for_ip_port}
-									total_count={total_count}
+									stats={stats_for_ip_port}
 									project_uuid={project_uuid}
 									requestMore={getFilesIps} />
 				);
