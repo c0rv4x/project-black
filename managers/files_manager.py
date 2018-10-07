@@ -1,4 +1,6 @@
+from functools import reduce
 from sqlalchemy import func
+
 from black.db import Sessions, FileDatabase
 
 
@@ -34,15 +36,28 @@ class FileManager(object):
                     files_stats = (
                         session.query(
                             FileDatabase.status_code,
+                            FileDatabase.port_number,
                             func.count(FileDatabase.status_code)
                         )
                         .filter(FileDatabase.ip_id == ip_id)
-                        .group_by(FileDatabase.status_code)
+                        .group_by(
+                            FileDatabase.status_code,
+                            FileDatabase.port_number
+                        )
                         .all()
                     )
 
-                    stats[ip_id] = dict(files_stats)
-                    
+                    stats[ip_id] = {}
+                    for status_code, port_number, res in files_stats:
+                        stats[ip_id][port_number] = {}
+                        stats[ip_id][port_number][status_code] = res
+
+                    for port_number, stats_for_port in stats[ip_id].items():
+                        stats[ip_id][port_number]['total'] = reduce(
+                            lambda x, y: x + y,
+                            map(lambda stat: stat[1], stats_for_port.items())
+                        )
+
             return {"status": "success", "stats": stats}
         except Exception as exc:
             return {"status": "error", "text": str(exc)}
@@ -56,15 +71,28 @@ class FileManager(object):
                     files_stats = (
                         session.query(
                             FileDatabase.status_code,
+                            FileDatabase.port_number,
                             func.count(FileDatabase.status_code)
                         )
                         .filter(FileDatabase.host_id == host_id)
-                        .group_by(FileDatabase.status_code)
+                        .group_by(
+                            FileDatabase.status_code,
+                            FileDatabase.port_number
+                        )
                         .all()
                     )
 
-                    stats[host_id] = dict(files_stats)
-                    
+                    stats[host_id] = {}
+                    for status_code, port_number, res in files_stats:
+                        stats[host_id][port_number] = {}
+                        stats[host_id][port_number][status_code] = res
+
+                    for port_number, stats_for_port in stats[host_id].items():
+                        stats[host_id][port_number]['total'] = reduce(
+                            lambda x, y: x + y,
+                            map(lambda stat: stat[1], stats_for_port.items())
+                        )
+                    print(stats)                    
             return {"status": "success", "stats": stats}
         except Exception as exc:
             return {"status": "error", "text": str(exc)}

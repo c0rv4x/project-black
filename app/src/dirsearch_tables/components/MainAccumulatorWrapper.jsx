@@ -21,7 +21,7 @@ function mapStateToProps(state, ownProps) {
 			"comment": ""
 		}
 	}
-console.log(state.files);
+
 	return {
 		project: project,
 		project_uuid,

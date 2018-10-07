@@ -2,7 +2,8 @@ import _ from 'lodash';
 
 import { 
 	RENEW_TOTAL_AMOUNT,
-	ADD_NEW_STATS,
+	ADD_STATS_HOSTS,
+	ADD_STATS_IPS,
 	ADD_FILES_IPS,
 	ADD_FILES_HOSTS
 } from './actions.js'
@@ -11,7 +12,10 @@ import {
 // TODO: the loaded variable should be named something like 
 // 'total_amount_loaded' or something similar
 const defaultState = {
-	"stats": {},
+	"stats": {
+		"ip": {},
+		"host": {}		
+	},
 	"amount": 0,
 	"loaded": false,
 	"files": {
@@ -19,7 +23,6 @@ const defaultState = {
 		"host": {}
 	}
 }
-
 
 function renew_total_amount(state = defaultState, action) {
 	const message = action.message;
@@ -32,7 +35,7 @@ function renew_total_amount(state = defaultState, action) {
 	};
 }
 
-function add_new_stats(state = defaultState, action) {
+function add_stats_hosts(state = defaultState, action) {
 	const message = action.message;
 
 	// TODO: merge message['stats'] with the previous state
@@ -41,7 +44,29 @@ function add_new_stats(state = defaultState, action) {
 	//   When the first page loads too long and the second - too fast,
 	//   files will be set to the first result, not the second
 	return {
-		"stats": message['stats'],
+		"stats": {
+			"host": message['stats'],
+			"ip": state.stats.ip
+		},
+		"amount": state['amount'],
+		"loaded": state['loaded'],
+		"files": state['files']
+	};
+}
+
+function add_stats_ips(state = defaultState, action) {
+	const message = action.message;
+
+	// TODO: merge message['stats'] with the previous state
+	// This can help if we need to reload statsics on a single file
+	// Also this will fix a nasty race condition.
+	//   When the first page loads too long and the second - too fast,
+	//   files will be set to the first result, not the second
+	return {
+		"stats": {
+			"host": state.stats.host,
+			"ip": message['stats']
+		},
 		"amount": state['amount'],
 		"loaded": state['loaded'],
 		"files": state['files']
@@ -118,8 +143,10 @@ function file_reduce(state = defaultState, action) {
 			switch (action.type) {
 				case RENEW_TOTAL_AMOUNT:
 					return renew_total_amount(state, action);
-				case ADD_NEW_STATS:
-					return add_new_stats(state, action);
+				case ADD_STATS_HOSTS:
+					return add_stats_hosts(state, action);
+				case ADD_STATS_IPS:
+					return add_stats_ips(state, action);					
 				case ADD_FILES_HOSTS:
 					return add_files_hosts(state, action);
 				case ADD_FILES_IPS:

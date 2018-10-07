@@ -35,9 +35,16 @@ class MainAccumulatorUpdater extends React.Component {
 		this.triggerSetLoadedHosts = this.triggerSetLoadedHosts.bind(this);
 		this.getFilesIps = this.getFilesIps.bind(this);
 		this.getFilesHosts = this.getFilesHosts.bind(this);
+		this.renewFilesStatsHosts = this.renewFilesStatsHosts.bind(this);
+		this.renewFilesStatsIps = this.renewFilesStatsIps.bind(this);
 
-		// this.getFilesIps();
-		// this.getFilesHosts();
+		if (this.props.ips.data) {
+			this.renewFilesStatsIps();
+		}
+
+		if (this.props.hosts.data) {
+			this.renewFilesStatsHosts();
+		}		
 	}
 
 	triggerSetLoadedIPs(value) {
@@ -86,13 +93,13 @@ class MainAccumulatorUpdater extends React.Component {
 			}, 100);
 		}
 
-		// if (!_.isEqual(ips.data, prevProps.ips.data)) {
-		// 	this.getFilesIps();
-		// }
+		if (!_.isEqual(ips.data, prevProps.ips.data)) {
+			this.renewFilesStatsIps();
+		}
 		 
-		// if (!_.isEqual(hosts.data, prevProps.hosts.data)) {
-		// 	this.getFilesHosts();
-		// }
+		if (!_.isEqual(hosts.data, prevProps.hosts.data)) {
+			this.renewFilesStatsHosts();
+		}
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -115,6 +122,14 @@ class MainAccumulatorUpdater extends React.Component {
 		}
 
 		this.ipsEmitter.requestRenewIPs(this.props.project_uuid, newFilters, page, this.pageSize);
+	}
+
+	renewFilesStatsIps(ips=this.props.ips.data) {
+		this.filesEmitter.requestStatsIPs(this.props.project_uuid, ips.map((ip) => {return ip.ip_id}));
+	}
+
+	renewFilesStatsHosts(hosts=this.props.hosts.data) {
+		// this.filesEmitter.requestStatsHost(this.props.project_uuid, hosts.map((host) => {return host.host_id}));
 	}
 
 	getFilesHosts(host, port_number, limit=3, offset=0) {
@@ -255,7 +270,7 @@ class MainAccumulatorUpdater extends React.Component {
 			    </Dimmer>
 				<TablesAccumulator
 					applyFilters={applyFilters}
-					files={files.files}
+					files={files}
 					ips={scopes.ips}
 					hosts={scopes.hosts}
 					selected={scopes.selected}

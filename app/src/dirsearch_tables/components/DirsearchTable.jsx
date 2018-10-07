@@ -9,7 +9,7 @@ class DirsearchTable extends React.Component {
 	}
 
 	render() {
-		const { files, target_id, target, port_number } = this.props;
+		const { files, total_count, target_id, target, port_number } = this.props;
 
 		let files_rows = [];
 		if (files) {
@@ -33,7 +33,7 @@ class DirsearchTable extends React.Component {
 			}
 		}
 
-		// if (this.props.files && this.props.files.length) {
+		if (total_count) {
 			return (
 				<Table>
 					<Table.Header>
@@ -47,9 +47,8 @@ class DirsearchTable extends React.Component {
 					<Table.Body>
 						{files_rows}
 						<Table.Row key={target + ':' + port_number + "_load_more"}>
-								<Table.Cell></Table.Cell>
+								<Table.Cell>{total_count}</Table.Cell>
 								<Table.Cell><Button onClick={() => {
-									console.log(target_id);
 									this.props.requestMore(
 										target_id,
 										port_number,
@@ -61,10 +60,10 @@ class DirsearchTable extends React.Component {
 					</Table.Body>
 				</Table>
 			)
-		// }
-		// else {
-		// 	return <span></span>
-		// }
+		}
+		else {
+			return <span></span>
+		}
 	}
 }
 

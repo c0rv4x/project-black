@@ -24,7 +24,7 @@ class FileHandlers(object):
 
             if get_result["status"] == "success":
                 await self.socketio.emit(
-                    'files:stats:add', {
+                    'files:stats:add:ips', {
                         'status': 'success',
                         'project_uuid': project_uuid,
                         'stats': get_result['stats']
@@ -33,7 +33,7 @@ class FileHandlers(object):
                 )                
             else:
                 await self.socketio.emit(
-                    'files:stats:add',
+                    'files:stats:add:ips',
                     get_result,
                     namespace='/files'
                 )
@@ -48,7 +48,7 @@ class FileHandlers(object):
 
             if get_result["status"] == "success":
                 await self.socketio.emit(
-                    'files:stats:add', {
+                    'files:stats:add:hosts', {
                         'status': 'success',
                         'project_uuid': project_uuid,
                         'stats': get_result['stats']
@@ -57,7 +57,7 @@ class FileHandlers(object):
                 )                
             else:
                 await self.socketio.emit(
-                    'files:stats:add',
+                    'files:stats:add:hosts',
                     get_result,
                     namespace='/files'
                 )
