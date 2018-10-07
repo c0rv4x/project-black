@@ -69,7 +69,13 @@ function mapStateToProps(state, ownProps) {
                         host.tasks.finished.push(task_raw);
                     }
                 }
-            }            
+            }
+
+            host.ip_addresses.sort((a, b) => {
+                if (a.ip_id < b.ip_id) return 1;
+                if (a.ip_id > b.ip_id) return 1;
+                return 0;
+            });
         }
     }
 
