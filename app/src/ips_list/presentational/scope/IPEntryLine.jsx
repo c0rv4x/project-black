@@ -24,6 +24,7 @@ class IPEntryLine extends React.Component {
 
 	render() {
 		const { ip, project_uuid, deleteIP, onCommentSubmit } = this.props;
+		const files = ip.files;
 		const verbose_host_link = '/project/' + project_uuid + '/ip/' + ip.ip_address;
 
 		const footer = (
@@ -81,24 +82,24 @@ class IPEntryLine extends React.Component {
 
 
 		let files_by_statuses = {
-			'2xx': [],
-			'3xx': [],
-			'4xx': [],
-			'5xx': []
+			'2xx': 0,
+			'3xx': 0,
+			'4xx': 0,
+			'5xx': 0
 		}
 
-		for (var file of ip.files) {
-			if (Math.floor(file.status_code / 100) === 3) {
-				files_by_statuses['3xx'].push(file);
+		for (let status_code of Object.keys(ip.files)) {
+			if (Math.floor(status_code / 100) === 3) {
+				files_by_statuses['3xx'] += ip.files[status_code];
 			}
-			else if (Math.floor(file.status_code / 100) === 4) {
-				files_by_statuses['4xx'].push(file);
+			else if (Math.floor(status_code / 100) === 4) {
+				files_by_statuses['4xx'] += ip.files[status_code];
 			}
-			else if (Math.floor(file.status_code / 100) === 5) {
-				files_by_statuses['5xx'].push(file);
+			else if (Math.floor(status_code / 100) === 5) {
+				files_by_statuses['5xx'] += ip.files[status_code];
 			}
-			else if (Math.floor(file.status_code / 100) === 2) {
-				files_by_statuses['2xx'].push(file);
+			else if (Math.floor(status_code / 100) === 2) {
+				files_by_statuses['2xx'] += ip.files[status_code];
 			}
 		}
 
@@ -121,10 +122,10 @@ class IPEntryLine extends React.Component {
 
 				<Divider hidden />
 				<List bulleted>
-					<List.Item>2xx: <strong>{files_by_statuses['2xx'].length}</strong></List.Item> 
-					<List.Item>3xx: {files_by_statuses['3xx'].length}</List.Item>
-					<List.Item>4xx: {files_by_statuses['4xx'].length}</List.Item>
-					<List.Item>5xx: {files_by_statuses['5xx'].length}</List.Item>
+					<List.Item>2xx: <strong>{files_by_statuses['2xx']}</strong></List.Item> 
+					<List.Item>3xx: {files_by_statuses['3xx']}</List.Item>
+					<List.Item>4xx: {files_by_statuses['4xx']}</List.Item>
+					<List.Item>5xx: {files_by_statuses['5xx']}</List.Item>
 				</List>
 
 				<Divider hidden />

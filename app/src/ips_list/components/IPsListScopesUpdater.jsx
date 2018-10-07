@@ -6,6 +6,7 @@ import { Dimmer, Loader, Segment } from 'semantic-ui-react'
 import IPsList from './IPsList.jsx'
 import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
 import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmitter.js'
+import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
 import { setLoaded } from '../../redux/ips/actions.js'
 
 class IPsListScopesUpdater extends React.Component {
@@ -14,10 +15,12 @@ class IPsListScopesUpdater extends React.Component {
 
 		this.ipsEmitter = new IPsSocketioEventsEmitter();
 		this.credsEmitter = new CredsSocketioEventsEmitter();
+		this.filesEmitter = new FilesSocketioEventsEmitter();
 
 		this.triggerSetLoaded = this.triggerSetLoaded.bind(this);
 		this.renewIps = this.renewIps.bind(this);
 		this.renewCreds = this.renewCreds.bind(this);
+		this.renewFiles = this.renewFiles.bind(this);
 
 		if (this.props.ips.update_needed === true) {
 			this.renewIps();
@@ -25,6 +28,7 @@ class IPsListScopesUpdater extends React.Component {
 		else {
 			// console.log("Constructor renewing creds");
 			this.renewCreds();
+			this.renewFiles();
 		}
 	}
 
@@ -46,12 +50,16 @@ class IPsListScopesUpdater extends React.Component {
 		this.credsEmitter.renewCreds(this.props.project.project_uuid, ips.map((ip) => {return ip.ip_address}));
 	}
 
+	renewFiles(ips=this.props.ips.data) {
+		this.filesEmitter.requestStatsIPs(this.props.project.project_uuid, ips.map((ip) => {return ip.ip_id}));
+	}
+
 	shouldComponentUpdate(nextProps) {
 		return !_.isEqual(nextProps, this.props);
 	}
 
 	componentDidUpdate(prevProps) {
-		var { ips, filters } = this.props;
+		let { ips, filters } = this.props;
 
 		if (ips.update_needed === true) {
 			if (ips.loaded) {
@@ -61,8 +69,8 @@ class IPsListScopesUpdater extends React.Component {
 		}
 		else {
 			if ((prevProps.ips.update_needed === true) || (!_.isEqual(ips.data, prevProps.ips.data))) {
-				// console.log("componentdidupdate is renewing creds");
 				this.renewCreds();
+				this.renewFiles();
 			}
 
 			if (!_.isEqual(filters, prevProps.filters)) {

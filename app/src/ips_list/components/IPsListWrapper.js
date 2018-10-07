@@ -38,10 +38,23 @@ function mapStateToProps(state, ownProps) {
 
     if (ips) {
         for (var ip of ips.data) {
+            ip.hostnames = ip.hostnames.sort((a, b) => {
+                if (a.host_id < b.host_id) return -1;
+                if (a.host_id > b.host_id) return 1;
+                return 0
+            });
+            
             ip.target = ip.ip_address;
             ip.creds = {
                 "values": []
             };
+
+            if (state.files.stats.hasOwnProperty(ip.ip_id)) {
+                ip.files = state.files.stats[ip.ip_id];
+            }
+            else {
+                ip.files = []
+            }
 
             if (creds_dict.hasOwnProperty(ip.ip_address)) {
                 let creds_sorted = creds_dict[ip.ip_address]['values'].sort((a, b) => {
@@ -113,6 +126,7 @@ function mapStateToProps(state, ownProps) {
                 if (a.port_number > b.port_number) return 1;
                 return 0
             });
+
         }
     }
 

@@ -25,6 +25,20 @@ class FilesSocketioEventsEmitter {
         this.connector.emit('files:count:get', {
             "project_uuid": project_uuid
         });
+    }
+
+    requestStatsHost(project_uuid, host_id) {
+        this.connector.emit('files:stats:get:host', {
+            "project_uuid": project_uuid,
+            "host_id": host_id
+        });
+    }
+
+    requestStatsIPs(project_uuid, ip_ids) {
+        this.connector.emit('files:stats:get:ip', {
+            "project_uuid": project_uuid,
+            "ip_ids": ip_ids
+        });
     }    
 }
 
