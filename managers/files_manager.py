@@ -1,7 +1,5 @@
-""" Keeps FileManager, which is reponsible for working with File table """
-from operator import itemgetter
-
-from black.db import Sessions, FileDatabase, ProjectDatabase
+from sqlalchemy import func
+from black.db import Sessions, FileDatabase
 
 
 class FileManager(object):
@@ -26,3 +24,25 @@ class FileManager(object):
         self.sessions.destroy_session(session)
 
         return amount
+
+    def get_stats_ips(self, project_uuid, ip_ids):
+        stats = {}
+
+        try:
+            with self.sessions.get_session() as session:
+                for ip_id in ip_ids:
+                    files_stats = (
+                        session.query(
+                            FileDatabase.status_code,
+                            func.count(FileDatabase.status_code)
+                        )
+                        .filter(FileDatabase.ip_id == ip_id)
+                        .group_by(FileDatabase.status_code)
+                        .all()
+                    )
+
+                    stats[ip_id] = dict(files_stats)
+                    
+            return {"status": "success", "stats": stats}
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}
