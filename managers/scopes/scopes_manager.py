@@ -333,7 +333,7 @@ class ScopeManager(object):
                     .subquery('limited_ips_ids')
                 )
 
-            ips_from_db = (
+            ips_request = (
                 session.query(
                     IPDatabase
                 )
@@ -346,21 +346,37 @@ class ScopeManager(object):
                     scans_from_db, IPDatabase.ports,
                     isouter=(not scans_filters_exist)
                 )
-                .join(
-                    files_query_aliased, IPDatabase.files,
-                    isouter=(not files_filters_exist)
-                )
-                .options(
-                    joinedload(IPDatabase.hostnames),
-                    contains_eager(
-                        IPDatabase.files, alias=files_query_aliased
-                    ),
-                    contains_eager(
-                        IPDatabase.ports, alias=scans_from_db
-                    )
-                )
-                .all()
             )
+
+            if files_filters_exist:
+                ips_from_db =  (
+                    ips_request
+                    .join(
+                        files_query_aliased, IPDatabase.files,
+                        isouter=(not files_filters_exist)
+                    )
+                    .options(
+                        joinedload(IPDatabase.hostnames),
+                        contains_eager(
+                            IPDatabase.files, alias=files_query_aliased
+                        ),
+                        contains_eager(
+                            IPDatabase.ports, alias=scans_from_db
+                        )
+                    )
+                    .all()
+                )
+            else:
+                ips_from_db =  (
+                    ips_request
+                    .options(
+                        joinedload(IPDatabase.hostnames),
+                        contains_eager(
+                            IPDatabase.ports, alias=scans_from_db
+                        )
+                    )
+                    .all()
+                )
 
             selected_ips = ips_query.from_self(IPDatabase.id).distinct().count()
 
