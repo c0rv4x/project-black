@@ -9,17 +9,10 @@ class DirsearchTable extends React.Component {
 	}
 
 	render() {
-		let files = [];
-		let files_sorted = this.props.files.sort((a, b) => {
-			if (a.status_code > b.status_code) return 1;
-			if (a.status_code < b.status_code) return -1;
-			if (a.file_name > b.file_name) return 1;
-			if (a.file_name < b.file_name) return -1;
-			return 0;
-		});
+		const { files } = this.props;
 
-		if (files_sorted) {
-			for (let each_file of files_sorted) {
+		if (files) {
+			for (let each_file of files) {
 				let status_code_style = {
 					color: null
 				};

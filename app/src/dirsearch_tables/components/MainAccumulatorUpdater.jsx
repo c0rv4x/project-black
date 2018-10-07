@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'
+import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
 import TablesAccumulator from './TablesAccumulator.jsx'
 import { setLoaded as setLoadedIPs } from '../../redux/ips/actions.js'
 import { setLoaded as setLoadedHosts } from '../../redux/hosts/actions.js'
@@ -18,6 +19,7 @@ class MainAccumulatorUpdater extends React.Component {
 
 		this.ipsEmitter = new IPsSocketioEventsEmitter();
 		this.hostsEmitter = new HostsSocketioEventsEmitter();
+		this.filesEmitter = new FilesSocketioEventsEmitter();
 
 		this.renewHosts = this.renewHosts.bind(this);
 		this.renewIps = this.renewIps.bind(this);
@@ -29,8 +31,13 @@ class MainAccumulatorUpdater extends React.Component {
 		this.pageNumberHost = 0;
 		this.pageType = 'ip';
 
-		this.triggerSetLoadedIPs.bind(this);
-		this.triggerSetLoadedHosts.bind(this);
+		this.triggerSetLoadedIPs = this.triggerSetLoadedIPs.bind(this);
+		this.triggerSetLoadedHosts = this.triggerSetLoadedHosts.bind(this);
+		this.renewFilesIps = this.renewFilesIps.bind(this);
+		this.renewFilesHosts = this.renewFilesHosts.bind(this);
+
+		this.renewFilesIps();
+		this.renewFilesHosts();
 	}
 
 	triggerSetLoadedIPs(value) {
@@ -50,9 +57,27 @@ class MainAccumulatorUpdater extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		var { hosts, filters } = this.props;
+		var { ips, hosts, filters } = this.props;
+		console.log("updated to", ips);
 
-		if ((hosts.update_needed === true) || (!_.isEqual(filters, prevProps.filters))) {
+		if (hosts.update_needed) {
+			if (hosts.loaded) {
+				this.triggerSetLoadedHosts(false);
+				setTimeout(() => {
+					this.renewHosts(this.pageNumberHost, filters, this.pageSize);
+				}, 100);
+			}
+		}
+		if (ips.update_needed) {
+			if (ips.loaded) {
+				this.triggerSetLoadedIPs(false);
+				setTimeout(() => {
+					this.renewIps(this.pageNumberIp, filters, this.pageSize);
+				}, 100);
+			}
+		}
+
+		if (!_.isEqual(filters, prevProps.filters)) {
 			this.triggerSetLoadedIPs(false);
 			this.triggerSetLoadedHosts(false);
 
@@ -60,6 +85,14 @@ class MainAccumulatorUpdater extends React.Component {
 				this.renewHosts(this.pageNumberHost, filters, this.pageSize);
 				this.renewIps(this.pageNumberIp, filters, this.pageSize);
 			}, 100);
+		}
+
+		if (!_.isEqual(ips.data, prevProps.ips.data)) {
+			this.renewFilesIps();
+		}
+		 
+		if (!_.isEqual(hosts.data, prevProps.hosts.data)) {
+			this.renewFilesHosts();
 		}
 	}
 
@@ -83,6 +116,18 @@ class MainAccumulatorUpdater extends React.Component {
 		}
 
 		this.ipsEmitter.requestRenewIPs(this.props.project.project_uuid, newFilters, page, this.pageSize);
+	}
+
+	renewFilesHosts(hosts=this.props.hosts.data) {
+		if (hosts) {
+			this.filesEmitter.requestFilesHosts(this.props.project.project_uuid, hosts.map((host) => {return host.host_id;}));
+		}
+	}
+
+	renewFilesIps(ips=this.props.ips.data) {
+		if (ips) {
+			this.filesEmitter.requestFilesIps(this.props.project.project_uuid, ips.map((ip) => {return ip.ip_id;}));
+		}
 	}
 
 	getVisibleScopes() {

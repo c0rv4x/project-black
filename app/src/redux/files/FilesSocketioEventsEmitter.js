@@ -39,7 +39,22 @@ class FilesSocketioEventsEmitter {
             "project_uuid": project_uuid,
             "ip_ids": ip_ids
         });
-    }    
+    }  
+    
+    requestFilesHosts(project_uuid, host_ids) {
+        console.log(host_ids);
+        this.connector.emit('files:get:hosts', {
+            "project_uuid": project_uuid,
+            "host_ids": host_ids
+        });        
+    }
+
+    requestFilesIps(project_uuid, ip_ids) {
+        this.connector.emit('files:get:ips', {
+            "project_uuid": project_uuid,
+            "ip_ids": ip_ids
+        });        
+    }
 }
 
 export default FilesSocketioEventsEmitter;

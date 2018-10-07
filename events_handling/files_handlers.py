@@ -60,9 +60,57 @@ class FileHandlers(object):
                     'files:stats:add',
                     get_result,
                     namespace='/files'
-                )       
+                )
 
+        @self.socketio.on('files:get:hosts', namespace='/files')
+        async def _cb_handle_files_data_get(sio, msg):
+            """ Returns dicts with files for selected targets """
+            project_uuid = int(msg.get('project_uuid', None))
+            host_ids = msg.get('host_ids', [])
+
+            get_result = self.file_manager.get_files_hosts(host_ids)
+
+            if get_result["status"] == "success":
+                await self.socketio.emit(
+                    'files:stats:add', {
+                        'status': 'success',
+                        'project_uuid': project_uuid,
+                        'files': get_result['files']
+                    },
+                    namespace='/files'
+                )                
+            else:
+                await self.socketio.emit(
+                    'files:stats:add',
+                    get_result,
+                    namespace='/files'
+                )  
+
+        @self.socketio.on('files:get:ips', namespace='/files')
+        async def _cb_handle_files_data_get(sio, msg):
+            """ Returns dicts with files for selected targets """
+            project_uuid = int(msg.get('project_uuid', None))
+            ip_ids = msg.get('ip_ids', [])
+
+            get_result = self.file_manager.get_files_ips(ip_ids)
+            print(get_result)
+            if get_result["status"] == "success":
+                await self.socketio.emit(
+                    'files:stats:add', {
+                        'status': 'success',
+                        'project_uuid': project_uuid,
+                        'files': get_result['files']
+                    },
+                    namespace='/files'
+                )                
+            else:
+                await self.socketio.emit(
+                    'files:stats:add',
+                    get_result,
+                    namespace='/files'
+                )  
     async def send_count_back(self, project_uuid=None):
+
         """ Get all files and send to all clients """
         await self.socketio.emit(
             'files:count:set', {

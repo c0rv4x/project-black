@@ -126,7 +126,7 @@ class IPHandlers(object):
     ):
         """ Collects all relative hosts and ips from
         the manager and sends them back """
-
+        print(filters)
         ips = self.scope_manager.get_ips_with_ports(
             filters, project_uuid, ip_page, ip_page_size)
 
