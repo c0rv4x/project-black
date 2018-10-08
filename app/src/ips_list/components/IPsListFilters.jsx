@@ -26,7 +26,7 @@ class IPsListFilters extends React.Component {
 			<IPsListScopesUpdater
 				 ips={this.props.ips}
 				 tasks={this.props.tasks}
-				 project={this.props.project}
+				 project_uuid={this.props.project_uuid}
 				 tasks={this.props.tasks}
 				 filters={this.state.filters}
 				 applyFilters={this.applyFilters} />

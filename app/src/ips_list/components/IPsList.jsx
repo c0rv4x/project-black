@@ -17,7 +17,7 @@ class IPsList extends React.Component {
   		{
   			this.emitter.requestTasksByIps(this.props.ips.data.map((ip) => {
   				return ip.ip_address;
-  			}), this.props.project.project_uuid);
+  			}), this.props.project_uuid);
   		}		
 	}
 
@@ -38,12 +38,12 @@ class IPsList extends React.Component {
   		{
   			this.emitter.requestTasksByIps(ips.data.map((ip) => {
   				return ip.ip_address;
-  			}), project.project_uuid);
+  			}), project_uuid);
   		}
   	}
 
 	render() {
-		let { ips, tasks, project, filters, applyFilters, setLoaded, renewIps } = this.props;
+		let { ips, tasks, project_uuid, filters, applyFilters, setLoaded, renewIps } = this.props;
 
 		return (
 			<div>
@@ -51,11 +51,11 @@ class IPsList extends React.Component {
 				<br/>
 
 				<TitleButtonsWithHandlers
-					project={project} 
+					project_uuid={project_uuid} 
 					filters={filters} />
 
 				<IPTableTracked ips={ips}
-								project_uuid={project.project_uuid}
+								project_uuid={project_uuid}
 								applyFilters={applyFilters}
 								filters={filters}
 								setLoaded={setLoaded}

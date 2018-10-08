@@ -24,7 +24,6 @@ class IPEntryLine extends React.Component {
 
 	render() {
 		const { ip, project_uuid, deleteIP, onCommentSubmit } = this.props;
-		const files = ip.files;
 		const verbose_host_link = '/project/' + project_uuid + '/ip/' + ip.ip_address;
 
 		const footer = (
@@ -80,7 +79,6 @@ class IPEntryLine extends React.Component {
 			);
 		}
 
-
 		let files_by_statuses = {
 			'2xx': 0,
 			'3xx': 0,
@@ -88,18 +86,20 @@ class IPEntryLine extends React.Component {
 			'5xx': 0
 		}
 
-		for (let status_code of Object.keys(ip.files)) {
-			if (Math.floor(status_code / 100) === 3) {
-				files_by_statuses['3xx'] += ip.files[status_code];
-			}
-			else if (Math.floor(status_code / 100) === 4) {
-				files_by_statuses['4xx'] += ip.files[status_code];
-			}
-			else if (Math.floor(status_code / 100) === 5) {
-				files_by_statuses['5xx'] += ip.files[status_code];
-			}
-			else if (Math.floor(status_code / 100) === 2) {
-				files_by_statuses['2xx'] += ip.files[status_code];
+		for (let port_number of Object.keys(ip.files)) {
+			for (let status_code of Object.keys(ip.files[port_number])) {
+				if (Math.floor(status_code / 100) === 3) {
+					files_by_statuses['3xx'] += ip.files[port_number][status_code];
+				}
+				else if (Math.floor(status_code / 100) === 4) {
+					files_by_statuses['4xx'] += ip.files[port_number][status_code];
+				}
+				else if (Math.floor(status_code / 100) === 5) {
+					files_by_statuses['5xx'] += ip.files[port_number][status_code];
+				}
+				else if (Math.floor(status_code / 100) === 2) {
+					files_by_statuses['2xx'] += ip.files[port_number][status_code];
+				}
 			}
 		}
 

@@ -6,21 +6,6 @@ import IPsListFilters from './IPsListFilters.jsx'
 
 function mapStateToProps(state, ownProps) {
     let project_uuid = ownProps.project_uuid;
-    let filtered_projects = _.filter(state.projects, (x) => {
-        return x.project_uuid == project_uuid
-    });
-
-    let project = null;
-
-    if (filtered_projects.length) {
-        project = filtered_projects[0]
-    } else {
-        project = {
-            "project_name": null,
-            "project_uuid": null,
-            "comment": ""
-        }
-    }
 
     let creds_dict = {};
     for (let cred of _.get(state.creds, "current_values", [])) {
@@ -49,8 +34,8 @@ function mapStateToProps(state, ownProps) {
                 "values": []
             };
 
-            if (state.files.stats.hasOwnProperty(ip.ip_id)) {
-                ip.files = state.files.stats[ip.ip_id];
+            if (state.files.stats.ip.hasOwnProperty(ip.ip_id)) {
+                ip.files = state.files.stats.ip[ip.ip_id];
             }
             else {
                 ip.files = []
@@ -131,7 +116,7 @@ function mapStateToProps(state, ownProps) {
     }
 
     return {
-        project: project,
+        project_uuid: project_uuid,
         tasks: state.tasks,
         ips: ips,
         tasks: state.tasks.active

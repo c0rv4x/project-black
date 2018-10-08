@@ -28,14 +28,14 @@ class TitleButtonsWithHandlers extends React.Component {
 		this.tasksEmitter.requestCreateTask('masscan',
 											this.props.filters,
 											{'program': [params["argv"]]},
-											this.props.project.project_uuid)
+											this.props.project_uuid)
 	}
 
 	runNmap(params) {
 		this.tasksEmitter.requestCreateTask('nmap', 
 											this.props.filters, 
 											{'program': [params["argv"]]},
-											this.props.project.project_uuid)
+											this.props.project_uuid)
 	}
 
 	runNmapOnlyOpen(params) {
@@ -50,7 +50,7 @@ class TitleButtonsWithHandlers extends React.Component {
 		this.tasksEmitter.requestCreateTask('nmap_open',
 											filters,
 											{'program': [params["argv"]]},
-											this.props.project.project_uuid)
+											this.props.project_uuid)
 	}
 
 	dirbusterStart(options) {
@@ -58,7 +58,7 @@ class TitleButtonsWithHandlers extends React.Component {
 											this.props.filters,
 											{'program': options,
 											 'targets': 'ips'},
-											this.props.project.project_uuid);
+											this.props.project_uuid);
 	}
 
 	runPatator(params) {
@@ -66,7 +66,7 @@ class TitleButtonsWithHandlers extends React.Component {
 											this.props.filters, 
 											{'program': [params["argv"]],
 											'targets': 'ips'},
-											this.props.project.project_uuid);
+											this.props.project_uuid);
 	}
 
 	render() {

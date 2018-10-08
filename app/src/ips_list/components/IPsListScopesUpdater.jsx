@@ -36,22 +36,22 @@ class IPsListScopesUpdater extends React.Component {
 		this.context.store.dispatch(setLoaded({
 			'status': 'success',
 			'value': value,
-			'project_uuid': String(this.props.project.project_uuid)
-		}, String(this.props.project.project_uuid)));
+			'project_uuid': String(this.props.project_uuid)
+		}, String(this.props.project_uuid)));
 	}
 
 	renewIps(ip_page=this.props.ips.page, filters=this.props.filters) {
-		var { ips } = this.props;
+		let { ips, project_uuid } = this.props;
 
-		this.ipsEmitter.requestRenewIPs(this.props.project.project_uuid, filters, ip_page, ips.page_size);
+		this.ipsEmitter.requestRenewIPs(project_uuid, filters, ip_page, ips.page_size);
 	}
 
 	renewCreds(ips=this.props.ips.data) {
-		this.credsEmitter.renewCreds(this.props.project.project_uuid, ips.map((ip) => {return ip.ip_address}));
+		this.credsEmitter.renewCreds(this.props.project_uuid, ips.map((ip) => {return ip.ip_address}));
 	}
 
 	renewFiles(ips=this.props.ips.data) {
-		this.filesEmitter.requestStatsIPs(this.props.project.project_uuid, ips.map((ip) => {return ip.ip_id}));
+		this.filesEmitter.requestStatsIPs(this.props.project_uuid, ips.map((ip) => {return ip.ip_id}));
 	}
 
 	shouldComponentUpdate(nextProps) {

@@ -44,20 +44,23 @@ class HostsEntryLine extends React.Component {
 			'5xx': 0
 		}
 
-		for (let status_code of Object.keys(host.files)) {
-			if (Math.floor(status_code / 100) === 3) {
-				files_by_statuses['3xx'] += host.files[status_code];
-			}
-			else if (Math.floor(status_code / 100) === 4) {
-				files_by_statuses['4xx'] += host.files[status_code];
-			}
-			else if (Math.floor(status_code / 100) === 5) {
-				files_by_statuses['5xx'] += host.files[status_code];
-			}
-			else if (Math.floor(status_code / 100) === 2) {
-				files_by_statuses['2xx'] += host.files[status_code];
+		for (let port_number of Object.keys(host.files)) {
+			for (let status_code of Object.keys(host.files[port_number])) {
+				if (Math.floor(status_code / 100) === 3) {
+					files_by_statuses['3xx'] += host.files[port_number][status_code];
+				}
+				else if (Math.floor(status_code / 100) === 4) {
+					files_by_statuses['4xx'] += host.files[port_number][status_code];
+				}
+				else if (Math.floor(status_code / 100) === 5) {
+					files_by_statuses['5xx'] += host.files[port_number][status_code];
+				}
+				else if (Math.floor(status_code / 100) === 2) {
+					files_by_statuses['2xx'] += host.files[port_number][status_code];
+				}
 			}
 		}
+
 
 		const description = (
 			<div>

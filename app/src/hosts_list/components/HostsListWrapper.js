@@ -6,21 +6,6 @@ import HostsListFilters from './HostsListFilters.jsx'
 
 function mapStateToProps(state, ownProps) {
 	let project_uuid = ownProps.project_uuid;
-	let filtered_projects = _.filter(state.projects, (x) => {
-		return x.project_uuid == project_uuid
-	});
-
-	let project = null;
-
-	if (filtered_projects.length) {
-		project = filtered_projects[0]
-	} else {
-		project = {
-			"project_name": null,
-			"project_uuid": null,
-			"comment": ""
-		}
-	}
 
     let creds_dict = {};
     for (let cred of _.get(state.creds, "current_values", [])) {
@@ -47,8 +32,8 @@ function mapStateToProps(state, ownProps) {
                 host.creds = creds_dict[host.hostname];
             }
 
-            if (state.files.stats.hasOwnProperty(host.host_id)) {
-                host.files = state.files.stats[host.host_id];
+            if (state.files.stats.host.hasOwnProperty(host.host_id)) {
+                host.files = state.files.stats.host[host.host_id];
             }
             else {
                 host.files = []
@@ -88,7 +73,7 @@ function mapStateToProps(state, ownProps) {
     }
 
     return {
-    	project_uuid: project.project_uuid,
+    	project_uuid: project_uuid,
     	hosts: new_hosts,
         tasks: state.tasks.active
     }
