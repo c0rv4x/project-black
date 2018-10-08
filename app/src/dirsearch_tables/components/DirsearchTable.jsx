@@ -95,6 +95,7 @@ class DirsearchTable extends React.Component {
 									loading={!this.state.loaded}
 									size="tiny"
 									onClick={() => {
+										// TODO: target_id and port_number can be set via the wrapping component
 										this.props.requestMore(target_id, port_number, 100, this.state.current_offset);
 										this.setState({
 											current_offset: this.state.current_offset + 100

@@ -71,6 +71,8 @@ class FileHandlers(object):
             limit = int(msg.get('limit'))
             offset = int(msg.get('offset'))
 
+            print(host)
+
             get_result = self.file_manager.get_files_hosts(host, port_number, limit, offset)
             if get_result["status"] == "success":
                 await self.socketio.emit(

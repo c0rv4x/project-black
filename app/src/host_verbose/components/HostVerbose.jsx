@@ -57,7 +57,7 @@ class HostVerbose extends React.Component {
 	}
 
 	render() {
-		const { host, ports, files, stats } = this.props;
+		const { host, ports, project_uuid, files, stats } = this.props;
 
 		return (
 			<div>
@@ -68,11 +68,15 @@ class HostVerbose extends React.Component {
 				<ScopeComment comment={host.comment}
 							  onCommentSubmit={(value) => this.commentSubmitted(value, host.host_id)} />
 
-				<PortsTabs ports={ports}
-					   	   activeTabNumber={this.state.activeTabNumber}
-						   tabChange={this.tabChange}
-						   stats={stats}
-					   	   files={files} />
+				<PortsTabs
+					project_uuid={project_uuid}
+					ports={ports}
+					host={host}
+					activeTabNumber={this.state.activeTabNumber}
+					tabChange={this.tabChange}
+					files={files}
+					stats={stats}
+				/>
 			</div>				  
 		)
 	}
