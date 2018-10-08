@@ -94,7 +94,7 @@ class FileManager(object):
                             lambda x, y: x + y,
                             map(lambda stat: stat[1], stats_for_port.items())
                         )
-                    print(stats)                    
+
             return {"status": "success", "stats": stats}
         except Exception as exc:
             return {"status": "error", "text": str(exc)}
@@ -127,7 +127,6 @@ class FileManager(object):
             files = []
 
             with self.sessions.get_session() as session:
-                print("Starting {}, {}".format(ip, port_number))
                 files = (
                     session.query(
                         FileDatabase,
@@ -141,7 +140,6 @@ class FileManager(object):
                     .offset(offset)
                     .all()
                 )
-                print(files)
             return {"status": "success", "files": files}
         except Exception as exc:
             return {"status": "error", "text": str(exc)}
