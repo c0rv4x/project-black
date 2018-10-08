@@ -1,11 +1,34 @@
+import _ from 'lodash'
 import React from 'react'
 
 import { Button, Icon, Label, Table } from 'semantic-ui-react'
 
 
 class DirsearchTable extends React.Component {
-	shouldComponentUpdate(nextProps) {
-		return (!_.isEqual(nextProps, this.props));
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			current_offset: 0,
+			loaded: true
+		};
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		return (!_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state));
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if (!_.isEqual(prevProps.files, this.props.files)) {
+			this.setState({
+				loaded: true
+			});
+		}
+		else if (prevState.current_offset != this.state.current_offset) {
+			this.setState({
+				loaded: false
+			});
+		}
 	}
 
 	render() {
@@ -34,6 +57,7 @@ class DirsearchTable extends React.Component {
 		}
 
 		if (stats.total) {
+			console.log(stats);
 			return (
 				<Table>
 					<Table.Header>
@@ -68,13 +92,31 @@ class DirsearchTable extends React.Component {
 								<Label size="medium">{stats.total} files</Label>
 								<Button
 									floated="right"
+									loading={!this.state.loaded}
 									size="tiny"
 									onClick={() => {
-										this.props.requestMore(target_id, port_number, 5, 0);
+										this.props.requestMore(target_id, port_number, 100, this.state.current_offset);
+										this.setState({
+											current_offset: this.state.current_offset + 100
+										});										
 									}}
 								>
-									<Icon name='plus' /> Load more
-								</Button>
+									<Icon name='plus' /> Load 100
+								</Button>								
+								<Button
+									floated="right"
+									loading={!this.state.loaded}
+									size="tiny"
+									onClick={() => {
+										console.log(this.state.current_offset);
+										this.props.requestMore(target_id, port_number, 1, this.state.current_offset);
+										this.setState({
+											current_offset: this.state.current_offset + 1
+										});										
+									}}
+								>
+									<Icon name='plus' /> Load 1
+								</Button>								
 							</Table.HeaderCell>
 						</Table.Row>
 					</Table.Footer>					
