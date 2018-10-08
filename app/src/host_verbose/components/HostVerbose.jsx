@@ -57,7 +57,7 @@ class HostVerbose extends React.Component {
 	}
 
 	render() {
-		const { host, ports } = this.props;
+		const { host, ports, files, stats } = this.props;
 
 		return (
 			<div>
@@ -70,8 +70,9 @@ class HostVerbose extends React.Component {
 
 				<PortsTabs ports={ports}
 					   	   activeTabNumber={this.state.activeTabNumber}
-					   	   tabChange={this.tabChange}
-					   	   files={host.files} />
+						   tabChange={this.tabChange}
+						   stats={stats}
+					   	   files={files} />
 			</div>				  
 		)
 	}

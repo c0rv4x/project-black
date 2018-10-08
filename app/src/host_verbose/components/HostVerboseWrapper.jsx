@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { connect } from 'react-redux';
 
 import HostVerboseUpdater from './HostVerboseUpdater.jsx';
@@ -6,21 +7,6 @@ import HostVerboseUpdater from './HostVerboseUpdater.jsx';
 function mapStateToProps(state, ownProps){
     // Extract project
     let project_uuid = ownProps.match.params.project_uuid;
-    let filtered_projects = _.filter(state.projects, (x) => {
-        return x.project_uuid == project_uuid
-    });
-
-    let project = null;
-
-    if (filtered_projects.length) {
-        project = filtered_projects[0]
-    } else {
-        project = {
-            "project_name": null,
-            "project_uuid": null,
-            "comment": ""
-        }
-    }
 
     // Extract hostname
     let hostname = ownProps.match.params.hostname;
@@ -42,7 +28,6 @@ function mapStateToProps(state, ownProps){
         }
     }
 
-    // let ports_unsorted = _.get(_.get(host.ip_addresses, 0, {}), 'scans', []);
     let ports_unsorted = [];
 
     for (var ip_address of host.ip_addresses) {
@@ -71,8 +56,9 @@ function mapStateToProps(state, ownProps){
     });
 
     return {
-        project_uuid: project.project_uuid,
+        project_uuid: project_uuid,
         host: host,
+        files: _.get(state.files, host.host_id, []),
         tasks: state.tasks.active,
         ports: ports,
         update_needed: state.hosts.update_needed
