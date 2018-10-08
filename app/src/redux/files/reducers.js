@@ -80,7 +80,7 @@ function add_files_hosts(state = defaultState, action) {
 
 	if (new_files.host.hasOwnProperty(message.host)) {
 		if (new_files.host[message.host].hasOwnProperty(message.port_number)) {
-			new_files.host[message.host][message.port_number].concat(message['files']);
+			new_files.host[message.host][message.port_number] = new_files.host[message.host][message.port_number].concat(message['files']);
 		}
 		else {
 			new_files.host[message.host][message.port_number] = message['files'];
@@ -101,11 +101,11 @@ function add_files_hosts(state = defaultState, action) {
 
 function add_files_ips(state = defaultState, action) {
 	const message = action.message;
-
 	let new_files = JSON.parse(JSON.stringify(state['files']));
+
 	if (new_files.ip.hasOwnProperty(message.ip)) {
 		if (new_files.ip[message.ip].hasOwnProperty(message.port_number)) {
-			new_files.ip[message.ip][message.port_number].concat(message['files']);
+			new_files.ip[message.ip][message.port_number] = new_files.ip[message.ip][message.port_number].concat(message['files']);
 		}
 		else {
 			new_files.ip[message.ip][message.port_number] = message['files'];
