@@ -9,6 +9,7 @@ import {
 } from 'semantic-ui-react'
 
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter'
+import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
 
 
 class HostVerbose extends React.Component {
@@ -21,6 +22,7 @@ class HostVerbose extends React.Component {
 		}
 
 		this.emitter = new HostsSocketioEventsEmitter();
+		this.filesEmitter = new FilesSocketioEventsEmitter();
 
 		if (this.props.update_needed) {
 			this.emitter.requestRenewHosts({'host': [this.props.host.hostname]});
@@ -28,6 +30,7 @@ class HostVerbose extends React.Component {
 
 		this.tabChange = this.tabChange.bind(this);
 		this.commentSubmitted = this.commentSubmitted.bind(this);
+		this.getFilesHosts = this.getFilesHosts.bind(this);
 	}
 
 	componentWillReceiveProps(newProps) {
@@ -56,6 +59,16 @@ class HostVerbose extends React.Component {
 		this.emitter.requestUpdateHost(comment, _id, this.props.project_uuid, "host");
 	}
 
+	getFilesHosts(host, port_number, limit=3, offset=0) {
+		this.filesEmitter.requestFilesHosts(
+			this.props.project_uuid,
+			host,
+			port_number,
+			limit,
+			offset
+		);
+	}
+
 	render() {
 		const { host, ports, project_uuid, files, stats } = this.props;
 
@@ -71,11 +84,13 @@ class HostVerbose extends React.Component {
 				<PortsTabs
 					project_uuid={project_uuid}
 					ports={ports}
-					host={host}
+					target={host.hostname}
+					target_id={host.host_id}
 					activeTabNumber={this.state.activeTabNumber}
 					tabChange={this.tabChange}
 					files={files}
 					stats={stats}
+					requestMoreFiles={this.getFilesHosts}
 				/>
 			</div>				  
 		)

@@ -54,7 +54,7 @@ function mapStateToProps(state, ownProps){
     let ports = ports_unsorted.sort((x, y) => {
         return x.port_number > y.port_number;
     });
-    console.log(state.files);
+
     return {
         project_uuid: project_uuid,
         host: host,
