@@ -57,7 +57,6 @@ class DirsearchTable extends React.Component {
 		}
 
 		if (stats.total) {
-			console.log(stats);
 			return (
 				<Table>
 					<Table.Header>
@@ -91,6 +90,7 @@ class DirsearchTable extends React.Component {
 								}								
 								<Label size="medium">{stats.total} files</Label>
 								<Button
+									disabled={this.state.current_offset >= stats.total}
 									floated="right"
 									loading={!this.state.loaded}
 									size="tiny"
@@ -104,11 +104,11 @@ class DirsearchTable extends React.Component {
 									<Icon name='plus' /> Load 100
 								</Button>								
 								<Button
+									disabled={this.state.current_offset >= stats.total}
 									floated="right"
 									loading={!this.state.loaded}
 									size="tiny"
 									onClick={() => {
-										console.log(this.state.current_offset);
 										this.props.requestMore(target_id, port_number, 1, this.state.current_offset);
 										this.setState({
 											current_offset: this.state.current_offset + 1
