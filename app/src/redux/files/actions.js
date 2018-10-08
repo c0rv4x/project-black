@@ -23,7 +23,7 @@ export function addStatsIps(message, current_project_uuid) {
 
 export function addStatsHosts(message, current_project_uuid) {
 	return {
-		type: ADD_STSTS_HOSTS,
+		type: ADD_STATS_HOSTS,
 		current_project_uuid: current_project_uuid,
 		message
 	}

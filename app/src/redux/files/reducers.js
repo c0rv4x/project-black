@@ -103,15 +103,6 @@ function add_files_ips(state = defaultState, action) {
 	const message = action.message;
 
 	let new_files = JSON.parse(JSON.stringify(state['files']));
-	// for (let file of message.files) {
-	// 	if (new_files.ip.hasOwnProperty(file.ip_id)) {
-	// 		new_files.ip[file.ip_id].push(file);
-	// 	}
-	// 	else {
-	// 		new_files.ip[file.ip_id] = [file];
-	// 	}
-	// }
-	console.log(message);
 	if (new_files.ip.hasOwnProperty(message.ip)) {
 		if (new_files.ip[message.ip].hasOwnProperty(message.port_number)) {
 			new_files.ip[message.ip][message.port_number].concat(message['files']);

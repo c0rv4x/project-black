@@ -129,7 +129,7 @@ class MainAccumulatorUpdater extends React.Component {
 	}
 
 	renewFilesStatsHosts(hosts=this.props.hosts.data) {
-		// this.filesEmitter.requestStatsHost(this.props.project_uuid, hosts.map((host) => {return host.host_id}));
+		this.filesEmitter.requestStatsHost(this.props.project_uuid, hosts.map((host) => {return host.host_id}));
 	}
 
 	getFilesHosts(host, port_number, limit=3, offset=0) {

@@ -25,7 +25,7 @@ class TablesAccumulator extends React.Component {
 	}
 
 	render() {
-		const { ips, hosts, files, project_name, project_uuid, applyFilters, changePage, getFilesIps } = this.props;
+		const { ips, hosts, files, project_name, project_uuid, applyFilters, changePage, getFilesIps, getFilesHosts } = this.props;
 		let tables = [];
 
 		for (var each_ip of ips) {
@@ -35,7 +35,6 @@ class TablesAccumulator extends React.Component {
 			for (var each_port of each_ip.scans) {
 				const files_for_ip_port = _.get(files_for_ip, each_port.port_number, []);
 				const stats_for_ip_port = _.get(stats_for_ip, each_port.port_number, {});
-				// const total_count = _.get(stats_for_ip_port, 'total', 0);
 
 				tables.push(
 					<DirsearchTable key={each_ip.ip_id + "_" + each_port.scan_id} 
@@ -50,24 +49,34 @@ class TablesAccumulator extends React.Component {
 			}
 		}
 
-		// for (var each_host of hosts) {
-		// 	let ports = new Set();
+		for (var each_host of hosts) {
+			const files_for_host = _.get(files.files.host, each_host.host_id, {});
+			const stats_for_host = _.get(files.stats.host, each_host.host_id, {});
 
-		// 	for (var each_ip_address of each_host.ip_addresses) {				
-		// 		for (var each_port of each_ip_address.scans) {
-		// 			ports.add(each_port.port_number);
-		// 		}
-		// 	}
+			let ports = new Set();
 
-		// 	for (var port_number of ports) {
-		// 		tables.push(
-		// 			<DirsearchTable key={each_host.host_id + "_" + port_number} 
-		// 							target={each_host.hostname}
-		// 							port_number={port_number}
-		// 							files={_.get(files.host, each_host.host_id, [])}/>
-		// 		);
-		// 	}
-		// }
+			for (var each_ip_address of each_host.ip_addresses) {				
+				for (var each_port of each_ip_address.scans) {
+					ports.add(each_port.port_number);
+				}
+			}
+
+			for (var port_number of ports) {
+				const files_for_host_port = _.get(files_for_host, port_number, []);
+				const stats_for_host_port = _.get(stats_for_host, port_number, {});
+
+				tables.push(
+					<DirsearchTable key={each_host.host_id + "_" + port_number} 
+									target={each_host.hostname}
+									target_id={each_host.host_id}
+									port_number={port_number}
+									files={files_for_host_port}
+									stats={stats_for_host_port}
+									project_uuid={project_uuid}
+									requestMore={getFilesHosts} />
+				);
+			}
+		}
 
 		return (
 			<div>
