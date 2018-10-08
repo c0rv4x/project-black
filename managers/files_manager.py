@@ -49,7 +49,8 @@ class FileManager(object):
 
                     stats[ip_id] = {}
                     for status_code, port_number, res in files_stats:
-                        stats[ip_id][port_number] = {}
+                        if port_number not in stats[ip_id]:
+                            stats[ip_id][port_number] = {}
                         stats[ip_id][port_number][status_code] = res
 
                     for port_number, stats_for_port in stats[ip_id].items():
@@ -84,7 +85,8 @@ class FileManager(object):
 
                     stats[host_id] = {}
                     for status_code, port_number, res in files_stats:
-                        stats[host_id][port_number] = {}
+                        if port_number not in stats[host_id]:
+                            stats[host_id][port_number] = {}
                         stats[host_id][port_number][status_code] = res
 
                     for port_number, stats_for_port in stats[host_id].items():
