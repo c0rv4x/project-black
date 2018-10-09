@@ -65,31 +65,38 @@ class DictDatabse(Base):
             with cls.session_spawner.get_session() as session:
                 session.add(db_object)
         except IntegrityError:
-            return {"status": "success", "name": name}
+            return {"status": "success", "name": name, "dictionary": db_object}
         except Exception as exc:
-            print(str(exc))
             return {"status": "error", "text": str(exc), "name": name}
         else:
-            return {"status": "success", "name": name}
+            return {"status": "success", "name": name, "dictionary": db_object}
 
-    # @classmethod
-    # def find(cls, project_uuid, targets=None, port_number=None):
-    #     try:
-    #         with cls.session_spawner.get_session() as session:
-    #             creds_request = session.query(cls).filter(
-    #                 cls.project_uuid == project_uuid
-    #             )
+    @classmethod
+    def get(cls, project_uuid=None, dict_id=None, name=None):
+        try:
+            with cls.session_spawner.get_session() as session:
+                dict_request = session.query(
+                    cls.id,
+                    cls.name,
+                    cls.dict_type,
+                    # cls.content, ## This is too big to keep in memory
+                    cls.lines_count,
+                    cls.hashsum,
+                    cls.project_uuid
+                )
+                
+                if project_uuid:
+                    dict_request = dict_request.filter(cls.project_uuid == project_uuid)
+                if dict_id:
+                    dict_request = dict_request.filter(cls.dict_id == dict_id)
+                if name:
+                    dict_request = dict_request.filter(cls.name == name)
 
-    #             if targets:
-    #                 creds_request = creds_request.filter(cls.target.in_(targets))
-    #             if port_number:
-    #                 creds_request = creds_request.filter(cls.port_number == port_number)
+                dicts = dict_request.all()
 
-    #             creds = creds_request.all()
-
-    #             return {"status": "success", "creds": creds}
-    #     except Exception as exc:
-    #         return {"status": "error", "text": str(exc)}
+                return {"status": "success", "dicts": dicts}
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}
 
     @classmethod
     def count(cls, project_uuid):
