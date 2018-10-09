@@ -7,7 +7,7 @@ from black.db.sessions import Sessions
 from .base import Base
 
 
-class DictDatabse(Base):
+class DictDatabase(Base):
     """ Keeps data on the used dictionaries """
     __tablename__ = "dicts"
 

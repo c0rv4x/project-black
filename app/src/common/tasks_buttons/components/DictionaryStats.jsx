@@ -8,7 +8,6 @@ import {
 class DictionariesStats extends React.Component {
     constructor(props) {
         super(props);
-
     }
 
     render() {

@@ -32,6 +32,7 @@ class DictManager(object):
 
     def get(self, project_uuid=None):
         return {
+            "project_uuid": project_uuid,
             "status": "success",
             "dicts": list(filter(
                 lambda a: a["project_uuid"] == project_uuid,

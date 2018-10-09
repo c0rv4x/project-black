@@ -10,6 +10,7 @@ import filter_reduce from './filters/reducers';
 import notification_reduce from './notifications/reducers';
 import scope_reduce from './scopes/reducers';
 import creds_reduce from './creds/reducers';
+import dicts_reduce from './dicts/reducers';
 
 
 const all_reducers = combineReducers({
@@ -22,7 +23,8 @@ const all_reducers = combineReducers({
 	filters: filter_reduce,
 	notifs: notification_reduce,
 	scopes: scope_reduce,
-	creds: creds_reduce
+	creds: creds_reduce,
+	dicts: dicts_reduce
 });
 
 export default all_reducers;
