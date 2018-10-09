@@ -7,6 +7,7 @@ from .models.task import TaskDatabase
 from .models.scan import ScanDatabase
 from .models.file import FileDatabase
 from .models.cred import CredDatabase
+from .models.dictionary import DictDatabase
 
 sessions = Sessions()
 Base.metadata.create_all(sessions.engine, checkfirst=True)
