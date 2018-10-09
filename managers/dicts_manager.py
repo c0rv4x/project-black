@@ -40,4 +40,12 @@ class DictManager(object):
         }
 
     def delete(self, project_uuid, dict_id=None, name=None):
-        return DictDatabase.delete(project_uuid, dict_id, name)
+        delete_result = DictDatabase.delete(project_uuid, dict_id, name)
+
+        if delete_result["status"] == "success":
+            self.dicts = list(filter(
+                lambda x: x["dict_id"] != delete_result["dict_id"],
+                self.dicts
+            ))
+
+        return delete_result
