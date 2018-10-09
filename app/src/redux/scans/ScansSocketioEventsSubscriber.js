@@ -1,7 +1,7 @@
 import Notifications from 'react-notification-system-redux'
 
 import { 
-	renewStats, 
+	renewCount, 
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
@@ -17,7 +17,7 @@ class ScansEventsSubsriber {
 
         this.connector.after_connected((x) => {
         	this.emitter = new ScansSocketioEventsEmitter();
-        	this.emitter.renewStats(this.project_uuid);
+        	this.emitter.renewCount(this.project_uuid);
         });
 
         this.basic_events_registration();
@@ -26,7 +26,7 @@ class ScansEventsSubsriber {
 	basic_events_registration() {
 		/* Register handlers on basic events */
 
-		this.register_socketio_handler('scans:stats:set', renewStats);
+		this.register_socketio_handler('scans:stats:set', renewCount);
 	}
 
 	register_socketio_handler(eventName, callback) {

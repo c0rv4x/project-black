@@ -23,26 +23,28 @@ class NmapTask(AsyncTask):
 
     async def start(self):
         """ Launch the task """
-        print(self.params)
-        flags_raw = self.params['program'][0].split(' -')
-        flags = [flags_raw[0]]
+        try:
+            flags_raw = self.params['program'][0].split(' -')
+            flags = [flags_raw[0]]
 
-        if len(flags_raw) > 1:
-            for each_flag in flags_raw[1:]:
-                flags.append('-' + each_flag)
+            if len(flags_raw) > 1:
+                for each_flag in flags_raw[1:]:
+                    flags.append('-' + each_flag)
 
-        if self.params.get('special', None):
-            self.command = ['nmap', '-oX', '-'] + flags + self.params["special"] + [self.target]
-        else:
-            self.command = ['nmap', '-oX', '-'] + flags + [self.target]
-        print("Start: ", ' '.join(self.command))
-        self.proc = await asyncio.create_subprocess_exec(*self.command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+            if self.params.get('special', None):
+                self.command = ['nmap', '-oX', '-'] + flags + self.params["special"] + [self.target]
+            else:
+                self.command = ['nmap', '-oX', '-'] + flags + [self.target]
+            print("Starting: ", ' '.join(self.command))
+            self.proc = await asyncio.create_subprocess_exec(*self.command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
-        await self.set_status("Working", 0, "")
-        loop = asyncio.get_event_loop()
-        loop.create_task(self.read_stdout())
-        loop.create_task(self.read_stderr())
-        # self.spawn_status_poller()
+            await self.set_status("Working", 0, "")
+            loop = asyncio.get_event_loop()
+            loop.create_task(self.read_stdout())
+            loop.create_task(self.read_stderr())
+            # self.spawn_status_poller()
+        except Exception as exc:
+            await self.set_status("Aborted", -1, str(exc))
 
     def send_notification(self, command):
         """ Sends 'command' notification to the current process. """
@@ -124,26 +126,31 @@ class NmapTask(AsyncTask):
     async def wait_for_exit(self):
         """ Check if the process exited. If so,
         save stdout, stderr, exit_code and update the status. """
-        exit_code = await self.proc.wait()
-        self.exit_code = exit_code
-        # The process has exited.
 
-        if self.exit_code == 0:
-            try:
-                target = self.parse_results()
-            except Exception as e:
-                print("Set to aborted", "".join(self.stderr))
-                print(str(e))
-                await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
-
-                raise(e)
-            else:
-                print("Finished: ", target)
-                await self.set_status("Finished", progress=100, text=target)
+        # The exception handling is needed for cases when create_subprocess_exec
+        # failed and the self.proc is set to None
+        try:
+            exit_code = await self.proc.wait()
+            self.exit_code = exit_code
+        except:
+            pass
         else:
-            print("Not null exit code", ' '.join(self.command))
-            print("".join(self.stderr))
-            await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
+            if self.exit_code == 0:
+                try:
+                    target = self.parse_results()
+                except Exception as e:
+                    print("Set to aborted", "".join(self.stderr))
+                    print(str(e))
+                    await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
+
+                    raise(e)
+                else:
+                    print("Finished: ", target)
+                    await self.set_status("Finished", progress=100, text=target)
+            else:
+                print("Not null exit code", ' '.join(self.command))
+                print("".join(self.stderr))
+                await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
 
     def parse_results(self):
         def save_scan(data):

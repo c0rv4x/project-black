@@ -22,8 +22,9 @@ function mapStateToProps(state, ownProps) {
 		}
 	}
 
-    return {
-    	project: project,
+	return {
+		project: project,
+		project_uuid,
     	ips: state.ips,
     	hosts: state.hosts,
     	files: state.files

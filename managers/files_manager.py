@@ -1,7 +1,7 @@
-""" Keeps FileManager, which is reponsible for working with File table """
-from operator import itemgetter
+from functools import reduce
+from sqlalchemy import func
 
-from black.db import Sessions, FileDatabase, ProjectDatabase
+from black.db import Sessions, FileDatabase
 
 
 class FileManager(object):
@@ -26,3 +26,120 @@ class FileManager(object):
         self.sessions.destroy_session(session)
 
         return amount
+
+    def get_stats_ips(self, project_uuid, ip_ids):
+        stats = {}
+
+        try:
+            with self.sessions.get_session() as session:
+                for ip_id in ip_ids:
+                    files_stats = (
+                        session.query(
+                            FileDatabase.status_code,
+                            FileDatabase.port_number,
+                            func.count(FileDatabase.status_code)
+                        )
+                        .filter(FileDatabase.ip_id == ip_id)
+                        .group_by(
+                            FileDatabase.status_code,
+                            FileDatabase.port_number
+                        )
+                        .all()
+                    )
+
+                    stats[ip_id] = {}
+                    for status_code, port_number, res in files_stats:
+                        if port_number not in stats[ip_id]:
+                            stats[ip_id][port_number] = {}
+                        stats[ip_id][port_number][status_code] = res
+
+                    for port_number, stats_for_port in stats[ip_id].items():
+                        stats[ip_id][port_number]['total'] = reduce(
+                            lambda x, y: x + y,
+                            map(lambda stat: stat[1], stats_for_port.items())
+                        )
+
+            return {"status": "success", "stats": stats}
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}
+
+    def get_stats_hosts(self, project_uuid, host_ids):
+        stats = {}
+
+        try:
+            with self.sessions.get_session() as session:
+                for host_id in host_ids:
+                    files_stats = (
+                        session.query(
+                            FileDatabase.status_code,
+                            FileDatabase.port_number,
+                            func.count(FileDatabase.status_code)
+                        )
+                        .filter(FileDatabase.host_id == host_id)
+                        .group_by(
+                            FileDatabase.status_code,
+                            FileDatabase.port_number
+                        )
+                        .all()
+                    )
+
+                    stats[host_id] = {}
+                    for status_code, port_number, res in files_stats:
+                        if port_number not in stats[host_id]:
+                            stats[host_id][port_number] = {}
+                        stats[host_id][port_number][status_code] = res
+
+                    for port_number, stats_for_port in stats[host_id].items():
+                        stats[host_id][port_number]['total'] = reduce(
+                            lambda x, y: x + y,
+                            map(lambda stat: stat[1], stats_for_port.items())
+                        )
+
+            return {"status": "success", "stats": stats}
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}
+
+    def get_files_hosts(self, host_id, port_number, limit, offset):
+        try:
+            files = []
+
+            with self.sessions.get_session() as session:
+                files = (
+                    session.query(
+                        FileDatabase,
+                    )
+                    .filter(
+                        FileDatabase.host_id == host_id,
+                        FileDatabase.port_number == port_number
+                    )
+                    .order_by(FileDatabase.status_code, FileDatabase.file_name)
+                    .limit(limit)
+                    .offset(offset)
+                    .all()
+                )
+
+            return {"status": "success", "files": files}
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}
+
+    def get_files_ips(self, ip, port_number, limit, offset):
+        try:
+            files = []
+
+            with self.sessions.get_session() as session:
+                files = (
+                    session.query(
+                        FileDatabase,
+                    )
+                    .filter(
+                        FileDatabase.ip_id == ip,
+                        FileDatabase.port_number == port_number
+                    )
+                    .order_by(FileDatabase.status_code, FileDatabase.file_name)
+                    .limit(limit)
+                    .offset(offset)
+                    .all()
+                )
+            return {"status": "success", "files": files}
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}

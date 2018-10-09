@@ -6,27 +6,20 @@ import {
 	Card,
 	Table,
 	Header,
-	Grid,
 	Divider,
 	Popup,
-	Modal,
 	List,
-	Label,
-	Image
+	Label
 } from 'semantic-ui-react'
 
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
 import TasksScoped from '../../../common/tasks_scoped/TasksScoped.jsx'
+import Creds from '../../../common/creds/Creds.jsx'
 
 
 class IPEntryLine extends React.Component {
-
-	constructor(props) {
-		super(props);
-	}
-
 	shouldComponentUpdate(nextProps) {
-		return (!_.isEqual(nextProps, this.props));
+		return (!_.isEqual(nextProps['ip'], this.props['ip']));
 	}
 
 	render() {
@@ -65,11 +58,7 @@ class IPEntryLine extends React.Component {
 			)
 		});
 
-		let hostnames = ip.hostnames.sort((a, b) => {
-			if (a.hostname > b.hostname) return 1;
-			if (a.hostname < b.hostname) return -1;
-			return 0;
-		});
+		let hostnames = ip.hostnames;
 		let hostnames_view = null;
 		
 		if (hostnames) {
@@ -79,7 +68,7 @@ class IPEntryLine extends React.Component {
 
 			hostnames_view = (
 				<Popup 
-					trigger={<Label>{hostnames.length} {hostnames.length == 1 && "host"}{hostnames.length != 1 && "hosts"}</Label>}
+					trigger={<Label as="a">Hosts<Label.Detail>{hostnames.length}</Label.Detail></Label>}
 					content={
 						<List bulleted>
 							{hostnames_list_items}
@@ -91,24 +80,26 @@ class IPEntryLine extends React.Component {
 		}
 
 		let files_by_statuses = {
-			'2xx': [],
-			'3xx': [],
-			'4xx': [],
-			'5xx': []
+			'2xx': 0,
+			'3xx': 0,
+			'4xx': 0,
+			'5xx': 0
 		}
 
-		for (var file of ip.files) {
-			if (Math.floor(file.status_code / 100) === 3) {
-				files_by_statuses['3xx'].push(file);
-			}
-			else if (Math.floor(file.status_code / 100) === 4) {
-				files_by_statuses['4xx'].push(file);
-			}
-			else if (Math.floor(file.status_code / 100) === 5) {
-				files_by_statuses['5xx'].push(file);
-			}
-			else if (Math.floor(file.status_code / 100) === 2) {
-				files_by_statuses['2xx'].push(file);
+		for (let port_number of Object.keys(ip.files)) {
+			for (let status_code of Object.keys(ip.files[port_number])) {
+				if (Math.floor(status_code / 100) === 3) {
+					files_by_statuses['3xx'] += ip.files[port_number][status_code];
+				}
+				else if (Math.floor(status_code / 100) === 4) {
+					files_by_statuses['4xx'] += ip.files[port_number][status_code];
+				}
+				else if (Math.floor(status_code / 100) === 5) {
+					files_by_statuses['5xx'] += ip.files[port_number][status_code];
+				}
+				else if (Math.floor(status_code / 100) === 2) {
+					files_by_statuses['2xx'] += ip.files[port_number][status_code];
+				}
 			}
 		}
 
@@ -121,14 +112,20 @@ class IPEntryLine extends React.Component {
 				<ScopeComment comment={ip.comment}
 						  	  onCommentSubmit={onCommentSubmit} />
 
-				<div style={{"wordBreak": "break-all"}}>{hostnames_view}</div>
+				<div style={{"wordBreak": "break-all"}}>
+					{hostnames_view}
+					<Creds
+						scope={ip}
+						project_uuid={project_uuid}
+					/>
+				</div>
 
 				<Divider hidden />
 				<List bulleted>
-					<List.Item>2xx: <strong>{files_by_statuses['2xx'].length}</strong></List.Item> 
-					<List.Item>3xx: {files_by_statuses['3xx'].length}</List.Item>
-					<List.Item>4xx: {files_by_statuses['4xx'].length}</List.Item>
-					<List.Item>5xx: {files_by_statuses['5xx'].length}</List.Item>
+					<List.Item>2xx: <strong>{files_by_statuses['2xx']}</strong></List.Item> 
+					<List.Item>3xx: {files_by_statuses['3xx']}</List.Item>
+					<List.Item>4xx: {files_by_statuses['4xx']}</List.Item>
+					<List.Item>5xx: {files_by_statuses['5xx']}</List.Item>
 				</List>
 
 				<Divider hidden />

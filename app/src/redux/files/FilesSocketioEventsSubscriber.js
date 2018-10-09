@@ -1,7 +1,11 @@
 import Notifications from 'react-notification-system-redux'
 
 import { 
-    renewFilesStats, 
+    addFilesHosts,
+    addFilesIps,
+    addStatsHosts,
+    addStatsIps,
+    renewTotalAmount
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
@@ -19,7 +23,7 @@ class FilesEventsSubsriber {
         this.connector.after_connected((x) => {
             this.emitter = new FilesSocketioEventsEmitter();
 
-            this.emitter.renewStats(this.project_uuid);
+            this.emitter.renewCount(this.project_uuid);
         });
 
         this.basic_events_registration();
@@ -29,7 +33,11 @@ class FilesEventsSubsriber {
         /* Register handlers on basic events */
 
         // Received all projects in one message
-        this.register_socketio_handler('files:stats:set', renewFilesStats);
+        this.register_socketio_handler('files:count:set', renewTotalAmount);
+        this.register_socketio_handler('files:stats:add:hosts', addStatsHosts);
+        this.register_socketio_handler('files:stats:add:ips', addStatsIps);
+        this.register_socketio_handler('files:add:ips', addFilesIps);
+        this.register_socketio_handler('files:add:hosts', addFilesHosts);
     }
 
     register_socketio_handler(eventName, callback) {

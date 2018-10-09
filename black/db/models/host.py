@@ -83,7 +83,7 @@ class HostDatabase(Base):
         else:
             return {"status": "success", "target": target}    
 
-    def dict(self, include_ports=False, include_ips=False, include_files=False):
+    def dict(self, include_ports=False, include_ips=False, include_files=False, files_statsified=False):
         return {
             "host_id": self.id,
             "hostname": self.target,
@@ -93,7 +93,7 @@ class HostDatabase(Base):
             "ip_addresses": list(map(
                 lambda hostname: hostname.dict(include_ports=include_ports), self.ip_addresses
             )) if include_ips else [],
-            "files": list(map(lambda file: file.dict(), self.files)) if include_files else []
+            "files": []
         }
 
     def __repr__(self):

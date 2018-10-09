@@ -1,25 +1,42 @@
+import _ from 'lodash'
 import React from 'react'
 
-import { Table } from 'semantic-ui-react'
+import { Button, Icon, Label, Table } from 'semantic-ui-react'
 
 
 class DirsearchTable extends React.Component {
-	shouldComponentUpdate(nextProps) {
-		return (!_.isEqual(nextProps, this.props));
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			current_offset: 0,
+			loaded: true
+		};
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		return (!_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state));
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if (!_.isEqual(prevProps.files, this.props.files)) {
+			this.setState({
+				loaded: true
+			});
+		}
+		else if (prevState.current_offset != this.state.current_offset) {
+			this.setState({
+				loaded: false
+			});
+		}
 	}
 
 	render() {
-		let files = [];
-		let files_sorted = this.props.files.sort((a, b) => {
-			if (a.status_code > b.status_code) return 1;
-			if (a.status_code < b.status_code) return -1;
-			if (a.file_name > b.file_name) return 1;
-			if (a.file_name < b.file_name) return -1;
-			return 0;
-		});
+		const { files, stats, target_id, target, port_number } = this.props;
 
-		if (files_sorted) {
-			for (let each_file of files_sorted) {
+		let files_rows = [];
+		if (files) {
+			for (let each_file of files) {
 				let status_code_style = {
 					color: null
 				};
@@ -28,7 +45,7 @@ class DirsearchTable extends React.Component {
 				else if (each_file.status_code == 401) status_code_style.color = '#F4DF42';
 				else status_code_style.color = '#333333';
 
-				files.push(
+				files_rows.push(
 					<Table.Row key={each_file.file_id}>
 						<Table.Cell style={status_code_style}>{each_file.status_code}</Table.Cell>
 						<Table.Cell><a href={each_file.file_path} target="_blank">{each_file.file_name}</a></Table.Cell>
@@ -39,20 +56,71 @@ class DirsearchTable extends React.Component {
 			}
 		}
 
-		if (this.props.files && this.props.files.length) {
+		if (stats.total) {
 			return (
 				<Table>
 					<Table.Header>
 						<Table.Row>
-							<Table.HeaderCell width={1}>{this.props.target + ':' + this.props.port_number}</Table.HeaderCell>
+							<Table.HeaderCell width={1}>{target + ':' + port_number}</Table.HeaderCell>
 							<Table.HeaderCell></Table.HeaderCell>
 							<Table.HeaderCell width={2}>Bytes</Table.HeaderCell>
 							<Table.HeaderCell>Redirect to</Table.HeaderCell>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{files}
+						{files_rows}
 					</Table.Body>
+					<Table.Footer fullWidth>
+						<Table.Row>
+							<Table.HeaderCell colSpan='4'>
+								{stats[200] && 
+									<Label color="green" size="medium">{stats[200]}x 200</Label>
+								}
+								{stats[301] && 
+									<Label size="medium">{stats[301]}x 301</Label>
+								}
+								{stats[302] && 
+									<Label size="medium">{stats[302]}x 302</Label>
+								}																
+								{stats[400] && 
+									<Label size="medium">{stats[400]}x 400</Label>
+								}						
+								{stats[401] && 
+									<Label color="yellow" size="medium">{stats[401]}x 401</Label>
+								}								
+								<Label size="medium">{stats.total} files</Label>
+								<Button
+									disabled={this.state.current_offset >= stats.total}
+									floated="right"
+									loading={!this.state.loaded}
+									size="tiny"
+									onClick={() => {
+										// TODO: target_id and port_number can be set via the wrapping component
+										this.props.requestMore(target_id, port_number, 100, this.state.current_offset);
+										this.setState({
+											current_offset: this.state.current_offset + 100
+										});										
+									}}
+								>
+									<Icon name='plus' /> Load 100
+								</Button>								
+								<Button
+									disabled={this.state.current_offset >= stats.total}
+									floated="right"
+									loading={!this.state.loaded}
+									size="tiny"
+									onClick={() => {
+										this.props.requestMore(target_id, port_number, 1, this.state.current_offset);
+										this.setState({
+											current_offset: this.state.current_offset + 1
+										});										
+									}}
+								>
+									<Icon name='plus' /> Load 1
+								</Button>								
+							</Table.HeaderCell>
+						</Table.Row>
+					</Table.Footer>					
 				</Table>
 			)
 		}

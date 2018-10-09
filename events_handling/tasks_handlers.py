@@ -9,21 +9,14 @@ class TaskHandlers(object):
         self.socketio = socketio
         self.task_manager = task_manager
 
-    def register_handlers(self):
-        """ The name says for itself """
+        self.register_handlers()
 
+    def register_handlers(self):
         @self.socketio.on('tasks:all:get', namespace='/tasks')
         async def _cb_handle_tasks_get(sio, msg):
             """ When received this message, send back all the tasks """
             project_uuid = int(msg.get('project_uuid', None))
             await self.send_tasks_back(project_uuid, send_all=True)
-
-        @self.socketio.on('tasks:get:hosts', namespace='/tasks')
-        async def _cb_handle_tasks_get(sio, msg):
-            """ When received this message, send back all the tasks """
-            project_uuid = int(msg.get('project_uuid', None))
-            hosts = msg.get('hosts', None)
-            await self.send_tasks_back_filtered(project_uuid, hosts=hosts)
 
         @self.socketio.on('tasks:create', namespace='/tasks')
         async def _cb_handle_tasks_create(sio, msg):
@@ -53,14 +46,6 @@ class TaskHandlers(object):
                 "Created {} {} tasks".format(len(tasks), task_type),
                 project_uuid=project_uuid
             )
-
-        @self.socketio.on('tasks:delete:project_uuid', namespace='/tasks')
-        async def _cb_handle_tasks_delete(sio, msg):
-            """ When received this message, delete the project """
-
-        @self.socketio.on('tasks:update', namespace='/tasks')
-        async def _cb_handle_tasks_update(sio, msg):
-            """ When received this message, update the project """
 
     async def send_tasks_back(self, project_uuid=None, send_all=False):
         """ Grab all tasks data and send them back to client """

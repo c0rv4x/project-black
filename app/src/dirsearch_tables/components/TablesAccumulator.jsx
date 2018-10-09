@@ -25,26 +25,34 @@ class TablesAccumulator extends React.Component {
 	}
 
 	render() {
-		const { ips, hosts, project_name, applyFilters, changePage } = this.props;
-
+		const { ips, hosts, files, project_name, project_uuid, applyFilters, changePage, getFilesIps, getFilesHosts } = this.props;
 		let tables = [];
 
 		for (var each_ip of ips) {
+			const files_for_ip = _.get(files.files.ip, each_ip.ip_id, {});
+			const stats_for_ip = _.get(files.stats.ip, each_ip.ip_id, {});
+
 			for (var each_port of each_ip.scans) {
-				let files = each_ip.files.filter((x) => {
-					return x.port_number == each_port.port_number;
-				});
+				const files_for_ip_port = _.get(files_for_ip, each_port.port_number, []);
+				const stats_for_ip_port = _.get(stats_for_ip, each_port.port_number, {});
 
 				tables.push(
 					<DirsearchTable key={each_ip.ip_id + "_" + each_port.scan_id} 
 									target={each_ip.ip_address}
+									target_id={each_ip.ip_id}
 									port_number={each_port.port_number}
-									files={files}/>
-				);				
+									files={files_for_ip_port}
+									stats={stats_for_ip_port}
+									project_uuid={project_uuid}
+									requestMore={getFilesIps} />
+				);
 			}
 		}
 
 		for (var each_host of hosts) {
+			const files_for_host = _.get(files.files.host, each_host.host_id, {});
+			const stats_for_host = _.get(files.stats.host, each_host.host_id, {});
+
 			let ports = new Set();
 
 			for (var each_ip_address of each_host.ip_addresses) {				
@@ -54,15 +62,18 @@ class TablesAccumulator extends React.Component {
 			}
 
 			for (var port_number of ports) {
-				let files = each_host.files.filter((x) => {
-					return x.port_number == port_number;
-				});
+				const files_for_host_port = _.get(files_for_host, port_number, []);
+				const stats_for_host_port = _.get(stats_for_host, port_number, {});
 
 				tables.push(
 					<DirsearchTable key={each_host.host_id + "_" + port_number} 
 									target={each_host.hostname}
+									target_id={each_host.host_id}
 									port_number={port_number}
-									files={files}/>
+									files={files_for_host_port}
+									stats={stats_for_host_port}
+									project_uuid={project_uuid}
+									requestMore={getFilesHosts} />
 				);
 			}
 		}

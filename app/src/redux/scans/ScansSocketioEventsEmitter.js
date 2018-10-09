@@ -6,7 +6,7 @@ class ScansSocketioEventsEmitter {
         this.connector = new Connector('scans');
 	}
 
-	renewStats(project_uuid) {
+	renewCount(project_uuid) {
 		this.connector.emit('scans:stats:get', {
 			"project_uuid": project_uuid
 		});		

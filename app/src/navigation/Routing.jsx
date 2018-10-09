@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 import {
     BrowserRouter as Router,
     Route
@@ -46,7 +47,7 @@ class Routing extends React.Component {
 }
 
 Routing.contextTypes = {
-    store: React.PropTypes.object
+    store: PropTypes.object
 }
 
 export default connect(

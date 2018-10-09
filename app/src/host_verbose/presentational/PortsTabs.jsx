@@ -2,18 +2,15 @@ import _ from 'lodash'
 import React from 'react'
 import {
 	Header,
-	Tab,
-	Table
+	Tab
 } from 'semantic-ui-react'
+
+import DirsearchTable from '../../dirsearch_tables/components/DirsearchTable.jsx';
 
 
 class PortsTabs extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
-		let { ports, loaded } = this.props;
+		let { target, target_id, ports, stats, loaded, files, requestMoreFiles } = this.props;
 		ports = ports.sort((a, b) => {
 			if (a.port_number < b.port_number) return -1;
 			if (a.port_number > b.port_number) return 1;
@@ -21,51 +18,25 @@ class PortsTabs extends React.Component {
 		});
 
 		let panes = [];
-
 		for (let port of ports) {
-			let filtered_files = _.filter(this.props.files, (y) => {
-				return port.port_number == y.port_number;
-			});
-
-			filtered_files = filtered_files.sort((a, b) => {
-				if (a.status_code > b.status_code) return 1;
-				if (a.status_code < b.status_code) return -1;
-				return 0;
-			});
-
-			const files = _.map(filtered_files, (port) => {
-				let result = Math.floor(port.status_code / 100);
-			
-				if (result == 2) {
-					return <Table.Row key={port.file_id}>
-								<Table.Cell style={{'color': '#22CF22'}}>{port.status_code}</Table.Cell>
-								<Table.Cell>{port.content_length}</Table.Cell>
-								<Table.Cell><a href={port.file_path} target="_blank">{port.file_name}</a></Table.Cell>
-								<Table.Cell></Table.Cell>
-						   </Table.Row>
-				}
-				else {
-					return <Table.Row key={port.file_id}>
-								<Table.Cell>{port.status_code}</Table.Cell>
-								<Table.Cell>{port.content_length}</Table.Cell>
-								<Table.Cell><a href={port.file_path} target="_blank">{port.file_name}</a></Table.Cell>
-								<Table.Cell>{port.special_note &&port.special_note}</Table.Cell>
-						   </Table.Row>
-				}
-			});
+			let stats_for_port = _.get(stats, port.port_number, {});
+			let total_for_port = _.get(stats_for_port, 'total', 0);
 
 			panes.push({
 				menuItem: String(port.port_number),
 				render: () => (
 					<Tab.Pane>
-						{files.length != 0 &&
-							<Table>
-								<Table.Body>
-									{files}
-								</Table.Body>
-							</Table>
+						{total_for_port != 0 &&
+							<DirsearchTable
+								files={_.get(files, port.port_number, [])}
+								stats={stats_for_port}
+								target_id={target_id}
+								target={target}
+								port_number={port.port_number}
+								requestMore={requestMoreFiles}
+							/>
 						}
-						{files.length == 0 && 
+						{total_for_port == 0 && 
 							<Header as="h3">No files for this port</Header>
 						}
 					</Tab.Pane>

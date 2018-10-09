@@ -1,43 +1,23 @@
- import React from 'react'
-// import { 
-// 	Button, 
-// 	Panel, 
-// 	Glyphicon,
-// 	ListGroup,
-// 	ListGroupItem,
-// 	Row,
-// 	Col,
-// 	Card,
-// 	CardHeader,
-// 	CardBody
-// } from 'reactstrap'
+import React from 'react'
 
 import {
 	Button,
 	Card,
-	Grid,
-	Segment,
 	List,
 	Header,
 	Divider
 } from 'semantic-ui-react'
 
-import { Link } from 'react-router-dom'
-
 import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import HostsEntryLinePorts from './HostsEntryLinePorts.jsx'
 import TasksScoped from '../../common/tasks_scoped/TasksScoped.jsx'
+import Creds from '../../common/creds/Creds.jsx'
 
 
 class HostsEntryLine extends React.Component {
-
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
-		const { host } = this.props;
-		const verbose_host_link = '/project/' + this.props.project_uuid + '/host/' + host.hostname;
+		const { host, project_uuid, deleteScope, onCommentSubmit } = this.props;
+		const verbose_host_link = '/project/' + project_uuid + '/host/' + host.hostname;
 
 		const footer = (
 			<div>
@@ -51,47 +31,55 @@ class HostsEntryLine extends React.Component {
 					</Button>
 	            </a>
 
-				<Button basic color="red" size="tiny" onClick={this.props.deleteScope}>
+				<Button basic color="red" size="tiny" onClick={deleteScope}>
 					Delete
 				</Button>
 			</div>
 		);
 
 		let files_by_statuses = {
-			'2xx': [],
-			'3xx': [],
-			'4xx': [],
-			'5xx': []
+			'2xx': 0,
+			'3xx': 0,
+			'4xx': 0,
+			'5xx': 0
 		}
 
-		for (var file of host.files) {
-			if (Math.floor(file.status_code / 100) === 3) {
-				files_by_statuses['3xx'].push(file);
-			}
-			else if (Math.floor(file.status_code / 100) === 4) {
-				files_by_statuses['4xx'].push(file);
-			}
-			else if (Math.floor(file.status_code / 100) === 5) {
-				files_by_statuses['5xx'].push(file);
-			}
-			else if (Math.floor(file.status_code / 100) === 2) {
-				files_by_statuses['2xx'].push(file);
+		for (let port_number of Object.keys(host.files)) {
+			for (let status_code of Object.keys(host.files[port_number])) {
+				if (Math.floor(status_code / 100) === 3) {
+					files_by_statuses['3xx'] += host.files[port_number][status_code];
+				}
+				else if (Math.floor(status_code / 100) === 4) {
+					files_by_statuses['4xx'] += host.files[port_number][status_code];
+				}
+				else if (Math.floor(status_code / 100) === 5) {
+					files_by_statuses['5xx'] += host.files[port_number][status_code];
+				}
+				else if (Math.floor(status_code / 100) === 2) {
+					files_by_statuses['2xx'] += host.files[port_number][status_code];
+				}
 			}
 		}
+
 
 		const description = (
 			<div>
 				<Header>{host.hostname}</Header>
 				<Divider />
 				<ScopeComment comment={host.comment}
-							  onCommentSubmit={this.props.onCommentSubmit} />
+							  onCommentSubmit={onCommentSubmit} />
+
+				<Creds
+					scope={host}
+					project_uuid={project_uuid}
+				/>
 
 				<Divider hidden />
 				<List bulleted>
-					<List.Item>2xx: <strong>{files_by_statuses['2xx'].length}</strong></List.Item> 
-					<List.Item>3xx: {files_by_statuses['3xx'].length}</List.Item>
-					<List.Item>4xx: {files_by_statuses['4xx'].length}</List.Item>
-					<List.Item>5xx: {files_by_statuses['5xx'].length}</List.Item>
+					<List.Item>2xx: <strong>{files_by_statuses['2xx']}</strong></List.Item> 
+					<List.Item>3xx: {files_by_statuses['3xx']}</List.Item>
+					<List.Item>4xx: {files_by_statuses['4xx']}</List.Item>
+					<List.Item>5xx: {files_by_statuses['5xx']}</List.Item>
 				</List>
 
 				<HostsEntryLinePorts host={host} />

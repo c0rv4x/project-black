@@ -1,9 +1,9 @@
 import React from 'react'
 
 import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
+import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
 import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import PortsTabs from '../../host_verbose/presentational/PortsTabs.jsx'
-
 
 import { Divider } from "semantic-ui-react"
 
@@ -17,6 +17,7 @@ class IPVerbose extends React.Component {
 		}		
 
 		this.ipsEmitter = new IPsSocketioEventsEmitter();		
+		this.filesEmitter = new FilesSocketioEventsEmitter();
 
 		if (this.props.update_needed) {
 			this.ipsEmitter.requestSingleIPs(this.props.project_uuid, this.props.ip.ip_address);
@@ -24,6 +25,17 @@ class IPVerbose extends React.Component {
 
 		this.tabChange = this.tabChange.bind(this);
 		this.commentSubmitted = this.commentSubmitted.bind(this);
+		this.getFilesIPs = this.getFilesIPs.bind(this);
+	}
+
+	getFilesIPs(host, port_number, limit=3, offset=0) {
+		this.filesEmitter.requestFilesIps(
+			this.props.project_uuid,
+			host,
+			port_number,
+			limit,
+			offset
+		);
 	}
 
 	componentWillReceiveProps(newProps) {
@@ -53,7 +65,7 @@ class IPVerbose extends React.Component {
 	}
 
 	render() {
-		let { ip, ports } = this.props;
+		let { ip, ports, files, stats } = this.props;
 
 		return (
 			<div>
@@ -67,10 +79,14 @@ class IPVerbose extends React.Component {
 
 				<PortsTabs
 					loaded={this.props.loaded}
+					stats={stats}
+					target={ip.ip_address}
+					target_id={ip.ip_id}
 					ports={ports}
 					activeTabNumber={this.state.activeTabNumber}
 					tabChange={this.tabChange}
-					files={ip.files}
+					files={files}
+					requestMoreFiles={this.getFilesIPs}
 				/>
 			</div>
 		)

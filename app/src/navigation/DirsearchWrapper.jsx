@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 
 import DirsaerchPage from '../dirsearch_tables/components/MainAccumulatorWrapper.jsx'
 
@@ -44,7 +45,7 @@ class DirsearchWrapper extends React.Component {
 }
 
 DirsearchWrapper.contextTypes = {
-    store: React.PropTypes.object
+    store: PropTypes.object
 }
 
 export default DirsearchWrapper;

@@ -1,9 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
-import { Dropdown, Button } from 'semantic-ui-react';
+import { Dropdown } from 'semantic-ui-react';
 
-
-import TasksOptions from './TasksOptions.jsx'
 import InnerModal from './InnerModal.jsx'
 
 

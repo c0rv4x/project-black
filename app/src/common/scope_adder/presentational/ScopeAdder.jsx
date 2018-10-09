@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 import { createScope } from '../../../redux/scopes/actions'
 
 import { Form, Button, TextArea, Header } from 'semantic-ui-react'
@@ -112,7 +113,7 @@ class ScopeAdder extends React.Component {
 }
 
 ScopeAdder.contextTypes = {
-    store: React.PropTypes.object
+    store: PropTypes.object
 }
 
 export default ScopeAdder;

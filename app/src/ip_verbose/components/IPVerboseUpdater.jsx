@@ -1,6 +1,8 @@
+import _ from 'lodash'
 import React from 'react'
 
 import IPVerbose from './IPVerbose.jsx'
+import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
 
 import {
     Dimmer,
@@ -9,6 +11,24 @@ import {
 
 
 class IPVerboseUpdater extends React.Component {
+	constructor(props) {
+		super(props);
+
+		this.filesEmitter = new FilesSocketioEventsEmitter();
+
+		this.requestStatsIP = this.requestStatsIP.bind(this);
+	}
+
+	componentDidUpdate(prevProps) {
+		if (!_.isEqual(this.props.ip, prevProps.ip)) {
+			this.requestStatsIP();
+		}
+	}
+
+	requestStatsIP(ip=this.props.ip) {
+		this.filesEmitter.requestStatsIPs(this.props.project_uuid, [ip.ip_id]);
+	}
+
 	render() {
         const { loaded } = this.props.ip;
 

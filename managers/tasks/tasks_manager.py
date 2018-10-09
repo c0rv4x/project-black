@@ -8,6 +8,7 @@ import asynqp
 from black.db import Sessions, TaskDatabase
 from managers.tasks.shadow_task import ShadowTask
 from managers.tasks.task_starter import TaskStarter
+from managers.tasks.finished_task_notification_creator import NotificationCreator
 
 from common.logger import log
 from config import CONFIG
@@ -20,6 +21,8 @@ class TaskManager(object):
 
     def __init__(self, data_updated_queue, scope_manager):
         self.data_updated_queue = data_updated_queue
+        self.notification_creator = NotificationCreator(self.data_updated_queue)
+
         self.scope_manager = scope_manager
 
         self.active_tasks = list()
@@ -65,47 +68,9 @@ class TaskManager(object):
             )
             await queue.bind(self.exchange, task_type + '_tasks')
 
-        await self.tasks_queue.consume(self.parse_new_status)
+        await self.tasks_queue.consume(self.handle_status_message)
 
-    def check_finished_task_necessities(self, task):
-        """ After the task finishes, we need to check, whether we should push
-        some new changes to the front end """
-        if task.task_type == "dirsearch":
-            self.logger.info(
-                "{} dirsearch finished, {}".format(
-                    task.task_id,
-                    task.text
-                )
-            )
-
-            self.data_updated_queue.put(
-                ("file", task.target, task.project_uuid, task.text, "dirsearch")
-            )
-        elif task.task_type == "masscan" or task.task_type == "nmap":
-            self.logger.info(
-                "{} {} finished, {}".format(
-                    task.task_id,
-                    task.task_type,
-                    task.text
-                )
-            )
-
-            self.data_updated_queue.put(
-                ("scan", task.target, task.project_uuid, task.text, task.task_type)
-            )
-        elif task.task_type == "dnsscan":
-            self.logger.info(
-                "{} dnsscan finished, {}".format(
-                    task.task_id,
-                    task.text
-                )
-            )
-            
-            self.data_updated_queue.put(
-                ("scope", task.target, task.project_uuid, None, "dnsscan")
-            )
-
-    def parse_new_status(self, message):
+    def handle_status_message(self, message):
         """ Parse the message from the queue, which contains task status,
         updates the relevant ShadowTask and, we notify the upper module that
         it must update the scan results. """
@@ -140,7 +105,7 @@ class TaskManager(object):
                     new_status == 'Finished' or
                     new_status == 'Aborted'
                 ):
-                    self.check_finished_task_necessities(task)
+                    self.notification_creator.finished(task)
 
                 if new_status == 'Finished' or new_status == 'Aborted':
                     self.active_tasks.remove(task)
@@ -255,9 +220,9 @@ class TaskManager(object):
         if task_type == 'masscan':
             targets = self.scope_manager.get_ips(
                 filters,
-                project_uuid,
-                ips_only=True
-            )['ips']
+                project_uuid
+            )
+
             tasks = TaskStarter.start_masscan(
                 targets, params, project_uuid, self.exchange
             )
@@ -267,9 +232,8 @@ class TaskManager(object):
         elif task_type == 'nmap':
             targets = self.scope_manager.get_ips(
                 filters,
-                project_uuid,
-                ips_only=True
-            )['ips']
+                project_uuid
+            )
 
             tasks = TaskStarter.start_nmap(
                 targets, params, project_uuid, self.exchange
@@ -281,7 +245,6 @@ class TaskManager(object):
             targets = self.scope_manager.get_ips(
                 filters,
                 project_uuid
-                # ips_only=True
             )['ips']
 
             tasks = TaskStarter.start_nmap_only_open(
@@ -297,16 +260,33 @@ class TaskManager(object):
                 else:
                     filters['port'] = ['%']
 
-                targets = self.scope_manager.get_ips(filters, project_uuid)
+                targets = self.scope_manager.get_ips_with_ports(filters, project_uuid)
             else:
-                targets = self.scope_manager.get_hosts(
-                    filters, project_uuid, hosts_only=True
+                targets = self.scope_manager.get_hosts_with_ports(
+                    filters, project_uuid
                 )
 
             tasks = TaskStarter.start_dirsearch(
                 targets, params, project_uuid, self.exchange
             )
             self.active_tasks += tasks
+
+        elif task_type == 'patator':
+            if params['targets'] == 'ips':
+                if filters.get('port', None) is None:
+                    filters['port'] = ['%']
+
+                targets = self.scope_manager.get_ips_with_ports(filters, project_uuid)
+            else:
+                targets = self.scope_manager.get_hosts_with_ports(
+                    filters, project_uuid
+                )
+
+            tasks = TaskStarter.start_patator(
+                targets, params, project_uuid, self.exchange
+            )
+            self.active_tasks += tasks
+
 
         return list(
             map(
