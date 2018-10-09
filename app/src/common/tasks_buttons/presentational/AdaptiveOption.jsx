@@ -24,25 +24,27 @@ class AdaptiveOption extends React.Component {
 	}
 
 	render() {
-		if (this.props.value.type === 'checkbox') {
+		const { value, addNewDictionary, objectKey } = this.props;
+
+		if (value.type === 'checkbox') {
 			return (
 				<Form.Field>
-					<Checkbox checked={this.props.value.value}
+					<Checkbox checked={value.value}
 							  onChange={this.triggerBool.bind(this)}
-							  label={this.props.objectKey && _.capitalize(this.props.objectKey)} />
+							  label={objectKey && _.capitalize(objectKey)} />
 				</Form.Field>
-			)				
+			)
 		}
-		else {
+		else if (value.type === 'text') {
 			return (
 				<Form.Field>
-					<label>{_.capitalize(this.props.objectKey)}</label>
+					<label>{_.capitalize(objectKey)}</label>
 					<TextArea 
 						autoHeight
 						rows={1}
-						type={this.props.value.type}
-						placeholder={this.props.objectKey}
-						value={this.props.value.value}
+						type={value.type}
+						placeholder={objectKey}
+						value={value.value}
 						onChange={this.changeInput} />
 				</Form.Field>
 			)

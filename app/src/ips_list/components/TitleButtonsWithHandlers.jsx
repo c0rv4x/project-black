@@ -217,7 +217,8 @@ class TitleButtonsWithHandlers extends React.Component {
 									]
 								},
 								{
-                                    "name": "Patator",
+									"name": "Patator",
+									"dictionaries_available": true,
                                     "help": [
 										{
 											"type": "warning",

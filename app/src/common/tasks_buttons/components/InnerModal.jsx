@@ -8,7 +8,7 @@ import {
 	Divider
 } from 'semantic-ui-react'
 
-
+import DictionariesManager from './DictionariesManager.jsx'
 import CustomOptions from './CustomOptions.jsx'
 
 
@@ -155,8 +155,11 @@ class InnerModal extends React.Component {
 					}
 					<Divider hidden />
 					<CustomOptions inputs={this.state.inputs}
-								   startTaskHandler={this.startTask}
-								   onInputChange={this.onInputChange} />					
+								   onInputChange={this.onInputChange} />
+					{ task.dictionaries_available && 
+						<DictionariesManager />
+					}
+					<Button color="blue" onClick={this.startTask}>Start Task</Button>
 				</Modal.Content>
 			</Modal>
 		)
