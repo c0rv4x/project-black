@@ -119,7 +119,7 @@ class DictDatabse(Base):
                 )
 
                 if dict_id:
-                    to_delete_creds = to_delete_dict.filter(
+                    to_delete_dict = to_delete_dict.filter(
                         cls.id == id
                     )
 
@@ -128,8 +128,8 @@ class DictDatabse(Base):
                         cls.name == name
                     )
 
-                to_delete_creds.delete('fetch')
+                to_delete_dict.delete('fetch')
 
-                return {"status": "success"}
+                return {"status": "success", "dict_id": to_delete_dict.dict_id}
         except Exception as exc:
             return {"status": "error", "text": str(exc)}
