@@ -24,7 +24,7 @@ class AdaptiveOption extends React.Component {
 	}
 
 	render() {
-		const { value, addNewDictionary, objectKey } = this.props;
+		const { value, objectKey } = this.props;
 
 		if (value.type === 'checkbox') {
 			return (
@@ -35,7 +35,7 @@ class AdaptiveOption extends React.Component {
 				</Form.Field>
 			)
 		}
-		else if (value.type === 'text') {
+		else {
 			return (
 				<Form.Field>
 					<label>{_.capitalize(objectKey)}</label>
