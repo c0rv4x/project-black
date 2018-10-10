@@ -90,7 +90,7 @@ class DictDatabase(Base):
                 if project_uuid:
                     dict_request = dict_request.filter(cls.project_uuid == project_uuid)
                 if dict_id:
-                    dict_request = dict_request.filter(cls.dict_id == dict_id)
+                    dict_request = dict_request.filter(cls.id == dict_id)
                 if name:
                     dict_request = dict_request.filter(cls.name == name)
 
