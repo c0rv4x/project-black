@@ -62,6 +62,7 @@ class ButtonsTasks extends React.Component {
 					</Dropdown.Menu>
 				</Dropdown>
 				<InnerModal
+					project_uuid={this.props.project_uuid}
 					dicts={this.props.dicts}
 					open={this.state.modalOpen}
 					task={this.state.current_task}

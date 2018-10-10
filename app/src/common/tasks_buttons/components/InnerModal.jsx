@@ -158,6 +158,7 @@ class InnerModal extends React.Component {
 								   onInputChange={this.onInputChange} />
 					{ task.dictionaries_available && 
 						<Dictionaries
+							project_uuid={this.props.project_uuid}
 							name={task.name.toLowerCase()}
 							dicts={this.props.dicts}
 						/>

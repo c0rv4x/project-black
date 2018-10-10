@@ -14,12 +14,14 @@ class DictionariesManager extends React.Component {
     }
 
     render() {
-        console.log(this.props.dicts);
 		return (
 			<div>
                 <Header as="h3">Dictionaries</Header>
                 <DictionaryStats dicts={this.props.dicts} />
-                <DictUploader />
+                <DictUploader
+                    project_uuid={this.props.project_uuid}
+                    task_name={this.props.name}    
+                />
                 <Divider hidden />
             </div>
 		)

@@ -23,6 +23,7 @@ class Dictionaries extends React.Component {
 			<div>
                 {!this.state.dictsHidden &&
                     <DictionariesManager
+                        project_uuid={this.props.project_uuid}
                         dicts={this.props.dicts}
                         name={this.props.name}
                     />
