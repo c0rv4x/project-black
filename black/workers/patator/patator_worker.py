@@ -33,12 +33,9 @@ class PatatorWorker(AsyncWorker):
                 with open(os.path.join(wordlists_path, name), "w") as w:
                     w.write(dictionary["content"])
 
-
-
-
     async def start(self):
         """ Start all the necessary consumers """
         self.fetch_ditionaries()
-        # await self.initialize()
-        # await self.start_tasks_consumer()
-        # await self.start_notifications_consumer()
+        await self.initialize()
+        await self.start_tasks_consumer()
+        await self.start_notifications_consumer()
