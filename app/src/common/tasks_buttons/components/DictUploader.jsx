@@ -29,7 +29,7 @@ class DictUploader extends React.Component {
                 this.setState({
                     "upload_in_progress": false
                 });
-                console.log("uploaded");
+                this.props.renewDicts();
             }            
         }.bind(this);
 

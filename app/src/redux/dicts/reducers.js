@@ -21,7 +21,7 @@ const default_value = {
 function set_dicts(state=default_value, action) {
 	const message = action.message;
 
-    return {
+	return {
 		"amount": state["amount"],
 		"dicts": message["dicts"]
 	}

@@ -48,7 +48,7 @@ class DictionariesStats extends React.Component {
                                             color="red"
                                             onClick={(x) => {
                                                 if (confirm("Delete this dictionary?")) {
-                                                    console.log("deleting", x.id);
+                                                    this.props.deleteDict(x.id);
                                                 }
                                             }}
                                         >
