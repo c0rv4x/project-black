@@ -4,3 +4,4 @@ public/
 __pycache__/
 .vscode
 logs/
+**wordlists/*
