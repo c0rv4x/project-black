@@ -20,7 +20,7 @@ class DictUploader extends React.Component {
 
     upload() {
         this.setState({
-            "upload_in_progress": true
+            // "upload_in_progress": true
         });
 
         let requester = new XMLHttpRequest();
@@ -34,8 +34,13 @@ class DictUploader extends React.Component {
         }.bind(this);
 
         requester.open("POST", "/upload_dict");
-        requester.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        requester.send();
+        requester.setRequestHeader("Content-Type", "application/json");
+        requester.send(JSON.stringify({
+            "project_uuid": this.props.project_uuid,
+            "dict_type": this.props.task_name,
+            "name": this.state.name,
+            "content": btoa(this.state.dictionary)
+        }));
     }
 
     onChangeFile() {
