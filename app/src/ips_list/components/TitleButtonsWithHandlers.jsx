@@ -73,7 +73,7 @@ class TitleButtonsWithHandlers extends React.Component {
 		return (
 			<ButtonTasks
 				dicts={this.props.dicts}
-				project={this.props.project}
+				project_uuid={this.props.project_uuid}
 				tasks={
 				[
 					{
