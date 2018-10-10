@@ -16,22 +16,34 @@ class DictionariesStats extends React.Component {
         const { dicts } = this.props;
  
         if (dicts.dicts.length) {
+            console.log(dicts.dicts);
             return (
                 <Table>
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell>Name</Table.HeaderCell>
-                            <Table.HeaderCell>Lines</Table.HeaderCell>
+                            <Table.HeaderCell>Lines Count</Table.HeaderCell>
                             <Table.HeaderCell></Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
                         {dicts.dicts.map((x) => {
                             return (
-                                <Table.Row>
+                                <Table.Row key={x.id}>
                                     <Table.Cell>{x.name}</Table.Cell>
-                                    <Table.Cell>{x.count_lines}}</Table.Cell>
+                                    <Table.Cell>{x.lines_count}</Table.Cell>
                                     <Table.Cell>
+                                        <Button
+                                            onClick={() => {
+                                                window.open(
+                                                    '/dictionary/' + x.id,
+                                                    Math.random().toString(36).substring(7),
+                                                    'width=850,height=700'
+                                                )
+                                            }}
+                                        >
+                                            Show
+                                        </Button>                                        
                                         <Button
                                             color="red"
                                             onClick={(x) => {

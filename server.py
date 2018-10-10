@@ -65,7 +65,6 @@ async def cb_complex_handler_bundle(request):
 async def cb_serve_media_file(request, filename=""):
     return await response.file_stream(os.path.join('./public', os.path.basename(request.path)))
 
-
 @authorized()
 async def cb_upload_dict(request):
     dict_params = request.json
@@ -83,6 +82,19 @@ async def cb_upload_dict(request):
         return response.json(save_result, status=200)
     return response.json(save_result, status=500)
 
+@authorized()
+async def cb_get_dictionary(request, dict_id):
+    get_result = DictDatabase.get(dict_id=dict_id)
+
+    if get_result["status"] == "success":
+        if len(get_result["dicts"]) == 0:
+            return response.text("Dictionary not found", status=200)
+        else:
+            return response.text(get_result["dicts"][0].content, status=200)
+    else:
+        return response.text(get_result, status=500)
+
+
 init_default()
 
 SOCKET_IO = socketio.AsyncServer(async_mode='sanic')
@@ -97,6 +109,7 @@ APP.add_route(cb_complex_handler, '/project/<project_uuid>/host/<host>')
 APP.add_route(cb_complex_handler, '/project/<project_uuid>/ip/<host>')
 
 APP.add_route(cb_upload_dict, '/upload_dict', methods=['POST'])
+APP.add_route(cb_get_dictionary, '/dictionary/<dict_id>')
 
 
 APP.add_route(cb_complex_handler_bundle, '/bundle.js')
