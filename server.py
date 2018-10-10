@@ -69,7 +69,7 @@ async def cb_serve_media_file(request, filename=""):
 async def cb_upload_dict(request):
     dict_params = request.json
     content = base64.b64decode(dict_params["content"]).decode('utf-8')
-    save_result = DictDatabase.create(
+    save_result = HANDLERS.dict_manager.create(
         name=dict_params["name"],
         dict_type=dict_params["dict_type"],
         content=content,
@@ -118,7 +118,6 @@ APP.add_route(cb_serve_media_file, '/<filename:[a-z0-9]+.(eot|woff|woff2)>')
 APP.static('static', './public/static')
 
 HANDLERS = Handlers(SOCKET_IO, APP)
-
 
 @APP.listener('before_server_start')
 async def cb_instantiate_scheduler(app, loop):
