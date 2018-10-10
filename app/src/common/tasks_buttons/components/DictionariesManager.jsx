@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import React from 'react'
 import {
     Divider,
@@ -6,6 +5,7 @@ import {
 } from 'semantic-ui-react'
 
 import DictionaryStats from './DictionaryStats.jsx'
+import DictUploader from './DictUploader.jsx'
 
 
 class DictionariesManager extends React.Component {
@@ -14,10 +14,12 @@ class DictionariesManager extends React.Component {
     }
 
     render() {
+        console.log(this.props.dicts);
 		return (
 			<div>
                 <Header as="h3">Dictionaries</Header>
-                <DictionaryStats />
+                <DictionaryStats dicts={this.props.dicts} />
+                <DictUploader />
                 <Divider hidden />
             </div>
 		)

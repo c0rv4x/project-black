@@ -61,10 +61,13 @@ class ButtonsTasks extends React.Component {
 						{items}
 					</Dropdown.Menu>
 				</Dropdown>
-				<InnerModal open={this.state.modalOpen}
-				            task={this.state.current_task}
-				            openModal={this.openModal.bind(this)}
-				            closeModal={this.closeModal.bind(this)}/>
+				<InnerModal
+					dicts={this.props.dicts}
+					open={this.state.modalOpen}
+					task={this.state.current_task}
+					openModal={this.openModal.bind(this)}
+					closeModal={this.closeModal.bind(this)}
+				/>
 			</span>
 		)
 	}

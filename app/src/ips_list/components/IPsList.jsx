@@ -51,6 +51,7 @@ class IPsList extends React.Component {
 				<br/>
 
 				<TitleButtonsWithHandlers
+					dicts={this.props.dicts}
 					project_uuid={project_uuid} 
 					filters={filters} />
 

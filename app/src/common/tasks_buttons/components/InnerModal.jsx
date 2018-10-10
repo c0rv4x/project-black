@@ -157,7 +157,10 @@ class InnerModal extends React.Component {
 					<CustomOptions inputs={this.state.inputs}
 								   onInputChange={this.onInputChange} />
 					{ task.dictionaries_available && 
-						<Dictionaries name={task.name.toLowerCase()}/>
+						<Dictionaries
+							name={task.name.toLowerCase()}
+							dicts={this.props.dicts}
+						/>
 					}
 					<Button color="blue" onClick={this.startTask}>Start Task</Button>
 				</Modal.Content>

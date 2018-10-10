@@ -14,7 +14,7 @@ class Dictionaries extends React.Component {
         super(props);
 
         this.state = {
-            "dictsHidden": true
+            "dictsHidden": false
         };
     }
 
@@ -22,7 +22,10 @@ class Dictionaries extends React.Component {
 		return (
 			<div>
                 {!this.state.dictsHidden &&
-                    <DictionariesManager name={this.props.name} />
+                    <DictionariesManager
+                        dicts={this.props.dicts}
+                        name={this.props.name}
+                    />
                 }
                 <Button
                     onClick={() => this.setState({"dictsHidden": !this.state.dictsHidden})}

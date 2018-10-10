@@ -119,6 +119,7 @@ function mapStateToProps(state, ownProps) {
         project_uuid: project_uuid,
         tasks: state.tasks,
         ips: ips,
+        dicts: state.dicts,
         tasks: state.tasks.active
     }
 }
