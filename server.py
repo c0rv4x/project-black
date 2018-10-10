@@ -1,7 +1,6 @@
 """ Main application, running on sanic """
 import os
 import base64
-import hashlib
 from functools import wraps
 
 import socketio
@@ -71,7 +70,6 @@ async def cb_serve_media_file(request, filename=""):
 async def cb_upload_dict(request):
     dict_params = request.json
     content = base64.b64decode(dict_params["content"]).decode('utf-8')
-    hash_sum = hashlib.md5(content.encode('utf-8')).hexdigest()
     save_result = DictDatabase.create(
         name=dict_params["name"],
         dict_type=dict_params["dict_type"],
