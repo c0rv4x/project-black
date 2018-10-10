@@ -27,7 +27,7 @@ class IPsList extends React.Component {
 
   	componentDidUpdate(prevProps) {
   		let prevIps = prevProps.ips;
-  		let { ips, project, tasks } = this.props;
+  		let { ips, project, tasks, project_uuid } = this.props;
 
   		if (
   			(!prevIps) ||
