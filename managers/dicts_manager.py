@@ -29,7 +29,10 @@ class DictManager(object):
         create_result = DictDatabase.create(name, dict_type, content, project_uuid)
 
         if create_result["status"] == "success":
-            self.dicts.append(create_result["dictionary"].dict())
+            new_dict = create_result["dictionary"].dict()
+            new_dict["content"] = ""
+
+            self.dicts.append(new_dict)
 
         return create_result
 
