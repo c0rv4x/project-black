@@ -73,7 +73,7 @@ async def cb_upload_dict(request):
         name=dict_params["name"],
         dict_type=dict_params["dict_type"],
         content=content,
-        project_uuid=dict_params["project_uuid"]
+        project_uuid=int(dict_params["project_uuid"])
     )
 
     if save_result["status"] == "success":
