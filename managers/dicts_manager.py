@@ -16,14 +16,17 @@ class DictManager(object):
 
         if get_result["status"] == "success":
             self.dicts = list(map(lambda x: x.dict(), get_result["dicts"]))
+
+            for i in range(len(self.dicts)):
+                self.dicts[i]["content"] = ''
         else:
             raise Exception(get_result)
 
     def count(self, project_uuid):
         return DictDatabase.count(project_uuid)
 
-    def create(self, name, content, project_uuid):
-        create_result = DictDatabase.create(name, content, project_uuid)
+    def create(self, name, dict_type, content, project_uuid):
+        create_result = DictDatabase.create(name, dict_type, content, project_uuid)
 
         if create_result["status"] == "success":
             self.dicts.append(create_result["dictionary"].dict())

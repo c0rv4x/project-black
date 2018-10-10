@@ -50,15 +50,16 @@ class DictDatabase(Base):
             "lines_count": self.lines_count,
             "hashsum": self.hashsum,
             "project_uuid": self.project_uuid,
-            "date_added": self.date_added
+            "date_added": str(self.date_added)
         }
 
     @classmethod
-    def create(cls, name, content, project_uuid, lines_count=None, hashsum=None):
+    def create(cls, name, dict_type, content, project_uuid, lines_count=None, hashsum=None):
 
         db_object = cls(
-            name=name, content=content, project_uuid=project_uuid,
-            lines_count=len(content), hashsum=hashlib.md5(content).hexdigest()
+            name=name, dict_type=dict_type, content=content,
+            project_uuid=project_uuid, lines_count=content.count('\n'),
+            hashsum=hashlib.md5(content.encode('utf-8')).hexdigest()
         )
 
         try:
@@ -76,13 +77,14 @@ class DictDatabase(Base):
         try:
             with cls.session_spawner.get_session() as session:
                 dict_request = session.query(
-                    cls.id,
-                    cls.name,
-                    cls.dict_type,
-                    # cls.content, ## This is too big to keep in memory
-                    cls.lines_count,
-                    cls.hashsum,
-                    cls.project_uuid
+                    # cls.id,
+                    # cls.name,
+                    # cls.dict_type,
+                    # # cls.content, ## This is too big to keep in memory
+                    # cls.lines_count,
+                    # cls.hashsum,
+                    # cls.project_uuid
+                    cls
                 )
                 
                 if project_uuid:
