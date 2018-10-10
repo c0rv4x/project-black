@@ -1,6 +1,7 @@
 """ Main application, running on sanic """
 import os
 import base64
+import hashlib
 from functools import wraps
 
 import socketio
@@ -8,6 +9,7 @@ from sanic import Sanic, response
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from events_handling import Handlers
+from black.db.models.dictionary import DictDatabase
 
 from common.logger import init_default
 from config import CONFIG
@@ -64,9 +66,24 @@ async def cb_complex_handler_bundle(request):
 async def cb_serve_media_file(request, filename=""):
     return await response.file_stream(os.path.join('./public', os.path.basename(request.path)))
 
+
 @authorized()
 async def cb_upload_dict(request):
-    return response.json({"message": "ok"}, status=200)
+    dict_params = request.json
+    content = base64.b64decode(dict_params["content"]).decode('utf-8')
+    hash_sum = hashlib.md5(content.encode('utf-8')).hexdigest()
+    save_result = DictDatabase.create(
+        name=dict_params["name"],
+        dict_type=dict_params["dict_type"],
+        content=content,
+        project_uuid=dict_params["project_uuid"]
+    )
+
+    if save_result["status"] == "success":
+        save_result["dictionary"] = save_result["dictionary"].dict()
+
+        return response.json(save_result, status=200)
+    return response.json(save_result, status=500)
 
 init_default()
 
