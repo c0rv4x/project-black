@@ -10,7 +10,8 @@ class DictUploader extends React.Component {
 
         this.state = {
             "name": "",
-            "dictionary": ""
+            "dictionary": "",
+            "upload_in_progress": false
         };
 
         this.upload = this.upload.bind(this);
@@ -18,7 +19,23 @@ class DictUploader extends React.Component {
     }
 
     upload() {
-        console.log(this.state);
+        this.setState({
+            "upload_in_progress": true
+        });
+
+        let requester = new XMLHttpRequest();
+        requester.onreadystatechange = function () {
+            if(requester.readyState == XMLHttpRequest.DONE && requester.status == 200) {
+                this.setState({
+                    "upload_in_progress": false
+                });
+                console.log("uploaded");
+            }            
+        }.bind(this);
+
+        requester.open("POST", "/upload_dict");
+        requester.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        requester.send();
     }
 
     onChangeFile() {
@@ -58,7 +75,14 @@ class DictUploader extends React.Component {
                             id='dict_upload_id'
                             onChange={this.onChangeFile}
                         />
-                        <Form.Button fluid label='Upload' onClick={this.upload}>Upload</Form.Button>
+                        <Form.Button
+                            fluid
+                            label='Upload'
+                            loading={this.state.upload_in_progress}
+                            onClick={this.upload}
+                        >
+                            Upload
+                        </Form.Button>
                     </Form.Group>
                 </Form>               
             </div>

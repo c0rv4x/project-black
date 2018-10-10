@@ -64,6 +64,9 @@ async def cb_complex_handler_bundle(request):
 async def cb_serve_media_file(request, filename=""):
     return await response.file_stream(os.path.join('./public', os.path.basename(request.path)))
 
+@authorized()
+async def cb_upload_dict(request):
+    return response.json({"message": "ok"}, status=200)
 
 init_default()
 
@@ -77,6 +80,9 @@ APP.add_route(cb_complex_handler, '/project/<project_uuid>')
 APP.add_route(cb_complex_handler, '/project/<project_uuid>/dirsearch')
 APP.add_route(cb_complex_handler, '/project/<project_uuid>/host/<host>')
 APP.add_route(cb_complex_handler, '/project/<project_uuid>/ip/<host>')
+
+APP.add_route(cb_upload_dict, '/upload_dict', methods=['POST'])
+
 
 APP.add_route(cb_complex_handler_bundle, '/bundle.js')
 APP.add_route(cb_serve_media_file, '/<filename:[a-z0-9]+.(eot|woff|woff2)>')
