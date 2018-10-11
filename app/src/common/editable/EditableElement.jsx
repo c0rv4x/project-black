@@ -78,13 +78,15 @@ class EditableElement extends React.Component {
         const Element = this.props.element;
 
         return (
-            <Element
-                className={this.props.elementClassName}
-                style={{"whiteSpace": "pre-line"}}
+            <div
                 onClick={this.onClick}
             >
-            {this.state.value || this.props.placeholder}
-            </Element>
+                <Element
+                    className={this.props.elementClassName}
+                >
+                    {this.state.value || this.props.placeholder}
+                </Element>
+            </div>
         );
     }
 
@@ -93,6 +95,7 @@ class EditableElement extends React.Component {
 
         return (
             <InputElement
+                fluid
                 ref={(input) => {
                     this.input = input;
                 }}
