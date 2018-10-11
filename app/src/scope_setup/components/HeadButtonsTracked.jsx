@@ -24,6 +24,7 @@ class HeadButtonsTracked extends React.Component {
 	render() {
 		return (
 			<div>
+				<Divider hidden />
 				<HeadButtons project={this.props.project}
 							 hostsResolved={this.props.hosts.resolve_finished}
 							 resolveScopes={() => this.resolveScopes(null, this.props.project.project_uuid)}/>

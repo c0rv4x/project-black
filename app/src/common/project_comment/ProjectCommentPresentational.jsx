@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { TextArea, Form, Comment } from 'semantic-ui-react'
+import { Form, TextArea } from 'semantic-ui-react'
+import ReactMarkdown from 'react-markdown'
 
 import EditableElement from '../editable/EditableElement.jsx'
 
@@ -14,12 +15,13 @@ class ProjectCommentPresentational extends React.Component {
 	render() {
 		return (
 			<Form>
-		        <EditableElement value={this.props.projectComment}
-		        				 onBlur={this.props.commentSubmitted}
-		        				 inputElement={TextArea}
-		        				 element={Comment}
-		        				 placeholder="Project comment" />
-	        </Form>
+				<EditableElement
+					value={this.props.projectComment}
+					onBlur={this.props.commentSubmitted}
+					inputElement={TextArea}
+					element={ReactMarkdown}
+					placeholder="Project comment" />
+			</Form>
 		)
 	}
 
