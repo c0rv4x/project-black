@@ -2,7 +2,6 @@ import _ from 'lodash'
 import React from 'react'
 
 import { 
-	Button,
 	Form
 } from 'semantic-ui-react'
 
@@ -31,7 +30,6 @@ class CustomOptions extends React.Component {
 			<div>
 				<Form>		
 					{options}
-					<Button color="blue" onClick={this.props.startTaskHandler}>Start Task</Button>
 				</Form>
 			</div>
 		)

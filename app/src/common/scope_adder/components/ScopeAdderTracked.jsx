@@ -2,7 +2,6 @@ import React from 'react'
 
 import ScopesSocketioEventsEmitter from '../../../redux/scopes/ScopesSocketioEventsEmitter.js'
 
-import ScopeUpload from './ScopeUpload.jsx'
 import ScopeAdder from '../presentational/ScopeAdder.jsx'
 
 
@@ -34,8 +33,8 @@ class ScopeAdderTracked extends React.Component {
 			<div>
 				<ScopeAdder
 					newScopeInput={this.state.newScopeInput}
-					handleNewScopeChange={(e) => {
-						this.handleNewScopeChange(e.target.value)
+					handleNewScopeChange={(value) => {
+						this.handleNewScopeChange(value)
 					}}
 					onNewScopeClick={
 						(scopes) => {
@@ -48,11 +47,6 @@ class ScopeAdderTracked extends React.Component {
 					scopesCreated={this.props.scopesCreated}
 					project_uuid={this.props.project.project_uuid}
 				/>
-				<ScopeUpload
-					fileLoadedHandler={this.handleNewScopeChange}
-				>
-					Upload scope
-				</ScopeUpload>
 			</div>
 		)
 	}

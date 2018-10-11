@@ -44,12 +44,11 @@ function create_ip(state = initialState, action) {
 }
 
 function delete_ip(state = initialState, action) {
-	const message = action.message;
-
-	var new_state = JSON.parse(JSON.stringify(state));
-	new_state.update_needed = true;
-
-	return new_state;
+	return {
+		...state,
+		'loaded': true,
+		'update_needed': true
+	};
 }
 
 function renew_ips(state = initialState, action) {

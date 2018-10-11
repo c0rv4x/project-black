@@ -23,9 +23,11 @@ class TasksSocketioEventsEmitter {
 		});
 	}
 
-	requestRenewTasks(project_uuid) {
+	requestRenewTasks(project_uuid, send_all) {
+		if (!send_all) { send_all = false }
 		this.connector.emit('tasks:all:get', {
-			'project_uuid': project_uuid
+			'project_uuid': project_uuid,
+			'send_all': send_all
 		});
 	}
 

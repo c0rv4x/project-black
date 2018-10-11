@@ -14,7 +14,7 @@ export class FileButton extends Component {
 
     render() {
         return (
-            <div>
+            <span>
                 <Button
                     as="label"
                     htmlFor={this.id}
@@ -27,7 +27,7 @@ export class FileButton extends Component {
                     multiple
                     type="file"
                     onChange={this.onChangeFile} />
-            </div>
+            </span>
         );
     }
 

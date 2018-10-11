@@ -16,7 +16,9 @@ class TaskHandlers(object):
         async def _cb_handle_tasks_get(sio, msg):
             """ When received this message, send back all the tasks """
             project_uuid = int(msg.get('project_uuid', None))
-            await self.send_tasks_back(project_uuid, send_all=True)
+            send_all = msg.get('send_all')
+
+            await self.send_tasks_back(project_uuid, send_all=send_all)
 
         @self.socketio.on('tasks:create', namespace='/tasks')
         async def _cb_handle_tasks_create(sio, msg):

@@ -22,7 +22,7 @@ class TasksSocketioEventsSubsriber {
 
         this.connector.after_connected((x) => {
         	this.emitter = new TasksSocketioEventsEmitter();
-        	this.emitter.requestRenewTasks(this.project_uuid);
+        	this.emitter.requestRenewTasks(this.project_uuid, true);
         });
 
         this.basic_events_registration();

@@ -19,8 +19,9 @@ class FileHandlers(object):
             """ Returns dicts with statistics on files for selected targets """
             project_uuid = int(msg.get('project_uuid', None))
             ip_ids = msg.get('ip_ids', [])
+            filters = msg.get('filters')
 
-            get_result = self.file_manager.get_stats_ips(project_uuid, ip_ids)
+            get_result = self.file_manager.get_stats_ips(project_uuid, ip_ids, filters)
 
             if get_result["status"] == "success":
                 await self.socketio.emit(
@@ -43,8 +44,9 @@ class FileHandlers(object):
             """ Returns dicts with statistics on files for selected targets """
             project_uuid = int(msg.get('project_uuid', None))
             host_ids = msg.get('host_ids', [])
+            filters = msg.get('filters')
 
-            get_result = self.file_manager.get_stats_hosts(project_uuid, host_ids)
+            get_result = self.file_manager.get_stats_hosts(project_uuid, host_ids, filters)
 
             if get_result["status"] == "success":
                 await self.socketio.emit(
@@ -70,10 +72,9 @@ class FileHandlers(object):
             port_number = int(msg.get('port_number'))
             limit = int(msg.get('limit'))
             offset = int(msg.get('offset'))
+            filters = msg.get('filters')
 
-            print(host)
-
-            get_result = self.file_manager.get_files_hosts(host, port_number, limit, offset)
+            get_result = self.file_manager.get_files_hosts(host, port_number, limit, offset, filters)
             if get_result["status"] == "success":
                 await self.socketio.emit(
                     'files:add:hosts', {
@@ -103,8 +104,9 @@ class FileHandlers(object):
             port_number = int(msg.get('port_number'))
             limit = int(msg.get('limit'))
             offset = int(msg.get('offset'))
+            filters = msg.get('filters')
 
-            get_result = self.file_manager.get_files_ips(ip, port_number, limit, offset)
+            get_result = self.file_manager.get_files_ips(ip, port_number, limit, offset, filters)
             if get_result["status"] == "success":
                 await self.socketio.emit(
                     'files:add:ips', {

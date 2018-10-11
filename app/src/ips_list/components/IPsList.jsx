@@ -27,7 +27,7 @@ class IPsList extends React.Component {
 
   	componentDidUpdate(prevProps) {
   		let prevIps = prevProps.ips;
-  		let { ips, project, tasks } = this.props;
+  		let { ips, project, tasks, project_uuid } = this.props;
 
   		if (
   			(!prevIps) ||
@@ -51,6 +51,7 @@ class IPsList extends React.Component {
 				<br/>
 
 				<TitleButtonsWithHandlers
+					dicts={this.props.dicts}
 					project_uuid={project_uuid} 
 					filters={filters} />
 

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { createScope } from '../../../redux/scopes/actions'
 
 import { Form, Button, TextArea, Header } from 'semantic-ui-react'
+import ScopeUpload from '../components/ScopeUpload.jsx'
 
 
 class ScopeAdder extends React.Component {
@@ -89,9 +90,15 @@ class ScopeAdder extends React.Component {
 						type="text"
 						placeholder="Newline-separated hosts, ips, networks (CIDR notation)"
 						value={this.props.newScopeInput}
-						onChange={this.props.handleNewScopeChange}
+						onChange={(e) => this.props.handleNewScopeChange(e.target.value)}
 					/>
 				</Form.Field>
+
+				<ScopeUpload
+					fileLoadedHandler={this.props.handleNewScopeChange}
+				>
+					Upload scope
+				</ScopeUpload>
 
 				<Button
 					color={color}

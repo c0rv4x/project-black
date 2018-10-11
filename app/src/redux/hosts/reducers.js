@@ -45,6 +45,7 @@ function create_host(state = initialState, action) {
 function delete_host(state = initialState, action) {
 	return {
 		...state,
+		'loaded': true,
 		'update_needed': true
 	};
 }

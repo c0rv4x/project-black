@@ -27,37 +27,41 @@ class FilesSocketioEventsEmitter {
         });
     }
 
-    requestStatsHost(project_uuid, host_ids) {
+    requestStatsHost(project_uuid, host_ids, filters) {
         this.connector.emit('files:stats:get:host', {
             "project_uuid": project_uuid,
-            "host_ids": host_ids
+            "host_ids": host_ids,
+            "filters": filters
         });
     }
 
-    requestStatsIPs(project_uuid, ip_ids) {
+    requestStatsIPs(project_uuid, ip_ids, filters) {
         this.connector.emit('files:stats:get:ip', {
             "project_uuid": project_uuid,
-            "ip_ids": ip_ids
+            "ip_ids": ip_ids,
+            "filters": filters,
         });
     }
 
-    requestFilesHosts(project_uuid, host, port_number, limit, offset) {
+    requestFilesHosts(project_uuid, host, port_number, limit, offset, filters) {
         this.connector.emit('files:get:hosts', {
             "project_uuid": project_uuid,
             "host": host,
             "port_number": port_number,
             "limit": limit,
-            "offset": offset
+            "offset": offset,
+            "filters": filters
         });
     }
 
-    requestFilesIps(project_uuid, ip, port_number, limit, offset) {
+    requestFilesIps(project_uuid, ip, port_number, limit, offset, filters) {
         this.connector.emit('files:get:ips', {
             "project_uuid": project_uuid,
             "ip": ip,
             "port_number": port_number,
             "limit": limit,
-            "offset": offset
+            "offset": offset,
+            "filters": filters
         });
     }
 }

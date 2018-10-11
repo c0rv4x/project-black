@@ -13,12 +13,14 @@ from events_handling.tasks_handlers import TaskHandlers
 from events_handling.scans_handlers import ScanHandlers
 from events_handling.files_handlers import FileHandlers
 from events_handling.creds_handlers import CredHandlers
+from events_handling.dicts_handlers import DictHandlers
 
 from events_handling.new_data_notifier import Notifier
 
 from managers import (
     ProjectManager, ScopeManager, TaskManager,
-    ScanManager, FileManager, CredManager
+    ScanManager, FileManager, CredManager,
+    DictManager
 )
 
 
@@ -40,6 +42,7 @@ class Handlers(object):
         self.scan_manager = ScanManager()
         self.file_manager = FileManager()
         self.creds_manager = CredManager()
+        self.dict_manager = DictManager()
 
         ProjectHandlers(self.socketio, self.project_manager)
 
@@ -48,6 +51,7 @@ class Handlers(object):
         self.file_handlers = FileHandlers(self.socketio, self.file_manager)
         self.task_handlers = TaskHandlers(self.socketio, self.task_manager)
         self.cred_handlers = CredHandlers(self.socketio, self.creds_manager)
+        self.dict_handlers = DictHandlers(self.socketio, self.dict_manager)
 
         self.notifier = Notifier(self.socketio)
 

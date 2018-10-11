@@ -23,6 +23,7 @@ __banner__  = 'Patator v%s (%s)' % (__version__, __git__)
 import json
 from black.db.sessions import Sessions
 from black.db.models.cred import CredDatabase
+from black.db import Sessions, DictDatabase
 
 TARGET = None
 PORT = None
@@ -1726,6 +1727,28 @@ Please read the README inside for more examples and usage information.
       logger.warn(msg)
       self.ns.quit_now = True
 
+    # This code will fetch dictionaries from the db in case ours was not found
+    def fetch_ditionaries():
+        session_spawner = Sessions()
+        with session_spawner.get_session() as session:
+            dicts_raw = (
+                session.query(
+                    DictDatabase
+                ).filter(
+                    DictDatabase.dict_type == 'patator'
+                ).all()
+            )
+        
+        dicts = list(map(lambda dictionary: dictionary.dict(), dicts_raw))
+        wordlists_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'wordlists')
+        existing_dicts = os.listdir(wordlists_path)
+
+        for dictionary in dicts:
+            name = dictionary["name"]
+            if dictionary["name"] not in existing_dicts:
+                with open(os.path.join(wordlists_path, name), "w") as w:
+                    w.write(dictionary["content"])
+
     for _, (t, v, _) in self.iter_keys.items():
       if t in ('FILE', 'COMBO'):
         size = 0
@@ -1733,15 +1756,23 @@ Please read the README inside for more examples and usage information.
 
         for name in v.split(','):
           full_name = expand_path(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'wordlists', name))
+
+          # This part will try the existing dict, then it will fetch them and try again
+          fetched = False
           for fpath in sorted(glob.iglob(expand_path(full_name))):
             if not os.path.isfile(fpath):
-              return abort("No such file '%s'" % fpath)
+              if not fetched:
+                print("fetching")
+                fetch_ditionaries()
+                fetched = True
+              else:
+                return abort("No such file '%s'" % fpath)
+            else:
+              with open(fpath) as f:
+                for _ in f:
+                  size += 1
 
-            with open(fpath) as f:
-              for _ in f:
-                size += 1
-
-            files.append(FileIter(fpath))
+              files.append(FileIter(fpath))
 
         iterable = chain(*files)
 
