@@ -88,6 +88,9 @@ class MainAccumulatorUpdater extends React.Component {
 		if (!_.isEqual(filters, prevProps.filters)) {
 			this.setFilesEmpty();
 
+			this.renewFilesStatsIps();
+			this.renewFilesStatsHosts();
+
 			this.triggerSetLoadedIPs(false);
 			this.triggerSetLoadedHosts(false);
 
@@ -134,12 +137,20 @@ class MainAccumulatorUpdater extends React.Component {
 		this.ipsEmitter.requestRenewIPs(this.props.project_uuid, newFilters, page, this.pageSize);
 	}
 
-	renewFilesStatsIps(ips=this.props.ips.data) {
-		this.filesEmitter.requestStatsIPs(this.props.project_uuid, ips.map((ip) => {return ip.ip_id}));
+	renewFilesStatsIps() {
+		this.filesEmitter.requestStatsIPs(
+			this.props.project_uuid,
+			this.props.ips.data.map((ip) => {return ip.ip_id}),
+			this.props.filters['files']
+		);
 	}
 
-	renewFilesStatsHosts(hosts=this.props.hosts.data) {
-		this.filesEmitter.requestStatsHost(this.props.project_uuid, hosts.map((host) => {return host.host_id}));
+	renewFilesStatsHosts() {
+		this.filesEmitter.requestStatsHost(
+			this.props.project_uuid,
+			this.props.hosts.data.map((host) => {return host.host_id}),
+			this.props.filters['files']
+		);
 	}
 
 	getFilesHosts(host, port_number, limit, offset, filters) {

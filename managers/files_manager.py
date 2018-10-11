@@ -27,19 +27,26 @@ class FileManager(object):
 
         return amount
 
-    def get_stats_ips(self, project_uuid, ip_ids):
+    def get_stats_ips(self, project_uuid, ip_ids, filters):
         stats = {}
 
         try:
             with self.sessions.get_session() as session:
+                prepared_filters = []
+                if filters and filters[0] != '%':
+                    prepared_filters.append(FileDatabase.status_code.in_(filters))
+
                 for ip_id in ip_ids:
+                    prepared_filters.append(
+                        FileDatabase.ip_id == ip_id
+                    )
                     files_stats = (
                         session.query(
                             FileDatabase.status_code,
                             FileDatabase.port_number,
                             func.count(FileDatabase.status_code)
                         )
-                        .filter(FileDatabase.ip_id == ip_id)
+                        .filter(*prepared_filters)
                         .group_by(
                             FileDatabase.status_code,
                             FileDatabase.port_number
@@ -63,19 +70,27 @@ class FileManager(object):
         except Exception as exc:
             return {"status": "error", "text": str(exc)}
 
-    def get_stats_hosts(self, project_uuid, host_ids):
+    def get_stats_hosts(self, project_uuid, host_ids, filters):
         stats = {}
 
         try:
             with self.sessions.get_session() as session:
+                prepared_filters = []
+                if filters and filters[0] != '%':
+                    prepared_filters.append(FileDatabase.status_code.in_(filters))
+
                 for host_id in host_ids:
+                    prepared_filters.append(
+                        FileDatabase.host_id == host_id
+                    )
+
                     files_stats = (
                         session.query(
                             FileDatabase.status_code,
                             FileDatabase.port_number,
                             func.count(FileDatabase.status_code)
                         )
-                        .filter(FileDatabase.host_id == host_id)
+                        .filter(*prepared_filters)
                         .group_by(
                             FileDatabase.status_code,
                             FileDatabase.port_number

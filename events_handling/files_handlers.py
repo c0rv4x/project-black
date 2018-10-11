@@ -19,8 +19,9 @@ class FileHandlers(object):
             """ Returns dicts with statistics on files for selected targets """
             project_uuid = int(msg.get('project_uuid', None))
             ip_ids = msg.get('ip_ids', [])
+            filters = msg.get('filters')
 
-            get_result = self.file_manager.get_stats_ips(project_uuid, ip_ids)
+            get_result = self.file_manager.get_stats_ips(project_uuid, ip_ids, filters)
 
             if get_result["status"] == "success":
                 await self.socketio.emit(
@@ -43,8 +44,9 @@ class FileHandlers(object):
             """ Returns dicts with statistics on files for selected targets """
             project_uuid = int(msg.get('project_uuid', None))
             host_ids = msg.get('host_ids', [])
+            filters = msg.get('filters')
 
-            get_result = self.file_manager.get_stats_hosts(project_uuid, host_ids)
+            get_result = self.file_manager.get_stats_hosts(project_uuid, host_ids, filters)
 
             if get_result["status"] == "success":
                 await self.socketio.emit(

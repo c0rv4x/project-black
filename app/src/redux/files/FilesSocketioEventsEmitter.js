@@ -27,17 +27,19 @@ class FilesSocketioEventsEmitter {
         });
     }
 
-    requestStatsHost(project_uuid, host_ids) {
+    requestStatsHost(project_uuid, host_ids, filters) {
         this.connector.emit('files:stats:get:host', {
             "project_uuid": project_uuid,
-            "host_ids": host_ids
+            "host_ids": host_ids,
+            "filters": filters
         });
     }
 
-    requestStatsIPs(project_uuid, ip_ids) {
+    requestStatsIPs(project_uuid, ip_ids, filters) {
         this.connector.emit('files:stats:get:ip', {
             "project_uuid": project_uuid,
-            "ip_ids": ip_ids
+            "ip_ids": ip_ids,
+            "filters": filters,
         });
     }
 
