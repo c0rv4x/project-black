@@ -5,7 +5,8 @@ import {
 	ADD_STATS_HOSTS,
 	ADD_STATS_IPS,
 	ADD_FILES_IPS,
-	ADD_FILES_HOSTS
+	ADD_FILES_HOSTS,
+	EMPTY_FILES
 } from './actions.js'
 
 
@@ -124,6 +125,16 @@ function add_files_ips(state = defaultState, action) {
 	};
 }
 
+
+function empty_files(state = defaultState, action) {
+	return {
+		"stats": state['stats'],
+		"amount": state['amount'],
+		"loaded": state['loaded'],
+		"files": defaultState['files']
+	};
+}
+
 function file_reduce(state = defaultState, action) {
 	if (!action.hasOwnProperty('message')) {
 		return state
@@ -141,7 +152,9 @@ function file_reduce(state = defaultState, action) {
 				case ADD_FILES_HOSTS:
 					return add_files_hosts(state, action);
 				case ADD_FILES_IPS:
-					return add_files_ips(state, action);										
+					return add_files_ips(state, action);		
+				case EMPTY_FILES:
+					return empty_files(state, action);
 				default:
 					return state;
 			}

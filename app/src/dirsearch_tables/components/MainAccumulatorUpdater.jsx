@@ -8,6 +8,7 @@ import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmi
 import TablesAccumulator from './TablesAccumulator.jsx'
 import { setLoaded as setLoadedIPs } from '../../redux/ips/actions.js'
 import { setLoaded as setLoadedHosts } from '../../redux/hosts/actions.js'
+import { emptyFiles } from '../../redux/files/actions.js'
 
 import { Loader, Dimmer } from 'semantic-ui-react'
 
@@ -37,6 +38,7 @@ class MainAccumulatorUpdater extends React.Component {
 		this.getFilesHosts = this.getFilesHosts.bind(this);
 		this.renewFilesStatsHosts = this.renewFilesStatsHosts.bind(this);
 		this.renewFilesStatsIps = this.renewFilesStatsIps.bind(this);
+		this.setFilesEmpty = this.setFilesEmpty.bind(this);
 
 		if (this.props.ips.data) {
 			this.renewFilesStatsIps();
@@ -84,6 +86,8 @@ class MainAccumulatorUpdater extends React.Component {
 		}
 
 		if (!_.isEqual(filters, prevProps.filters)) {
+			this.setFilesEmpty();
+
 			this.triggerSetLoadedIPs(false);
 			this.triggerSetLoadedHosts(false);
 
@@ -100,6 +104,12 @@ class MainAccumulatorUpdater extends React.Component {
 		if (!_.isEqual(hosts.data, prevProps.hosts.data)) {
 			this.renewFilesStatsHosts();
 		}
+	}
+
+	setFilesEmpty() {
+		this.context.store.dispatch(emptyFiles({
+			'project_uuid': String(this.props.project_uuid)
+		}, String(this.props.project_uuid)));		
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
