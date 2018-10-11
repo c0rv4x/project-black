@@ -96,6 +96,8 @@ class EditableElement extends React.Component {
                 ref={(input) => {
                     this.input = input;
                 }}
+                autoHeight
+                rows={1}
                 className={this.props.inputClassName}
                 style={this.props.inputStyle}
                 value={this.state.value}
