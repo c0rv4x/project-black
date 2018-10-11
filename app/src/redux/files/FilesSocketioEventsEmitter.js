@@ -53,7 +53,6 @@ class FilesSocketioEventsEmitter {
     }
 
     requestFilesIps(project_uuid, ip, port_number, limit, offset, filters) {
-        console.log(filters);
         this.connector.emit('files:get:ips', {
             "project_uuid": project_uuid,
             "ip": ip,
