@@ -32,14 +32,12 @@ class FileManager(object):
 
         try:
             with self.sessions.get_session() as session:
-                prepared_filters = []
+                status_code_filters = []
                 if filters and filters[0] != '%':
-                    prepared_filters.append(FileDatabase.status_code.in_(filters))
+                    status_code_filters.append(FileDatabase.status_code.in_(filters))                                                                                        
 
                 for ip_id in ip_ids:
-                    prepared_filters.append(
-                        FileDatabase.ip_id == ip_id
-                    )
+                    prepared_filters = [FileDatabase.ip_id == ip_id] + status_code_filters  
                     files_stats = (
                         session.query(
                             FileDatabase.status_code,
@@ -75,14 +73,12 @@ class FileManager(object):
 
         try:
             with self.sessions.get_session() as session:
-                prepared_filters = []
+                status_code_filters = []
                 if filters and filters[0] != '%':
-                    prepared_filters.append(FileDatabase.status_code.in_(filters))
+                    status_code_filters.append(FileDatabase.status_code.in_(filters))                                                                                        
 
                 for host_id in host_ids:
-                    prepared_filters.append(
-                        FileDatabase.host_id == host_id
-                    )
+                    prepared_filters = [FileDatabase.host_id == host_id] + status_code_filters 
 
                     files_stats = (
                         session.query(
