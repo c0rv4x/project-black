@@ -41,23 +41,26 @@ class FilesSocketioEventsEmitter {
         });
     }
 
-    requestFilesHosts(project_uuid, host, port_number, limit, offset) {
+    requestFilesHosts(project_uuid, host, port_number, limit, offset, filters) {
         this.connector.emit('files:get:hosts', {
             "project_uuid": project_uuid,
             "host": host,
             "port_number": port_number,
             "limit": limit,
-            "offset": offset
+            "offset": offset,
+            "filters": filters
         });
     }
 
-    requestFilesIps(project_uuid, ip, port_number, limit, offset) {
+    requestFilesIps(project_uuid, ip, port_number, limit, offset, filters) {
+        console.log(filters);
         this.connector.emit('files:get:ips', {
             "project_uuid": project_uuid,
             "ip": ip,
             "port_number": port_number,
             "limit": limit,
-            "offset": offset
+            "offset": offset,
+            "filters": filters
         });
     }
 }

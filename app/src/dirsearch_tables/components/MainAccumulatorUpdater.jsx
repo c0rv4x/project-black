@@ -142,23 +142,25 @@ class MainAccumulatorUpdater extends React.Component {
 		this.filesEmitter.requestStatsHost(this.props.project_uuid, hosts.map((host) => {return host.host_id}));
 	}
 
-	getFilesHosts(host, port_number, limit=3, offset=0) {
+	getFilesHosts(host, port_number, limit, offset, filters) {
 		this.filesEmitter.requestFilesHosts(
 			this.props.project_uuid,
 			host,
 			port_number,
 			limit,
-			offset
+			offset,
+			filters
 		);
 	}
 
-	getFilesIps(ip, port_number, limit=3, offset=0) {
+	getFilesIps(ip, port_number, limit, offset, filters) {
 		this.filesEmitter.requestFilesIps(
 			this.props.project_uuid,
 			ip,
 			port_number,
 			limit,
-			offset
+			offset,
+			filters
 		);
 	}
 
@@ -244,7 +246,7 @@ class MainAccumulatorUpdater extends React.Component {
 
 
 	render() {
-		const { files, ips, hosts, applyFilters, project, project_uuid } = this.props;
+		const { files, ips, hosts, applyFilters, project, project_uuid, filters } = this.props;
 
 		let loaded = true;
 		
@@ -286,10 +288,17 @@ class MainAccumulatorUpdater extends React.Component {
 					selected={scopes.selected}
 					project_name={project.project_name}
 					project_uuid={project_uuid}
-					changePage={this.changePage}
+					changePage={(x) => {
+						// this.setFilesEmpty();
+						this.changePage(x);
+					}}
 					pageSize={this.pageSize}
-					getFilesHosts={this.getFilesHosts}
-					getFilesIps={this.getFilesIps}
+					getFilesHosts={(host, port_number, limit, offset) => {
+						this.getFilesHosts(host, port_number, limit, offset, filters['files']);
+					}}
+					getFilesIps={(ip, port_number, limit, offset) => {
+						this.getFilesIps(ip, port_number, limit, offset, filters['files']);
+					}}
 				/>
 			</div>
 		);
