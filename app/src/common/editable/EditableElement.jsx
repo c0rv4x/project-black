@@ -80,7 +80,7 @@ class EditableElement extends React.Component {
         return (
             <Element
                 className={this.props.elementClassName}
-                style={this.props.elementStyle}
+                style={{"whiteSpace": "pre-line"}}
                 onClick={this.onClick}
             >
             {this.state.value || this.props.placeholder}
