@@ -111,7 +111,7 @@ class ProjectDatabase(Base):
     def update(
         cls, project_uuid,
         new_name=None, new_comment=None,
-        ips_lock=None, hosts_lock=None
+        ips_locked=None, hosts_locked=None
     ):
         find_result = cls.find(project_uuid=project_uuid)
 
@@ -126,11 +126,11 @@ class ProjectDatabase(Base):
                     if new_comment is not None:
                         project.comment = new_comment
 
-                    if ips_lock is not None:
-                        project.ips_lock = ips_lock
+                    if ips_locked is not None:
+                        project.ips_locked = ips_locked
 
-                    if hosts_lock is not None:
-                        project.comment = hosts_lock
+                    if hosts_locked is not None:
+                        project.hosts_locked = hosts_locked
 
                     with cls.session_spawner.get_session() as session:
                         session.add(project)

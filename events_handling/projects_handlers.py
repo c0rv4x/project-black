@@ -120,12 +120,15 @@ class ProjectHandlers:
         async def _cb_handle_project_update(sid, message):
             """ When received this message, update the project (set the comment) """
             project_uuid = message['project_uuid']
-            project_name = message['project_name']
-            comment = message['comment']
+            project_name = message.get('project_name', None)
+            comment = message.get('comment', None)
+            ips_locked = message.get('ips_locked', None)
+            hosts_locked = message.get('hosts_locked', None)
 
             # Update the existing project
             updating_status = self.project_manager.update_project(
-                project_uuid, project_name, comment)
+                project_uuid, project_name=project_name, comment=comment,
+                ips_locked=ips_locked, hosts_locked=hosts_locked)
 
             if updating_status["status"] == "success":
                 # Send the project back
@@ -133,11 +136,7 @@ class ProjectHandlers:
                     'projects:update',
                     {
                         'status': 'success',
-                        'new_project': {
-                            'project_uuid': project_uuid,
-                            'project_name': project_name,
-                            'comment': comment,
-                        }
+                        'new_project': updating_status["project"]
                     },
                     namespace='/projects')
 

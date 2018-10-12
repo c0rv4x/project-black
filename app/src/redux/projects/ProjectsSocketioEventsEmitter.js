@@ -30,14 +30,14 @@ class ProjectsSocketioEventsEmitter {
 	requestUpdateIpsLock(project_uuid, value) {
 		this.connector.emit('projects:update', {
 			'project_uuid': project_uuid,
-			'ips_lock': value
+			'ips_locked': value
 		});		
 	}
 
 	requestUpdateHostsLock(project_uuid, value) {
 		this.connector.emit('projects:update', {
 			'project_uuid': project_uuid,
-			'hosts_lock': value
+			'hosts_locked': value
 		});		
 	}
 

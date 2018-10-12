@@ -41,12 +41,18 @@ class ProjectManager(object):
             project_uuid=project_uuid
         )
 
-    def update_project(self, project_uuid, project_name=None, comment=None):
+    def update_project(
+        self, project_uuid,
+        project_name=None, comment=None,
+        ips_locked=None, hosts_locked=None    
+    ):
         """ Update project base on uuid """
         update_result = ProjectDatabase.update(
             project_uuid=project_uuid,
             new_name=project_name,
-            new_comment=comment
+            new_comment=comment,
+            ips_locked=ips_locked,
+            hosts_locked=hosts_locked
         )
 
         if update_result["status"] == "success":
