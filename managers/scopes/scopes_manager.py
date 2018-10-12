@@ -537,6 +537,13 @@ class ScopeManager(object):
         new_ips = 0
 
         session = self.session_spawner.get_new_session()
+        ips_locked = (
+            session.query(
+                ProjectDatabase
+            ).filter(
+                ProjectDatabase.project_uuid == project_uuid
+            ).one().ips_locked
+        )
 
         # Select all hosts from the db
         project_hosts = session.query(HostDatabase).filter(
@@ -659,7 +666,7 @@ class ScopeManager(object):
                     if not found:
                         host.ip_addresses.append(session.merge(found_ip))
                         session.add(host)
-                else:
+                elif not ips_locked:
                     ip_create_result = IPDatabase.create(
                         target=resolved_ip,
                         project_uuid=project_uuid
