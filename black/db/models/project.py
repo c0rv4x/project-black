@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
+from sqlalchemy import Column, String, DateTime, ForeignKey, Integer, Boolean
 from sqlalchemy.orm import relationship
 
 from black.db.models.base import Base
@@ -7,24 +7,18 @@ from black.db.sessions import Sessions
 
 
 class ProjectDatabase(Base):
-    """ Kepps the names of all the projects that exist
-    in the system. This is somewhat abstract, as it has no relations.
-    They are added at a higher level of abstraction """
     __tablename__ = 'projects'
 
-    # ID of the project (uuid for now)
     project_uuid = Column(Integer, primary_key=True, autoincrement=True)
-
-    # Given name
     project_name = Column(String)
-
-    # Really crucial comment field
     comment = Column(String, default='')
 
-    # Just Date
+    # Marks whether any user has locked ips (hosts), disallowing adding new ones 
+    ips_locked = Column(Boolean, default=False)
+    hosts_locked = Column(Boolean, default=False)
+
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
 
-    # Some relationships
     ips_relationship = relationship('IPDatabase', cascade="all, delete-orphan")
     hosts_relationship = relationship('HostDatabase', cascade="all, delete-orphan")
     tasks_relationship = relationship('TaskDatabase', cascade="all, delete-orphan")
@@ -36,8 +30,8 @@ class ProjectDatabase(Base):
         return {
             "project_uuid": self.project_uuid,
             "project_name": self.project_name,
-            "comment": self.comment
-            # "date_added": self.date_added
+            "comment": self.comment,
+            "date_added": str(self.date_added)
         }
 
     @classmethod
