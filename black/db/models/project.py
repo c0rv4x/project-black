@@ -31,6 +31,8 @@ class ProjectDatabase(Base):
             "project_uuid": self.project_uuid,
             "project_name": self.project_name,
             "comment": self.comment,
+            "ips_locked": self.ips_locked,
+            "hosts_locked": self.hosts_locked,
             "date_added": str(self.date_added)
         }
 
