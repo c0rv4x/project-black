@@ -420,12 +420,42 @@ class ScopeManager(object):
         return HostDatabase.count(project_uuid)
 
     def create_ip(self, ip_address, project_uuid):
+        with self.session_spawner.get_session() as session:
+            ips_locked = (
+                session.query(
+                    ProjectDatabase
+                ).filter(
+                    ProjectDatabase.project_uuid == project_uuid
+                ).one().ips_locked
+            )
+
+            if ips_locked:
+                return {
+                    "status": "error",
+                    "text": "Ips are locked"
+                }
+        
         return IPDatabase.create(
             target=ip_address,
             project_uuid=project_uuid
         )
 
     def create_batch_ips(self, ips, project_uuid):
+        with self.session_spawner.get_session() as session:
+            ips_locked = (
+                session.query(
+                    ProjectDatabase
+                ).filter(
+                    ProjectDatabase.project_uuid == project_uuid
+                ).one().ips_locked
+            )
+
+            if ips_locked:
+                return {
+                    "status": "error",
+                    "text": "Ips are locked"
+                }
+
         results = {
             "status": "success",
             "new_scopes": []
@@ -496,6 +526,21 @@ class ScopeManager(object):
     def create_host(self, hostname, project_uuid):
         """ Creating a host we should first check whether it is already
         in the db, then create a new one if necessary """
+        with self.session_spawner.get_session() as session:
+            hosts_locked = (
+                session.query(
+                    ProjectDatabase
+                ).filter(
+                    ProjectDatabase.project_uuid == project_uuid
+                ).one().hosts_locked
+            )
+
+            if hosts_locked:
+                return {
+                    "status": "error",
+                    "text": "Hosts are locked"
+                }
+
         return HostDatabase.create(
             target=hostname,
             project_uuid=project_uuid
