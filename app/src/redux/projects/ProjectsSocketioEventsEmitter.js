@@ -27,6 +27,20 @@ class ProjectsSocketioEventsEmitter {
 		});
 	}
 
+	requestUpdateIpsLock(project_uuid, value) {
+		this.connector.emit('projects:update', {
+			'project_uuid': project_uuid,
+			'ips_lock': value
+		});		
+	}
+
+	requestUpdateHostsLock(project_uuid, value) {
+		this.connector.emit('projects:update', {
+			'project_uuid': project_uuid,
+			'hosts_lock': value
+		});		
+	}
+
 	requestRenewProjects() {
 		this.connector.emit('projects:all:get');
 	}
