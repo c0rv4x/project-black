@@ -25,7 +25,15 @@ class ProjectManager(object):
     def create_project(self, project_name):
         """ Create a new project instance, save it to db and add
         minimal information for the web. """
-        return ProjectDatabase.create(project_name)
+        create_result = ProjectDatabase.create(
+            project_name=project_name
+        )
+
+        if create_result["status"] == "success":
+            create_result["project"] = create_result["project"].dict()
+
+        return create_result
+
 
     def delete_project(self, project_uuid=None):
         """ Deletes a new project """
@@ -35,8 +43,13 @@ class ProjectManager(object):
 
     def update_project(self, project_uuid, project_name=None, comment=None):
         """ Update project base on uuid """
-        return ProjectDatabase.update(
+        update_result = ProjectDatabase.update(
             project_uuid=project_uuid,
             new_name=project_name,
             new_comment=comment
         )
+
+        if update_result["status"] == "success":
+            update_result["project"] = update_result["project"].dict()
+
+        return update_result

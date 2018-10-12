@@ -48,7 +48,7 @@ class ProjectDatabase(Base):
                     with cls.session_spawner.get_session() as session:
                         session.add(project)
 
-                    return {"status": "success", "project": project.dict()}
+                    return {"status": "success", "project": project}
                 except Exception as exc:
                     return {"status": "error", "text": str(exc)}
                 
@@ -147,7 +147,7 @@ class ProjectDatabase(Base):
                     with cls.session_spawner.get_session() as session:
                         session.add(project)
 
-                        return {"status": "success", "project": project.dict()}
+                        return {"status": "success", "project": project}
 
                 except Exception as exc:
                     return {"status": "error", "text": str(exc)}
