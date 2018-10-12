@@ -79,28 +79,6 @@ class ProjectDatabase(Base):
             return {"status": "error", "text": str(exc)}
 
     @classmethod
-    def set_lock(cls, project_uuid, scope_type, value):
-        try:
-            with cls.session_spawner.get_session() as session:
-                project = session.query(cls).filter(
-                    cls.project_uuid == project_uuid
-                ).one()
-
-                if scope_type == 'ips':
-                    project.ips_locked = value
-                elif scope_type == 'hosts':
-                    project.hosts_locked = value
-                else:
-                    raise Exception("Can't find lock of {}".format(scope_type))
-
-                session.add(project)
-
-            return {"status": "success", "project": project}
-            
-        except Exception as exc:
-            return {"status": "error", "text": str(exc)}
-
-    @classmethod
     def delete(cls, project_uuid=None):
         find_result = cls.find(
             project_uuid=project_uuid
@@ -130,7 +108,11 @@ class ProjectDatabase(Base):
         return find_result
 
     @classmethod
-    def update(cls, project_uuid, new_name=None, new_comment=None):
+    def update(
+        cls, project_uuid,
+        new_name=None, new_comment=None,
+        ips_lock=None, hosts_lock=None
+    ):
         find_result = cls.find(project_uuid=project_uuid)
 
         if find_result["status"] == "success":
@@ -143,6 +125,12 @@ class ProjectDatabase(Base):
 
                     if new_comment is not None:
                         project.comment = new_comment
+
+                    if ips_lock is not None:
+                        project.ips_lock = ips_lock
+
+                    if hosts_lock is not None:
+                        project.comment = hosts_lock
 
                     with cls.session_spawner.get_session() as session:
                         session.add(project)
