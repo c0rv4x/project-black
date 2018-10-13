@@ -242,7 +242,7 @@ class TaskManager(object):
             self.active_tasks += tasks
 
         elif task_type == 'nmap_open':
-            targets = self.scope_manager.get_ips(
+            targets = self.scope_manager.get_ips_with_ports(
                 filters,
                 project_uuid
             )['ips']
