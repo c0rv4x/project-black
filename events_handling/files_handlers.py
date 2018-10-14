@@ -30,12 +30,14 @@ class FileHandlers(object):
                         'project_uuid': project_uuid,
                         'stats': get_result['stats']
                     },
+                    room=sio,
                     namespace='/files'
                 )                
             else:
                 await self.socketio.emit(
                     'files:stats:add:ips',
                     get_result,
+                    room=sio,
                     namespace='/files'
                 )
 
@@ -55,12 +57,14 @@ class FileHandlers(object):
                         'project_uuid': project_uuid,
                         'stats': get_result['stats']
                     },
+                    room=sio,
                     namespace='/files'
                 )                
             else:
                 await self.socketio.emit(
                     'files:stats:add:hosts',
                     get_result,
+                    room=sio,
                     namespace='/files'
                 )
 
@@ -87,12 +91,14 @@ class FileHandlers(object):
                             get_result['files']
                         ))
                     },
+                    room=sio,
                     namespace='/files'
                 )                
             else:
                 await self.socketio.emit(
                     'files:add',
                     get_result,
+                    room=sio,
                     namespace='/files'
                 )  
 
@@ -119,12 +125,14 @@ class FileHandlers(object):
                             get_result['files']
                         ))
                     },
+                    room=sio,
                     namespace='/files'
                 )                
             else:
                 await self.socketio.emit(
                     'files:add',
                     get_result,
+                    room=sio,
                     namespace='/files'
                 )
 
