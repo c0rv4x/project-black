@@ -23,6 +23,10 @@ class DictionariesManager extends React.Component {
         this.dictsEmitter.getDicts(this.props.project_uuid);
     }
 
+    componentDidMount() {
+        this.renewDicts();
+    }
+
     deleteDict(dict_id) {
 
     }

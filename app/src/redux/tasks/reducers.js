@@ -27,9 +27,7 @@ function renew_tasks(state = {'active': [], 'finished': []}, action) {
 	const message = action.message;
 
 	if (message["status"] == 'success') {
-		const active_tasks = message['tasks']['active'].filter((x) => {
-			return x.project_uuid == action.current_project_uuid;
-		});
+		const active_tasks = message['tasks']['active'];
 
 		var parsed_active_tasks = _.map(_.uniq(active_tasks), (x) => {
 			return {
@@ -47,9 +45,7 @@ function renew_tasks(state = {'active': [], 'finished': []}, action) {
 			}
 		});
 
-		const finished_tasks = message['tasks']['finished'].filter((x) => {
-			return x.project_uuid == action.current_project_uuid;
-		});
+		const finished_tasks = message['tasks']['finished'];
 		var parsed_finished_tasks = _.map(_.uniq(finished_tasks), (x) => {
 			return {
 				"task_id": x["task_id"],

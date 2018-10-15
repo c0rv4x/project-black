@@ -16,7 +16,6 @@ class DictionariesStats extends React.Component {
         const { dicts } = this.props;
  
         if (dicts.dicts.length) {
-            console.log(dicts.dicts);
             return (
                 <Table>
                     <Table.Header>
