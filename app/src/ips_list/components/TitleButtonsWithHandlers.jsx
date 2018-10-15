@@ -250,7 +250,7 @@ class TitleButtonsWithHandlers extends React.Component {
 							{
 								"name": "VNC",
 								"options": {
-									"argv": "password=FILE0 0=passwords.txt --threads 1"
+									"argv": "vnc_login password=FILE0 0=passwords.txt --threads 1"
 								}
 							}
 						],
