@@ -38,7 +38,10 @@ class TasksButtonsTracked extends React.Component {
 
 	render() {
 		return (
-			<ButtonTasks tasks={
+			<ButtonTasks
+				dicts={this.props.dicts}
+				project_uuid={this.props.project_uuid}
+				tasks={
 				[
 					{
 						"name": "Dirbuter",

@@ -75,6 +75,7 @@ function mapStateToProps(state, ownProps) {
     return {
     	project_uuid: project_uuid,
     	hosts: new_hosts,
+        dicts: state.dicts,
         tasks: state.tasks.active
     }
 }

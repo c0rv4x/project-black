@@ -25,6 +25,7 @@ class HostsListFilters extends React.Component {
 		return (
 			<HostsListScopesUpdater
 				 hosts={this.props.hosts}
+				 dicts={this.props.dicts}
 				 project_uuid={this.props.project_uuid}
 				 filters={this.state.filters}
 				 applyFilters={this.applyFilters}

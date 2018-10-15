@@ -43,15 +43,17 @@ class HostsList extends React.Component {
   	}
 
 	render() {
-		const { hosts, project_uuid, filters } = this.props;
+		const { hosts, dicts, project_uuid, filters } = this.props;
 
 		return (
 			<div>
 				<Tasks tasks={this.props.tasks} />
 				<br/>
-				<TasksButtonsTracked hosts={hosts}
-									 project_uuid={project_uuid}
-									 filters={filters} />
+				<TasksButtonsTracked
+					hosts={hosts}
+					dicts={dicts}
+					project_uuid={project_uuid}
+					filters={filters} />
 
 				<HostsTableTracked project_uuid={project_uuid}
 								   hosts={hosts}
