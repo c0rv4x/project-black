@@ -125,6 +125,18 @@ class TasksButtonsTracked extends React.Component {
 								"options": {
 									"argv": "ftp_login user=FILE0 password=FILE1 0=logins.txt 1=passwords.txt -x ignore:mesg='Login incorrect.' -x ignore,reset,retry:code=500 -x ignore:code=530"
 								}
+							},
+							{
+								"name": "SSH",
+								"options": {
+									"argv": "ssh_login user=FILE0 password=FILE1 0=logins.txt 1=passwords.txt -x ignore:mesg='Authentication failed.'"
+								}
+							},
+							{
+								"name": "VNC",
+								"options": {
+									"argv": "password=FILE0 0=passwords.txt --threads 1"
+								}
 							}
 						],
 						"available_options": [
