@@ -252,6 +252,12 @@ class TitleButtonsWithHandlers extends React.Component {
 								"options": {
 									"argv": "vnc_login password=FILE0 0=passwords.txt --threads 1"
 								}
+							},
+							{
+								"name": "RDP",
+								"options": {
+									"argv": "rdp_login user='administrator' password=FILE0 0=passwords.txt"
+								}
 							}
 						],
 						"available_options": [
