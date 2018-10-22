@@ -95,7 +95,6 @@ class EditableElement extends React.Component {
 
         return (
             <InputElement
-                fluid
                 ref={(input) => {
                     this.input = input;
                 }}
