@@ -33,6 +33,12 @@ class IPEntryLine extends React.Component {
 		        	tasks={ip.tasks}
 	        	/>
 
+	            <a onClick={() => window.open("https://google.com/search?q=site:" + ip.ip_address, Math.random().toString(36).substring(7))}>
+					<Button basic size="tiny">
+						G Dork
+					</Button>
+	            </a>
+
 	            <a onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
 					<Button basic size="tiny">
 						Verbose
