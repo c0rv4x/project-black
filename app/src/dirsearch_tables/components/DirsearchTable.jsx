@@ -9,7 +9,6 @@ class DirsearchTable extends React.Component {
 		super(props);
 
 		this.state = {
-			current_offset: 0,
 			loaded: true
 		};
 	}
@@ -22,11 +21,6 @@ class DirsearchTable extends React.Component {
 		if (!_.isEqual(prevProps.files, this.props.files)) {
 			this.setState({
 				loaded: true
-			});
-		}
-		else if (prevState.current_offset != this.state.current_offset) {
-			this.setState({
-				loaded: false
 			});
 		}
 	}
@@ -90,30 +84,25 @@ class DirsearchTable extends React.Component {
 								}								
 								<Label size="medium">{stats.total} files</Label>
 								<Button
-									disabled={this.state.current_offset >= stats.total}
+									disabled={files_rows.length >= stats.total}
 									floated="right"
 									loading={!this.state.loaded}
 									size="tiny"
 									onClick={() => {
 										// TODO: target_id and port_number can be set via the wrapping component
-										this.props.requestMore(target_id, port_number, 100, this.state.current_offset);
-										this.setState({
-											current_offset: this.state.current_offset + 100
-										});										
+										console.log(target_id, port_number);
+										this.props.requestMore(target_id, port_number, 100, files_rows.length);
 									}}
 								>
 									<Icon name='plus' /> Load 100
 								</Button>								
 								<Button
-									disabled={this.state.current_offset >= stats.total}
+									disabled={files_rows.length >= stats.total}
 									floated="right"
 									loading={!this.state.loaded}
 									size="tiny"
 									onClick={() => {
-										this.props.requestMore(target_id, port_number, 1, this.state.current_offset);
-										this.setState({
-											current_offset: this.state.current_offset + 1
-										});										
+										this.props.requestMore(target_id, port_number, 1, files_rows.length);
 									}}
 								>
 									<Icon name='plus' /> Load 1
