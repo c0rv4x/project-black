@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import { Dropdown } from 'semantic-ui-react';
+import { Dropdown, Icon, Popup } from 'semantic-ui-react';
 
 import InnerModal from './InnerModal.jsx'
 
@@ -45,14 +45,24 @@ class ButtonsTasks extends React.Component {
 
 	render() {
 		var i = -1;
-		const items = this.props.tasks.map((task) => {
+		let items = [
+			<Dropdown.Item key="task_hint" >
+				<Popup
+					on="hover"
+					content="Tasks will be launched against all targets, which correspond to the filter you specified"
+					trigger={<span>Specify targets<Icon name="question" /></span>}
+				>
+				</Popup>
+			</Dropdown.Item>	
+		]
+		items = items.concat(this.props.tasks.map((task) => {
 			i++;
 			return (
 				<Dropdown.Item key={i} onClick={() => { this.change_current_task(task)}} >
 					{task.name}
 				</Dropdown.Item>
 			)
-		});
+		}));
 
 		return (
 			<span>
