@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   rabbit:
-    build: rabbitmq/.
+    build: docker/rabbitmq/.
     container_name: black_rabbit
     ports: 
         - "127.0.0.1:15672:15672"
@@ -13,7 +13,7 @@ services:
         timeout: 5s
         retries: 20
   postgres:
-    build: postgres/.
+    build: docker/postgres/.
     container_name: black_postgres
     environment:
       - POSTGRES_USER=black
