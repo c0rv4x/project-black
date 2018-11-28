@@ -74,7 +74,7 @@ class Controller(object):
         self.errorLogLock = Lock()
         self.batch = False
         self.batchSession = None
-        self.setupErrorLogs()
+        # self.setupErrorLogs()
         # self.output.newLine("\nError Log: {0}".format(self.errorLogPath))
         if self.arguments.use_random_agents:
             self.randomAgents = FileUtils.getLines(FileUtils.buildPath(script_path, "db", "user-agents.txt"))
@@ -113,7 +113,7 @@ class Controller(object):
                 self.setupReports(self.requester)
                 matchCallbacks = [self.matchCallback]
                 notFoundCallbacks = [self.notFoundCallback]
-                errorCallbacks = [self.errorCallback, self.appendErrorLog]
+                errorCallbacks = [self.errorCallback]
                 self.fuzzer = Fuzzer(self.requester, self.dictionary, testFailPath=self.arguments.test_fail_path,
                                      threads=self.arguments.threads_count, matchCallbacks=matchCallbacks,
                                      notFoundCallbacks=notFoundCallbacks, errorCallbacks=errorCallbacks,
@@ -129,8 +129,8 @@ class Controller(object):
             self.output.error('\nCanceled by the user')
             exit(0)
         finally:
-            if not self.errorLog.closed:
-                self.errorLog.close()
+            # if not self.errorLog.closed:
+                # self.errorLog.close()
             self.reportManager.close()
 
         self.output.warning('\nFinished {}'.format(self.arguments.url))
