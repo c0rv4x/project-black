@@ -10,7 +10,7 @@ class Tasks extends React.Component {
 		super(props);
 	}
 
-	shouldComponentUpdate(nextProps, nextState) {
+	shouldComponentUpdate(nextProps) {
 		return !_.isEqual(nextProps, this.props);
 	}
 
@@ -18,7 +18,7 @@ class Tasks extends React.Component {
 		let groupped_tasks = {};
 
 		for (let each_task of this.props.tasks) {
-			const { task_type, status, progress } = each_task;
+			const { task_type } = each_task;
 
 			if (groupped_tasks.hasOwnProperty(task_type)) {
 				groupped_tasks[task_type].push(each_task);
