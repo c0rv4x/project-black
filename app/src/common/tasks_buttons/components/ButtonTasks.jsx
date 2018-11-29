@@ -5,7 +5,7 @@ import { Dropdown, Icon, Popup } from 'semantic-ui-react';
 import InnerModal from './InnerModal.jsx'
 
 
-class ButtonsTasks extends React.Component {
+class ButtonTasks extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -21,6 +21,10 @@ class ButtonsTasks extends React.Component {
 		};
 
 		this.change_current_task.bind(this);	
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
 	}
 
 	change_current_task(task) {
@@ -85,4 +89,4 @@ class ButtonsTasks extends React.Component {
 
 }
 
-export default ButtonsTasks;
+export default ButtonTasks;
