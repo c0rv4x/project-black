@@ -25,10 +25,10 @@ class ProjectManager(object):
 
         return find_result
 
-    def create_project(self, project_name):
+    async def create_project(self, project_name):
         """ Create a new project instance, save it to db and add
         minimal information for the web. """
-        create_result = ProjectDatabase.create(
+        create_result = await ProjectDatabase.create(
             project_name=project_name
         )
 
@@ -38,19 +38,19 @@ class ProjectManager(object):
         return create_result
 
 
-    def delete_project(self, project_uuid=None):
+    async def delete_project(self, project_uuid=None):
         """ Deletes a new project """
-        return ProjectDatabase.delete(
+        return await ProjectDatabase.delete(
             project_uuid=project_uuid
         )
 
-    def update_project(
+    async def update_project(
         self, project_uuid,
         project_name=None, comment=None,
         ips_locked=None, hosts_locked=None    
     ):
         """ Update project base on uuid """
-        update_result = ProjectDatabase.update(
+        update_result = await ProjectDatabase.update(
             project_uuid=project_uuid,
             new_name=project_name,
             new_comment=comment,

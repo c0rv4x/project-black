@@ -36,7 +36,7 @@ class ProjectHandlers:
             project_name = message['project_name']
 
             # Create new project (and register it)
-            addition_result = self.project_manager.create_project(project_name)
+            addition_result = await self.project_manager.create_project(project_name)
 
             if addition_result["status"] == "success":
                 # Send the project back
@@ -80,7 +80,7 @@ class ProjectHandlers:
             project_uuid = message['project_uuid']
 
             # Delete new project (and register it)
-            delete_result = self.project_manager.delete_project(
+            delete_result = await self.project_manager.delete_project(
                 project_uuid=project_uuid)
 
             if delete_result["status"] == "success":
@@ -126,7 +126,7 @@ class ProjectHandlers:
             hosts_locked = message.get('hosts_locked', None)
 
             # Update the existing project
-            updating_status = self.project_manager.update_project(
+            updating_status = await self.project_manager.update_project(
                 project_uuid, project_name=project_name, comment=comment,
                 ips_locked=ips_locked, hosts_locked=hosts_locked)
 
