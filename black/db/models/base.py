@@ -9,7 +9,7 @@ from sqlalchemy import Column, Integer, ForeignKey, Table
 
 def asyncify(func):
     async def asynced_func(*args, **kwargs):
-        return await asyncio.get_event_loop().run_in_executor(None, func, *args, **kwargs)
+        return await asyncio.get_event_loop().run_in_executor(None, lambda: func(*args, **kwargs))
     return asynced_func
 
 Base = declarative_base()
