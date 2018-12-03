@@ -103,6 +103,8 @@ class MainAccumulatorUpdater extends React.Component {
 			});
 
 			setTimeout(() => {
+				this.pageNumberHost = 0;
+				this.pageNumberIp = 0;
 				this.renewHosts(this.pageNumberHost, filters, this.pageSize);
 				this.renewIps(this.pageNumberIp, filters, this.pageSize);
 			}, 100);
