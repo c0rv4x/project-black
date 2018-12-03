@@ -17,7 +17,7 @@ class ProjectHandlers:
                 'projects:all:get:back',
                 {
                     'status': 'success',
-                    'projects': self.project_manager.get_projects()
+                    'projects': await self.project_manager.get_projects()
                 },
                 namespace='/projects'
             )

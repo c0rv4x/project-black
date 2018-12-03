@@ -2,6 +2,7 @@
 update, add, update and delete the elements. """
 import uuid
 import json
+import asyncio
 
 from black.db import Sessions
 from black.db import ProjectDatabase
@@ -12,10 +13,12 @@ from common.logger import log
 class ProjectManager(object):
     """ ProjectManager keeps track of all projects in the system,
     exposing some interfaces for public use. """
+    # def __init__(self, loop):
+    #     self.loop = asyncio.
 
-    def get_projects(self):
+    async def get_projects(self):
         """ Returns the list of projects """
-        find_result = ProjectDatabase.find()
+        find_result = await ProjectDatabase.find()
 
         if find_result["status"] == "success":
             return list(map(lambda x: x.dict(), find_result["projects"]))

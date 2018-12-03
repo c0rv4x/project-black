@@ -2,11 +2,11 @@ import datetime
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer, Boolean
 from sqlalchemy.orm import relationship
 
-from black.db.models.base import Base
+from black.db.models.base import Base, Async
 from black.db.sessions import Sessions
 
 
-class ProjectDatabase(Base):
+class ProjectDatabase(Base, Async):
     __tablename__ = 'projects'
 
     project_uuid = Column(Integer, primary_key=True, autoincrement=True)
@@ -25,6 +25,8 @@ class ProjectDatabase(Base):
     scans_relationship = relationship('ScanDatabase', cascade="all, delete-orphan")
 
     session_spawner = Sessions()
+
+    Async.__init__(None)
 
     def dict(self):
         return {
