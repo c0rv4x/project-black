@@ -688,9 +688,13 @@ class ScopeManager(object):
 
             try:
                 exc = each_future.exception()
+                if exc:
+                    continue
+
                 host = each_future.database_host
                 result = each_future.result()
             except Exception as exc:
+                # TODO: add handler for this exception
                 pass
 
             for each_result in result:

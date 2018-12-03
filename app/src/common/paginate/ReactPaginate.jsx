@@ -8,10 +8,18 @@ class ReactPaginate extends React.Component {
 		super(props);
 
 		this.state = {
-			activeItem: 1
+			activeItem: this.props.pageNumber || 1
 		}
 
 		this.setPage.bind(this);
+	}
+
+	componentDidUpdate(prevProps) {
+		if ((prevProps.pageNumber + 1) !== this.state.activeItem) {
+			this.setState({
+				activeItem: prevProps.pageNumber + 1
+			})
+		}
 	}
 
 	setPage(number) {
