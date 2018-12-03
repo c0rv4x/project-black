@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer, Boolean
 from sqlalchemy.orm import relationship
@@ -37,9 +38,8 @@ class ProjectDatabase(Base):
         }
 
     @classmethod
-    @asyncify
-    def create(cls, project_name):
-        find_result = cls.find(project_name=project_name)
+    async def create(cls, project_name):
+        find_result = await cls.find(project_name=project_name)
 
         if find_result["status"] == "success":
             if not find_result["projects"]:
@@ -58,8 +58,7 @@ class ProjectDatabase(Base):
         return find_result
 
     @classmethod
-    @asyncify
-    def find(cls, project_name=None, project_uuid=None):
+    def _find(cls, project_name=None, project_uuid=None):
         try:
             with cls.session_spawner.get_session() as session:
                 project = session.query(cls)
@@ -81,9 +80,12 @@ class ProjectDatabase(Base):
             return {"status": "error", "text": str(exc)}
 
     @classmethod
-    @asyncify
-    def delete(cls, project_uuid=None):
-        find_result = cls.find(
+    async def find(cls, *args, **kwargs):
+        return await asyncio.get_event_loop().run_in_executor(None, lambda: cls._find(*args, **kwargs))
+
+    @classmethod
+    async def delete(cls, project_uuid=None):
+        find_result = await cls.find(
             project_uuid=project_uuid
         )
 
@@ -111,13 +113,12 @@ class ProjectDatabase(Base):
         return find_result
 
     @classmethod
-    @asyncify
-    def update(
+    async def update(
         cls, project_uuid,
         new_name=None, new_comment=None,
         ips_locked=None, hosts_locked=None
     ):
-        find_result = cls.find(project_uuid=project_uuid)
+        find_result = await cls.find(project_uuid=project_uuid)
 
         if find_result["status"] == "success":
             if find_result["projects"]:
