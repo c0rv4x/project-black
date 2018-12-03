@@ -2,7 +2,7 @@ import datetime
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer, Boolean
 from sqlalchemy.orm import relationship
 
-from black.db.models.base import Base, Async
+from black.db.models.base import Base, asyncify
 from black.db.sessions import Sessions
 
 
@@ -37,6 +37,7 @@ class ProjectDatabase(Base):
         }
 
     @classmethod
+    @asyncify
     def create(cls, project_name):
         find_result = cls.find(project_name=project_name)
 
@@ -57,6 +58,7 @@ class ProjectDatabase(Base):
         return find_result
 
     @classmethod
+    @asyncify
     def find(cls, project_name=None, project_uuid=None):
         try:
             with cls.session_spawner.get_session() as session:
@@ -79,6 +81,7 @@ class ProjectDatabase(Base):
             return {"status": "error", "text": str(exc)}
 
     @classmethod
+    @asyncify
     def delete(cls, project_uuid=None):
         find_result = cls.find(
             project_uuid=project_uuid
@@ -108,6 +111,7 @@ class ProjectDatabase(Base):
         return find_result
 
     @classmethod
+    @asyncify
     def update(
         cls, project_uuid,
         new_name=None, new_comment=None,
@@ -149,4 +153,4 @@ class ProjectDatabase(Base):
     def __repr__(self):
         return "<Project(project_name='%s')>" % (self.project_name)
 
-Async.async_patch(ProjectDatabase)
+# Async.async_patch(ProjectDatabase)
