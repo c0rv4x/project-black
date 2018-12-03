@@ -19,7 +19,7 @@ class MainAccumulatorUpdater extends React.Component {
 		super(props);
 
 		this.state = {
-			pageNumberUnmodified: 1
+			pageNumberUnmodified: 0
 		}
 
 		this.ipsEmitter = new IPsSocketioEventsEmitter();
@@ -99,7 +99,7 @@ class MainAccumulatorUpdater extends React.Component {
 			this.triggerSetLoadedHosts(false);
 
 			this.setState({
-				pageNumberUnmodified: 1
+				pageNumberUnmodified: 0
 			});
 
 			setTimeout(() => {
@@ -231,7 +231,7 @@ class MainAccumulatorUpdater extends React.Component {
 
 	changePage(pageNumberUnmodified) {
 		this.setState({
-			pageNumberUnmodified: pageNumberUnmodified
+			pageNumberUnmodified: pageNumberUnmodified - 1
 		});
 
 		var pageNumber = pageNumberUnmodified - 1;
