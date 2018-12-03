@@ -112,8 +112,11 @@ class IPTable extends React.Component {
 							</Grid>
 						</Container>
 						<br />
-						<ReactPaginate pageCount={this.state.pageCount}
-									clickHandler={this.handlePageClick} />
+						<ReactPaginate
+							pageNumber={this.props.ips.page}
+							pageCount={this.state.pageCount}
+							clickHandler={this.handlePageClick}
+						/>
 					</div>
 				}
 			</div>

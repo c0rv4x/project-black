@@ -86,9 +86,11 @@ class TablesAccumulator extends React.Component {
 				<br />
 					{tables}
 				<br />
-				<ReactPaginate pageCount={this.state.pageCount}
-							   clickHandler={changePage} />
-			</div>			
+				<ReactPaginate
+					pageNumber={this.props.pageNumberUnmodified}
+					pageCount={this.state.pageCount}
+					clickHandler={changePage} />
+			</div>
 		)
 	}
 }
