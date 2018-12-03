@@ -6,7 +6,7 @@ from black.db.models.base import Base, Async
 from black.db.sessions import Sessions
 
 
-class ProjectDatabase(Base, Async):
+class ProjectDatabase(Base):
     __tablename__ = 'projects'
 
     project_uuid = Column(Integer, primary_key=True, autoincrement=True)
@@ -25,8 +25,6 @@ class ProjectDatabase(Base, Async):
     scans_relationship = relationship('ScanDatabase', cascade="all, delete-orphan")
 
     session_spawner = Sessions()
-
-    Async.__init__(None)
 
     def dict(self):
         return {
@@ -150,3 +148,5 @@ class ProjectDatabase(Base, Async):
 
     def __repr__(self):
         return "<Project(project_name='%s')>" % (self.project_name)
+
+Async.async_patch(ProjectDatabase)
