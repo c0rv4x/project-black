@@ -18,6 +18,10 @@ class MainAccumulatorUpdater extends React.Component {
 	constructor(props) {
 		super(props);
 
+		this.state = {
+			pageNumberUnmodified: 1
+		}
+
 		this.ipsEmitter = new IPsSocketioEventsEmitter();
 		this.hostsEmitter = new HostsSocketioEventsEmitter();
 		this.filesEmitter = new FilesSocketioEventsEmitter();
@@ -93,6 +97,10 @@ class MainAccumulatorUpdater extends React.Component {
 
 			this.triggerSetLoadedIPs(false);
 			this.triggerSetLoadedHosts(false);
+
+			this.setState({
+				pageNumberUnmodified: 1
+			});
 
 			setTimeout(() => {
 				this.renewHosts(this.pageNumberHost, filters, this.pageSize);
@@ -222,6 +230,10 @@ class MainAccumulatorUpdater extends React.Component {
 	}
 
 	changePage(pageNumberUnmodified) {
+		this.setState({
+			pageNumberUnmodified: pageNumberUnmodified
+		});
+
 		var pageNumber = pageNumberUnmodified - 1;
 
 		const ipPages = Math.ceil(this.props.ips.selected_ips / this.pageSize);
@@ -303,6 +315,7 @@ class MainAccumulatorUpdater extends React.Component {
 						// this.setFilesEmpty();
 						this.changePage(x);
 					}}
+					pageNumberUnmodified={this.state.pageNumberUnmodified}
 					pageSize={this.pageSize}
 					getFilesHosts={(host, port_number, limit, offset) => {
 						this.getFilesHosts(host, port_number, limit, offset, filters['files']);
