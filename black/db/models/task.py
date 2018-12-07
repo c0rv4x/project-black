@@ -2,7 +2,7 @@ import datetime
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
 from sqlalchemy import or_
 
-from .base import Base
+from .base import Base, asyncify
 from black.db.sessions import Sessions
 
 
@@ -64,6 +64,7 @@ class TaskDatabase(Base):
         }
 
     @classmethod
+    @asyncify
     def get_tasks(cls, project_uuid, ips=None, hosts=None):
         try:
             with cls.session_spawner.get_session() as session:

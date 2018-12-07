@@ -96,7 +96,7 @@ class IPHandlers(object):
 
     async def send_tasks_back_filtered(self, project_uuid, ips=None, hosts=None):
         """ Grab tasks data for scopes and send them back to client """
-        get_result = self.scope_manager.get_tasks_filtered(
+        get_result = await self.scope_manager.get_tasks_filtered(
             project_uuid,
             ips=ips,
             hosts=hosts
@@ -261,7 +261,7 @@ class HostHandlers(object):
 
     async def send_tasks_back_filtered(self, project_uuid, ips=None, hosts=None):
         """ Grab tasks data for scopes and send them back to client """
-        get_result = self.scope_manager.get_tasks_filtered(
+        get_result = await self.scope_manager.get_tasks_filtered(
             project_uuid,
             ips=ips,
             hosts=hosts

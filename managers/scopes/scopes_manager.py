@@ -560,9 +560,9 @@ class ScopeManager(object):
         else:
             return await HostDatabase.update(scope_id, comment)
 
-    def get_tasks_filtered(self, project_uuid, ips=None, hosts=None):
+    async def get_tasks_filtered(self, project_uuid, ips=None, hosts=None):
         """ Get the tasks associated with certain targets """
-        get_result = TaskDatabase.get_tasks(project_uuid, ips, hosts)
+        get_result = await TaskDatabase.get_tasks(project_uuid, ips, hosts)
 
         if get_result["status"] == "success":
             return {
