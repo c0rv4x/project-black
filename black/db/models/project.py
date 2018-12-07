@@ -81,11 +81,12 @@ class ProjectDatabase(Base):
 
     @classmethod
     async def find(cls, *args, **kwargs):
-        return await asyncio.get_event_loop().run_in_executor(None, lambda: cls._find(*args, **kwargs))
+        return await asyncify(cls._find)(*args, **kwargs)
 
     @classmethod
-    async def delete(cls, project_uuid=None):
-        find_result = await cls.find(
+    @asyncify
+    def delete(cls, project_uuid=None):
+        find_result = cls._find(
             project_uuid=project_uuid
         )
 
@@ -113,12 +114,13 @@ class ProjectDatabase(Base):
         return find_result
 
     @classmethod
-    async def update(
+    @asyncify
+    def update(
         cls, project_uuid,
         new_name=None, new_comment=None,
         ips_locked=None, hosts_locked=None
     ):
-        find_result = await cls.find(project_uuid=project_uuid)
+        find_result = cls._find(project_uuid=project_uuid)
 
         if find_result["status"] == "success":
             if find_result["projects"]:
