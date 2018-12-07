@@ -419,7 +419,7 @@ class ScopeManager(object):
         """ Counts host entries in the database (for single project) """
         return HostDatabase.count(project_uuid)
 
-    def create_ip(self, ip_address, project_uuid):
+    async def create_ip(self, ip_address, project_uuid):
         with self.session_spawner.get_session() as session:
             ips_locked = (
                 session.query(
@@ -435,12 +435,12 @@ class ScopeManager(object):
                     "text": "Ips are locked"
                 }
         
-        return IPDatabase.create(
+        return await IPDatabase.create(
             target=ip_address,
             project_uuid=project_uuid
         )
 
-    def create_batch_ips(self, ips, project_uuid):
+    async def create_batch_ips(self, ips, project_uuid):
         with self.session_spawner.get_session() as session:
             ips_locked = (
                 session.query(
@@ -464,7 +464,7 @@ class ScopeManager(object):
         to_add = []
 
         for ip_address in ips:
-            if IPDatabase.find(
+            if await IPDatabase.find(
                 target=ip_address,
                 project_uuid=project_uuid
             ) is None:
@@ -523,7 +523,7 @@ class ScopeManager(object):
 
         return results
 
-    def create_host(self, hostname, project_uuid):
+    async def create_host(self, hostname, project_uuid):
         """ Creating a host we should first check whether it is already
         in the db, then create a new one if necessary """
         with self.session_spawner.get_session() as session:
@@ -541,24 +541,24 @@ class ScopeManager(object):
                     "text": "Hosts are locked"
                 }
 
-        return HostDatabase.create(
+        return await HostDatabase.create(
             target=hostname,
             project_uuid=project_uuid
         )
 
-    def delete_scope(self, scope_id, scope_type):
+    async def delete_scope(self, scope_id, scope_type):
         """ Deletes scope by its id """
         if scope_type == "ip_address":
-            return IPDatabase.delete_scope(scope_id)
+            return await IPDatabase.delete_scope(scope_id)
         else:
-            return HostDatabase.delete_scope(scope_id)
+            return await HostDatabase.delete_scope(scope_id)
 
-    def update_scope(self, scope_id, comment, scope_type):
+    async def update_scope(self, scope_id, comment, scope_type):
         """ Update a comment on the scope """
         if scope_type == "ip_address":
-            return IPDatabase.update(scope_id, comment)
+            return await IPDatabase.update(scope_id, comment)
         else:
-            return HostDatabase.update(scope_id, comment)
+            return await HostDatabase.update(scope_id, comment)
 
     def get_tasks_filtered(self, project_uuid, ips=None, hosts=None):
         """ Get the tasks associated with certain targets """
@@ -701,7 +701,7 @@ class ScopeManager(object):
                 total_ips += 1
 
                 resolved_ip = each_result.host
-                found_ip = IPDatabase.find(
+                found_ip = await IPDatabase.find(
                     target=resolved_ip,
                     project_uuid=project_uuid
                 )
@@ -716,7 +716,7 @@ class ScopeManager(object):
                         host.ip_addresses.append(session.merge(found_ip))
                         session.add(host)
                 elif not ips_locked:
-                    ip_create_result = IPDatabase.create(
+                    ip_create_result = await IPDatabase.create(
                         target=resolved_ip,
                         project_uuid=project_uuid
                     )

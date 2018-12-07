@@ -1,10 +1,10 @@
+import asyncio
 import datetime
 from uuid import uuid4
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import relationship, joinedload
 
-from .base import Base
-from .scope import Scope, association_table
+from .base import Base, association_table, asyncify
 from black.db.sessions import Sessions
 
 
@@ -24,7 +24,6 @@ class HostDatabase(Base):
 
     # A list of files which is associated with the current scope
     files = relationship('FileDatabase', cascade="all, delete-orphan", lazy='select')
-    # files = relationship('FileDatabase', cascade="all, delete-orphan", lazy='select', primaryjoin="HostDatabase.target == foreign(FileDatabase.target)")
 
     # The name of the related project
     project_uuid = Column(
@@ -54,56 +53,8 @@ class HostDatabase(Base):
 
     session_spawner = Sessions()
 
-
     @classmethod
-    def delete_scope(cls, scope_id):
-        """ Deletes scope by its id """
-
-        try:
-            with cls.session_spawner.get_session() as session:
-                db_object = (
-                    session.query(
-                        HostDatabase
-                    )
-                    .filter(HostDatabase.id == scope_id)
-                    .options(joinedload(HostDatabase.ip_addresses))
-                    .one()
-                )
-
-                target = db_object.target
-
-                # for host in db_object.hostnames:
-                #     host.ip_addresses.remove(db_object)
-                    # session.add(host)
-
-                session.delete(db_object)
-        except Exception as exc:
-            print(str(exc))
-            return {"status": "error", "text": str(exc), "target": scope_id}
-        else:
-            return {"status": "success", "target": target}    
-
-    def dict(self, include_ports=False, include_ips=False, include_files=False, files_statsified=False):
-        return {
-            "host_id": self.id,
-            "hostname": self.target,
-            "comment": self.comment,
-            "project_uuid": self.project_uuid,
-            "task_id": self.task_id,
-            "ip_addresses": list(map(
-                lambda hostname: hostname.dict(include_ports=include_ports), self.ip_addresses
-            )) if include_ips else [],
-            "files": []
-        }
-
-    def __repr__(self):
-        return """<HostDatabase(host_id='%s', hostname='%s',
-                        ip_addresses='%s', project_uuid='%s')>""" % (
-            self.id, self.target, self.ip_addresses, self.project_uuid
-        )
-
-    @classmethod
-    def find(cls, target, project_uuid):
+    def _find(cls, target, project_uuid):
         """ Finds scope (host or ip) in the database """
 
         with cls.session_spawner.get_session() as session:
@@ -115,10 +66,15 @@ class HostDatabase(Base):
             return scope_from_db        
 
     @classmethod
+    async def find(cls, *args, **kwargs):
+        return await asyncio.get_event_loop().run_in_executor(None, lambda: cls._find(*args, **kwargs))
+
+    @classmethod
+    @asyncify
     def create(cls, target, project_uuid):
         """ Creates a new scope if it is not in the db yet """
 
-        if cls.find(target, project_uuid) is None:
+        if cls._find(target, project_uuid) is None:
             try:
                 new_scope = cls(
                     target=target,
@@ -138,6 +94,7 @@ class HostDatabase(Base):
         return {"status": "duplicate", "text": "duplicate"}
 
     @classmethod
+    @asyncify
     def update(cls, scope_id, comment):
         try:
             with cls.session_spawner.get_session() as session:
@@ -158,3 +115,47 @@ class HostDatabase(Base):
             return session.query(cls).filter(
                 cls.project_uuid == project_uuid
             ).count()
+
+    @classmethod
+    @asyncify
+    def delete_scope(cls, scope_id):
+        """ Deletes scope by its id """
+
+        try:
+            with cls.session_spawner.get_session() as session:
+                db_object = (
+                    session.query(
+                        HostDatabase
+                    )
+                    .filter(HostDatabase.id == scope_id)
+                    .options(joinedload(HostDatabase.ip_addresses))
+                    .one()
+                )
+
+                target = db_object.target
+
+                session.delete(db_object)
+        except Exception as exc:
+            print(str(exc))
+            return {"status": "error", "text": str(exc), "target": scope_id}
+        else:
+            return {"status": "success", "target": target}
+
+    def dict(self, include_ports=False, include_ips=False, include_files=False, files_statsified=False):
+        return {
+            "host_id": self.id,
+            "hostname": self.target,
+            "comment": self.comment,
+            "project_uuid": self.project_uuid,
+            "task_id": self.task_id,
+            "ip_addresses": list(map(
+                lambda hostname: hostname.dict(include_ports=include_ports), self.ip_addresses
+            )) if include_ips else [],
+            "files": []
+        }
+
+    def __repr__(self):
+        return """<HostDatabase(host_id='%s', hostname='%s',
+                        ip_addresses='%s', project_uuid='%s')>""" % (
+            self.id, self.target, self.ip_addresses, self.project_uuid
+        )

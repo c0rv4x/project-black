@@ -40,7 +40,7 @@ class IPHandlers(object):
             comment = msg['comment']
             project_uuid = msg['project_uuid']
 
-            result = self.scope_manager.update_scope(
+            result = await self.scope_manager.update_scope(
                 scope_id=ip_id, comment=comment, scope_type='ip_address'
             )
 
@@ -207,7 +207,7 @@ class HostHandlers(object):
             comment = msg['comment']
             project_uuid = msg['project_uuid']
 
-            update_result = self.scope_manager.update_scope(
+            update_result = await self.scope_manager.update_scope(
                 scope_id=host_id, comment=comment, scope_type='host'
             )
             target = update_result['target']
@@ -344,7 +344,7 @@ class ScopeHandlers(object):
             for scope in scopes:
                 # Create newly added scope
                 if scope['type'] == 'hostname':
-                    create_result = self.scope_manager.create_host(
+                    create_result = await self.scope_manager.create_host(
                         scope['target'], project_uuid
                     )
 
@@ -358,7 +358,7 @@ class ScopeHandlers(object):
                             error_text += new_err
 
                 elif scope['type'] == 'ip_address':
-                    create_result = self.scope_manager.create_ip(
+                    create_result = await self.scope_manager.create_ip(
                         scope['target'], project_uuid
                     )
 
@@ -374,7 +374,7 @@ class ScopeHandlers(object):
                 elif scope['type'] == 'network':
                     ips = IPNetwork(scope['target'])
 
-                    create_result = self.scope_manager.create_batch_ips(
+                    create_result = await self.scope_manager.create_batch_ips(
                         list(map(str, ips)), project_uuid
                     )
 
@@ -469,7 +469,7 @@ class ScopeHandlers(object):
             scope_type = msg['scope_type']
 
             # Delete new scope (and register it)
-            delete_result = self.scope_manager.delete_scope(
+            delete_result = await self.scope_manager.delete_scope(
                 scope_id=scope_id, scope_type=scope_type)
 
             if delete_result["status"] == "success":
