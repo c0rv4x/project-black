@@ -137,8 +137,7 @@ class TaskManager(object):
                                     text=x.text,
                                     date_added=x.date_added,
                                     stdout=x.stdout,
-                                    stderr=x.stderr,
-                                    exchange=self.exchange),
+                                    stderr=x.stderr),
                          tasks_from_db))
         self.sessions.destroy_session(session)
 
