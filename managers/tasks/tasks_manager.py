@@ -231,7 +231,7 @@ class TaskManager(object):
             )
 
             tasks = TaskStarter.start_masscan(
-                targets, params, project_uuid, self.exchange
+                targets, params, project_uuid
             )
 
             self.active_tasks += tasks
@@ -243,7 +243,7 @@ class TaskManager(object):
             )
 
             tasks = TaskStarter.start_nmap(
-                targets, params, project_uuid, self.exchange
+                targets, params, project_uuid
             )
 
             self.active_tasks += tasks
@@ -255,7 +255,7 @@ class TaskManager(object):
             )['ips']
 
             tasks = TaskStarter.start_nmap_only_open(
-                targets, params, project_uuid, self.exchange
+                targets, params, project_uuid
             )
 
             self.active_tasks += tasks
@@ -274,7 +274,7 @@ class TaskManager(object):
                 )
 
             tasks = TaskStarter.start_dirsearch(
-                targets, params, project_uuid, self.exchange
+                targets, params, project_uuid
             )
             self.active_tasks += tasks
 
@@ -290,7 +290,7 @@ class TaskManager(object):
                 )
 
             tasks = TaskStarter.start_patator(
-                targets, params, project_uuid, self.exchange
+                targets, params, project_uuid
             )
             self.active_tasks += tasks
 

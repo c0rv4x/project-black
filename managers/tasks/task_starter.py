@@ -23,7 +23,7 @@ class TaskStarter(object):
             )
         )
 
-    def start_masscan(self, targets, params, project_uuid, exchange):
+    def start_masscan(self, targets, params, project_uuid):
         tasks = []
 
         for i in range(0, len(targets) // 100 + 1):
@@ -42,7 +42,7 @@ class TaskStarter(object):
 
         return tasks
 
-    def start_nmap(self, targets, params, project_uuid, exchange):
+    def start_nmap(self, targets, params, project_uuid):
         tasks = []
 
         for ip in targets:
@@ -64,7 +64,7 @@ class TaskStarter(object):
 
         return tasks
 
-    def start_nmap_only_open(self, targets, params, project_uuid, exchange):
+    def start_nmap_only_open(self, targets, params, project_uuid):
         tasks = []
 
         for ip in targets:
@@ -102,7 +102,7 @@ class TaskStarter(object):
 
         return tasks
 
-    def start_dirsearch(self, targets, params, project_uuid, exchange):
+    def start_dirsearch(self, targets, params, project_uuid):
         tasks = []
 
         if 'ips' in targets.keys():
@@ -153,7 +153,7 @@ class TaskStarter(object):
 
         return tasks
 
-    def start_patator(self, targets, params, project_uuid, exchange):
+    def start_patator(self, targets, params, project_uuid):
         tasks = []
 
         if 'ips' in targets.keys():
