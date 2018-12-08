@@ -25,6 +25,9 @@ class TaskManager(object):
 
         self.scope_manager = scope_manager
 
+        # When spawn_asynqp() is called, this variable will be initialized
+        self.task_starter = None 
+
         self.active_tasks = list()
         self.finished_tasks = list()
 
@@ -34,6 +37,10 @@ class TaskManager(object):
         self.sessions = Sessions()
 
         self.update_from_db()
+
+    async def async_init(self):
+        await self.spawn_asynqp()
+        self.task_starter = TaskStarter(self.exchange)
 
     async def spawn_asynqp(self):
         """ Spawns all the necessary queues and launches a statuses parser """
@@ -61,7 +68,7 @@ class TaskManager(object):
             routing_key='tasks_statuses'
         )
 
-        for task_type in ['nmap', 'dnsscan', 'dirserach', 'masscan']:
+        for task_type in ['nmap', 'dnsscan', 'dirserach', 'masscan', 'patator']:
             queue = await channel.declare_queue(
                 task_type + '_tasks',
                 durable=True
@@ -158,7 +165,7 @@ class TaskManager(object):
         if get_all:
             active = list(
                 map(
-                    lambda x: x.get_as_native_object(
+                    lambda x: x.as_dict(
                         grab_file_descriptors=False
                     ),
                     active_filtered
@@ -166,7 +173,7 @@ class TaskManager(object):
             )
             finished = list(
                 map(
-                    lambda x: x.get_as_native_object(
+                    lambda x: x.as_dict(
                         grab_file_descriptors=False
                     ),
                     finished_filtered
@@ -199,13 +206,13 @@ class TaskManager(object):
 
         active = list(
             map(
-                lambda x: x.get_as_native_object(grab_file_descriptors=False),
+                lambda x: x.as_dict(grab_file_descriptors=False),
                 active
             )
         )
         finished = list(
             map(
-                lambda x: x.get_as_native_object(grab_file_descriptors=False),
+                lambda x: x.as_dict(grab_file_descriptors=False),
                 finished
             )
         )
@@ -290,7 +297,7 @@ class TaskManager(object):
 
         return list(
             map(
-                lambda task: task.get_as_native_object(
+                lambda task: task.as_dict(
                     grab_file_descriptors=False
                 ),
                 tasks

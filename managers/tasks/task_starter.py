@@ -1,4 +1,5 @@
 import copy
+import asynqp
 
 from black.db import Sessions, IPDatabase
 from managers.tasks.shadow_task import ShadowTask
@@ -6,9 +7,23 @@ from managers.tasks.shadow_task import ShadowTask
 
 class TaskStarter(object):
     """ Starts masscan task """
+    def __init__(self, exchange):
+        self.exchange = exchange
 
-    @staticmethod
-    def start_masscan(targets, params, project_uuid, exchange):
+    def start(self, task):
+        self.exchange.publish(
+            routing_key=task.task_type + "_tasks",
+            message=asynqp.Message(
+                {
+                    'task_id': task.task_id,
+                    'target': task.target,
+                    'params': task.params,
+                    'project_uuid': task.project_uuid
+                }
+            )
+        )
+
+    def start_masscan(self, targets, params, project_uuid, exchange):
         tasks = []
 
         for i in range(0, len(targets) // 100 + 1):
@@ -18,16 +33,16 @@ class TaskStarter(object):
                     task_type='masscan',
                     target=targets[i * 100:(i + 1) * 100],
                     params=params,
-                    project_uuid=project_uuid,
-                    exchange=exchange))
+                    project_uuid=project_uuid
+                )
+            )
 
         for task in tasks:
-            task.send_start_task()
+            self.start(task)
 
         return tasks
 
-    @staticmethod
-    def start_nmap(targets, params, project_uuid, exchange):
+    def start_nmap(self, targets, params, project_uuid, exchange):
         tasks = []
 
         for ip in targets:
@@ -40,18 +55,16 @@ class TaskStarter(object):
                     task_type='nmap',
                     target=ip,
                     params=local_params,
-                    project_uuid=project_uuid,
-                    exchange=exchange
+                    project_uuid=project_uuid
                 )
             )
 
         for task in tasks:
-            task.send_start_task()
+            self.start(task)
 
         return tasks
 
-    @staticmethod
-    def start_nmap_only_open(targets, params, project_uuid, exchange):
+    def start_nmap_only_open(self, targets, params, project_uuid, exchange):
         tasks = []
 
         for ip in targets:
@@ -80,16 +93,16 @@ class TaskStarter(object):
                     task_type='nmap',
                     target=ip['ip_address'],
                     params=local_params,
-                    project_uuid=project_uuid,
-                    exchange=exchange))
+                    project_uuid=project_uuid
+                )
+            )
 
         for task in tasks:
-            task.send_start_task()
+            self.start(task)
 
         return tasks
 
-    @staticmethod
-    def start_dirsearch(targets, params, project_uuid, exchange):
+    def start_dirsearch(self, targets, params, project_uuid, exchange):
         tasks = []
 
         if 'ips' in targets.keys():
@@ -107,8 +120,9 @@ class TaskStarter(object):
                                 str(each_port['port_number'])
                             ),
                             params=params,
-                            project_uuid=project_uuid,
-                            exchange=exchange))                
+                            project_uuid=project_uuid
+                        )
+                    )                
         else:
             hosts = targets['hosts']
 
@@ -130,16 +144,16 @@ class TaskStarter(object):
                                 )
                             ),
                             params=params,
-                            project_uuid=project_uuid,
-                            exchange=exchange))
+                            project_uuid=project_uuid
+                        )
+                    )
 
         for task in tasks:
-            task.send_start_task()
+            self.start(task)
 
         return tasks
 
-    @staticmethod
-    def start_patator(targets, params, project_uuid, exchange):
+    def start_patator(self, targets, params, project_uuid, exchange):
         tasks = []
 
         if 'ips' in targets.keys():
@@ -157,8 +171,9 @@ class TaskStarter(object):
                                 str(each_port['port_number'])
                             ),
                             params=params,
-                            project_uuid=project_uuid,
-                            exchange=exchange))                
+                            project_uuid=project_uuid
+                        )
+                    )                
         else:
             hosts = targets['hosts']
 
@@ -180,10 +195,11 @@ class TaskStarter(object):
                                 )
                             ),
                             params=params,
-                            project_uuid=project_uuid,
-                            exchange=exchange))
+                            project_uuid=project_uuid
+                        )
+                    )
 
         for task in tasks:
-            task.send_start_task()
+            self.start(task)
 
         return tasks
