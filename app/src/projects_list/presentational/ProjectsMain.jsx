@@ -1,6 +1,6 @@
 import _  from 'lodash'
 import React from 'react'
-import { Button, Input, Header } from 'semantic-ui-react'
+import { Divider, Header } from 'semantic-ui-react'
 
 import ProjectsList from "../presentational/ProjectsList.jsx"
 
@@ -14,20 +14,13 @@ class ProjectsMain extends React.Component {
     render() {
         return (
             <div>
-                <br/>
+                <Divider hidden />
                 <Header as="h2">Projects</Header>
-                <Input fluid
-                       placeholder="Project Name"
-                       type="text"
-                       value={this.props.newProjectName}
-                       onChange={(e) => this.props.onProjectNameChange(e.target.value)} />
-
-                <br/>
-                <Button color="blue" onClick={this.props.submitNewProject}>Add new</Button>
-                <br/>
-                <br/>
-
-                <ProjectsList projects={this.props.projects} onDelete={this.props.onDelete}/>
+                <ProjectsList
+                    projects={this.props.projects}
+                    onDelete={this.props.onDelete}
+                    submitNewProject={this.props.submitNewProject}
+                />
             </div>
         )
     }

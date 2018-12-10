@@ -2,7 +2,7 @@ import _  from 'lodash'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { Button, Table } from 'semantic-ui-react'
+import { Button, Icon, Table } from 'semantic-ui-react'
 
 
 class ProjectsListLine extends React.Component
@@ -25,15 +25,20 @@ class ProjectsListLine extends React.Component
                 <Table.Cell>{this.props.project.project_name}</Table.Cell>
                 <Table.Cell>
                     <Link to={"/project/" + this.props.project.project_uuid}>
-                        <Button>Details</Button>
+                        <Button icon>
+                            <Icon name='unhide' />
+                        </Button>
                     </Link>
-                    <Button color="red" 
-                            onClick={
-                                () => {
-                                    this.delete_project(this.props.project.project_uuid);
-                                }
-                            }>
-                        Delete
+                    <Button
+                        icon
+                        color="red" 
+                        onClick={
+                            () => {
+                                this.delete_project(this.props.project.project_uuid);
+                            }
+                        }
+                    >
+                        <Icon name='trash' />
                     </Button>
                 </Table.Cell>
             </Table.Row>

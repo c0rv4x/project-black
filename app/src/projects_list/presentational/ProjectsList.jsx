@@ -1,6 +1,6 @@
 import _  from 'lodash'
 import React from 'react'
-import { Table, Header } from 'semantic-ui-react'
+import { Table, Input, Button, Icon } from 'semantic-ui-react'
 
 import ProjectsListLine from "./ProjectsListLine.jsx"
 
@@ -10,6 +10,10 @@ class ProjectsList extends React.Component
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            "new_project_name": ""
+        }
     }
 
     render() {
@@ -17,16 +21,41 @@ class ProjectsList extends React.Component
             return <ProjectsListLine project={x} 
                                      key={x.project_uuid} 
                                      onDelete={this.props.onDelete}/>
-        })
+        });
+
+        projectsLines.push(
+            <Table.Row key="add_new_project">
+                <Table.Cell></Table.Cell>
+                <Table.Cell>
+                    <Input
+                        value={this.state.new_project_name}
+                        onChange={(e) => this.setState({
+                            "new_project_name" : e.target.value
+                        })}
+                    />
+                </Table.Cell>
+                <Table.Cell>
+                    <Button
+                        icon
+                        onClick={() => {
+                            this.props.submitNewProject(this.state.new_project_name);
+                            this.setState({
+                                "new_project_name": ""
+                            });
+                        }}
+                    >
+                        <Icon name='plus' />
+                    </Button>
+                </Table.Cell>
+            </Table.Row>
+        );
 
         return (
             <div>
-                <Header as="h2">Your projects:</Header>
-
                 <Table>
                     <Table.Header>
                         <Table.Row>
-                            <Table.HeaderCell>UUID</Table.HeaderCell>
+                            <Table.HeaderCell>ID</Table.HeaderCell>
                             <Table.HeaderCell>Project Name</Table.HeaderCell>
                             <Table.HeaderCell>Control</Table.HeaderCell>
                         </Table.Row>
