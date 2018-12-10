@@ -9,6 +9,7 @@ class ScopesLock extends React.Component {
 
 		if (status) return (
 			<Button
+				size='small'
 				onClick={() => setLock(false)}
 			>
 				{"Unlock " + name}
@@ -16,6 +17,7 @@ class ScopesLock extends React.Component {
 		)
 		else return (
 			<Button
+				size='small'
 				onClick={() => setLock(true)}
 			>
 				{"Lock " + name}

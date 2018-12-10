@@ -34,6 +34,8 @@ class HeadButtons extends React.Component {
 					});
 					this.props.resolveScopes();
 				}}
+				floated='right'
+				size='small'
 				color={color}
 				loading={loading}
 				active={loading}

@@ -6,9 +6,10 @@ import HeadButtonsTracked from './HeadButtonsTracked.jsx'
 import ProjectComment from '../../common/project_comment/ProjectComment.jsx'
 
 import Stats from '../presentational/Stats.jsx'
-
+import { Divider } from 'semantic-ui-react'
 
 class ScopeSetup extends React.Component {
+
 	constructor(props) {
 		super(props);
 
@@ -30,14 +31,11 @@ class ScopeSetup extends React.Component {
 			<div>
 				<br/>
 				<ProjectComment project={project}/>
+				<Divider />
+
 				<HeadButtonsTracked
 					project={project}
 					hosts={hosts}
-				/>
-
-				<ScopeAdderTracked
-					project={project}
-					scopesCreated={scopes.scopes_created}
 				/>
 
 				<Stats
@@ -45,6 +43,12 @@ class ScopeSetup extends React.Component {
 					hosts={hosts}
 					scans={scans}
 					files={files}
+				/>
+				<Divider />
+
+				<ScopeAdderTracked
+					project={project}
+					scopesCreated={scopes.scopes_created}
 				/>
 
 			</div>
