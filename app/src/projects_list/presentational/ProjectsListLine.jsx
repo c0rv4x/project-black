@@ -19,12 +19,14 @@ class ProjectsListLine extends React.Component
     }
 
     render() {
+        const { project } = this.props;
+
         return (
             <Table.Row>
-                <Table.Cell>{this.props.project.project_uuid}</Table.Cell>
-                <Table.Cell>{this.props.project.project_name}</Table.Cell>
+                <Table.Cell>{project.project_uuid}</Table.Cell>
+                <Table.Cell>{project.project_name}</Table.Cell>
                 <Table.Cell>
-                    <Link to={"/project/" + this.props.project.project_uuid}>
+                    <Link to={"/project/" + project.project_uuid}>
                         <Button icon>
                             <Icon name='unhide' />
                         </Button>
@@ -34,7 +36,7 @@ class ProjectsListLine extends React.Component
                         color="red" 
                         onClick={
                             () => {
-                                this.delete_project(this.props.project.project_uuid);
+                                this.delete_project(project.project_uuid);
                             }
                         }
                     >
