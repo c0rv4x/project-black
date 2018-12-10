@@ -15,6 +15,8 @@ class ScopeAdder extends React.Component {
 			"color": "blue",
 			"loading": false
 		};
+
+		this.submitNewScope = this.submitNewScope.bind(this);
 	}
 
 	findScopeType() {
@@ -77,6 +79,15 @@ class ScopeAdder extends React.Component {
 		}
 	}
 
+	submitNewScope() {
+		this.setState({
+			color: "orange",
+			loading: true,
+			forceStateColor: true
+		});
+		this.props.onNewScopeClick(this.props.newScopeInput);
+	}
+
 	render() {
 		let { color, loading } = this.state;
 
@@ -91,6 +102,11 @@ class ScopeAdder extends React.Component {
 						placeholder="Newline-separated hosts, ips, networks (CIDR notation)"
 						value={this.props.newScopeInput}
 						onChange={(e) => this.props.handleNewScopeChange(e.target.value)}
+						onKeyUp={(e) => {
+							if (e.key === 'Enter' && e.shiftKey) {         
+								this.submitNewScope();
+							}
+						}}
 					/>
 				</Form.Field>
 
@@ -104,14 +120,8 @@ class ScopeAdder extends React.Component {
 					color={color}
 					loading={loading}
 					active={loading}
-					onClick={() => {
-						this.setState({
-							color: "orange",
-							loading: true,
-							forceStateColor: true
-						});
-						this.props.onNewScopeClick(this.props.newScopeInput);
-					}}>
+					onClick={this.submitNewScope}
+				>
 						Add to scope
 				</Button>
 			</Form>
