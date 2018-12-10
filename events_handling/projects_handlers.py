@@ -22,14 +22,6 @@ class ProjectHandlers:
                 namespace='/projects'
             )
 
-            await send_notification(
-                self.socketio,
-                "success",
-                "Project created",
-                "test",
-                sid=sid
-            )
-
         @self.socketio.on('projects:create', namespace='/projects')
         async def _cb_handle_project_create(sid, message):
             """ When received this message, create a new project """
