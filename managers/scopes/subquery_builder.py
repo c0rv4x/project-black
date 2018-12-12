@@ -70,7 +70,6 @@ class SubqueryBuilder:
                 FileDatabase
             )
             .filter(FileDatabase.project_uuid == project_uuid)
-            # .order_by(desc(FileDatabase.date_added))
             .subquery('project_files_ordered')
         )
         alias_ordered = aliased(FileDatabase, subq)
@@ -79,11 +78,6 @@ class SubqueryBuilder:
         # Create a list of filters which will be applied against scans
         files_filters = Filters.build_files_filters(
             filters, alias_ordered, project_uuid=project_uuid)
-
-        # files_ordered_distinct = ordered.distinct(
-        #     alias_ordered.file_path,
-        #     alias_ordered.status_code,
-        #     alias_ordered.content_length)
 
         # Use filters
         files_from_db = (
