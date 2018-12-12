@@ -10,7 +10,7 @@ class IPTable extends React.Component {
 
 		return (
 			<Statistic>
-				<Statistic.Value>{ips.loaded && ips.total_db_ips}{!ips.loaded && "Loading"}</Statistic.Value>
+				<Statistic.Value>{ips.loaded && ips.total_db_ips}{!ips.loaded && "0"}</Statistic.Value>
 				<Statistic.Label>ips</Statistic.Label>
 			</Statistic>
 		)
