@@ -122,10 +122,10 @@ class Filters(object):
         if filters.get('files', None):
             files_filters = get_filter_clause(alias.status_code, filters.get('files', []))
 
-        if project_uuid:
-            files_filters = and_(
-                files_filters,
-                get_filter_clause(alias.project_uuid, [str(project_uuid)])
-            )
+        # if project_uuid:
+        #     files_filters = and_(
+        #         files_filters,
+        #         get_filter_clause(alias.project_uuid, [str(project_uuid)])
+        #     )
 
         return files_filters
