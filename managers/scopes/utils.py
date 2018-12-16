@@ -9,10 +9,14 @@ async def get_nameservers(hosts, logger=None):
     for hostname in hosts:
         top_domains.append('.'.join(hostname.split('.')[-2:]))
 
+    resolver = aiodns.DNSResolver(loop=asyncio.get_event_loop())
+
     for top_server_name in list(set(top_domains)):
-        resolver = aiodns.DNSResolver(loop=asyncio.get_event_loop())
-        result = await resolver.query(top_server_name, "NS")
-        nameservers += list(map(lambda x: x.host, result))
+        try:
+            result = await resolver.query(top_server_name, "NS")
+            nameservers += list(map(lambda x: x.host, result))
+        except:
+            pass
 
     if logger:
         logger.debug(

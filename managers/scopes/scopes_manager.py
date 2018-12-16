@@ -1,6 +1,7 @@
 import uuid
 import time
 import aiodns
+import pprint
 import asyncio
 import datetime
 from sqlalchemy import or_
@@ -23,6 +24,7 @@ class ScopeManager(object):
 
     def __init__(self):
         self.session_spawner = Sessions()
+        self.debug_resolve_results = {}
 
     def get_hosts_with_ports(
         self, filters,  project_uuid,
@@ -619,7 +621,7 @@ class ScopeManager(object):
 
         except Exception as exc:
             self.logger.error(
-                "{} during resolve {}@{}".format(
+                "{} during resolver setup {}@{}".format(
                     str(exc),
                     scopes_ids,
                     project_uuid
@@ -629,7 +631,7 @@ class ScopeManager(object):
             resolver = aiodns.DNSResolver(loop=loop)
 
         futures = []
-        done_futures_all = []
+        resolve_results = []
 
         for each_host in to_resolve:
             each_future = resolver.query(each_host.target, "A")
@@ -637,34 +639,65 @@ class ScopeManager(object):
             futures.append(each_future)
 
             if len(futures) >= 10:
-                (done_futures, _) = await asyncio.wait(
+                (resolve_batch, _) = await asyncio.wait(
                     futures, return_when=asyncio.ALL_COMPLETED
                 )
-                done_futures_all += done_futures
+                resolve_results += resolve_batch
                 futures = []
 
         if futures:
-            (done_futures, _) = await asyncio.wait(
+            (resolve_batch, _) = await asyncio.wait(
                 futures, return_when=asyncio.ALL_COMPLETED
             )
-            done_futures_all += done_futures
-        futures = []                
+            resolve_results += resolve_batch
 
-        while done_futures_all:
+        while resolve_results:
             await asyncio.sleep(0)
 
-            each_future = done_futures_all.pop()
+            each_future = resolve_results.pop()
 
-            try:
-                exc = each_future.exception()
-                if exc:
-                    continue
+            host = each_future.database_host
+            hostname = host.target
+            exc = each_future.exception()
+            if exc:
+                # An error during resolve happend
+                exc_code = exc.args[0]
+                exc_description = exc.args[1]
 
-                host = each_future.database_host
-                result = each_future.result()
-            except Exception as exc:
-                # TODO: add handler for this exception
-                pass
+                if hostname not in self.debug_resolve_results:
+                    self.debug_resolve_results[hostname] = {
+                        "status": "error",
+                        "exception": {
+                            "number": exc_code,
+                            "description": exc_description
+                        },
+                        "nameservers": nameservers_ips
+                    }
+                else:
+                    prev_result = self.debug_resolve_results[hostname]
+
+                    if prev_result["status"] == "error":
+                        if prev_result["exception"]["number"] != exc_code:
+                            print("{} different exception: exc #{} -> #{}; {} -> {}".format(hostname, self.debug_resolve_results[hostname]["exception"]["number"], exc_code, self.debug_resolve_results[hostname]["exception"]["description"], exc_description))
+                    else:
+                        print("{} no longer resolves: exc #{} {}".format(hostname, exc_code, exc_description))
+                continue
+
+            result = each_future.result()
+            if hostname not in self.debug_resolve_results:
+                self.debug_resolve_results[hostname] = {
+                    "status": "success",
+                    "results": result.sort(),
+                    "nameservers": nameservers_ips
+                }
+            else:
+                prev_result = self.debug_resolve_results[hostname]
+
+                if prev_result["status"] == "error":
+                    print("{} now resolved. Old {}. New {} @ {}".format(hostname, prev_result, result, nameservers_ips))
+                # else:
+                    # print("{} no longer resolves: exc {}".format(hostname, self.debug_resolve_results[hostname]["exception"]))
+
 
             for each_result in result:
                 total_ips += 1
