@@ -25,6 +25,7 @@ class ScopeManager(object):
     def __init__(self):
         self.session_spawner = Sessions()
         self.debug_resolve_results = {}
+        self.resolver_called = 0
 
     def get_hosts_with_ports(
         self, filters,  project_uuid,
@@ -582,6 +583,7 @@ class ScopeManager(object):
     async def resolve_scopes(self, scopes_ids, project_uuid):
         """ Using all the ids of scopes, resolve the hosts, now we
         resolve ALL the scopes, that are related to the project_uuid """
+        self.resolver_called += 1
         total_ips = 0
         new_ips = 0
 
@@ -731,6 +733,9 @@ class ScopeManager(object):
 
         session.commit()
         self.session_spawner.destroy_session(session)
+
+        if self.resolver_called % 5 == 0:
+            print(self.debug_resolve_results)
 
         self.logger.info(
             "Successfully resolved {} ips @{}".format(
