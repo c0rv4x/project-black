@@ -13,6 +13,8 @@ from managers.scopes.filters import Filters
 from managers.scopes.subquery_builder import SubqueryBuilder
 
 from common.logger import log
+from .utils import get_nameservers
+
 
 @log
 class ScopeManager(object):
@@ -607,43 +609,10 @@ class ScopeManager(object):
         loop = asyncio.get_event_loop()
 
         try:
-            top_server_name = '.'.join(to_resolve[0].target.split('.')[-2:])
-            resolver = aiodns.DNSResolver(loop=loop)
-            result = await resolver.query(top_server_name, "NS")
-            nameservers = list(map(lambda x: x.host, result))
-
-            self.logger.debug(
-                "Scopes resolve, found NSes: {}".format(
-                    nameservers
-                )
+            nameservers_ips = await get_nameservers(
+                map(lambda host: host.target, to_resolve),
+                logger=self.logger
             )
-
-            futures = []
-            for ns in nameservers:
-                each_future = resolver.query(ns, "A")
-                futures.append(each_future)
-
-            (done_futures, _) = await asyncio.wait(
-                futures, return_when=asyncio.ALL_COMPLETED
-            )
-
-            nameservers_ips = ['8.8.8.8']
-
-            while done_futures:
-                each_future = done_futures.pop()
-
-                try:
-                    result = each_future.result()
-                    nameservers_ips += list(map(lambda x: x.host, result))
-                except Exception as e:
-                    pass
-
-            self.logger.debug(
-                "Scopes resolve, resolved NSes: {}".format(
-                    nameservers_ips
-                )
-            )
-
             resolver = aiodns.DNSResolver(
                 loop=loop, nameservers=nameservers_ips
             )
