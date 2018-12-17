@@ -584,22 +584,12 @@ class ScopeManager(object):
         """ Using all the ids of scopes, resolve the hosts, now we
         resolve ALL the scopes, that are related to the project_uuid """
         self.resolver_called += 1
-        total_ips = 0
-        new_ips = 0
 
-        session = self.session_spawner.get_new_session()
-        ips_locked = (
-            session.query(
-                ProjectDatabase
-            ).filter(
-                ProjectDatabase.project_uuid == project_uuid
-            ).one().ips_locked
-        )
-
-        # Select all hosts from the db
-        project_hosts = session.query(HostDatabase).filter(
-            HostDatabase.project_uuid == project_uuid
-        ).options(joinedload(HostDatabase.ip_addresses)).all()
+        with self.session_spawner.get_session() as session:
+            # Select all hosts from the db
+            project_hosts = session.query(HostDatabase).filter(
+                HostDatabase.project_uuid == project_uuid
+            ).options(joinedload(HostDatabase.ip_addresses)).all()
 
         if scopes_ids is None:
             to_resolve = project_hosts
@@ -632,10 +622,26 @@ class ScopeManager(object):
 
             resolver = aiodns.DNSResolver(loop=loop)
 
+        resolve_results = await self._resolve(to_resolve, resolver)
+        total_ips = await self.parse_resolve_results(resolve_results, project_uuid, nameservers_ips)
+
+        if self.resolver_called % 5 == 0:
+            print(self.debug_resolve_results)
+
+        self.logger.info(
+            "Successfully resolved {} ips @{}".format(
+                len(to_resolve),
+                project_uuid
+            )
+        )
+
+        return (total_ips, 0)
+
+    async def _resolve(self, targets, resolver):
         futures = []
         resolve_results = []
 
-        for each_host in to_resolve:
+        for each_host in targets:
             each_future = resolver.query(each_host.target, "A")
             each_future.database_host = each_host
             futures.append(each_future)
@@ -653,6 +659,9 @@ class ScopeManager(object):
             )
             resolve_results += resolve_batch
 
+        return resolve_results
+
+    async def parse_resolve_results(self, resolve_results, project_uuid, nameservers_ips=None):
         while resolve_results:
             await asyncio.sleep(0)
 
@@ -700,48 +709,44 @@ class ScopeManager(object):
                 # else:
                     # print("{} no longer resolves: exc {}".format(hostname, self.debug_resolve_results[hostname]["exception"]))
 
-
-            for each_result in result:
-                total_ips += 1
-
-                resolved_ip = each_result.host
-                found_ip = await IPDatabase.find(
-                    target=resolved_ip,
-                    project_uuid=project_uuid
+            total_ips = 0
+            with self.session_spawner.get_session() as session:
+                ips_locked = (
+                    session.query(
+                        ProjectDatabase
+                    ).filter(
+                        ProjectDatabase.project_uuid == project_uuid
+                    ).one().ips_locked
                 )
 
-                if found_ip:
-                    found = False
-                    for each_inner_ip_address in host.ip_addresses:
-                        if each_inner_ip_address.id == found_ip.id:
-                            found = True
+                for each_result in result:
+                    total_ips += 1
 
-                    if not found:
-                        host.ip_addresses.append(session.merge(found_ip))
-                        session.add(host)
-                elif not ips_locked:
-                    ip_create_result = await IPDatabase.create(
+                    resolved_ip = each_result.host
+                    found_ip = await IPDatabase.find(
                         target=resolved_ip,
                         project_uuid=project_uuid
                     )
 
-                    if ip_create_result["status"] == "success":
-                        newly_created_ip = ip_create_result["new_scope"]
+                    if found_ip:
+                        found = False
+                        for each_inner_ip_address in host.ip_addresses:
+                            if each_inner_ip_address.id == found_ip.id:
+                                found = True
 
-                        host.ip_addresses.append(newly_created_ip)
-                        session.add(host)
+                        if not found:
+                            host.ip_addresses.append(session.merge(found_ip))
+                            session.add(host)
+                    elif not ips_locked:
+                        ip_create_result = await IPDatabase.create(
+                            target=resolved_ip,
+                            project_uuid=project_uuid
+                        )
 
-        session.commit()
-        self.session_spawner.destroy_session(session)
+                        if ip_create_result["status"] == "success":
+                            newly_created_ip = ip_create_result["new_scope"]
 
-        if self.resolver_called % 5 == 0:
-            print(self.debug_resolve_results)
+                            host.ip_addresses.append(newly_created_ip)
+                            session.add(host)
 
-        self.logger.info(
-            "Successfully resolved {} ips @{}".format(
-                len(to_resolve),
-                project_uuid
-            )
-        )
-
-        return (total_ips, new_ips)
+        return total_ips
