@@ -101,7 +101,9 @@ class IPEntryLine extends React.Component {
 							/>
 						</Grid.Column>
 						<Grid.Column width={5}>
-							{ports}
+							<Label.Group>
+								{ports}
+							</Label.Group>
 						</Grid.Column>
 						<Grid.Column width={4}>
 							<Files target={ip} />

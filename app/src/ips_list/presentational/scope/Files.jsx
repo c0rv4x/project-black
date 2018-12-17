@@ -49,9 +49,9 @@ class Files extends React.Component {
         });
 
 		return (
-            <div>
+            <Label.Group>
                 {labels}
-            </div>
+            </Label.Group>
 		)
 	}
 }
