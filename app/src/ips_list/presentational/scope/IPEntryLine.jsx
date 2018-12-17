@@ -83,6 +83,9 @@ class IPEntryLine extends React.Component {
 										this.copyToClipboard(e);
 									}
 								}}
+								style={{
+									"cursor": "pointer"
+								}}
 							>
 								{ip.ip_address}
 							</b>
