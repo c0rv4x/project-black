@@ -13,6 +13,7 @@ import {
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
 import TasksScoped from '../../../common/tasks_scoped/TasksScoped.jsx'
 import Creds from '../../../common/creds/Creds.jsx'
+import HidingButtons from './HidingButtons.jsx';
 
 
 class IPEntryLine extends React.Component {
@@ -54,7 +55,7 @@ class IPEntryLine extends React.Component {
 		}), (x) => {
 			return (
 				<Label key={x.scan_id + '_' + x.port_number}>
-					{x.port_number}
+					{x.port_number} {x.banner}
 				</Label>
 			)
 		});
@@ -92,19 +93,21 @@ class IPEntryLine extends React.Component {
 							{this.state.copyPasteShown && !this.state.copySuccess && <span>  <Icon color="blue" name="copy outline"/></span>}
 							{this.state.copyPasteShown && this.state.copySuccess && <span>  <Icon color="blue" name="check"/></span>}
 						</Grid.Column>
-						<Grid.Column width={5}>
+						<Grid.Column width={3}>
 							<ScopeComment
 								comment={ip.comment}
 								onCommentSubmit={onCommentSubmit}
 							/>
 						</Grid.Column>
-						<Grid.Column width={7}>
+						<Grid.Column width={6}>
 							{ports}
 						</Grid.Column>
-						<Grid.Column width={1} textAlign="right">
-							<Button basic icon size="small">
-								<Icon name='ellipsis horizontal' />
-							</Button>
+						<Grid.Column width={4} textAlign="right">
+							<HidingButtons
+								project_uuid={project_uuid}
+								type="ip"
+								target={ip.ip_address}
+							/>
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
