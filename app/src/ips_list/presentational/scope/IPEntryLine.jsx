@@ -21,7 +21,7 @@ class IPEntryLine extends React.Component {
 
 		this.state = {
 			"copyPasteShown": false,
-			"copySuccess": ""
+			"copySuccess": false
 		};
 
 		this.copyToClipboard = this.copyToClipboard.bind(this);
@@ -37,8 +37,10 @@ class IPEntryLine extends React.Component {
 		// This is just personal preference.
 		// I prefer to not show the the whole text area selected.
 		e.target.focus();
-		console.log("Copied");
-		this.setState({ copySuccess: 'Copied!' });
+
+		this.setState({
+			"copySuccess": true
+		})
 	  };
 
 	render() {
@@ -70,7 +72,10 @@ class IPEntryLine extends React.Component {
 					<Grid.Row verticalAlign='middle' columns={16}>
 						<Grid.Column width={3}>
 							<b
-								onMouseOut={() => this.setState({"copyPasteShown": false})}
+								onMouseOut={() => this.setState({
+									"copyPasteShown": false,
+									"copySuccess": false
+								})}
 								onMouseOver={() => this.setState({"copyPasteShown": true})}
 								onClick={(e) => {
 									if (document.queryCommandSupported('copy')) {
@@ -80,8 +85,9 @@ class IPEntryLine extends React.Component {
 								}}
 							>
 								{ip.ip_address}
-							</b> 
-							{this.state.copyPasteShown && <Icon name="copy outline" />}
+							</b>
+							{this.state.copyPasteShown && !this.state.copySuccess && <Icon color="blue" name="copy outline" />}
+							{this.state.copyPasteShown && this.state.copySuccess && <Icon color="blue" name="check" />}
 						</Grid.Column>
 						<Grid.Column width={5}>
 							<ScopeComment
