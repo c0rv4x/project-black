@@ -89,8 +89,8 @@ class IPEntryLine extends React.Component {
 							>
 								{ip.ip_address}
 							</b>
-							{this.state.copyPasteShown && !this.state.copySuccess && <Icon color="blue" name="copy outline" />}
-							{this.state.copyPasteShown && this.state.copySuccess && <Icon color="blue" name="check" />}
+							{this.state.copyPasteShown && !this.state.copySuccess && <span>  <Icon color="blue" name="copy outline"/></span>}
+							{this.state.copyPasteShown && this.state.copySuccess && <span>  <Icon color="blue" name="check"/></span>}
 						</Grid.Column>
 						<Grid.Column width={5}>
 							<ScopeComment
