@@ -3,13 +3,14 @@ import React from 'react'
 
 import {
 	Button,
-	Card,
+	Grid,
 	Table,
 	Header,
 	Divider,
 	Popup,
 	List,
-	Label
+	Label,
+	Segment
 } from 'semantic-ui-react'
 
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
@@ -144,10 +145,25 @@ class IPEntryLine extends React.Component {
 		)
 
 		return (
-			<Card color="blue" fluid>
-				<Card.Content description={description} />
-				<Card.Content extra>{footer}</Card.Content>
-			</Card>	
+			// <Card color="blue" fluid>
+			// 	<Card.Content description={description} />
+			// 	<Card.Content extra>{footer}</Card.Content>
+			// </Card>
+			<Segment>
+				<Grid>
+					<Grid.Row columns={16}>
+						<Grid.Column width={3}>
+							{ip.ip_address}
+						</Grid.Column>
+						<Grid.Column width={5}>
+							<ScopeComment
+								comment={ip.comment}
+								onCommentSubmit={onCommentSubmit}
+							/>
+						</Grid.Column>
+					</Grid.Row>
+				</Grid>
+			</Segment>
 		)	
 	}
 }

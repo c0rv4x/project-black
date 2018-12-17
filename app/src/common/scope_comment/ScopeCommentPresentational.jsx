@@ -1,27 +1,20 @@
 import React from 'react'
 
-import { TextArea, Form, Segment } from 'semantic-ui-react'
+import { TextArea } from 'semantic-ui-react'
 
 import EditableElement from '../editable/EditableElement.jsx'
 
 
 class ScopeCommentPresentational extends React.Component {
 
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
 		return (
-			<Form>
-		        <EditableElement
-					onChange={this.props.onChange}
-					value={this.props.scopeComment}
-					onBlur={this.props.commentSubmitted}
-					inputElement={TextArea}
-					element={Segment}
-				/>
-	        </Form>
+			<EditableElement
+				value={this.props.scopeComment}
+				onBlur={this.props.commentSubmitted}
+				inputElement={TextArea}
+				element={"div"}
+			/>
 		)
 	}
 
