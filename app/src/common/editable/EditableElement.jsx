@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -20,8 +21,12 @@ class EditableElement extends React.Component {
         this.onBlur = this.onBlur.bind(this);
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return (!_.isEqual(this.props, nextProps) || !_.isEqual(this.state, nextState));
+    }
+
     componentWillReceiveProps(nextProps) {
-        if (nextProps.value !== this.state.value) {
+        if ((nextProps.value !== this.state.value) && (this.props.value !== nextProps.value)) {
             this.setState({ value: nextProps.value });
         }
     }
@@ -76,15 +81,17 @@ class EditableElement extends React.Component {
 
     renderStaticElement() {
         const Element = this.props.element;
-
         return (
             <div
                 onClick={this.onClick}
+                style={{
+                    "cursor": "pointer"
+                }}
             >
                 <Element
                     className={this.props.elementClassName}
                 >
-                    {this.state.value || this.props.placeholder}
+                    {this.state.value.trim() || this.props.placeholder}
                 </Element>
             </div>
         );
@@ -107,6 +114,9 @@ class EditableElement extends React.Component {
                 onChange={event => this.onChange(event.target.value)}
                 onKeyDown={this.onKeyDown}
                 onBlur={event => this.onBlur(event.target.value)}
+                style={{
+                    "cursor": "pointer"
+                }}
             />
         );
     }
