@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import { createScope } from '../../../redux/scopes/actions'
 
-import { Form, Button, TextArea, Header } from 'semantic-ui-react'
+import { Form, Button, TextArea, Header, Segment } from 'semantic-ui-react'
 import ScopeUpload from '../components/ScopeUpload.jsx'
 
 
@@ -92,39 +92,41 @@ class ScopeAdder extends React.Component {
 		let { color, loading } = this.state;
 
 		return (
-			<Form>
-				<Form.Field>
-					<Header as="h3">Add new scope</Header>
-					<TextArea 
-						autoHeight
-						rows={1}
-						type="text"
-						placeholder="Newline-separated hosts, ips, networks (CIDR notation)"
-						value={this.props.newScopeInput}
-						onChange={(e) => this.props.handleNewScopeChange(e.target.value)}
-						onKeyUp={(e) => {
-							if (e.key === 'Enter' && e.shiftKey) {         
-								this.submitNewScope();
-							}
-						}}
-					/>
-				</Form.Field>
+			<Segment>
+				<Form>
+					<Form.Field>
+						<Header as="h3">Add new scope</Header>
+						<TextArea 
+							autoHeight
+							rows={1}
+							type="text"
+							placeholder="Newline-separated hosts, ips, networks (CIDR notation)"
+							value={this.props.newScopeInput}
+							onChange={(e) => this.props.handleNewScopeChange(e.target.value)}
+							onKeyUp={(e) => {
+								if (e.key === 'Enter' && e.shiftKey) {         
+									this.submitNewScope();
+								}
+							}}
+						/>
+					</Form.Field>
 
-				<ScopeUpload
-					fileLoadedHandler={this.props.handleNewScopeChange}
-				>
-					Upload scope
-				</ScopeUpload>
+					<ScopeUpload
+						fileLoadedHandler={this.props.handleNewScopeChange}
+					>
+						Upload scope
+					</ScopeUpload>
 
-				<Button
-					color={color}
-					loading={loading}
-					active={loading}
-					onClick={this.submitNewScope}
-				>
-						Add to scope
-				</Button>
-			</Form>
+					<Button
+						color={color}
+						loading={loading}
+						active={loading}
+						onClick={this.submitNewScope}
+					>
+							Add to scope
+					</Button>
+				</Form>
+			</Segment>
 		)
 	}
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dimmer, Loader, Segment, Statistic } from 'semantic-ui-react'
+import { Dimmer, Loader, Statistic } from 'semantic-ui-react'
 
 import IPTable from '../presentational/IPTable.jsx'
 import HostTable from '../presentational/HostTable.jsx'
@@ -14,7 +14,7 @@ class ScopeSetup extends React.Component {
 		const all_loaded = ips.loaded && hosts.loaded && scans.loaded && files.loaded;
 
 		return (
-			<Segment>
+			<div>
 				<Dimmer active={!all_loaded} inverted>
 					<Loader />
 				</Dimmer>
@@ -32,7 +32,7 @@ class ScopeSetup extends React.Component {
 						files={files}
 					/>
 				</Statistic.Group>
-			</Segment>
+			</div>
 		)
 	}
 }

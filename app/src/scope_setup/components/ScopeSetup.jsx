@@ -6,7 +6,7 @@ import HeadButtonsTracked from './HeadButtonsTracked.jsx'
 import ProjectComment from '../../common/project_comment/ProjectComment.jsx'
 
 import Stats from '../presentational/Stats.jsx'
-import { Divider } from 'semantic-ui-react'
+import { Segment } from 'semantic-ui-react'
 
 class ScopeSetup extends React.Component {
 
@@ -31,20 +31,20 @@ class ScopeSetup extends React.Component {
 			<div>
 				<br/>
 				<ProjectComment project={project}/>
-				<Divider />
 
-				<HeadButtonsTracked
-					project={project}
-					hosts={hosts}
-				/>
+				<Segment>
+					<HeadButtonsTracked
+						project={project}
+						hosts={hosts}
+					/>
 
-				<Stats
-					ips={ips}
-					hosts={hosts}
-					scans={scans}
-					files={files}
-				/>
-				<Divider />
+					<Stats
+						ips={ips}
+						hosts={hosts}
+						scans={scans}
+						files={files}
+					/>
+				</Segment>
 
 				<ScopeAdderTracked
 					project={project}

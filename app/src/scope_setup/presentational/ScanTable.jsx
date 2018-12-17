@@ -10,7 +10,7 @@ class ScanTable extends React.Component {
 
 		return (
 			<Statistic>
-				<Statistic.Value>{scans.loaded && scans.amount}{!scans.loaded && "Loading"}</Statistic.Value>
+				<Statistic.Value>{scans.loaded && scans.amount}{!scans.loaded && "0"}</Statistic.Value>
 				<Statistic.Label>ports</Statistic.Label>
 			</Statistic>
 		)

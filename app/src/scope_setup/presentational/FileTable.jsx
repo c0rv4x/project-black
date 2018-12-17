@@ -10,7 +10,7 @@ class FileTable extends React.Component {
 
 		return (
 			<Statistic>
-				<Statistic.Value>{files.loaded && files.amount}{!files.loaded && "Loading"}</Statistic.Value>
+				<Statistic.Value>{files.loaded && files.amount}{!files.loaded && "0"}</Statistic.Value>
 				<Statistic.Label>files</Statistic.Label>
 			</Statistic>
 		)
