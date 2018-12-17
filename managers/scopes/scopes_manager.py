@@ -622,8 +622,14 @@ class ScopeManager(object):
 
             resolver = aiodns.DNSResolver(loop=loop)
 
-        resolve_results = await self._resolve(to_resolve, resolver)
-        total_ips = await self.parse_resolve_results(resolve_results, project_uuid, nameservers_ips)
+        current_retries = 0
+
+        while current_retries < 3:
+            resolve_results = await self._resolve(to_resolve, resolver)
+            total_ips, failed_hosts = await self.parse_resolve_results(resolve_results, project_uuid, nameservers_ips)
+
+            to_resolve = failed_hosts
+            current_retries += 1
 
         if self.resolver_called % 5 == 0:
             print(self.debug_resolve_results)
@@ -637,11 +643,11 @@ class ScopeManager(object):
 
         return (total_ips, 0)
 
-    async def _resolve(self, targets, resolver):
+    async def _resolve(self, hosts, resolver):
         futures = []
         resolve_results = []
 
-        for each_host in targets:
+        for each_host in hosts:
             each_future = resolver.query(each_host.target, "A")
             each_future.database_host = each_host
             futures.append(each_future)
@@ -662,6 +668,9 @@ class ScopeManager(object):
         return resolve_results
 
     async def parse_resolve_results(self, resolve_results, project_uuid, nameservers_ips=None):
+        failed_hosts = []
+        total_ips = 0
+
         while resolve_results:
             await asyncio.sleep(0)
 
@@ -674,6 +683,10 @@ class ScopeManager(object):
                 # An error during resolve happend
                 exc_code = exc.args[0]
                 exc_description = exc.args[1]
+
+                if exc_code != 4:
+                    print(exc_description)
+                    failed_hosts.append(host)
 
                 if hostname not in self.debug_resolve_results:
                     self.debug_resolve_results[hostname] = {
@@ -709,7 +722,6 @@ class ScopeManager(object):
                 # else:
                     # print("{} no longer resolves: exc {}".format(hostname, self.debug_resolve_results[hostname]["exception"]))
 
-            total_ips = 0
             with self.session_spawner.get_session() as session:
                 ips_locked = (
                     session.query(
@@ -749,4 +761,4 @@ class ScopeManager(object):
                             host.ip_addresses.append(newly_created_ip)
                             session.add(host)
 
-        return total_ips
+        return (total_ips, failed_hosts)
