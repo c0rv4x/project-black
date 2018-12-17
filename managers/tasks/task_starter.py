@@ -60,7 +60,7 @@ class TaskStarter(object):
                 "scans_ids": []
             }
 
-            local_params["special"] = []
+            local_params["special"] = ['-Pn']
 
             ports = []
 
