@@ -13,7 +13,8 @@ import {
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
 import TasksScoped from '../../../common/tasks_scoped/TasksScoped.jsx'
 import Creds from '../../../common/creds/Creds.jsx'
-import HidingButtons from './HidingButtons.jsx';
+import HidingButtons from './HidingButtons.jsx'
+import Files from './Files.jsx'
 
 
 class IPEntryLine extends React.Component {
@@ -99,10 +100,13 @@ class IPEntryLine extends React.Component {
 								onCommentSubmit={onCommentSubmit}
 							/>
 						</Grid.Column>
-						<Grid.Column width={6}>
+						<Grid.Column width={5}>
 							{ports}
 						</Grid.Column>
-						<Grid.Column width={4} textAlign="right">
+						<Grid.Column width={4}>
+							<Files target={ip} />
+						</Grid.Column>
+						<Grid.Column width={1} textAlign="right">
 							<HidingButtons
 								project_uuid={project_uuid}
 								type="ip"
