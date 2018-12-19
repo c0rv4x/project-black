@@ -12,7 +12,7 @@ class Files extends React.Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-		return (!_.isEqual(nextProps['ip'], this.props['ip'])) || (!_.isEqual(this.state, nextState));
+		return (!_.isEqual(nextProps, this.props)) || (!_.isEqual(this.state, nextState));
 	}
 
     render() {
