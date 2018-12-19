@@ -100,12 +100,12 @@ class IPEntryLine extends React.Component {
 								onCommentSubmit={onCommentSubmit}
 							/>
 						</Grid.Column>
-						<Grid.Column width={5}>
+						<Grid.Column width={6}>
 							<Label.Group>
 								{ports}
 							</Label.Group>
 						</Grid.Column>
-						<Grid.Column width={4}>
+						<Grid.Column width={3} floated="right">
 							<Files target={ip} />
 						</Grid.Column>
 						<Grid.Column width={1} textAlign="right">
