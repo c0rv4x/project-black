@@ -48,7 +48,7 @@ class Files extends React.Component {
 					return <Label color="green" key={key}>{key}<Label.Detail>{value}</Label.Detail></Label>
 				}
 				if (key[0] == '3') {
-					return <Label key={key}>{key}<Label.Detail>{value}250</Label.Detail></Label>
+					return <Label key={key}>{key}<Label.Detail>{value}</Label.Detail></Label>
 				}
 				if (key[0] == '4') {
 					return <Label color="yellow" key={key}>{key}<Label.Detail>{value}</Label.Detail></Label>
