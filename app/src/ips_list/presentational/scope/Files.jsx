@@ -44,7 +44,19 @@ class Files extends React.Component {
         
         const labels = _.map(files_by_statuses, (value, key) => {
             if (value) {
-                return <Label key={key}>{key}<Label.Detail>{value}</Label.Detail></Label>
+				if (key[0] == '2') {
+					return <Label color="green" key={key}>{key}<Label.Detail>{value}</Label.Detail></Label>
+				}
+				if (key[0] == '3') {
+					return <Label color="olive" key={key}>{key}<Label.Detail>{value}</Label.Detail></Label>
+				}
+				if (key[0] == '4') {
+					return <Label color="yellow" key={key}>{key}<Label.Detail>{value}</Label.Detail></Label>
+				}
+				if (key[0] == '5') {
+					return <Label color="teal" key={key}>{key}<Label.Detail>{value}</Label.Detail></Label>
+				}
+				return <Label key={key}>{key}<Label.Detail>{value}</Label.Detail></Label>
             }
         });
 
