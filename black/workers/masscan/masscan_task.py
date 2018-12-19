@@ -164,7 +164,7 @@ class MasscanTask(AsyncTask):
 
         if self.exit_code == 0:
             try:
-                save_result = self.save()
+                await self.save()
             except Exception as exc:
                 print("Save exception", exc)
                 await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
@@ -173,12 +173,12 @@ class MasscanTask(AsyncTask):
         else:
             await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
  
-    def save(self):
+    async def save(self):
         """ Parse output of the task and save it to the db"""
-        return save_raw_output(
-                    self.task_id,
-                    self.stdout,
-                    self.project_uuid)
+        return await save_raw_output(
+                            self.task_id,
+                            self.stdout,
+                            self.project_uuid)
 
     async def cancel(self):
         self.send_notification("stop")
