@@ -57,7 +57,6 @@ class HidingButtons extends React.Component {
     }
 
 	render() {
-        console.log(this.state.opened);
 		return (
             this.renderAllElement()
 		)	

@@ -73,25 +73,6 @@ class IPTable extends React.Component {
 								deleteIP={() => this.props.deleteScope(x.ip_id)} />
 		});
 
-		// let ips_groups = [];
-
-		// let columns = 1;
-		// for (var i = 0; i < ips.length + columns - 1; i += columns) {
-		// 	let ips_slice = ips.slice(i, Math.min(ips.length, i + columns));
-
-		// 	let ip_key_sum = '';
-		// 	let ips_slice_formatted = ips_slice.map((ip) => {
-		// 		ip_key_sum += ip.key + ',';
-		// 		return ip;
-		// 	});
-
-		// 	ips_groups = ips_groups.concat(
-		// 		<Grid.Row stretched key={ip_key_sum}>
-		// 			{ips_slice_formatted}
-		// 		</Grid.Row>
-		// 	);
-		// }
-
 		return (
 			<div>
 				<Search applyFilters={this.props.applyFilters} />
