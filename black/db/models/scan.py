@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
+from sqlalchemy import Column, String, DateTime, ForeignKey, Integer, UniqueConstraint
 
 from .base import Base
 
@@ -8,6 +8,9 @@ class ScanDatabase(Base):
     """ Keep the major part of data: everything that has been
     found during the scan """
     __tablename__ = 'scans'
+    __table_args__ = (
+        UniqueConstraint('target', 'port_number', 'project_uuid'),
+    )
 
     # Primary key (probably uuid4)
     scan_id = Column(String, primary_key=True)

@@ -197,9 +197,15 @@ class NmapTask(AsyncTask):
                 except Exception as e:
                     print("Nmap " + e)
                     raise e
-            session.add(new_scan)
-            session.commit()
+
+            try:
+                session.add(new_scan)
+                session.commit()
+            except:
+                session.rollback()
+
             sessions.destroy_session(session)
+            
 
         stdout = "".join(self.stdout)
 

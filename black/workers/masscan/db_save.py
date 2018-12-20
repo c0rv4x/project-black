@@ -39,7 +39,7 @@ async def save_raw_output(task_id, output, project_uuid):
                                 session.add(new_scan)
                                 session.commit()
                             except:
-                                pass
+                                session.rollback()
 
                             saved_scans.append(target.id)
                 else:
@@ -64,7 +64,7 @@ async def save_raw_output(task_id, output, project_uuid):
                             session.add(new_scan)
                             session.commit()
                         except:
-                            pass
+                            session.rollback()
 
                         saved_scans.append(target.id)
 
