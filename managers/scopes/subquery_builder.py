@@ -14,49 +14,16 @@ class SubqueryBuilder:
             filters, ScanDatabase
         )
 
-        r = (
+        scans_selected = (
             session.query(
-                ScanDatabase,
-                func.rank().over(
-                    partition_by=[ScanDatabase.target, ScanDatabase.port_number],
-                    order_by=ScanDatabase.date_added
-                ).label('date_rank')
+                ScanDatabase
             ).filter(
                 ScanDatabase.project_uuid == project_uuid,
                 scans_filters
             ).subquery()
         )
 
-        scans_from_db = (
-            session.query(
-                ScanDatabase
-            ).select_entity_from(
-                r
-            ).filter(
-                r.c.date_rank == 1
-            )
-        ).subquery('ports_latest')
-
-        # scans_from_db = (
-        #     session.query(
-        #         ScanDatabase
-        #     )
-        #     .filter(
-        #         ScanDatabase.project_uuid == project_uuid,
-        #         scans_filters
-        #     )
-        #     .join(
-        #         ports,
-        #         and_(
-        #             ScanDatabase.date_added == ports.c.latesttime,
-        #             ScanDatabase.target == ports.c.target,
-        #             ScanDatabase.port_number == ports.c.port_number
-        #         )
-        #     )
-        #     .subquery("ports_latest")
-        # )
-
-        return scans_from_db
+        return scans_selected
 
     @staticmethod
     def build_files_subquery(session, project_uuid, filters):
