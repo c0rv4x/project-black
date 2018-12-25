@@ -15,6 +15,19 @@ class ScopeAdder extends React.Component {
 			"color": "blue",
 			"loading": false
 		};
+		
+		this.handleKeyPress = this.handleKeyPress.bind(this);
+	}
+
+	handleKeyPress(e) {
+		if (e.key === 'Enter' && e.shiftKey) {         
+			this.setState({
+				color: "orange",
+				loading: true,
+				forceStateColor: true
+			});
+			this.props.onNewScopeClick(this.props.newScopeInput);
+		}
 	}
 
 	findScopeType() {
@@ -90,6 +103,7 @@ class ScopeAdder extends React.Component {
 						type="text"
 						placeholder="Newline-separated hosts, ips, networks (CIDR notation)"
 						value={this.props.newScopeInput}
+						onKeyUp={this.handleKeyPress}
 						onChange={(e) => this.props.handleNewScopeChange(e.target.value)}
 					/>
 				</Form.Field>
