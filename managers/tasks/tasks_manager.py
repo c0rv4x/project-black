@@ -156,7 +156,7 @@ class TaskManager(object):
         if get_all:
             active = list(
                 map(
-                    lambda x: x.dict(
+                    lambda x: x.to_dict(
                         grab_file_descriptors=False
                     ),
                     active_filtered
@@ -164,7 +164,7 @@ class TaskManager(object):
             )
             finished = list(
                 map(
-                    lambda x: x.dict(
+                    lambda x: x.to_dict(
                         grab_file_descriptors=False
                     ),
                     finished_filtered
@@ -197,13 +197,13 @@ class TaskManager(object):
 
         active = list(
             map(
-                lambda x: x.dict(grab_file_descriptors=False),
+                lambda x: x.to_dict(grab_file_descriptors=False),
                 active
             )
         )
         finished = list(
             map(
-                lambda x: x.dict(grab_file_descriptors=False),
+                lambda x: x.to_dict(grab_file_descriptors=False),
                 finished
             )
         )
@@ -288,7 +288,7 @@ class TaskManager(object):
 
         return list(
             map(
-                lambda task: task.dict(
+                lambda task: task.to_dict(
                     grab_file_descriptors=False
                 ),
                 tasks
