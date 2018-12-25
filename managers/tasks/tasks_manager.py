@@ -9,6 +9,7 @@ from black.db import Sessions, TaskDatabase
 from managers.tasks.shadow_task import ShadowTask
 from managers.tasks.task_starter import TaskStarter
 from managers.tasks.finished_task_notification_creator import NotificationCreator
+from managers.tasks.utils import task_quitted
 
 from common.logger import log
 from config import CONFIG
@@ -20,8 +21,7 @@ class TaskManager(object):
     exposing some interfaces for public use. """
 
     def __init__(self, data_updated_queue, scope_manager):
-        self.data_updated_queue = data_updated_queue
-        self.notification_creator = NotificationCreator(self.data_updated_queue)
+        self.notification_creator = NotificationCreator(data_updated_queue)
 
         self.scope_manager = scope_manager
 
@@ -71,49 +71,50 @@ class TaskManager(object):
         await self.tasks_queue.consume(self.handle_status_message)
 
     def handle_status_message(self, message):
-        """ Parse the message from the queue, which contains task status,
-        updates the relevant ShadowTask and, we notify the upper module that
+        """ Parse the message from the queue, which contains task status.
+        Updates the relevant ShadowTask and, we notify the upper module that
         it must update the scan results. """
         body = message.json()
         task_id = body['task_id']
+        new_status = body['status']
+        new_progress = body['progress']
+        new_text = body['text']
+        new_stdout = body['new_stdout']
+        new_stderr = body['new_stderr']
+        new_data = body.get('new_data', None)
 
         for task in self.active_tasks:
             if task.task_id == task_id:
-                new_status = body['status']
-                new_progress = body['progress']
-                new_text = body['text']
-                new_stdout = body['new_stdout']
-                new_stderr = body['new_stderr']
-
-                new_data = body.get('new_data', None)
 
                 if new_status != task.status or new_progress != task.progress:
                     task.new_status_known = False
 
-                self.logger.debug(
-                    "Task {} updated. {}->{}, {}->{}".format(
-                        task.task_id,
-                        task.status, new_status,
-                        task.progress, new_progress
+                    self.logger.debug(
+                        "Task {} updated. {}->{}, {}->{}".format(
+                            task.task_id,
+                            task.status, new_status,
+                            task.progress, new_progress
+                        )
                     )
-                )
 
                 task.set_status(new_status, new_progress, new_text, new_stdout, new_stderr)
 
                 if (
                     new_data or
-                    new_status == 'Finished' or
-                    new_status == 'Aborted'
+                    task_quitted(new_status)
                 ):
-                    self.notification_creator.finished(task)
+                    self.notification_creator.notify(task)
 
-                if new_status == 'Finished' or new_status == 'Aborted':
-                    self.active_tasks.remove(task)
-                    self.finished_tasks.append(task)
+                if task_quitted(new_status):
+                    self.handle_finished(task)
 
                 break
 
         message.ack()
+
+    def handle_finished(self, task):
+        self.active_tasks.remove(task)
+        self.finished_tasks.append(task)
 
     def restore_tasks_from_db(self):
         with self.sessions.get_session() as session:
@@ -135,7 +136,7 @@ class TaskManager(object):
 
         for task in tasks:
             status = task.get_status()[0]
-            if status == 'Finished' or status == 'Aborted':
+            if task_quitted(status):
                 self.finished_tasks.append(task)
             else:
                 self.active_tasks.append(task)
