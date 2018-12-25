@@ -41,7 +41,7 @@ class ShadowTask(object):
 
         # This variable keeps information whether the corresponding task
         # should be sent back to the web.
-        self.new_status_known = False
+        self.fresh = False
 
     def send_start_task(self):
         """ Put a message to the queue, which says "start my task, please """
@@ -65,9 +65,15 @@ class ShadowTask(object):
         self.stdout += new_stdout
         self.stderr += new_stderr
 
+    def set_fresh(self, fresh):
+        self.fresh = fresh
+
     def get_status(self):
         """ Returns a tuple of status, progress and text of the task"""
         return (self.status, self.progress, self.text)
+
+    def quitted(self):
+        return self.status == 'Finished' or self.status == 'Aborted'
 
     def to_dict(self, grab_file_descriptors=False):
         """ "Serialize" the task to python native dict """

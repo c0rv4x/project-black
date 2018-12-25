@@ -7,7 +7,8 @@ import asynqp
 
 from black.db import Sessions, TaskDatabase
 from managers.tasks.shadow_task import ShadowTask
-from managers.tasks.task_starter import TaskStarter
+from managers.tasks.task_spawner import TaskSpawner
+from managers.tasks.tasks_cache import TasksCache
 from managers.tasks.finished_task_notification_creator import NotificationCreator
 from managers.tasks.utils import task_quitted
 
@@ -25,15 +26,12 @@ class TaskManager(object):
 
         self.scope_manager = scope_manager
 
-        self.active_tasks = list()
-        self.finished_tasks = list()
+        self.cache = TasksCache()
 
         self.exchange = None
         self.tasks_queue = None
 
         self.sessions = Sessions()
-
-        self.restore_tasks_from_db()
 
     async def spawn_asynqp(self):
         """ Spawns all the necessary queues and launches a statuses parser """
@@ -75,144 +73,30 @@ class TaskManager(object):
         Updates the relevant ShadowTask and, we notify the upper module that
         it must update the scan results. """
         body = message.json()
-        task_id = body['task_id']
-        new_status = body['status']
-        new_progress = body['progress']
-        new_text = body['text']
-        new_stdout = body['new_stdout']
-        new_stderr = body['new_stderr']
-        new_data = body.get('new_data', None)
-
-        for task in self.active_tasks:
-            if task.task_id == task_id:
-
-                if new_status != task.status or new_progress != task.progress:
-                    task.new_status_known = False
-
-                    self.logger.debug(
-                        "Task {} updated. {}->{}, {}->{}".format(
-                            task.task_id,
-                            task.status, new_status,
-                            task.progress, new_progress
-                        )
-                    )
-
-                task.set_status(new_status, new_progress, new_text, new_stdout, new_stderr)
-
-                if (
-                    new_data or
-                    task_quitted(new_status)
-                ):
-                    self.notification_creator.notify(task)
-
-                if task_quitted(new_status):
-                    self.handle_finished(task)
-
-                break
+        
+        updated_task = self.cache.update_task(body)
+        if updated_task.quitted():
+            self.notification_creator.notify(updated_task)
 
         message.ack()
 
-    def handle_finished(self, task):
-        self.active_tasks.remove(task)
-        self.finished_tasks.append(task)
-
-    def restore_tasks_from_db(self):
-        with self.sessions.get_session() as session:
-            tasks_from_db = session.query(TaskDatabase).all()
-            tasks = list(map(lambda x:
-                            ShadowTask(task_id=x.task_id,
-                                        task_type=x.task_type,
-                                        target=x.target,
-                                        params=json.loads(x.params),
-                                        project_uuid=x.project_uuid,
-                                        status=x.status,
-                                        progress=x.progress,
-                                        text=x.text,
-                                        date_added=x.date_added,
-                                        stdout=x.stdout,
-                                        stderr=x.stderr,
-                                        exchange=self.exchange),
-                            tasks_from_db))
-
-        for task in tasks:
-            status = task.get_status()[0]
-            if task_quitted(status):
-                self.finished_tasks.append(task)
-            else:
-                self.active_tasks.append(task)
-
-    def get_tasks(self):
-        """ Returns a list of active tasks and a list of finished tasks """
-        return [self.active_tasks, self.finished_tasks]
-
-    def get_tasks_native_objects(self, project_uuid=None, get_all=False):
+    def get_tasks(self, project_uuid, get_all=False):
         """ "Serializes" tasks to native python dicts """
-        active_filtered = list(filter(
-            lambda x: project_uuid is None or int(x.project_uuid) == project_uuid,
-            self.active_tasks))
-        finished_filtered = list(filter(
-            lambda x: project_uuid is None or int(x.project_uuid) == project_uuid,
-            self.finished_tasks))
-
         if get_all:
-            active = list(
-                map(
-                    lambda x: x.to_dict(
-                        grab_file_descriptors=False
-                    ),
-                    active_filtered
-                )
-            )
-            finished = list(
-                map(
-                    lambda x: x.to_dict(
-                        grab_file_descriptors=False
-                    ),
-                    finished_filtered
-                )
-            )
-
-            return {
-                'active': active,
-                'finished': finished
-            }
-
-        active = list(
-            filter(
-                lambda x: x.new_status_known is False,
-                active_filtered
-            )
-        )
-        finished = list(
-            filter(
-                lambda x: x.new_status_known is False,
-                finished_filtered
-            )
-        )
-
-        for each_task in active:
-            each_task.new_status_known = True
-
-        for each_task in finished:
-            each_task.new_status_known = True
-
-        active = list(
-            map(
-                lambda x: x.to_dict(grab_file_descriptors=False),
-                active
-            )
-        )
-        finished = list(
-            map(
-                lambda x: x.to_dict(grab_file_descriptors=False),
-                finished
-            )
-        )
+            active = self.cache.get_active(project_uuid)
+            finished = self.cache.get_finished(project_uuid)
+        else:
+            active = self.cache.get_fresh_active(project_uuid, update_fresh=True)
+            finished = self.cache.get_fresh_finished(project_uuid, update_fresh=True)
 
         return {
             'active': active,
             'finished': finished
         }
+
+    def _get_all_tasks(self):
+        """ Returns a list of active tasks and a list of finished tasks """
+        return self.cache.get_tasks()
 
     def create_task(self, task_type, filters, params, project_uuid):
         """ Register the task and send a command to start it """
@@ -222,7 +106,7 @@ class TaskManager(object):
                 project_uuid
             )
 
-            tasks = TaskStarter.start_masscan(
+            tasks = TaskSpawner.start_masscan(
                 targets, params, project_uuid, self.exchange
             )
 
@@ -234,7 +118,7 @@ class TaskManager(object):
                 project_uuid
             )
 
-            tasks = TaskStarter.start_nmap(
+            tasks = TaskSpawner.start_nmap(
                 targets, params, project_uuid, self.exchange
             )
 
@@ -246,7 +130,7 @@ class TaskManager(object):
                 project_uuid
             )['ips']
 
-            tasks = TaskStarter.start_nmap_only_open(
+            tasks = TaskSpawner.start_nmap_only_open(
                 targets, params, project_uuid, self.exchange
             )
 
@@ -265,7 +149,7 @@ class TaskManager(object):
                     filters, project_uuid
                 )
 
-            tasks = TaskStarter.start_dirsearch(
+            tasks = TaskSpawner.start_dirsearch(
                 targets, params, project_uuid, self.exchange
             )
             self.active_tasks += tasks
@@ -281,7 +165,7 @@ class TaskManager(object):
                     filters, project_uuid
                 )
 
-            tasks = TaskStarter.start_patator(
+            tasks = TaskSpawner.start_patator(
                 targets, params, project_uuid, self.exchange
             )
             self.active_tasks += tasks

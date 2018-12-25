@@ -4,7 +4,7 @@ from black.db import Sessions, IPDatabase
 from managers.tasks.shadow_task import ShadowTask
 
 
-class TaskStarter(object):
+class TaskSpawner(object):
     """ Starts masscan task """
 
     @staticmethod
