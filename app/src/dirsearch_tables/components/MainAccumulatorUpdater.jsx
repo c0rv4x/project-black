@@ -22,10 +22,6 @@ class MainAccumulatorUpdater extends React.Component {
 			pageNumberUnmodified: 0
 		}
 
-		this.ipsEmitter = new IPsSocketioEventsEmitter();
-		this.hostsEmitter = new HostsSocketioEventsEmitter();
-		this.filesEmitter = new FilesSocketioEventsEmitter();
-
 		this.renewHosts = this.renewHosts.bind(this);
 		this.renewIps = this.renewIps.bind(this);
 		this.changePage = this.changePage.bind(this);
@@ -51,6 +47,12 @@ class MainAccumulatorUpdater extends React.Component {
 		if (this.props.hosts.data) {
 			this.renewFilesStatsHosts();
 		}		
+	}
+
+	componentDidMount() {
+		this.ipsEmitter = new IPsSocketioEventsEmitter();
+		this.hostsEmitter = new HostsSocketioEventsEmitter();
+		this.filesEmitter = new FilesSocketioEventsEmitter();
 	}
 
 	triggerSetLoadedIPs(value) {

@@ -13,13 +13,15 @@ class HeadButtonsTracked extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.projectsEmitter = new ProjectsSocketioEventsEmitter();
-		this.hostsEmitter = new HostsSocketioEventsEmitter();
-		this.tasksEmitter = new TasksSocketioEventsEmitter();
-
 		this.resolveScopes = this.resolveScopes.bind(this);
 		this.setLockIps = this.setLockIps.bind(this);
 		this.setLockHosts = this.setLockHosts.bind(this);
+	}
+
+	componentDidMount() {
+		this.projectsEmitter = new ProjectsSocketioEventsEmitter();
+		this.hostsEmitter = new HostsSocketioEventsEmitter();
+		this.tasksEmitter = new TasksSocketioEventsEmitter();
 	}
 
 	resolveScopes(scopes_ids, project_uuid) {

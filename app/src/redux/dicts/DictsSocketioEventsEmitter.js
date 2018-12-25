@@ -1,7 +1,7 @@
 import Connector from '../SocketConnector.jsx';
 
 
-class CredsSocketioEventsEmitter {
+class DictsSocketioEventsEmitter {
     /* Singleton class for managing events subscription for the files */
     constructor() {
         this.connector = new Connector('dicts');
@@ -14,4 +14,4 @@ class CredsSocketioEventsEmitter {
     }
 }
 
-export default CredsSocketioEventsEmitter;
+export default DictsSocketioEventsEmitter;

@@ -15,9 +15,12 @@ class ScopeSetupUpdater extends React.Component {
 			loading: false
 		}
 
+		this.setLoading = this.setLoading.bind(this);
+	}
+
+	componentDidMount() {
 		this.hostsEmitter = new HostsSocketioEventsEmitter();
 		this.ipsEmitter = new IPsSocketioEventsEmitter();
-		this.setLoading = this.setLoading.bind(this);
 
 		if (this.props.hosts.update_needed === true) {
 			this.ipsEmitter.requestRenewIPs(this.props.project_uuid);

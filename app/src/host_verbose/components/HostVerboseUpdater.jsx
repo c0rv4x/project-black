@@ -14,9 +14,11 @@ class HostVerboseUpdater extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.filesEmitter = new FilesSocketioEventsEmitter();
-
 		this.requestStatsHost = this.requestStatsHost.bind(this);
+	}
+
+	componentDidMount() {
+		this.filesEmitter = new FilesSocketioEventsEmitter();
 	}
 
 	componentDidUpdate(prevProps) {

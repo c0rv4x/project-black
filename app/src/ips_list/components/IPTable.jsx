@@ -23,11 +23,13 @@ class IPTable extends React.Component {
 			}
 		}
 
-		this.ipsEmitter = new IPsSocketioEventsEmitter();
-		this.credsEmitter = new CredsSocketioEventsEmitter();
-
 		this.commentSubmitted = this.commentSubmitted.bind(this);
 		this.handlePageClick = this.handlePageClick.bind(this);
+	}
+
+	componentDidMount() {
+		this.ipsEmitter = new IPsSocketioEventsEmitter();
+		this.credsEmitter = new CredsSocketioEventsEmitter();
 	}
 
 	commentSubmitted(comment, _id) {

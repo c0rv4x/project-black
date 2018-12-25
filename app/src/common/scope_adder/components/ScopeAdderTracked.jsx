@@ -14,10 +14,12 @@ class ScopeAdderTracked extends React.Component {
 			"newScopeInput": ""
 		}
 
-		this.scopesEmitter = new ScopesSocketioEventsEmitter();		
-
 		this.handleNewScopeChange = this.handleNewScopeChange.bind(this);
 		this.submitNewScope = this.submitNewScope.bind(this);
+	}
+
+	componentDidMount() {
+		this.scopesEmitter = new ScopesSocketioEventsEmitter();		
 	}
 
 	handleNewScopeChange(text) {

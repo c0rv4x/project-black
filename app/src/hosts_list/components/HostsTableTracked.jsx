@@ -9,9 +9,11 @@ class HostsTableTracked extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.scopesEmitter = new ScopesSocketioEventsEmitter();		
-
 		this.deleteScope = this.deleteScope.bind(this);
+	}
+
+	componentDidMount() {
+		this.scopesEmitter = new ScopesSocketioEventsEmitter();		
 	}
 
 	deleteScope(scope_id) {

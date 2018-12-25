@@ -13,9 +13,11 @@ class ProjectComment extends React.Component {
 			projectComment: this.props.project.comment
 		};
 
-		this.projectsEmitter = new ProjectsSocketioEventsEmitter();
-
 		this.commentSubmitted = this.commentSubmitted.bind(this);
+	}
+
+	componenDidMount() {
+		this.projectsEmitter = new ProjectsSocketioEventsEmitter();
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {

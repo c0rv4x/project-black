@@ -13,8 +13,6 @@ class DictionariesManager extends React.Component {
     constructor(props) {
         super(props);
 
-        this.dictsEmitter = new DictsSocketioEventsEmitter();
-
         this.renewDicts = this.renewDicts.bind(this);
         this.deleteDict = this.deleteDict.bind(this);
     }
@@ -24,6 +22,8 @@ class DictionariesManager extends React.Component {
     }
 
     componentDidMount() {
+        // TODO: This can probably lead to race condition
+        this.dictsEmitter = new DictsSocketioEventsEmitter();
         this.renewDicts();
     }
 
