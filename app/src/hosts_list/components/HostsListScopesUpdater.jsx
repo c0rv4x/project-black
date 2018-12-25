@@ -14,24 +14,26 @@ class HostsListScopesUpdater extends React.Component {
 	constructor(props) {
 		super(props);
 
+		this.triggerSetLoaded = this.triggerSetLoaded.bind(this);
+		this.renewHosts = this.renewHosts.bind(this);
+		this.renewCreds = this.renewCreds.bind(this);
+		this.renewFiles = this.renewFiles.bind(this);
+		this.requestUpdateHost = this.requestUpdateHost.bind(this);
+	}
+
+	componentDidMount() {
 		this.hostsEmitter = new HostsSocketioEventsEmitter();
 		this.credsEmitter = new CredsSocketioEventsEmitter();
 		this.filesEmitter = new FilesSocketioEventsEmitter();
-		this.triggerSetLoaded = this.triggerSetLoaded.bind(this);
 
 		if (this.props.hosts.update_needed === true) {
 			this.renewHosts();
-				this.renewFiles();
+			this.renewFiles();
 		}
 		else {
 			this.renewCreds();
 			this.renewFiles();
 		}
-
-		this.renewHosts = this.renewHosts.bind(this);
-		this.renewCreds = this.renewCreds.bind(this);
-		this.renewFiles = this.renewFiles.bind(this);
-		this.requestUpdateHost = this.requestUpdateHost.bind(this);
 	}
 
 	shouldComponentUpdate(nextProps) {

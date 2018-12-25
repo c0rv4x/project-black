@@ -13,9 +13,11 @@ class ProjectsMainComponent extends React.Component {
 			"newProjectName": ""
 		}
 
-		this.emitter = new ProjectsSocketioEventsEmitter();
-
 		this.changeNewProjectName = this.changeNewProjectName.bind(this);
+	}
+
+	componentDidMount() {
+		this.emitter = new ProjectsSocketioEventsEmitter();
 	}
 
 	changeNewProjectName(newName) {

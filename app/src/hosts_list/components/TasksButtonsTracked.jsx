@@ -9,10 +9,12 @@ class TasksButtonsTracked extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.tasksEmitter = new TasksSocketioEventsEmitter();
-
 		this.dirbusterStart = this.dirbusterStart.bind(this);
 		this.runPatator = this.runPatator.bind(this);
+	}
+
+	componentDidMount() {
+		this.tasksEmitter = new TasksSocketioEventsEmitter();
 	}
 
 	shouldComponentUpdate(nextProps) {

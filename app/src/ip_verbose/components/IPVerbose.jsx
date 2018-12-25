@@ -16,16 +16,18 @@ class IPVerbose extends React.Component {
 			'activePortNumber': null
 		}		
 
+		this.tabChange = this.tabChange.bind(this);
+		this.commentSubmitted = this.commentSubmitted.bind(this);
+		this.getFilesIPs = this.getFilesIPs.bind(this);
+	}
+
+	componentDidMount() {
 		this.ipsEmitter = new IPsSocketioEventsEmitter();		
 		this.filesEmitter = new FilesSocketioEventsEmitter();
 
 		if (this.props.update_needed) {
 			this.ipsEmitter.requestSingleIPs(this.props.project_uuid, this.props.ip.ip_address);
 		}
-
-		this.tabChange = this.tabChange.bind(this);
-		this.commentSubmitted = this.commentSubmitted.bind(this);
-		this.getFilesIPs = this.getFilesIPs.bind(this);
 	}
 
 	getFilesIPs(host, port_number, limit=3, offset=0) {

@@ -14,9 +14,11 @@ class IPVerboseUpdater extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.filesEmitter = new FilesSocketioEventsEmitter();
-
 		this.requestStatsIP = this.requestStatsIP.bind(this);
+	}
+
+	componentDidMount() {
+		this.filesEmitter = new FilesSocketioEventsEmitter();
 	}
 
 	componentDidUpdate(prevProps) {

@@ -13,14 +13,16 @@ class IPsListScopesUpdater extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.ipsEmitter = new IPsSocketioEventsEmitter();
-		this.credsEmitter = new CredsSocketioEventsEmitter();
-		this.filesEmitter = new FilesSocketioEventsEmitter();
-
 		this.triggerSetLoaded = this.triggerSetLoaded.bind(this);
 		this.renewIps = this.renewIps.bind(this);
 		this.renewCreds = this.renewCreds.bind(this);
 		this.renewFiles = this.renewFiles.bind(this);
+	}
+
+	componentDidMount() {
+		this.ipsEmitter = new IPsSocketioEventsEmitter();
+		this.credsEmitter = new CredsSocketioEventsEmitter();
+		this.filesEmitter = new FilesSocketioEventsEmitter();
 
 		if (this.props.ips.update_needed === true) {
 			this.renewIps();

@@ -8,9 +8,7 @@ import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmi
 
 
 class HostsList extends React.Component {
-	constructor(props) {
-		super(props);
-
+	componentDidMount() {
 		this.emitter = new HostsSocketioEventsEmitter();
 
   		if (this.props.hosts)
@@ -18,9 +16,8 @@ class HostsList extends React.Component {
   			this.emitter.requestTasksByHosts(this.props.hosts.data.map((host) => {
   				return host.hostname;
   			}), this.props.project_uuid);
-  		}		
+  		}	
 	}
-
   	shouldComponentUpdate(nextProps) {
   		return (!_.isEqual(nextProps, this.props));
   	}

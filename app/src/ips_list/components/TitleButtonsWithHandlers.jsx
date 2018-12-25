@@ -10,14 +10,16 @@ class TitleButtonsWithHandlers extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.tasksEmitter = new TasksSocketioEventsEmitter();
-
 		this.runMasscan = this.runMasscan.bind(this);
 		this.runNmap = this.runNmap.bind(this);
 		this.runNmapOnlyOpen = this.runNmapOnlyOpen.bind(this);
 		
 		this.dirbusterStart = this.dirbusterStart.bind(this);
 		this.runPatator = this.runPatator.bind(this);
+	}
+
+	componentDidMount() {
+		this.tasksEmitter = new TasksSocketioEventsEmitter();
 	}
 
 	shouldComponentUpdate(nextProps) {

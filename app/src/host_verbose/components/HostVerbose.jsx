@@ -21,16 +21,18 @@ class HostVerbose extends React.Component {
 			'activePortNumber': null
 		}
 
+		this.tabChange = this.tabChange.bind(this);
+		this.commentSubmitted = this.commentSubmitted.bind(this);
+		this.getFilesHosts = this.getFilesHosts.bind(this);
+	}
+
+	componentDidMount() {
 		this.emitter = new HostsSocketioEventsEmitter();
 		this.filesEmitter = new FilesSocketioEventsEmitter();
 
 		if (this.props.update_needed) {
 			this.emitter.requestRenewHosts({'host': [this.props.host.hostname]});
 		}
-
-		this.tabChange = this.tabChange.bind(this);
-		this.commentSubmitted = this.commentSubmitted.bind(this);
-		this.getFilesHosts = this.getFilesHosts.bind(this);
 	}
 
 	componentWillReceiveProps(newProps) {

@@ -8,9 +8,7 @@ import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.j
 
 
 class IPsList extends React.Component {
-	constructor(props) {
-		super(props);
-
+	componentDidMount() {
 		this.emitter = new IPsSocketioEventsEmitter();
 
   		if (this.props.ips)
@@ -18,7 +16,7 @@ class IPsList extends React.Component {
   			this.emitter.requestTasksByIps(this.props.ips.data.map((ip) => {
   				return ip.ip_address;
   			}), this.props.project_uuid);
-  		}		
+  		}
 	}
 
   	shouldComponentUpdate(nextProps) {
