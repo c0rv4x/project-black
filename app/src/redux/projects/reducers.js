@@ -43,7 +43,11 @@ function delete_project(state = [], action) {
 function renew_projects(state = [], action) {
 	const message = action.message;
 
-	var state_new = message['projects'];
+	var state_new = message['projects'].sort((a, b) => {
+		if (a.project_uuid > b.project_uuid) return 1;
+		if (a.project_uuid < b.project_uuid) return -1;
+		return 0;
+	});
 
 	return state_new;
 }
