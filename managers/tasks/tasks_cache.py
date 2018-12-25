@@ -105,12 +105,6 @@ class TasksCache:
     def _get_finished_tasks(self):
         return self.finished.values()
 
-    def get_tasks(self):
-        return [
-            self.active.values(),
-            self.finished.values()
-        ]
-
     def add_tasks(self, tasks):
         for task in tasks:
             self.active[task.task_id] = task

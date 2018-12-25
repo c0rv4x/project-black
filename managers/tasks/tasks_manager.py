@@ -81,7 +81,6 @@ class TaskManager(object):
         message.ack()
 
     def get_tasks(self, project_uuid, only_fresh=False):
-        """ "Serializes" tasks to native python dicts """
         if only_fresh:
             active = self.cache.get_fresh_active(project_uuid, update_fresh=True)
             finished = self.cache.get_fresh_finished(project_uuid, update_fresh=True)
@@ -100,10 +99,6 @@ class TaskManager(object):
                 finished
             )),
         }
-
-    def _get_all_tasks(self):
-        """ Returns a list of active tasks and a list of finished tasks """
-        return self.cache.get_tasks()
 
     def create_task(self, task_type, filters, params, project_uuid):
         """ Register the task and send a command to start it """
