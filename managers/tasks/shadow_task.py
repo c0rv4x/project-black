@@ -18,8 +18,7 @@ class ShadowTask(object):
         text=None,
         date_added=datetime.datetime.utcnow(),
         stdout="",
-        stderr="",
-        exchange=None
+        stderr=""
     ):
         self.task_type = task_type
         self.target = target
@@ -37,25 +36,9 @@ class ShadowTask(object):
         self.stdout = stdout
         self.stderr = stderr
 
-        self.exchange = exchange
-
         # This variable keeps information whether the corresponding task
         # should be sent back to the web.
         self.fresh = False
-
-    def send_start_task(self):
-        """ Put a message to the queue, which says "start my task, please """
-        self.exchange.publish(
-            routing_key=self.task_type + "_tasks",
-            message=asynqp.Message(
-                {
-                    'task_id': self.task_id,
-                    'target': self.target,
-                    'params': self.params,
-                    'project_uuid': self.project_uuid
-                }
-            )
-        )
 
     def set_status(self, new_status, progress, text, new_stdout, new_stderr):
         """ Change status, progress and text of the task """

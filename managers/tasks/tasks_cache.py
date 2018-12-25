@@ -43,10 +43,16 @@ class TasksCache:
     def get_fresh_active(self, project_uuid, update_fresh=False):
         tasks = (
             list(filter(
-                lambda task: task.fresh and task.project_uuid == project_uuid,
+                lambda task: task.fresh and (
+                    project_uuid is None or
+                    task.project_uuid == project_uuid
+                ),
                 self._get_active_tasks()
             ))
         )
+
+        for task in self._get_active_tasks():
+            print(task.progress, task.project_uuid, project_uuid, task.fresh)
 
         if update_fresh:
             for task in tasks:
@@ -57,7 +63,10 @@ class TasksCache:
     def get_fresh_finished(self, project_uuid, update_fresh=False):
         tasks = (
             list(filter(
-                lambda task: task.fresh and task.project_uuid == project_uuid,
+                lambda task: task.fresh and (
+                    project_uuid is None or
+                    task.project_uuid == project_uuid
+                ),
                 self._get_finished_tasks()
             ))
         )
@@ -71,7 +80,10 @@ class TasksCache:
     def get_active(self, project_uuid):
         return (
             list(filter(
-                lambda task: task.project_uuid == project_uuid,
+                lambda task: (
+                    project_uuid is None or
+                    task.project_uuid == project_uuid
+                ),
                 self._get_active_tasks()
             ))
         )
@@ -79,7 +91,10 @@ class TasksCache:
     def get_finished(self, project_uuid):
         return (
             list(filter(
-                lambda task: task.project_uuid == project_uuid,
+                lambda task: (
+                    project_uuid is None or
+                    task.project_uuid == project_uuid
+                ),
                 self._get_finished_tasks()
             ))
         )
@@ -96,6 +111,10 @@ class TasksCache:
             self.finished.values()
         ]
 
+    def add_tasks(self, tasks):
+        for task in tasks:
+            self.active[task.task_id] = task
+
     def update_task(self, body):
         task_id = body['task_id']
         new_status = body['status']
@@ -104,10 +123,14 @@ class TasksCache:
         new_stdout = body['new_stdout']
         new_stderr = body['new_stderr']
 
-        task = self.active[task_id]
+        task = self.active.get(task_id, None)
+        if task is None:
+            self.logger.error("The task id {} is not in cache".format(task_id))
+
+            return
 
         if new_status != task.status or new_progress != task.progress:
-            task.new_status_known = False
+            task.set_fresh(True)
 
             self.logger.debug(
                 "Task {} updated. {}->{}, {}->{}".format(
@@ -126,4 +149,4 @@ class TasksCache:
 
     def handle_quitted(self, task):
         self.finished[task.task_id] = task
-        del self.active[task.id]
+        del self.active[task.task_id]

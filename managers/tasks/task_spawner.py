@@ -5,10 +5,8 @@ from managers.tasks.shadow_task import ShadowTask
 
 
 class TaskSpawner(object):
-    """ Starts masscan task """
-
     @staticmethod
-    def start_masscan(targets, params, project_uuid, exchange):
+    def start_masscan(targets, params, project_uuid):
         tasks = []
 
         for i in range(0, len(targets) // 100 + 1):
@@ -18,16 +16,12 @@ class TaskSpawner(object):
                     task_type='masscan',
                     target=targets[i * 100:(i + 1) * 100],
                     params=params,
-                    project_uuid=project_uuid,
-                    exchange=exchange))
-
-        for task in tasks:
-            task.send_start_task()
+                    project_uuid=project_uuid))
 
         return tasks
 
     @staticmethod
-    def start_nmap(targets, params, project_uuid, exchange):
+    def start_nmap(targets, params, project_uuid):
         tasks = []
 
         for ip in targets:
@@ -40,18 +34,14 @@ class TaskSpawner(object):
                     task_type='nmap',
                     target=ip,
                     params=local_params,
-                    project_uuid=project_uuid,
-                    exchange=exchange
+                    project_uuid=project_uuid
                 )
             )
-
-        for task in tasks:
-            task.send_start_task()
 
         return tasks
 
     @staticmethod
-    def start_nmap_only_open(targets, params, project_uuid, exchange):
+    def start_nmap_only_open(targets, params, project_uuid):
         tasks = []
 
         for ip in targets:
@@ -80,16 +70,12 @@ class TaskSpawner(object):
                     task_type='nmap',
                     target=ip['ip_address'],
                     params=local_params,
-                    project_uuid=project_uuid,
-                    exchange=exchange))
-
-        for task in tasks:
-            task.send_start_task()
+                    project_uuid=project_uuid))
 
         return tasks
 
     @staticmethod
-    def start_dirsearch(targets, params, project_uuid, exchange):
+    def start_dirsearch(targets, params, project_uuid):
         tasks = []
 
         if 'ips' in targets.keys():
@@ -107,8 +93,7 @@ class TaskSpawner(object):
                                 str(each_port['port_number'])
                             ),
                             params=params,
-                            project_uuid=project_uuid,
-                            exchange=exchange))                
+                            project_uuid=project_uuid))                
         else:
             hosts = targets['hosts']
 
@@ -130,16 +115,12 @@ class TaskSpawner(object):
                                 )
                             ),
                             params=params,
-                            project_uuid=project_uuid,
-                            exchange=exchange))
-
-        for task in tasks:
-            task.send_start_task()
+                            project_uuid=project_uuid))
 
         return tasks
 
     @staticmethod
-    def start_patator(targets, params, project_uuid, exchange):
+    def start_patator(targets, params, project_uuid):
         tasks = []
 
         if 'ips' in targets.keys():
@@ -157,8 +138,7 @@ class TaskSpawner(object):
                                 str(each_port['port_number'])
                             ),
                             params=params,
-                            project_uuid=project_uuid,
-                            exchange=exchange))                
+                            project_uuid=project_uuid))                
         else:
             hosts = targets['hosts']
 
@@ -180,10 +160,6 @@ class TaskSpawner(object):
                                 )
                             ),
                             params=params,
-                            project_uuid=project_uuid,
-                            exchange=exchange))
-
-        for task in tasks:
-            task.send_start_task()
+                            project_uuid=project_uuid))
 
         return tasks

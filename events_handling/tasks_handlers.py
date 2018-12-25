@@ -52,8 +52,8 @@ class TaskHandlers(object):
     async def send_tasks_back(self, project_uuid=None, send_all=False):
         """ Grab all tasks data and send them back to client """
         if send_all:
-            tasks = self.task_manager.get_tasks_native_objects(
-                project_uuid, get_all=True
+            tasks = self.task_manager.get_tasks(
+                project_uuid, only_fresh=True
             )
 
             await self.socketio.emit(
@@ -66,8 +66,8 @@ class TaskHandlers(object):
                 namespace='/tasks'
             )
         else:
-            tasks = self.task_manager.get_tasks_native_objects(
-                project_uuid, get_all=False
+            tasks = self.task_manager.get_tasks(
+                project_uuid, only_fresh=False
             )
 
             if len(tasks['finished']) == 0 and len(tasks['active']) == 0:

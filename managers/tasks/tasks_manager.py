@@ -75,23 +75,30 @@ class TaskManager(object):
         body = message.json()
         
         updated_task = self.cache.update_task(body)
-        if updated_task.quitted():
+        if updated_task and updated_task.quitted():
             self.notification_creator.notify(updated_task)
 
         message.ack()
 
-    def get_tasks(self, project_uuid, get_all=False):
+    def get_tasks(self, project_uuid, only_fresh=False):
         """ "Serializes" tasks to native python dicts """
-        if get_all:
-            active = self.cache.get_active(project_uuid)
-            finished = self.cache.get_finished(project_uuid)
-        else:
+        if only_fresh:
             active = self.cache.get_fresh_active(project_uuid, update_fresh=True)
             finished = self.cache.get_fresh_finished(project_uuid, update_fresh=True)
 
+        else:
+            active = self.cache.get_active(project_uuid)
+            finished = self.cache.get_finished(project_uuid)
+
         return {
-            'active': active,
-            'finished': finished
+            'active': list(map(
+                lambda task: task.to_dict(),
+                active
+            )),
+            'finished': list(map(
+                lambda task: task.to_dict(),
+                finished
+            )),
         }
 
     def _get_all_tasks(self):
@@ -107,10 +114,8 @@ class TaskManager(object):
             )
 
             tasks = TaskSpawner.start_masscan(
-                targets, params, project_uuid, self.exchange
+                targets, params, project_uuid
             )
-
-            self.active_tasks += tasks
 
         elif task_type == 'nmap':
             targets = self.scope_manager.get_ips(
@@ -119,10 +124,9 @@ class TaskManager(object):
             )
 
             tasks = TaskSpawner.start_nmap(
-                targets, params, project_uuid, self.exchange
+                targets, params, project_uuid
             )
 
-            self.active_tasks += tasks
 
         elif task_type == 'nmap_open':
             targets = self.scope_manager.get_ips_with_ports(
@@ -131,10 +135,8 @@ class TaskManager(object):
             )['ips']
 
             tasks = TaskSpawner.start_nmap_only_open(
-                targets, params, project_uuid, self.exchange
+                targets, params, project_uuid
             )
-
-            self.active_tasks += tasks
 
         elif task_type == 'dirsearch':
             if params['targets'] == 'ips':
@@ -150,9 +152,8 @@ class TaskManager(object):
                 )
 
             tasks = TaskSpawner.start_dirsearch(
-                targets, params, project_uuid, self.exchange
+                targets, params, project_uuid
             )
-            self.active_tasks += tasks
 
         elif task_type == 'patator':
             if params['targets'] == 'ips':
@@ -166,10 +167,13 @@ class TaskManager(object):
                 )
 
             tasks = TaskSpawner.start_patator(
-                targets, params, project_uuid, self.exchange
+                targets, params, project_uuid
             )
-            self.active_tasks += tasks
 
+        self.cache.add_tasks(tasks)
+
+        for task in tasks:
+            self.launch_task(task)
 
         return list(
             map(
@@ -177,5 +181,19 @@ class TaskManager(object):
                     grab_file_descriptors=False
                 ),
                 tasks
+            )
+        )
+
+    def launch_task(self, task):
+        """ Put a message to the queue, which says "start my task, please """
+        self.exchange.publish(
+            routing_key=task.task_type + "_tasks",
+            message=asynqp.Message(
+                {
+                    'task_id': task.task_id,
+                    'target': task.target,
+                    'params': task.params,
+                    'project_uuid': task.project_uuid
+                }
             )
         )
