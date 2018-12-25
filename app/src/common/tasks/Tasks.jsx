@@ -28,8 +28,21 @@ class Tasks extends React.Component {
 			}
 		}
 
-		let tasks = [];
+		let groupped_tasks_unsorted = [];
 		_.forOwn(groupped_tasks, (value, key) => {
+			groupped_tasks_unsorted.push([key, value]);
+		});
+
+		let groupped_tasks_sorted = groupped_tasks_unsorted.sort((a, b) => {
+			if (a[0] < b[0]) return -1;
+			if (a[0] > b[0]) return 1;
+			return 0;
+		});
+
+		let tasks = [];
+		groupped_tasks_sorted.map((a) => {
+			let key = a[0];
+			let value = a[1];
 			tasks.push(<TasksGroup key={key} tasks={value} type={key} />);
 		});
 
