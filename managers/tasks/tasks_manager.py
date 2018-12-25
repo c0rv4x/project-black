@@ -33,7 +33,7 @@ class TaskManager(object):
 
         self.sessions = Sessions()
 
-        self.update_from_db()
+        self.restore_tasks_from_db()
 
     async def spawn_asynqp(self):
         """ Spawns all the necessary queues and launches a statuses parser """
@@ -115,25 +115,23 @@ class TaskManager(object):
 
         message.ack()
 
-    def update_from_db(self):
-        """ Extract all the tasks from the DB """
-        session = self.sessions.get_new_session()
-        tasks_from_db = session.query(TaskDatabase).all()
-        tasks = list(map(lambda x:
-                         ShadowTask(task_id=x.task_id,
-                                    task_type=x.task_type,
-                                    target=x.target,
-                                    params=json.loads(x.params),
-                                    project_uuid=x.project_uuid,
-                                    status=x.status,
-                                    progress=x.progress,
-                                    text=x.text,
-                                    date_added=x.date_added,
-                                    stdout=x.stdout,
-                                    stderr=x.stderr,
-                                    exchange=self.exchange),
-                         tasks_from_db))
-        self.sessions.destroy_session(session)
+    def restore_tasks_from_db(self):
+        with self.sessions.get_session() as session:
+            tasks_from_db = session.query(TaskDatabase).all()
+            tasks = list(map(lambda x:
+                            ShadowTask(task_id=x.task_id,
+                                        task_type=x.task_type,
+                                        target=x.target,
+                                        params=json.loads(x.params),
+                                        project_uuid=x.project_uuid,
+                                        status=x.status,
+                                        progress=x.progress,
+                                        text=x.text,
+                                        date_added=x.date_added,
+                                        stdout=x.stdout,
+                                        stderr=x.stderr,
+                                        exchange=self.exchange),
+                            tasks_from_db))
 
         for task in tasks:
             status = task.get_status()[0]
@@ -158,7 +156,7 @@ class TaskManager(object):
         if get_all:
             active = list(
                 map(
-                    lambda x: x.get_as_native_object(
+                    lambda x: x.dict(
                         grab_file_descriptors=False
                     ),
                     active_filtered
@@ -166,7 +164,7 @@ class TaskManager(object):
             )
             finished = list(
                 map(
-                    lambda x: x.get_as_native_object(
+                    lambda x: x.dict(
                         grab_file_descriptors=False
                     ),
                     finished_filtered
@@ -199,13 +197,13 @@ class TaskManager(object):
 
         active = list(
             map(
-                lambda x: x.get_as_native_object(grab_file_descriptors=False),
+                lambda x: x.dict(grab_file_descriptors=False),
                 active
             )
         )
         finished = list(
             map(
-                lambda x: x.get_as_native_object(grab_file_descriptors=False),
+                lambda x: x.dict(grab_file_descriptors=False),
                 finished
             )
         )
@@ -290,7 +288,7 @@ class TaskManager(object):
 
         return list(
             map(
-                lambda task: task.get_as_native_object(
+                lambda task: task.dict(
                     grab_file_descriptors=False
                 ),
                 tasks

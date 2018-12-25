@@ -69,7 +69,7 @@ class ShadowTask(object):
         """ Returns a tuple of status, progress and text of the task"""
         return (self.status, self.progress, self.text)
 
-    def get_as_native_object(self, grab_file_descriptors=False):
+    def to_dict(self, grab_file_descriptors=False):
         """ "Serialize" the task to python native dict """
         if grab_file_descriptors:
             if self.status == 'Finished' or self.status == 'Aborted':
