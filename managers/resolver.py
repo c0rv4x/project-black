@@ -31,7 +31,7 @@ class Resolver(object):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             sock.connect((nameserver, 53))
-        except socket.error as e:
+        except socket.error:
             sock.close()
             raise ResolverTimeoutException
         else:
