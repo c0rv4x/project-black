@@ -1,6 +1,10 @@
 import datetime
-from .base import Base
+from functools import reduce
 from sqlalchemy import Column, String, DateTime, ForeignKey, Integer, UniqueConstraint
+from sqlalchemy import func
+
+from .base import Base
+from black.db.sessions import Sessions
 
 
 class FileDatabase(Base):
@@ -45,6 +49,120 @@ class FileDatabase(Base):
 
     # Date of added
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
+
+    session_spawner = Sessions()
+
+    @classmethod
+    def count(cls, project_uuid):
+        with cls.session_spawner.get_session() as session:
+            try:
+                amount = cls._query_by_project_uuid(session, project_uuid).count()
+            except Exception as exc:
+                return {
+                    "status": "error",
+                    "text": str(exc)
+                }
+
+        return {
+            "status": "success", 
+            "amount": amount
+        }
+
+    @classmethod
+    def _query_by_project_uuid(cls, session, project_uuid):
+        return (
+            session.query(
+                cls
+            )
+            .filter(
+                cls.project_uuid == project_uuid if project_uuid is not None else True
+            )
+        )
+
+    @classmethod
+    def get_stats_for_ips(cls, project_uuid, ip_ids, filters):
+        stats = {}
+
+        try:
+            with cls.session_spawner.get_session() as session:
+                status_code_filters = []
+                if filters and filters[0] != '%':
+                    status_code_filters.append(FileDatabase.status_code.in_(filters))                                                                                        
+
+                for ip_id in ip_ids:
+                    prepared_filters = [FileDatabase.ip_id == ip_id] + status_code_filters  
+                    files_stats = (
+                        session.query(
+                            FileDatabase.status_code,
+                            FileDatabase.port_number,
+                            func.count(FileDatabase.status_code)
+                        )
+                        .filter(*prepared_filters)
+                        .group_by(
+                            FileDatabase.status_code,
+                            FileDatabase.port_number
+                        )
+                        .all()
+                    )
+
+                    stats[ip_id] = {}
+                    for status_code, port_number, res in files_stats:
+                        if port_number not in stats[ip_id]:
+                            stats[ip_id][port_number] = {}
+                        stats[ip_id][port_number][status_code] = res
+
+                    for port_number, stats_for_port in stats[ip_id].items():
+                        stats[ip_id][port_number]['total'] = reduce(
+                            lambda x, y: x + y,
+                            map(lambda stat: stat[1], stats_for_port.items())
+                        )
+
+            return {"status": "success", "stats": stats}
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}
+
+    @classmethod
+    def get_stats_for_hosts(cls, project_uuid, host_ids, filters):
+        stats = {}
+
+        try:
+            with cls.sessions.get_session() as session:
+                status_code_filters = []
+                if filters and filters[0] != '%':
+                    status_code_filters.append(FileDatabase.status_code.in_(filters))                                                                                        
+
+                for host_id in host_ids:
+                    prepared_filters = [FileDatabase.host_id == host_id] + status_code_filters 
+
+                    files_stats = (
+                        session.query(
+                            FileDatabase.status_code,
+                            FileDatabase.port_number,
+                            func.count(FileDatabase.status_code)
+                        )
+                        .filter(*prepared_filters)
+                        .group_by(
+                            FileDatabase.status_code,
+                            FileDatabase.port_number
+                        )
+                        .all()
+                    )
+
+                    stats[host_id] = {}
+                    for status_code, port_number, res in files_stats:
+                        if port_number not in stats[host_id]:
+                            stats[host_id][port_number] = {}
+                        stats[host_id][port_number][status_code] = res
+
+                    for port_number, stats_for_port in stats[host_id].items():
+                        stats[host_id][port_number]['total'] = reduce(
+                            lambda x, y: x + y,
+                            map(lambda stat: stat[1], stats_for_port.items())
+                        )
+
+            return {"status": "success", "stats": stats}
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}
 
 
     def dict(self):
