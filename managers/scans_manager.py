@@ -8,13 +8,9 @@ class ScanManager(object):
 
     def count(self, project_uuid=None):
         """ Count amount of scans in the DB for the specific project uuid """
-        assert project_uuid is not None
-
-        session = self.session_spawner.get_new_session()
-        amount = session.query(ScanDatabase).filter(
-            ScanDatabase.project_uuid == project_uuid
+        with self.session_spawner.get_session() as session:
+            amount = session.query(ScanDatabase).filter(
+                ScanDatabase.project_uuid == project_uuid
             ).count()
-
-        self.session_spawner.destroy_session(session)
 
         return amount
