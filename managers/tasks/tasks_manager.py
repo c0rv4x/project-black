@@ -10,7 +10,6 @@ from managers.tasks.shadow_task import ShadowTask
 from managers.tasks.task_spawner import TaskSpawner
 from managers.tasks.tasks_cache import TasksCache
 from managers.tasks.finished_task_notification_creator import NotificationCreator
-from managers.tasks.utils import task_quitted
 
 from common.logger import log
 from config import CONFIG
