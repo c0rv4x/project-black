@@ -87,7 +87,7 @@ class FileDatabase(Base):
             with cls.session_spawner.get_session() as session:
                 status_code_filters = []
                 if filters and filters[0] != '%':
-                    status_code_filters.append(FileDatabase.status_code.in_(filters))                                                                                        
+                    status_code_filters.append(FileDatabase.status_code.in_(filters))
 
                 for ip_id in ip_ids:
                     prepared_filters = [FileDatabase.ip_id == ip_id] + status_code_filters  
@@ -126,10 +126,10 @@ class FileDatabase(Base):
         stats = {}
 
         try:
-            with cls.sessions.get_session() as session:
+            with cls.session_spawner.get_session() as session:
                 status_code_filters = []
                 if filters and filters[0] != '%':
-                    status_code_filters.append(FileDatabase.status_code.in_(filters))                                                                                        
+                    status_code_filters.append(FileDatabase.status_code.in_(filters))
 
                 for host_id in host_ids:
                     prepared_filters = [FileDatabase.host_id == host_id] + status_code_filters 
@@ -161,6 +161,69 @@ class FileDatabase(Base):
                         )
 
             return {"status": "success", "stats": stats}
+        except Exception as exc:
+            return {"status": "error", "text": str(exc)}
+
+    @classmethod
+    def get_files_ip(cls, ip, port_number, limit, offset, filters):
+        try:
+            files = []
+
+            with cls.session_spawner.get_session() as session:
+                prepared_filters = [
+                    FileDatabase.ip_id == ip,
+                    FileDatabase.port_number == port_number
+                ]
+
+                if filters and filters[0] != '%':
+                    prepared_filters.append(FileDatabase.status_code.in_(filters))
+
+                files = (
+                    session.query(
+                        FileDatabase,
+                    )
+                    .filter(
+                        *prepared_filters
+                    )
+                    .order_by(FileDatabase.status_code, FileDatabase.file_name)
+                    .limit(limit)
+                    .offset(offset)
+                    .all()
+                )
+
+            return {"status": "success", "files": files}
+        except Exception as exc:
+            print(exc)
+            return {"status": "error", "text": str(exc)}
+
+    @classmethod
+    def get_files_host(cls, host_id, port_number, limit, offset, filters):
+        try:
+            files = []
+
+            with cls.session_spawner.get_session() as session:
+                prepared_filters = [
+                    FileDatabase.host_id == host_id,
+                    FileDatabase.port_number == port_number
+                ]
+
+                if filters and filters[0] != '%':
+                    prepared_filters.append(FileDatabase.status_code.in_(filters))
+
+                files = (
+                    session.query(
+                        FileDatabase,
+                    )
+                    .filter(
+                        *prepared_filters
+                    )
+                    .order_by(FileDatabase.status_code, FileDatabase.file_name)
+                    .limit(limit)
+                    .offset(offset)
+                    .all()
+                )
+
+            return {"status": "success", "files": files}
         except Exception as exc:
             return {"status": "error", "text": str(exc)}
 
