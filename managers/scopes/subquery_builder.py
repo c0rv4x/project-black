@@ -2,13 +2,27 @@ from sqlalchemy import desc, or_, and_
 from sqlalchemy.orm import aliased, contains_eager
 from sqlalchemy.sql.expression import func
 
-from black.db import ScanDatabase, FileDatabase
+from black.db import IPDatabase, ScanDatabase, FileDatabase
 from managers.scopes.filters import Filters
 
 
 class SubqueryBuilder:
     @staticmethod
-    def build_scans_subquery(session, project_uuid, filters):
+    def ips_basic_filtered(session, project_uuid, ip_filters):
+        ips_query = (
+            session.query(
+                IPDatabase
+            )
+            .filter(
+                IPDatabase.project_uuid == project_uuid,
+                ip_filters
+            )
+        )
+
+        return ips_query
+
+    @staticmethod
+    def scans_basic_filtered(session, project_uuid, filters):
         # Create a list of filters which will be applied against scans
         scans_filters = Filters.build_scans_filters(
             filters, ScanDatabase
