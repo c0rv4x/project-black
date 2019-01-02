@@ -68,28 +68,16 @@ class SubqueryBuilder:
     def build_files_subquery(session, project_uuid, filters):
         """ Creates a query for selection unique,
         ordered and filtered files """
+        files_filters = Filters.build_files_filters(
+            filters, FileDatabase, project_uuid=project_uuid)
 
-        # Select distinc files, let's select unique tuples
-        #   (file_path, status_code, content_length)
-        subq = (
+        subquery = (
             session.query(
                 FileDatabase
             )
             .filter(FileDatabase.project_uuid == project_uuid)
+            .filter(files_filters)
             .subquery('project_files_ordered')
         )
-        alias_ordered = aliased(FileDatabase, subq)
-        ordered = session.query(alias_ordered)
 
-        # Create a list of filters which will be applied against scans
-        files_filters = Filters.build_files_filters(
-            filters, alias_ordered, project_uuid=project_uuid)
-
-        # Use filters
-        files_from_db = (
-            ordered
-            .filter(files_filters)
-            .subquery('files_distinct_filtered')
-        )
-
-        return files_from_db
+        return subquery
