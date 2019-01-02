@@ -55,7 +55,7 @@ class ScopeManager(object):
             ips_query_subq = aliased(
                 IPDatabase, ips_query.subquery('all_ips_parsed'))
 
-            files_query_aliased = SubqueryBuilder.build_files_subquery(
+            files_query_aliased = SubqueryBuilder.files_basic_filtered(
                 session, project_uuid, filters_raw)
 
             # Create hosts subquery
@@ -195,7 +195,7 @@ class ScopeManager(object):
 
             # Files
             files_filters_exist = filters.get('files', False)
-            files_query_aliased = SubqueryBuilder.build_files_subquery(
+            files_query_aliased = SubqueryBuilder.files_basic_filtered(
                 session, project_uuid, filters)
 
             # Select IPs + Scans which passed the filters
@@ -265,7 +265,7 @@ class ScopeManager(object):
 
             # Files
             files_filters_exist = filters.get('files', False)
-            files_query_aliased = SubqueryBuilder.build_files_subquery(
+            files_query_aliased = SubqueryBuilder.files_basic_filtered(
                 session, project_uuid, filters)
 
             # Select IPs + Scans which passed the filters
