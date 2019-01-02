@@ -43,47 +43,24 @@ def get_filter_clause(column, plist):
 
 
 class Filters(object):
+    def __init__(self, raw_filters):
+        self.ips = True
+        self.hosts = True
 
-    @staticmethod
-    def parse_filters(filters):
-        parsed_filters = {
-            'ips': True,
-            'hosts': True,
-            'ports': True,
-            'banners': True,
-            'protocols': True,
-            'files': True
-        }
+        self._construct_from_dict(raw_filters)
 
+    def _construct_from_dict(self, filters):
         for key in filters.keys():
             filter_value = filters[key]
 
             if key == 'ip':
-                parsed_filters['ips'] = get_filter_clause(
+                self.ips = get_filter_clause(
                     IPDatabase.target, filter_value
                 )
             elif key == 'host':
-                parsed_filters['hosts'] = get_filter_clause(
+                self.hosts = get_filter_clause(
                     HostDatabase.target, filter_value
                 )
-            # elif key == 'port':
-            #     parsed_filters['ports'] = get_filter_clause(
-            #         ScanDatabase.port_number, filter_value
-            #     )
-            # elif key == 'banner':
-            #     parsed_filters['banners'] = get_filter_clause(
-            #         ScanDatabase.banner, filter_value
-            #     )
-            # elif key == 'protocol':
-            #     parsed_filters['protocols'] = get_filter_clause(
-            #         ScanDatabase.protocol, filter_value
-            #     )
-            # elif key == 'files':
-            #     parsed_filters['files'] += get_filter_clause(
-            #         FileDatabase.status_code, filter_value
-            #     )
-
-        return parsed_filters
 
     @staticmethod
     def build_scans_filters(filters, alias):

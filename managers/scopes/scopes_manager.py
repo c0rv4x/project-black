@@ -28,7 +28,7 @@ class ScopeManager(object):
         self.resolver_called = 0
 
     def get_hosts_with_ports(
-        self, filters,  project_uuid,
+        self, filters_raw,  project_uuid,
         page_number=None, page_size=None
     ):
         """ Returns hosts associated with a given project.
@@ -44,45 +44,36 @@ class ScopeManager(object):
 
         with self.session_spawner.get_session() as session:
             # Parse filters into an object for more comfortable work
-            parsed_filters = Filters.parse_filters(filters)
+            filters = Filters(filters_raw)
 
-            # Scans
-            scans_filters_exist = (
-                filters.get('port', False) or
-                filters.get('protocol', False) or
-                filters.get('banner', False)
-            )
-            scans_from_db = SubqueryBuilder.build_scans_subquery(
-                session, project_uuid, filters)
+            scans_from_db = SubqueryBuilder.scans_basic_filtered(
+                session, project_uuid, filters_raw)
 
-            # Create IPS subquery
-            ip_filters_exist = filters.get('ip', False)
-            ips_query = (
-                session.query(
-                    IPDatabase
-                )
-                .filter(
-                    IPDatabase.project_uuid == project_uuid,
-                    parsed_filters['ips']
-                )
-            )
+            ips_query = SubqueryBuilder.ips_basic_filtered(
+                session, project_uuid, filters['ips'])
 
             ips_query_subq = aliased(
                 IPDatabase, ips_query.subquery('all_ips_parsed'))
 
-            # Create files subquery
-            files_filters_exist = filters.get('files', False)
             files_query_aliased = SubqueryBuilder.build_files_subquery(
-                session, project_uuid, filters)
+                session, project_uuid, filters_raw)
 
             # Create hosts subquery
+            ip_filters_exist = filters_raw.get('ip', False)
+            scans_filters_exist = (
+                filters_raw.get('port', False) or
+                filters_raw.get('protocol', False) or
+                filters_raw.get('banner', False)
+            )
+            files_filters_exist = filters_raw.get('files', False)
+
             hosts_query = (
                 session.query(
                     HostDatabase
                 )
                 .filter(
                     HostDatabase.project_uuid == project_uuid,
-                    parsed_filters['hosts']
+                    filters['hosts']
                 )
                 .join(
                     ips_query_subq, HostDatabase.ip_addresses,
@@ -171,7 +162,7 @@ class ScopeManager(object):
         self.logger.info(
             "Selecting hosts: from {} hosts, filter: {}. Finished in {}. @{}".format(
                 total_db_hosts,
-                filters,
+                filters_raw,
                 time.time() - t,
                 format(project_uuid)
             )
@@ -191,7 +182,7 @@ class ScopeManager(object):
 
         with self.session_spawner.get_session() as session:
             # Parse filters into an object for more comfortable work
-            parsed_filters = Filters.parse_filters(filters)
+            parsed_filters = Filters(filters)
 
             # Scans
             scans_filters_exist = (
@@ -199,7 +190,7 @@ class ScopeManager(object):
                 filters.get('protocol', False) or
                 filters.get('banner', False)
             )
-            scans_from_db = SubqueryBuilder.build_scans_subquery(
+            scans_from_db = SubqueryBuilder.scans_basic_filtered(
                 session, project_uuid, filters)
 
             # Files
@@ -261,7 +252,7 @@ class ScopeManager(object):
 
         with self.session_spawner.get_session() as session:
             # Parse filters into an object for more comfortable work
-            parsed_filters = Filters.parse_filters(filters)
+            parsed_filters = Filters(filters)
 
             # Scans
             scans_filters_exist = (
@@ -269,7 +260,7 @@ class ScopeManager(object):
                 filters.get('protocol', False) or
                 filters.get('banner', False)
             )
-            scans_from_db = SubqueryBuilder.build_scans_subquery(
+            scans_from_db = SubqueryBuilder.scans_basic_filtered(
                 session, project_uuid, filters)
 
             # Files
