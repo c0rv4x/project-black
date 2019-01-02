@@ -103,27 +103,8 @@ class ScopeManager(object):
                     )
                 ) 
 
-            # Perform pagination
-            if page_number is None or page_size is None:
-                hosts_limited = (
-                    hosts_query
-                    .from_self(HostDatabase.id, HostDatabase.target)
-                    .distinct()
-                    .order_by(HostDatabase.target)
-                    .from_self(HostDatabase.id)
-                    .subquery('paginated_hosts_ids')
-                )
-            else:
-                hosts_limited = (
-                    hosts_query
-                    .from_self(HostDatabase.id, HostDatabase.target)
-                    .distinct()
-                    .order_by(HostDatabase.target)
-                    .limit(page_size)
-                    .offset(page_size * page_number)
-                    .from_self(HostDatabase.id)
-                    .subquery('paginated_hosts_ids')
-                )
+            hosts_ids = SubqueryBuilder.page_ids(
+                hosts_query, HostDatabase, page_number, page_size)
 
             selected_hosts = (
                 hosts_query
@@ -138,8 +119,8 @@ class ScopeManager(object):
                 session.query(HostDatabase)
                 .filter(
                     HostDatabase.project_uuid == project_uuid,
-                    HostDatabase.id.in_(hosts_limited),
-                    parsed_filters['hosts']
+                    HostDatabase.id.in_(hosts_ids),
+                    filters['hosts']
                 )
                 .join(
                     ips_query_subq, HostDatabase.ip_addresses,
@@ -316,27 +297,8 @@ class ScopeManager(object):
             ips_query_subq = aliased(
                 IPDatabase, ips_query.subquery('all_ips_parsed'))
 
-            # From the filtered ips, we need to select only first N IPs.
-            # So we select the first N ids. Then select all the ips, which have
-            # that ids joining that with all the other fields.
-            if page_size is None or page_number is None:
-                ids_limited = (
-                    ips_query.from_self(IPDatabase.id, IPDatabase.target)
-                    .distinct()
-                    .order_by(IPDatabase.target)
-                    .from_self(IPDatabase.id)
-                    .subquery('limited_ips_ids')
-                )
-            else:
-                ids_limited = (
-                    ips_query.from_self(IPDatabase.id, IPDatabase.target)
-                    .distinct()
-                    .order_by(IPDatabase.target)
-                    .limit(page_size)
-                    .offset(page_size * page_number)
-                    .from_self(IPDatabase.id)
-                    .subquery('limited_ips_ids')
-                )
+            ids_limited = SubqueryBuilder.page_ids(
+                ips_query, IPDatabase, page_number, page_size)
 
             ips_request = (
                 session.query(
