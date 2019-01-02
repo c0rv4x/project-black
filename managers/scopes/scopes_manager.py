@@ -50,7 +50,7 @@ class ScopeManager(object):
                 session, project_uuid, filters_raw)
 
             ips_query = SubqueryBuilder.ips_basic_filtered(
-                session, project_uuid, filters['ips'])
+                session, project_uuid, filters.ips)
 
             ips_query_subq = aliased(
                 IPDatabase, ips_query.subquery('all_ips_parsed'))
@@ -73,7 +73,7 @@ class ScopeManager(object):
                 )
                 .filter(
                     HostDatabase.project_uuid == project_uuid,
-                    filters['hosts']
+                    filters.hosts
                 )
                 .join(
                     ips_query_subq, HostDatabase.ip_addresses,
@@ -111,7 +111,7 @@ class ScopeManager(object):
                 .filter(
                     HostDatabase.project_uuid == project_uuid,
                     HostDatabase.id.in_(hosts_ids),
-                    filters['hosts']
+                    filters.hosts
                 )
                 .join(
                     ips_query_subq, HostDatabase.ip_addresses,
@@ -203,7 +203,7 @@ class ScopeManager(object):
                 session.query(IPDatabase.target)
                 .filter(
                     IPDatabase.project_uuid == project_uuid,
-                    parsed_filters['ips']
+                    parsed_filters.ips
                 )
             )
 
@@ -273,7 +273,7 @@ class ScopeManager(object):
                 session.query(IPDatabase)
                 .filter(
                     IPDatabase.project_uuid == project_uuid,
-                    parsed_filters['ips']
+                    parsed_filters.ips
                 )
                 .join(
                     scans_from_db, IPDatabase.ports,
@@ -298,7 +298,7 @@ class ScopeManager(object):
                 .filter(
                     IPDatabase.project_uuid == project_uuid,
                     IPDatabase.id.in_(ids_limited),
-                    parsed_filters['ips']
+                    parsed_filters.ips
                 )
                 .join(
                     scans_from_db, IPDatabase.ports,
