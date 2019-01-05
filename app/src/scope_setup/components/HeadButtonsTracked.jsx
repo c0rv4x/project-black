@@ -39,12 +39,12 @@ class HeadButtonsTracked extends React.Component {
 	render() {
 		return (
 			<div>
-				<Divider hidden />
 				<ScopesLock 
 					status={this.props.project.ips_locked}
 					name="ips"
 					setLock={this.setLockIps}
 				/>
+
 				<ScopesLock 
 					status={this.props.project.hosts_locked}
 					name="hosts"

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import { createScope } from '../../../redux/scopes/actions'
 
-import { Form, Button, TextArea, Header } from 'semantic-ui-react'
+import { Form, Button, TextArea, Header, Segment } from 'semantic-ui-react'
 import ScopeUpload from '../components/ScopeUpload.jsx'
 
 
@@ -88,6 +88,15 @@ class ScopeAdder extends React.Component {
 				)
 			);
 		}
+	}
+
+	submitNewScope() {
+		this.setState({
+			color: "orange",
+			loading: true,
+			forceStateColor: true
+		});
+		this.props.onNewScopeClick(this.props.newScopeInput);
 	}
 
 	render() {

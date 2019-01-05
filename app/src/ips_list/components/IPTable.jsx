@@ -7,7 +7,7 @@ import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmi
 import IPEntryLine from '../presentational/scope/IPEntryLine.jsx'
 import Search from '../../common/search/Search.jsx'
 
-import { Grid, Container, Header } from 'semantic-ui-react'
+import { Grid, Container, Header, Segment } from 'semantic-ui-react'
 
 
 class IPTable extends React.Component {
@@ -75,30 +75,6 @@ class IPTable extends React.Component {
 								deleteIP={() => this.props.deleteScope(x.ip_id)} />
 		});
 
-		let ips_groups = [];
-
-		let columns = 3;
-		for (var i = 0; i < ips.length + columns - 1; i += columns) {
-			let ips_slice = ips.slice(i, Math.min(ips.length, i + columns));
-
-			let ip_key_sum = '';
-			let ips_slice_formatted = ips_slice.map((ip) => {
-				ip_key_sum += ip.key + ',';
-
-				return (
-					<Grid.Column key={ip.key + '__'}>
-						{ip}
-					</Grid.Column>
-				);
-			});
-
-			ips_groups = ips_groups.concat(
-				<Grid.Row stretched key={ip_key_sum}>
-					{ips_slice_formatted}
-				</Grid.Row>
-			);
-		}
-
 		return (
 			<div>
 				<Search applyFilters={this.props.applyFilters} />
@@ -109,9 +85,9 @@ class IPTable extends React.Component {
 				{(this.props.ips.data.length !== 0 || !this.props.ips.loaded) &&
 					<div>
 						<Container>
-							<Grid columns={columns}>
-								{ips_groups}
-							</Grid>
+							<Segment.Group>
+								{ips}
+							</Segment.Group>
 						</Container>
 						<br />
 						<ReactPaginate

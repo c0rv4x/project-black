@@ -20,7 +20,7 @@ class ProjectCommentPresentational extends React.Component {
 					onBlur={this.props.commentSubmitted}
 					inputElement={TextArea}
 					element={ReactMarkdown}
-					placeholder="Project comment" />
+					placeholder="# Click to edit the comment" />
 			</Form>
 		)
 	}

@@ -10,7 +10,7 @@ class HostTable extends React.Component {
 
 		return (
 			<Statistic>
-				<Statistic.Value>{hosts.loaded && hosts.total_db_hosts}{!hosts.loaded && "Loading"}</Statistic.Value>
+				<Statistic.Value>{hosts.loaded && hosts.total_db_hosts}{!hosts.loaded && "0"}</Statistic.Value>
 				<Statistic.Label>hosts</Statistic.Label>
 			</Statistic>			
 		)
