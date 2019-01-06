@@ -1,4 +1,5 @@
 import React from 'react'
+import loading from '../../common/loading/Loading.jsx'
 import { Dimmer, Loader, Statistic } from 'semantic-ui-react'
 
 import IPTable from '../presentational/IPTable.jsx'
@@ -15,23 +16,26 @@ class ScopeSetup extends React.Component {
 
 		return (
 			<div>
-				<Dimmer active={!all_loaded} inverted>
-					<Loader />
-				</Dimmer>
-				<Statistic.Group widths='four'>
-					<IPTable
-						ips={ips}
-					/>
-					<HostTable
-						hosts={hosts}
-					/>
-					<ScanTable
-						scans={scans}
-					/>
-					<FileTable
-						files={files}
-					/>
-				</Statistic.Group>
+				{
+					all_loaded ? (
+						<Statistic.Group widths='four'>
+							<IPTable
+								ips={ips}
+							/>
+							<HostTable
+								hosts={hosts}
+							/>
+							<ScanTable
+								scans={scans}
+							/>
+							<FileTable
+								files={files}
+							/>
+						</Statistic.Group>
+					) : (
+						loading
+					)
+				}
 			</div>
 		)
 	}
