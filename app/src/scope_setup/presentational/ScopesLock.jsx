@@ -1,7 +1,6 @@
 import React from 'react'
 
-import { Button } from 'semantic-ui-react'
-
+import { Button } from 'grommet'
 
 class ScopesLock extends React.Component {
 	render() {
@@ -9,19 +8,19 @@ class ScopesLock extends React.Component {
 
 		if (status) return (
 			<Button
+				alignSelf="start"
 				size='small'
 				onClick={() => setLock(false)}
-			>
-				{"Unlock " + name}
-			</Button>
+				label={"Unlock " + name}
+			/>
 		)
 		else return (
 			<Button
+				alignSelf="start"
 				size='small'
 				onClick={() => setLock(true)}
-			>
-				{"Lock " + name}
-			</Button>
+				label={"Lock " + name}
+			/>
 		)
 	}
 }

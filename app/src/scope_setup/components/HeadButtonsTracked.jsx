@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Button, Divider } from 'semantic-ui-react'
+import { Box } from 'grommet'
 
 import ProjectsSocketioEventsEmitter from '../../redux/projects/ProjectsSocketioEventsEmitter.js'
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'
@@ -38,7 +38,7 @@ class HeadButtonsTracked extends React.Component {
 
 	render() {
 		return (
-			<div>
+			<Box direction="row" align="center" gap="small" pad="xsmall">
 				<ScopesLock 
 					status={this.props.project.ips_locked}
 					name="ips"
@@ -54,9 +54,7 @@ class HeadButtonsTracked extends React.Component {
 				<HeadButtons project={this.props.project}
 							 hostsResolved={this.props.hosts.resolve_finished}
 							 resolveScopes={() => this.resolveScopes(null, this.props.project.project_uuid)}/>
-
-				<Divider hidden />
-			</div>
+			</Box>
 		)
 	}
 }

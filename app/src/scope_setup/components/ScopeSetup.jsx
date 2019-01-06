@@ -16,10 +16,6 @@ class ScopeSetup extends React.Component {
 		this.deleteScope = this.deleteScope.bind(this);
 	}
 
-	componentDidMount() {
-		console.log(123);
-	}
-
 	shouldComponentUpdate(nextProps) {
 		return !_.isEqual(nextProps, this.props);
 	}
@@ -33,7 +29,11 @@ class ScopeSetup extends React.Component {
 
 		return (
 			<div>
-				<ProjectComment project={project}/>
+				<ProjectComment project={project} />
+				<HeadButtonsTracked
+					project={project}
+					hosts={hosts}
+				/>
 			</div>
 		)
 	}

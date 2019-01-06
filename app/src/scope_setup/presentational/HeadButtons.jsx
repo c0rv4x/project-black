@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Button } from 'semantic-ui-react'
+import { Button } from 'grommet'
 
 
 class HeadButtons extends React.Component {
@@ -27,6 +27,7 @@ class HeadButtons extends React.Component {
 
 		return (
 			<Button
+				alignSelf="end"
 				onClick={() => {
 					this.setState({
 						"color": "blue",
@@ -34,14 +35,10 @@ class HeadButtons extends React.Component {
 					});
 					this.props.resolveScopes();
 				}}
-				floated='right'
-				size='small'
 				color={color}
-				loading={loading}
-				active={loading}
-			>
-				Resolve Hosts
-			</Button>
+				active={!loading}
+				label="Resolve Hosts"
+			/>
 		)
 	}
 }
