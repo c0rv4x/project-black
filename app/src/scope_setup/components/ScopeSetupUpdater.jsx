@@ -51,12 +51,7 @@ class ScopeSetupUpdater extends React.Component {
 
 	render() {
 		return (
-			<Segment vertical>
-				<Dimmer active={this.state.loading} inverted>
-					<Loader />
-				</Dimmer>				
-				<ScopeSetup {...this.props} />
-			</Segment>
+			<ScopeSetup {...this.props} />
 		)
 	}
 }

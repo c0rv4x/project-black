@@ -16,6 +16,10 @@ class ScopeSetup extends React.Component {
 		this.deleteScope = this.deleteScope.bind(this);
 	}
 
+	componentDidMount() {
+		console.log(123);
+	}
+
 	shouldComponentUpdate(nextProps) {
 		return !_.isEqual(nextProps, this.props);
 	}
@@ -29,28 +33,7 @@ class ScopeSetup extends React.Component {
 
 		return (
 			<div>
-				<br/>
 				<ProjectComment project={project}/>
-
-				<Segment>
-					<HeadButtonsTracked
-						project={project}
-						hosts={hosts}
-					/>
-
-					<Stats
-						ips={ips}
-						hosts={hosts}
-						scans={scans}
-						files={files}
-					/>
-				</Segment>
-
-				<ScopeAdderTracked
-					project={project}
-					scopesCreated={scopes.scopes_created}
-				/>
-
 			</div>
 		)
 	}
