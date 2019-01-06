@@ -1,6 +1,7 @@
 import _  from 'lodash'
 import React from 'react'
-import { Table, Input, Button, Icon } from 'semantic-ui-react'
+import { Input, Button, Icon } from 'semantic-ui-react'
+import { Table, Box, TableHeader, TableRow, TableCell, TableBody } from 'grommet'
 
 import ProjectsListLine from "./ProjectsListLine.jsx"
 
@@ -23,48 +24,48 @@ class ProjectsList extends React.Component
                                      onDelete={this.props.onDelete}/>
         });
 
-        projectsLines.push(
-            <Table.Row key="add_new_project">
-                <Table.Cell></Table.Cell>
-                <Table.Cell>
-                    <Input
-                        value={this.state.new_project_name}
-                        onChange={(e) => this.setState({
-                            "new_project_name" : e.target.value
-                        })}
-                    />
-                </Table.Cell>
-                <Table.Cell>
-                    <Button
-                        icon
-                        onClick={() => {
-                            this.props.submitNewProject(this.state.new_project_name);
-                            this.setState({
-                                "new_project_name": ""
-                            });
-                        }}
-                    >
-                        <Icon name='plus' />
-                    </Button>
-                </Table.Cell>
-            </Table.Row>
-        );
+        // projectsLines.push(
+        //     <TableRow key="add_new_project">
+        //         <TableCell></TableCell>
+        //         <TableCell>
+        //             <Input
+        //                 value={this.state.new_project_name}
+        //                 onChange={(e) => this.setState({
+        //                     "new_project_name" : e.target.value
+        //                 })}
+        //             />
+        //         </TableCell>
+        //         <TableCell>
+        //             <Button
+        //                 icon
+        //                 onClick={() => {
+        //                     this.props.submitNewProject(this.state.new_project_name);
+        //                     this.setState({
+        //                         "new_project_name": ""
+        //                     });
+        //                 }}
+        //             >
+        //                 <Icon name='plus' />
+        //             </Button>
+        //         </TableCell>
+        //     </TableRow>
+        // );
 
         return (
-            <div>
-                <Table>
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell>ID</Table.HeaderCell>
-                            <Table.HeaderCell>Project Name</Table.HeaderCell>
-                            <Table.HeaderCell>Control</Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
+            <Box>
+                <Table alignSelf="stretch">
+                    <TableHeader>
+                        <TableRow>
+                            <TableCell>ID</TableCell>
+                            <TableCell>Project Name</TableCell>
+                            <TableCell>Control</TableCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
                         {projectsLines}
-                    </Table.Body>
+                    </TableBody>
                 </Table>
-            </div>
+            </Box>
         )
     }
 

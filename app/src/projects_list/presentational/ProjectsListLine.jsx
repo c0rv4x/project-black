@@ -2,8 +2,8 @@ import _  from 'lodash'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { Button, Icon, Table } from 'semantic-ui-react'
-
+import { Box, Button, Grid, TableRow, TableCell } from 'grommet'
+import { Inspect, Trash } from 'grommet-icons'
 
 class ProjectsListLine extends React.Component
 {
@@ -22,28 +22,36 @@ class ProjectsListLine extends React.Component
         const { project } = this.props;
 
         return (
-            <Table.Row>
-                <Table.Cell>{project.project_uuid}</Table.Cell>
-                <Table.Cell>{project.project_name}</Table.Cell>
-                <Table.Cell>
-                    <Link to={"/project/" + project.project_uuid}>
-                        <Button icon>
-                            <Icon name='unhide' />
-                        </Button>
-                    </Link>
-                    <Button
-                        icon
-                        color="red" 
-                        onClick={
-                            () => {
-                                this.delete_project(project.project_uuid);
-                            }
-                        }
+            <TableRow>
+                <TableCell>{project.project_uuid}</TableCell>
+                <TableCell>{project.project_name}</TableCell>
+                <TableCell>
+                    {/* <Link to={"/project/" + project.project_uuid}> */}
+                    <Grid
+                        columns={{
+                            count: 2,
+                            size: 'auto'
+                        }}
                     >
-                        <Icon name='trash' />
-                    </Button>
-                </Table.Cell>
-            </Table.Row>
+                        <Box>
+                            <Button hoverIndicator={true} icon={<Inspect />} />
+                        </Box>
+                        <Box>
+                            <Button
+                                onClick={
+                                    () => {
+                                        this.delete_project(project.project_uuid);
+                                    }
+                                }
+                                hoverIndicator={true}
+                                icon={<Trash />}
+                            />
+                        </Box>
+                    </Grid>
+                        
+                    {/* </Link> */}
+                </TableCell>
+            </TableRow>
         )
     }
 

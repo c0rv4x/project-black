@@ -23,8 +23,6 @@ class Routing extends React.Component {
     }
 
     render() {
-        const {notifications} = this.props;
-
         return (
             <Router>           
                 <div>

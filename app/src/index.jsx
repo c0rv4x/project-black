@@ -6,7 +6,7 @@ import { createStore } from 'redux'
 import rdcs from './redux/reducers.js'
 import Routing from './navigation/Routing.jsx'
 
-import { Container } from 'semantic-ui-react'
+import { Grommet, Box, Grid } from 'grommet';
 
 import './semantic/semantic.min.css';
 import './styles/notification_styles.css';
@@ -22,11 +22,15 @@ class App extends React.Component {
 
     render () {
         return (
-            <Container>
-                <Provider store={mainStore}>
-                    <Routing />
-                </Provider>
-            </Container>
+            <Grommet plain full={true}>
+                <Grid>
+                <Box pad="medium" align="stretch">
+                    <Provider store={mainStore}>
+                        <Routing />
+                    </Provider>
+                </Box>
+                </Grid>
+            </Grommet>
         );
     }
 }

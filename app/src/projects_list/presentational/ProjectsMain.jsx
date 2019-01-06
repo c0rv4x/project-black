@@ -1,6 +1,7 @@
 import _  from 'lodash'
 import React from 'react'
-import { Divider, Header } from 'semantic-ui-react'
+import { Heading } from 'grommet'
+
 
 import ProjectsList from "../presentational/ProjectsList.jsx"
 
@@ -14,8 +15,8 @@ class ProjectsMain extends React.Component {
     render() {
         return (
             <div>
-                <Divider hidden />
-                <Header as="h2">Projects</Header>
+                <br />
+                <Heading level={2}>Projects</Heading>
                 <ProjectsList
                     projects={this.props.projects}
                     onDelete={this.props.onDelete}
