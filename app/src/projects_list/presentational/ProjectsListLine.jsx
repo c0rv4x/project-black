@@ -26,7 +26,6 @@ class ProjectsListLine extends React.Component
                 <TableCell>{project.project_uuid}</TableCell>
                 <TableCell>{project.project_name}</TableCell>
                 <TableCell>
-                    {/* <Link to={"/project/" + project.project_uuid}> */}
                     <Grid
                         columns={{
                             count: 2,
@@ -34,7 +33,9 @@ class ProjectsListLine extends React.Component
                         }}
                     >
                         <Box>
-                            <Button hoverIndicator={true} icon={<Inspect />} />
+                            <Link to={"/project/" + project.project_uuid}>
+                                <Button hoverIndicator={true} icon={<Inspect />} />
+                            </Link>
                         </Box>
                         <Box>
                             <Button
@@ -48,8 +49,6 @@ class ProjectsListLine extends React.Component
                             />
                         </Box>
                     </Grid>
-                        
-                    {/* </Link> */}
                 </TableCell>
             </TableRow>
         )
