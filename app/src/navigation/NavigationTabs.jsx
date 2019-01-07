@@ -113,7 +113,17 @@ class NavigationTabs extends React.Component {
 						margin="small"
 						align="center"
 					>
-						1
+						Home
+					</Box>
+				</Tab>
+				<Tab
+					title="Overview"
+				>
+					<Box
+						margin="small"
+						align="stretch"
+					>
+						<ScopeSetupWrapper project_uuid={this.project_uuid} />
 					</Box>
 				</Tab>
 				<Tab
@@ -121,9 +131,19 @@ class NavigationTabs extends React.Component {
 				>
 					<Box
 						margin="small"
-						align="center"
+						align="stretch"
 					>
-						<ScopeSetupWrapper project_uuid={this.project_uuid} />
+						IP addresses
+					</Box>
+				</Tab>
+				<Tab
+					title="Hosts"
+				>
+					<Box
+						margin="small"
+						align="stretch"
+					>
+						Hosts list
 					</Box>
 				</Tab>
 			</Tabs>
