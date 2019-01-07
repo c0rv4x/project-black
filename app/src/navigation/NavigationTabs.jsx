@@ -133,7 +133,7 @@ class NavigationTabs extends React.Component {
 						margin="small"
 						align="stretch"
 					>
-						IP addresses
+						<IPsListWrapper project_uuid={this.project_uuid} />
 					</Box>
 				</Tab>
 				<Tab

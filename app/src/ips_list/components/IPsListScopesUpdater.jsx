@@ -8,6 +8,7 @@ import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.j
 import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmitter.js'
 import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
 import { setLoaded } from '../../redux/ips/actions.js'
+import loading from '../../common/loading/Loading.jsx'
 
 class IPsListScopesUpdater extends React.Component {
 	constructor(props) {
@@ -84,16 +85,19 @@ class IPsListScopesUpdater extends React.Component {
 
 	render() {
 		return (
-			<Segment vertical>
-				<Dimmer active={!this.props.ips.loaded} inverted>
-					<Loader />
-				</Dimmer>			
-				<IPsList
-					setLoaded={this.triggerSetLoaded}
-					renewIps={this.renewIps}
-					{...this.props}
-				/>
-			</Segment>
+			<div>
+				{
+					!this.props.ips.loaded ? (
+						loading
+					) : (
+						<IPsList
+							setLoaded={this.triggerSetLoaded}
+							renewIps={this.renewIps}
+							{...this.props}
+						/>
+					)
+				}
+			</div>
 		)
 	}
 }
