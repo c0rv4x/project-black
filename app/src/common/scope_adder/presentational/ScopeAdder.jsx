@@ -2,9 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import { createScope } from '../../../redux/scopes/actions'
 
-import { Form, Button, TextArea, Header, Segment } from 'semantic-ui-react'
 import ScopeUpload from '../components/ScopeUpload.jsx'
-
+import { Button, Heading, TextArea } from 'grommet'
 
 class ScopeAdder extends React.Component {
 
@@ -12,7 +11,7 @@ class ScopeAdder extends React.Component {
 		super(props);
 
 		this.state = {
-			"color": "blue",
+			"color": "brand",
 			"loading": false
 		};
 		
@@ -22,7 +21,7 @@ class ScopeAdder extends React.Component {
 	handleKeyPress(e) {
 		if (e.key === 'Enter' && e.shiftKey) {         
 			this.setState({
-				color: "orange",
+				color: "status-warning",
 				loading: true,
 				forceStateColor: true
 			});
@@ -64,7 +63,7 @@ class ScopeAdder extends React.Component {
 	componentWillReceiveProps(nextProps, nextState) {
 		if (nextProps.scopesCreated == "error") {
 			this.setState({
-				color: "red",
+				color: "status-critical",
 				loading: false
 			});
 
@@ -78,7 +77,7 @@ class ScopeAdder extends React.Component {
 		else 
 		if (nextProps.scopesCreated == "success") {
 			this.setState({
-				color: "green",
+				color: "status-ok",
 				loading: false
 			});
 			this.context.store.dispatch(
@@ -92,7 +91,7 @@ class ScopeAdder extends React.Component {
 
 	submitNewScope() {
 		this.setState({
-			color: "orange",
+			color: "status-warning",
 			loading: true,
 			forceStateColor: true
 		});
@@ -101,43 +100,35 @@ class ScopeAdder extends React.Component {
 
 	render() {
 		let { color, loading } = this.state;
-
+		console.log(loading);
 		return (
-			<Form>
-				<Form.Field>
-					<Header as="h3">Add new scope</Header>
-					<TextArea 
-						autoHeight
-						rows={1}
-						type="text"
-						placeholder="Newline-separated hosts, ips, networks (CIDR notation)"
-						value={this.props.newScopeInput}
-						onKeyUp={this.handleKeyPress}
-						onChange={(e) => this.props.handleNewScopeChange(e.target.value)}
-					/>
-				</Form.Field>
-
-				<ScopeUpload
-					fileLoadedHandler={this.props.handleNewScopeChange}
-				>
-					Upload scope
-				</ScopeUpload>
+			<div>
+				<Heading level="3">Add new scope</Heading>
+				<TextArea 
+					autoHeight
+					rows={1}
+					type="text"
+					placeholder="Newline-separated hosts, ips, networks (CIDR notation)"
+					value={this.props.newScopeInput}
+					onKeyUp={this.handleKeyPress}
+					onChange={(e) => this.props.handleNewScopeChange(e.target.value)}
+				/>
 
 				<Button
+					label="Add to scope"
 					color={color}
-					loading={loading}
 					active={loading}
+					disabled={loading}
 					onClick={() => {
 						this.setState({
-							color: "orange",
+							color: "status-warning",
 							loading: true,
 							forceStateColor: true
 						});
 						this.props.onNewScopeClick(this.props.newScopeInput);
-					}}>
-						Add to scope
-				</Button>
-			</Form>
+					}}
+				/>
+			</div>
 		)
 	}
 }
@@ -147,3 +138,10 @@ ScopeAdder.contextTypes = {
 }
 
 export default ScopeAdder;
+
+
+// <ScopeUpload
+// fileLoadedHandler={this.props.handleNewScopeChange}
+// >
+// Upload scope
+// </ScopeUpload>

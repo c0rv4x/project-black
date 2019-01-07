@@ -36,7 +36,8 @@ class HeadButtons extends React.Component {
 					this.props.resolveScopes();
 				}}
 				color={color}
-				active={!loading}
+				active={loading}
+				disabled={loading}
 				label="Resolve Hosts"
 			/>
 		)

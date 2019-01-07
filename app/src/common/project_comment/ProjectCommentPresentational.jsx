@@ -1,26 +1,21 @@
 import React from 'react'
 
-import { Markdown, TextInput } from 'grommet'
+import { Box, Markdown, TextArea } from 'grommet'
 
 import EditableElement from '../editable/EditableElement.jsx'
 
 
 class ProjectCommentPresentational extends React.Component {
-
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
 		return (
-			<div>
+			<Box>
 				<EditableElement
 					value={this.props.projectComment}
 					onBlur={this.props.commentSubmitted}
-					inputElement={TextInput}
+					inputElement={TextArea}
 					element={Markdown}
-					placeholder="# Click to edit the comment" />
-			</div>
+					placeholder="## Click to edit the comment" />
+			</Box>
 		)
 	}
 

@@ -120,7 +120,7 @@ class NavigationTabs extends React.Component {
 					title="Overview"
 				>
 					<Box
-						margin="small"
+						margin="large"
 						align="stretch"
 					>
 						<ScopeSetupWrapper project_uuid={this.project_uuid} />
