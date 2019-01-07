@@ -3,10 +3,7 @@ import loading from '../../common/loading/Loading.jsx'
 
 import { Box, Grid } from 'grommet'
 
-import IPTable from '../presentational/IPTable.jsx'
-import HostTable from '../presentational/HostTable.jsx'
-import ScanTable from '../presentational/ScanTable.jsx'
-import FileTable from '../presentational/FileTable.jsx'
+import Statistic from '../presentational/Statistic.jsx'
 
 
 class ScopeSetup extends React.Component {
@@ -26,17 +23,21 @@ class ScopeSetup extends React.Component {
 									size: 'auto'
 								}}	
 							>
-								<IPTable
-									ips={ips}
+								<Statistic
+									number={ips.total_db_ips}
+									text="ips"
 								/>
-								<HostTable
-									hosts={hosts}
+								<Statistic
+									number={hosts.total_db_hosts}
+									text="hosts"
 								/>
-								<ScanTable
-									scans={scans}
+								<Statistic
+									number={scans.amount}
+									text="ports"
 								/>
-								<FileTable
-									files={files}
+								<Statistic
+									number={files.amount}
+									text="files"
 								/>
 							</Grid>
 					) : (
