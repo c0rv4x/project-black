@@ -1,6 +1,14 @@
 import _ from 'lodash'
 import React from 'react'
-import { Table } from 'semantic-ui-react'
+import {
+	Box,
+	Heading,
+	Table,
+    TableHeader,
+    TableRow,
+    TableCell,
+    TableBody
+} from 'grommet'
 
 import TasksGroup from './TasksGroup.jsx'
 
@@ -48,21 +56,21 @@ class Tasks extends React.Component {
 
 		if (_.get(this.props.tasks, 'length', 0)) {
 			return (
-				<div>
-					<h3>Active tasks</h3>
-					<Table compact>
-						<Table.Header>
-							<Table.Row>
-								<Table.HeaderCell>Type</Table.HeaderCell>
-								<Table.HeaderCell>Queued Tasks</Table.HeaderCell>
-								<Table.HeaderCell>Progress</Table.HeaderCell>
-							</Table.Row>
-						</Table.Header>
-						<Table.Body>
+				<Box>
+					<Heading level="3">Active tasks</Heading>
+					<Table>
+						<TableHeader>
+							<TableRow>
+								<TableCell>Type</TableCell>
+								<TableCell>Queued Tasks</TableCell>
+								<TableCell>Progress</TableCell>
+							</TableRow>
+						</TableHeader>
+						<TableBody>
 							{tasks}
-						</Table.Body>
+						</TableBody>
 					</Table>
-				</div>
+				</Box>
 			)			
 		}
 		else {
