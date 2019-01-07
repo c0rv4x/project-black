@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 
-import { Statistic } from 'semantic-ui-react'
+import { Box, Text } from 'grommet'
 
 
 class HostTable extends React.Component {
@@ -9,10 +9,11 @@ class HostTable extends React.Component {
 		const { hosts } = this.props;
 
 		return (
-			<Statistic>
-				<Statistic.Value>{hosts.loaded && hosts.total_db_hosts}{!hosts.loaded && "0"}</Statistic.Value>
-				<Statistic.Label>hosts</Statistic.Label>
-			</Statistic>			
+			<Box>
+				<Text>
+					{hosts.total_db_hosts} hosts
+				</Text>
+			</Box>
 		)
 	}
 }

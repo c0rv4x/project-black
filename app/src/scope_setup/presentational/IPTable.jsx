@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 
-import { Statistic } from 'semantic-ui-react'
+import { Box, Text } from 'grommet'
 
 
 class IPTable extends React.Component {
@@ -9,10 +9,11 @@ class IPTable extends React.Component {
 		const { ips } = this.props;
 
 		return (
-			<Statistic>
-				<Statistic.Value>{ips.loaded && ips.total_db_ips}{!ips.loaded && "0"}</Statistic.Value>
-				<Statistic.Label>ips</Statistic.Label>
-			</Statistic>
+			<Box>
+				<Text>
+					{ips.total_db_ips} ips
+				</Text>
+			</Box>
 		)
 	}
 }

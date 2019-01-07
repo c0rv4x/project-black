@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 
-import { Statistic } from 'semantic-ui-react'
+import { Box, Text } from 'grommet'
 
 
 class ScanTable extends React.Component {
@@ -9,10 +9,11 @@ class ScanTable extends React.Component {
 		const { scans } = this.props;
 
 		return (
-			<Statistic>
-				<Statistic.Value>{scans.loaded && scans.amount}{!scans.loaded && "0"}</Statistic.Value>
-				<Statistic.Label>ports</Statistic.Label>
-			</Statistic>
+			<Box>
+				<Text>
+					{scans.amount} ports
+				</Text>
+			</Box>
 		)
 	}
 }

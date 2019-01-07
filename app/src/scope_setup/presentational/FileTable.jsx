@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 
-import { Statistic } from 'semantic-ui-react'
+import { Box, Text } from 'grommet'
 
 
 class FileTable extends React.Component {
@@ -9,10 +9,11 @@ class FileTable extends React.Component {
 		const { files } = this.props;
 
 		return (
-			<Statistic>
-				<Statistic.Value>{files.loaded && files.amount}{!files.loaded && "0"}</Statistic.Value>
-				<Statistic.Label>files</Statistic.Label>
-			</Statistic>
+			<Box>
+				<Text>
+					{files.amount} files
+				</Text>
+			</Box>
 		)
 	}
 }
