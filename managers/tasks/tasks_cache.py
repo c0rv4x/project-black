@@ -51,8 +51,8 @@ class TasksCache:
             ))
         )
 
-        for task in self._get_active_tasks():
-            print(task.progress, task.project_uuid, project_uuid, task.fresh)
+        # for task in self._get_active_tasks():
+        #     print(task.progress, task.project_uuid, project_uuid, task.fresh)
 
         if update_fresh:
             for task in tasks:

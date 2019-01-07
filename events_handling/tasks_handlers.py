@@ -53,7 +53,7 @@ class TaskHandlers(object):
         """ Grab all tasks data and send them back to client """
         if send_all:
             tasks = self.task_manager.get_tasks(
-                project_uuid, only_fresh=True
+                project_uuid, only_fresh=False
             )
 
             await self.socketio.emit(
@@ -67,7 +67,7 @@ class TaskHandlers(object):
             )
         else:
             tasks = self.task_manager.get_tasks(
-                project_uuid, only_fresh=False
+                project_uuid, only_fresh=True
             )
 
             if len(tasks['finished']) == 0 and len(tasks['active']) == 0:
