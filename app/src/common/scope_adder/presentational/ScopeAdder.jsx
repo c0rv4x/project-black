@@ -100,7 +100,7 @@ class ScopeAdder extends React.Component {
 
 	render() {
 		let { color, loading } = this.state;
-		console.log(loading);
+
 		return (
 			<div>
 				<Heading level="3">Add new scope</Heading>
