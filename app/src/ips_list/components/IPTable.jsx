@@ -64,7 +64,7 @@ class IPTable extends React.Component {
 		for (let i = 0; i < ips.data.length; i++) {
 			const ip = ips.data[i];
 
-			rows.push('xsmall');
+			rows.push('auto');
 			areas.push({
 				name: 'ip_' + ip.ip_address, start: [0, i], end: [0, i]
 			});
