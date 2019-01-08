@@ -167,7 +167,7 @@ class InnerModal extends React.Component {
 				onClickOutside={closeModal}
 				onEsc={closeModal}
 			>
-				<Box pad="medium" gap="small" width="medium">
+				<Box pad="medium" gap="small" >
 					<Box direction="row" align="center" gap="small" pad="xsmall">
 						{startButtons}
 					</Box>
