@@ -7,6 +7,8 @@ import rdcs from './redux/reducers.js'
 import Routing from './navigation/Routing.jsx'
 
 import { Grommet, Box, Grid } from 'grommet';
+import { grommet } from "grommet/themes";
+
 
 import './semantic/semantic.min.css';
 import './styles/notification_styles.css';
@@ -22,7 +24,7 @@ class App extends React.Component {
 
     render () {
         return (
-            <Grommet plain full={true}>
+            <Grommet plain theme={grommet} full={true}>
                 <Grid>
                 <Box pad="medium" align="stretch">
                     <Provider store={mainStore}>
