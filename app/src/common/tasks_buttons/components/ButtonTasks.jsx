@@ -1,8 +1,12 @@
 import _ from 'lodash'
 import React from 'react'
 import { Dropdown, Icon, Popup } from 'semantic-ui-react';
+import { Box, Heading, Text, Button, DropButton } from 'grommet'
+import { Close } from 'grommet-icons'
 
 import InnerModal from './InnerModal.jsx'
+import DropButtonContent from './DropButtonContent.jsx'
+
 
 
 class ButtonTasks extends React.Component {
@@ -17,10 +21,11 @@ class ButtonTasks extends React.Component {
 				availableOptions: [],
 				handler: (() => {})
 			},
+			dropDownOpen: false,
 			modalOpen: false
 		};
 
-		this.change_current_task.bind(this);	
+		this.change_current_task.bind(this);
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -48,33 +53,19 @@ class ButtonTasks extends React.Component {
 	}
 
 	render() {
-		var i = -1;
-		let items = [
-			<Dropdown.Item key="task_hint" >
-				<Popup
-					on="hover"
-					content="Tasks will be launched against all targets, which correspond to the filter you specified"
-					trigger={<span>Specify targets<Icon name="question" /></span>}
-				>
-				</Popup>
-			</Dropdown.Item>	
-		]
-		items = items.concat(this.props.tasks.map((task) => {
-			i++;
-			return (
-				<Dropdown.Item key={i} onClick={() => { this.change_current_task(task)}} >
-					{task.name}
-				</Dropdown.Item>
-			)
-		}));
+		const { tasks } = this.props;
 
 		return (
 			<span>
-				<Dropdown text="Launch Task" button>
-					<Dropdown.Menu>
-						{items}
-					</Dropdown.Menu>
-				</Dropdown>
+				<DropButton
+					label="Launch Task"
+					open={this.state.dropDownOpen}
+					onOpen={() => this.setState({ dropDownOpen: true })}
+					onClose={() => this.setState({ dropDownOpen: false })}
+					dropContent={
+						<DropButtonContent tasks={tasks} />
+					}
+				/>
 				<InnerModal
 					project_uuid={this.props.project_uuid}
 					dicts={this.props.dicts}
