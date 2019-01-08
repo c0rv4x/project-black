@@ -46,6 +46,27 @@ class AdaptiveOption extends React.Component {
 		this.props.onInputChange(this.props.objectKey, newValue.target.checked);
 	}
 
+	componentDidMount() {
+		let target = document.getElementById("text-area-" + this.objectKey);
+		
+		if (target) {
+			const oldRows = target.rows;
+			target.rows = 1;
+			const newRows = ~~(target.scrollHeight / getLineHeight(target));
+
+			console.log(oldRows, newRows, target.scrollHeight, getLineHeight(target), ~~(target.scrollHeight / getLineHeight(target)));
+
+			if (newRows === oldRows) {
+				target.rows = newRows;
+			}
+
+			this.setState({
+				rows: newRows
+			});
+		}
+		
+	}
+
 	render() {
 		const { value, objectKey } = this.props;
 
@@ -61,6 +82,7 @@ class AdaptiveOption extends React.Component {
 			)
 		}
 		else {
+			console.log(1111, this.state.rows, objectKey);
 			return (
 				<FormField label={_.capitalize(objectKey)} htmlFor={"text-area" + objectKey} >
 					<TextArea
