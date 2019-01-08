@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Box } from 'grommet'
+import { Box, Layer, Stack } from 'grommet'
 
 const spinning = (
     <svg
@@ -8,9 +8,10 @@ const spinning = (
       viewBox="0 0 32 32"
       width="32px"
       height="32px"
-      fill="#333333"
+      fill="#000000"
     >
       <path
+        style={{fill: 'white'}}
         opacity=".25"
         d="M16 0 A16 16 0 0 0 16 32 A16 16 0 0 0 16 0 M16 4 A12 12 0 0 1 16 28 A12 12 0 0 1 16 4"
       />
@@ -28,9 +29,33 @@ const spinning = (
   );
   
 const loading = (
-    <Box align="center" justify="center" style={{ height: '100px' }}>
+    <Box background="grey" align="center" justify="center" style={{ height: '100px', opacity: 1 }}>
         {spinning}
     </Box>
 );
 
-export default loading;
+class Loading extends React.Component {
+  render() {
+    return (
+        <Stack
+            anchor="center"
+        >
+            {this.props.children}
+            {
+                !this.props.componentLoading && (
+                    <Layer
+                        modal
+                        animation={false}
+                    >
+                        <Box direction="row" align="center">
+                            {loading}
+                        </Box>
+                    </Layer>
+                )
+            }
+        </Stack>
+    )
+  }
+}
+
+export default Loading;
