@@ -70,8 +70,6 @@ class IPTable extends React.Component {
 			});
 		}
 
-		console.log(JSON.stringify(areas), JSON.stringify(rows));
-
 		this.setState({
 			rows: rows,
 			areas: areas
