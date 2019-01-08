@@ -67,6 +67,7 @@ class ButtonTasks extends React.Component {
 					dropContent={
 						<DropButtonContent
 							tasks={tasks}
+							onClose={() => this.setState({ dropDownOpen: false })}
 							changeCurrentTask={this.changeCurrentTask}
 						/>
 					}

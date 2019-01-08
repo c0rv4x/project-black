@@ -11,7 +11,10 @@ class DropButtonContent extends React.Component {
                     plain
                     hoverIndicator={true}
                     key={task.name}
-                    onClick={() => { this.props.changeCurrentTask(task)} }
+                    onClick={() => {
+                        this.props.onClose();
+                        this.props.changeCurrentTask(task)}
+                    }
                     label={task.name}
                 />
 			)
