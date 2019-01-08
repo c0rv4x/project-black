@@ -1,8 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
 import {
-	Modal,
-	Popup,
 	Message,
 	Divider
 } from 'semantic-ui-react'
@@ -110,32 +108,15 @@ class InnerModal extends React.Component {
 		const { task, open, openModal, closeModal } = this.props;
 
 		const startButtons = _.map(task.preformed_options, (x) => {
-			let options = [];
-			_.forOwn(x.options, (value, key) => {
-				options.push(<div key={key}><strong>{key}:</strong> {value}</div>);
-			});
-
-			let button = (
-				<span>
-					<Button size="small"
-					        id={"button_" + x.name}
-					        onClick={() => this.loadOptions(x.options)}>
-					        {x.name}
-			        </Button>
-				</span>
-			);
-
 			return (
-				<Popup key={x.name} trigger={button}>
-					{options}
-				</Popup>
+				<Button
+					size="small"
+					key={"button_" + x.name}
+					onClick={() => this.loadOptions(x.options)}
+					label={x.name}
+				/>
 			)
 		});
-
-			// <Modal open={open} onOpen={openModal} onClose={closeModal} >
-			// 	<Modal.Header>
-			// 		Choose one of the prepared options or create your own
-			// 	</Modal.Header>
 
 			// 	<Modal.Content>
 			// 		{startButtons}
@@ -187,6 +168,9 @@ class InnerModal extends React.Component {
 				onEsc={closeModal}
 			>
 				<Box pad="medium" gap="small" width="medium">
+					<Box direction="row" align="center" gap="small" pad="xsmall">
+						{startButtons}
+					</Box>
 					<CustomOptions
 						inputs={this.state.inputs}
 						onInputChange={this.onInputChange}

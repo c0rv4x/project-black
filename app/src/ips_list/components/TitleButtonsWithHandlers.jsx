@@ -178,7 +178,7 @@ class TitleButtonsWithHandlers extends React.Component {
 								}
 							},
 							{
-								"name": "Personal favourites",
+								"name": "Many",
 								"options": {
 									"extensions": "php,txt,conf,log,bak,sql,asp,aspx,tar.gz,tar,zip,~",
 									"path": "/"
