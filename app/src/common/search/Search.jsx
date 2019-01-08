@@ -29,6 +29,10 @@ class Search extends React.Component {
 		this.parseActiveOptions = this.parseActiveOptions.bind(this);
 	}
 
+	shouldComponentUpdate(nextProps, nextState) {
+		return (!_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state));
+	}
+
 	handleOnChange(value) {
 		this.setState({ multiValue: value });
 
