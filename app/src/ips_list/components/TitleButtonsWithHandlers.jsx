@@ -164,14 +164,14 @@ class TitleButtonsWithHandlers extends React.Component {
 						"handler": this.dirbusterStart,
 						"preformed_options": [
 							{
-								"name": "PHP fanboy",
+								"name": "PHP",
 								"options": {
 									"extensions": "php,php5,phps,php.bak",
 									"path": "/"
 								}
 							},
 							{
-								"name": "ASP faggot",
+								"name": "ASP",
 								"options": {
 									"extensions": "asp,aspx",
 									"path": "/"
@@ -205,19 +205,7 @@ class TitleButtonsWithHandlers extends React.Component {
 								"name": "recursive",
 								"type": "checkbox",
 								"default_value": false
-							},
-							{
-								"name": "dirsearch_all_ips",
-								"type": "checkbox",
-								"text": "Add all current ips to dirsearch queue",
-								"default_value": false
-							},
-							{
-								"name": "dirsearch_single_ip",
-								"type": "checkbox",
-								"text": "Add one ip from each host to dirsearch queue",
-								"default_value": false
-							}					
+							}				
 						]
 					},
 					{
