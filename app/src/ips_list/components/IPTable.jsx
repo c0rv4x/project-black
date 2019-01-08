@@ -7,8 +7,17 @@ import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmi
 import IPEntryLine from '../presentational/scope/IPEntryLine.jsx'
 import Search from '../../common/search/Search.jsx'
 
-import { Grid, Container, Header, Segment } from 'semantic-ui-react'
+import { Container, Header, Segment } from 'semantic-ui-react'
+import { Box, Grid, Heading } from 'grommet'
 
+
+const areasDefault = [
+	{ name: 'ip', start: [0, 0], end: [0, 0] },
+	{ name: 'comment', start: [1, 0], end: [1, 0] },
+	{ name: 'ports', start: [2, 0], end: [2, 0] },
+	{ name: 'files', start: [3, 0], end: [3, 0] },
+	{ name: 'control', start: [4, 0], end: [4, 0] },
+]
 
 class IPTable extends React.Component {
 
@@ -19,7 +28,9 @@ class IPTable extends React.Component {
 			this.state = {
 				shownData: this.props.ips.data,
 				offsetPage: this.props.ips.page,
-				pageCount: Math.ceil(this.props.ips.selected_ips / this.props.ips.page_size)
+				pageCount: Math.ceil(this.props.ips.selected_ips / this.props.ips.page_size),
+				areas: [],
+				rows: []
 			}
 		}
 
@@ -45,6 +56,27 @@ class IPTable extends React.Component {
 			this.props.setLoaded(true);
 		}
 
+		const { ips } = this.props;
+		let rows = [];
+		// let areas = JSON.parse(JSON.stringify(areasDefault));
+		let areas = [];
+
+		for (let i = 0; i < ips.data.length; i++) {
+			const ip = ips.data[i];
+
+			rows.push('xsmall');
+			areas.push({
+				name: 'ip_' + ip.ip_address, start: [0, i], end: [0, i]
+			});
+		}
+
+		console.log(JSON.stringify(areas), JSON.stringify(rows));
+
+		this.setState({
+			rows: rows,
+			areas: areas
+		});
+
 		if (this.props.ips.selected_ips !== prevProps.ips.selected_ips) {
 			this.setState({
 				shownData: this.props.ips.data,
@@ -67,6 +99,8 @@ class IPTable extends React.Component {
 	}
 
 	render() {
+		const { areas, rows } = this.state;
+
 		const ips = _.map(this.state.shownData, (x) => {
 			return <IPEntryLine key={x.ip_id} 
 								ip={x}
@@ -80,15 +114,18 @@ class IPTable extends React.Component {
 				<Search applyFilters={this.props.applyFilters} />
 				<br />
 				{this.props.ips.data.length === 0 && this.props.ips.loaded && 
-					<Header as='h2'>No data found.</Header>
+					<Heading level="2">No data found.</Heading>
 				}
 				{(this.props.ips.data.length !== 0 || !this.props.ips.loaded) &&
 					<div>
-						<Container>
-							<Segment.Group>
-								{ips}
-							</Segment.Group>
-						</Container>
+						<Grid
+							areas={areas}
+							columns={['flex']}
+							rows={rows}
+							gap='small'
+						>
+							{ips}
+						</Grid>
 						<br />
 						<ReactPaginate
 							pageNumber={this.props.ips.page}

@@ -3,12 +3,13 @@ import React from 'react'
 
 import {
 	Button,
-	Grid,
 	Icon,
 	Label,
 	Segment,
 	Transition
 } from 'semantic-ui-react'
+
+import { Box, Grid } from 'grommet'
 
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
 import TasksScoped from '../../../common/tasks_scoped/TasksScoped.jsx'
@@ -62,62 +63,60 @@ class IPEntryLine extends React.Component {
 		});
 
 		return (
-			<Segment>
-				<input
+			<Box gridArea={"ip_" + ip.ip_address} background="brand">
+				<Box background="accent-1" />
+				{/* <input
 					ref={(iptext) => this.iptext = iptext}
 					style={{
 						"position": "absolute",
 						"left": "-9999px"
 					}}
 				/>
-				<Grid centered>
-					<Grid.Row verticalAlign='middle' columns={16}>
-						<Grid.Column width={3}>
-							<b
-								onMouseOut={() => this.setState({
-									"copyPasteShown": false,
-									"copySuccess": false
-								})}
-								onMouseOver={() => this.setState({"copyPasteShown": true})}
-								onClick={(e) => {
-									if (document.queryCommandSupported('copy')) {
-										this.iptext.value = ip.ip_address;
-										this.copyToClipboard(e);
-									}
-								}}
-								style={{
-									"cursor": "pointer"
-								}}
-							>
-								{ip.ip_address}
-							</b>
-							{this.state.copyPasteShown && !this.state.copySuccess && <span>  <Icon color="blue" name="copy outline"/></span>}
-							{this.state.copyPasteShown && this.state.copySuccess && <span>  <Icon color="blue" name="check"/></span>}
-						</Grid.Column>
-						<Grid.Column width={3}>
-							<ScopeComment
-								comment={ip.comment}
-								onCommentSubmit={onCommentSubmit}
-							/>
-						</Grid.Column>
-						<Grid.Column width={6}>
-							<Label.Group>
-								{ports}
-							</Label.Group>
-						</Grid.Column>
-						<Grid.Column width={3} floated="right">
-							<Files target={ip} />
-						</Grid.Column>
-						<Grid.Column width={1} textAlign="right">
-							<HidingButtons
-								project_uuid={project_uuid}
-								type="ip"
-								target={ip.ip_address}
-							/>
-						</Grid.Column>
-					</Grid.Row>
-				</Grid>
-			</Segment>
+
+				<Box gridArea="ip">
+					<b
+						onMouseOut={() => this.setState({
+							"copyPasteShown": false,
+							"copySuccess": false
+						})}
+						onMouseOver={() => this.setState({"copyPasteShown": true})}
+						onClick={(e) => {
+							if (document.queryCommandSupported('copy')) {
+								this.iptext.value = ip.ip_address;
+								this.copyToClipboard(e);
+							}
+						}}
+						style={{
+							"cursor": "pointer"
+						}}
+					>
+						{ip.ip_address}
+					</b>
+					{this.state.copyPasteShown && !this.state.copySuccess && <span>  <Icon color="blue" name="copy outline"/></span>}
+					{this.state.copyPasteShown && this.state.copySuccess && <span>  <Icon color="blue" name="check"/></span>}
+				</Box>
+				<Box gridArea="comment">
+					<ScopeComment
+						comment={ip.comment}
+						onCommentSubmit={onCommentSubmit}
+					/>
+				</Box>
+				<Box gridArea="ports">
+					<Label.Group>
+						{ports}
+					</Label.Group>
+				</Box>
+				<Box gridArea="files">
+					<Files target={ip} />
+				</Box>
+				<Box gridArea="control">
+					<HidingButtons
+						project_uuid={project_uuid}
+						type="ip"
+						target={ip.ip_address}
+					/>
+				</Box> */}
+			</Box>
 		)	
 	}
 }
