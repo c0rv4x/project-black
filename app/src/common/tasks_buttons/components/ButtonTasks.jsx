@@ -55,8 +55,6 @@ class ButtonTasks extends React.Component {
 	render() {
 		const { tasks } = this.props;
 
-		console.log(this.state);
-
 		return (
 			<span>
 				<DropButton
@@ -72,14 +70,18 @@ class ButtonTasks extends React.Component {
 						/>
 					}
 				/>
-				<InnerModal
-					project_uuid={this.props.project_uuid}
-					dicts={this.props.dicts}
-					open={this.state.modalOpen}
-					task={this.state.current_task}
-					openModal={this.openModal.bind(this)}
-					closeModal={this.closeModal.bind(this)}
-				/>
+				{
+					this.state.modalOpen && (
+						<InnerModal
+							project_uuid={this.props.project_uuid}
+							dicts={this.props.dicts}
+							open={this.state.modalOpen}
+							task={this.state.current_task}
+							openModal={this.openModal.bind(this)}
+							closeModal={this.closeModal.bind(this)}
+						/>
+					)
+				}
 			</span>
 		)
 	}

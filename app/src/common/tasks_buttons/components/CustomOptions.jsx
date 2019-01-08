@@ -1,9 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
 
-import { 
-	Form
-} from 'semantic-ui-react'
 
 import AdaptiveOption from '../presentational/AdaptiveOption.jsx'
 
@@ -15,6 +12,7 @@ class CustomOptions extends React.Component {
 
 	render() {
 		var options = [];
+		console.log(this.props.inputs);
 
 		_.forOwn(this.props.inputs, (value, key) => {
 			options.push(
@@ -27,10 +25,8 @@ class CustomOptions extends React.Component {
 			);
 		});
 		return (
-			<div>
-				<Form>		
-					{options}
-				</Form>
+			<div>	
+				{options}
 			</div>
 		)
 	}

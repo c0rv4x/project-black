@@ -2,11 +2,16 @@ import _ from 'lodash'
 import React from 'react'
 import {
 	Modal,
-	Button,
 	Popup,
 	Message,
 	Divider
 } from 'semantic-ui-react'
+
+import {
+	Box,
+	Button,
+	Layer
+} from 'grommet'
 
 import Dictionaries from './Dictionaries.jsx'
 import CustomOptions from './CustomOptions.jsx'
@@ -17,8 +22,17 @@ class InnerModal extends React.Component {
 	constructor(props) {
 		super(props);
 
+		let inputs = {};
+		_.map(this.props.task.available_options, (x) => {
+			inputs[x.name] = {
+				type: x.type,
+				value: x.default_value,
+				default_value: x.default_value,
+			};				
+		});
+
 		this.state = {
-			inputs: {}
+			inputs: inputs
 		}
 
 		this.loadOptions = this.loadOptions.bind(this);
@@ -118,54 +132,69 @@ class InnerModal extends React.Component {
 			)
 		});
 
-		return (
-			<Modal open={open} onOpen={openModal} onClose={closeModal} >
-				<Modal.Header>
-					Choose one of the prepared options or create your own
-				</Modal.Header>
+			// <Modal open={open} onOpen={openModal} onClose={closeModal} >
+			// 	<Modal.Header>
+			// 		Choose one of the prepared options or create your own
+			// 	</Modal.Header>
 
-				<Modal.Content>
-					{startButtons}
-					<Divider hidden />
-					{
-						task.help && 
-						task.help.map((help_notice) => {
-							if (help_notice.condition === true) {
-								if (help_notice.type == 'warning') {
-									return (
-										<Message
-											warning
-											key={task.help.indexOf(help_notice)}
-										>
-											{help_notice.text}
-										</Message>
-									);
-								}
-								else {
-									return (
-										<Message
-											key={task.help.indexOf(help_notice)}
-										>
-											{help_notice.text}
-										</Message>
-									);
-								}
-							}
-						})
-					}
-					<Divider hidden />
-					<CustomOptions inputs={this.state.inputs}
-								   onInputChange={this.onInputChange} />
-					{ task.dictionaries_available && 
-						<Dictionaries
-							project_uuid={this.props.project_uuid}
-							name={task.name.toLowerCase()}
-							dicts={this.props.dicts}
-						/>
-					}
-					<Button color="blue" onClick={this.startTask}>Start Task</Button>
-				</Modal.Content>
-			</Modal>
+			// 	<Modal.Content>
+			// 		{startButtons}
+			// 		<Divider hidden />
+			// 		{
+			// 			task.help && 
+			// 			task.help.map((help_notice) => {
+			// 				if (help_notice.condition === true) {
+			// 					if (help_notice.type == 'warning') {
+			// 						return (
+			// 							<Message
+			// 								warning
+			// 								key={task.help.indexOf(help_notice)}
+			// 							>
+			// 								{help_notice.text}
+			// 							</Message>
+			// 						);
+			// 					}
+			// 					else {
+			// 						return (
+			// 							<Message
+			// 								key={task.help.indexOf(help_notice)}
+			// 							>
+			// 								{help_notice.text}
+			// 							</Message>
+			// 						);
+			// 					}
+			// 				}
+			// 			})
+			// 		}
+			// 		<Divider hidden />
+			// 		<CustomOptions inputs={this.state.inputs}
+			// 					   onInputChange={this.onInputChange} />
+			// 		{ task.dictionaries_available && 
+			// 			<Dictionaries
+			// 				project_uuid={this.props.project_uuid}
+			// 				name={task.name.toLowerCase()}
+			// 				dicts={this.props.dicts}
+			// 			/>
+			// 		}
+			// 	</Modal.Content>
+			// </Modal>
+
+		return (
+			<Layer
+				position="center"
+				modal
+				onClickOutside={closeModal}
+				onEsc={closeModal}
+			>
+				<Box pad="medium" gap="small" width="medium">
+					<CustomOptions
+						inputs={this.state.inputs}
+						onInputChange={this.onInputChange}
+					/>
+				
+					<Button label="start" onClick={this.startTask} />
+				</Box>
+			</Layer>
 		)
 	}
 
