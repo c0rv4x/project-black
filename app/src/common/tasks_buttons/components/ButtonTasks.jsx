@@ -25,14 +25,14 @@ class ButtonTasks extends React.Component {
 			modalOpen: false
 		};
 
-		this.change_current_task.bind(this);
+		this.changeCurrentTask = this.changeCurrentTask.bind(this);
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
 		return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
 	}
 
-	change_current_task(task) {
+	changeCurrentTask(task) {
 		this.setState({
 			current_task: task
 		});
@@ -55,6 +55,8 @@ class ButtonTasks extends React.Component {
 	render() {
 		const { tasks } = this.props;
 
+		console.log(this.state);
+
 		return (
 			<span>
 				<DropButton
@@ -63,7 +65,10 @@ class ButtonTasks extends React.Component {
 					onOpen={() => this.setState({ dropDownOpen: true })}
 					onClose={() => this.setState({ dropDownOpen: false })}
 					dropContent={
-						<DropButtonContent tasks={tasks} />
+						<DropButtonContent
+							tasks={tasks}
+							changeCurrentTask={this.changeCurrentTask}
+						/>
 					}
 				/>
 				<InnerModal

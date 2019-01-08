@@ -4,10 +4,6 @@ import { Box, Button } from 'grommet'
 
 
 class DropButtonContent extends React.Component {
-	shouldComponentUpdate(nextProps, nextState) {
-		return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
-	}
-
 	render() {
         let items = this.props.tasks.map((task) => {
 			return (
@@ -15,7 +11,7 @@ class DropButtonContent extends React.Component {
                     plain
                     hoverIndicator={true}
                     key={task.name}
-                    onClick={() => { this.change_current_task(task)} }
+                    onClick={() => { this.props.changeCurrentTask(task)} }
                     label={task.name}
                 />
 			)
