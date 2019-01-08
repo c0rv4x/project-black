@@ -1,11 +1,8 @@
 import _ from 'lodash'
 import React from 'react'
 
-import { 
-	Checkbox
-} from 'semantic-ui-react'
-
 import {
+	CheckBox,
 	FormField,
 	TextArea
 } from 'grommet'
@@ -74,11 +71,9 @@ class AdaptiveOption extends React.Component {
 
 		if (value.type === 'checkbox') {
 			return (
-				<FormField>
-					<Checkbox checked={value.value}
-							  onChange={this.triggerBool.bind(this)}
-							  label={objectKey && _.capitalize(objectKey)} />
-				</FormField>
+				<CheckBox checked={value.value}
+							onChange={this.triggerBool.bind(this)}
+							label={objectKey && _.capitalize(objectKey)} />
 			)
 		}
 		else {
@@ -86,6 +81,7 @@ class AdaptiveOption extends React.Component {
 			return (
 				<FormField label={_.capitalize(objectKey)} htmlFor={"text-area" + objectKey} >
 					<TextArea
+						style={{ resize: 'none' }}
 						id={"text-area-" + objectKey}
 						type={value.type}
 						placeholder={objectKey}

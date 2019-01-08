@@ -192,7 +192,7 @@ class InnerModal extends React.Component {
 						onInputChange={this.onInputChange}
 					/>
 				
-					<Button label="start" onClick={this.startTask} />
+					<Button label="Fire!" onClick={this.startTask} />
 				</Box>
 			</Layer>
 		)
