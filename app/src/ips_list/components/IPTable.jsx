@@ -10,14 +10,6 @@ import Search from '../../common/search/Search.jsx'
 import { Grid, Heading } from 'grommet'
 
 
-const areasDefault = [
-	{ name: 'ip', start: [0, 0], end: [0, 0] },
-	{ name: 'comment', start: [1, 0], end: [1, 0] },
-	{ name: 'ports', start: [2, 0], end: [2, 0] },
-	{ name: 'files', start: [3, 0], end: [3, 0] },
-	{ name: 'control', start: [4, 0], end: [4, 0] },
-]
-
 class IPTable extends React.Component {
 
 	constructor(props) {
@@ -57,7 +49,6 @@ class IPTable extends React.Component {
 
 		const { ips } = this.props;
 		let rows = [];
-		// let areas = JSON.parse(JSON.stringify(areasDefault));
 		let areas = [];
 
 		for (let i = 0; i < ips.data.length; i++) {
