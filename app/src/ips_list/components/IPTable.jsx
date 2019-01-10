@@ -7,8 +7,7 @@ import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmi
 import IPEntryLine from '../presentational/scope/IPEntryLine.jsx'
 import Search from '../../common/search/Search.jsx'
 
-import { Container, Header, Segment } from 'semantic-ui-react'
-import { Box, Grid, Heading } from 'grommet'
+import { Grid, Heading } from 'grommet'
 
 
 const areasDefault = [

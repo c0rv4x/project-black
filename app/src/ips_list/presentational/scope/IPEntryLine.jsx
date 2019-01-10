@@ -2,22 +2,10 @@ import _ from 'lodash'
 import React from 'react'
 
 import {
-	Button,
-	Icon,
-	Label,
-	Segment,
-	Transition
-} from 'semantic-ui-react'
-
-import { Copy, Checkmark} from 'grommet-icons'
-import {
 	Box,
-	Grid,
-	Table,
-	TableBody,
-	TableRow,
-	TableCell
+	Grid
 } from 'grommet'
+import { Copy, Checkmark} from 'grommet-icons'
 
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
 import TasksScoped from '../../../common/tasks_scoped/TasksScoped.jsx'
@@ -135,7 +123,7 @@ class IPEntryLine extends React.Component {
 						{this.state.copyPasteShown && !this.state.copySuccess && <span>  <Copy /></span>}
 						{this.state.copyPasteShown && this.state.copySuccess && <span>  <Checkmark /></span>}
 					</Box>
-					<Box gridArea={"comment-" + ip.ip_address} >
+					<Box gridArea={"comment-" + ip.ip_address} direction="row" align="center" gap="small" pad="small">
 						<ScopeComment
 							comment={ip.comment}
 							onCommentSubmit={onCommentSubmit}
