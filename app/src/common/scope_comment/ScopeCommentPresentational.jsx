@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { TextArea } from 'semantic-ui-react'
-
 import EditableElement from '../editable/EditableElement.jsx'
 
 
@@ -12,7 +10,7 @@ class ScopeCommentPresentational extends React.Component {
 			<EditableElement
 				value={this.props.scopeComment}
 				onBlur={this.props.commentSubmitted}
-				inputElement={TextArea}
+				inputElement={"textarea"}
 				element={"div"}
 			/>
 		)

@@ -28,6 +28,7 @@
     "webpack": "^3.0.0"
   },
   "dependencies": {
+    "autosize": "^4.0.2",
     "babel-loader": "^6.4.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-airbnb": "^2.6.0",

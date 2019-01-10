@@ -2,6 +2,8 @@ import _ from 'lodash'
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import autosize from 'autosize'
+
 
 class EditableElement extends React.Component {
 
@@ -33,11 +35,13 @@ class EditableElement extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.editable === false && this.props.editable === true) {
+            autosize(this.input);
             this.input.focus();
             return;
         }
 
         if (prevState.editable === false && this.state.editable === true) {
+            autosize(this.input);
             this.input.focus();
         }
     }
@@ -105,8 +109,6 @@ class EditableElement extends React.Component {
                 ref={(input) => {
                     this.input = input;
                 }}
-                autoHeight
-                rows={1}
                 className={this.props.inputClassName}
                 style={this.props.inputStyle}
                 value={this.state.value}
