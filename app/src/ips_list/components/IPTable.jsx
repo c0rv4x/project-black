@@ -66,7 +66,7 @@ class IPTable extends React.Component {
 
 			rows.push('auto');
 			areas.push({
-				name: 'ip_' + ip.ip_address, start: [0, i], end: [0, i]
+				name: 'ip_' + ip.ip_id, start: [0, i], end: [0, i]
 			});
 		}
 
@@ -76,6 +76,7 @@ class IPTable extends React.Component {
 		});
 
 		if (this.props.ips.selected_ips !== prevProps.ips.selected_ips) {
+			// The amount of ips changed, that means filter was applied, send to 0 page
 			this.setState({
 				shownData: this.props.ips.data,
 				offsetPage: 0,
@@ -91,8 +92,8 @@ class IPTable extends React.Component {
 	}
 
 	handlePageClick(page_number) {
-		this.props.setLoaded(false);
 		window.scrollTo(0, 0);
+		this.props.setLoaded(false);
 		this.props.renewIps(page_number - 1);
 	}
 

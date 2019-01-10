@@ -84,7 +84,7 @@ class IPEntryLine extends React.Component {
 
 		return (
 			<Box
-				gridArea={"ip_" + ip.ip_address}
+				gridArea={"ip_" + ip.ip_id}
 				// elevation={this.state.hovered ? "xsmall" : "none"}
 				onMouseOver={() => this.setState({ hovered: true })}
 				onMouseOut={() => this.setState({ hovered: false })}
@@ -155,51 +155,6 @@ class IPEntryLine extends React.Component {
 						/>
 					</Box>
 				</Grid>
-				{/* 
-
-				<Box gridArea="ip">
-					<b
-						onMouseOut={() => this.setState({
-							"copyPasteShown": false,
-							"copySuccess": false
-						})}
-						onMouseOver={() => this.setState({"copyPasteShown": true})}
-						onClick={(e) => {
-							if (document.queryCommandSupported('copy')) {
-								this.iptext.value = ip.ip_address;
-								this.copyToClipboard(e);
-							}
-						}}
-						style={{
-							"cursor": "pointer"
-						}}
-					>
-						{ip.ip_address}
-					</b>
-					{this.state.copyPasteShown && !this.state.copySuccess && <span>  <Icon color="blue" name="copy outline"/></span>}
-					{this.state.copyPasteShown && this.state.copySuccess && <span>  <Icon color="blue" name="check"/></span>}
-				</Box>
-				<Box gridArea="comment">
-					<ScopeComment
-						comment={ip.comment}
-						onCommentSubmit={onCommentSubmit}
-					/>
-				</Box>
-				<Box gridArea="ports">
-					<Label.Group>
-						{ports}
-					</Label.Group>
-				</Box>
-				<Box gridArea="files">
-					<Files target={ip} />
-				</Box>
-				<Box gridArea="control">
-					<HidingButtons
-						project_uuid={project_uuid}
-						type="ip"
-						target={ip.ip_address}
-					/>
-				</Box> */}
 			</Box>
 		)	
 	}
