@@ -2,11 +2,13 @@ import _ from 'lodash'
 import React from 'react'
 
 import {
-    Button,
     Dropdown,
     Icon,
 	Label
 } from 'semantic-ui-react'
+
+import { Box, Button } from 'grommet'
+import { Google, Inspect } from 'grommet-icons'
 
 
 class HidingButtons extends React.Component {
@@ -17,22 +19,8 @@ class HidingButtons extends React.Component {
             "opened": false
         }
 
-        this.renderMinimalElement = this.renderMinimalElement.bind(this);
-        this.renderAllElement = this.renderAllElement.bind(this);
     }
     
-    renderMinimalElement() {
-        return (
-            <div>
-                <Button
-                    basic icon size="small"
-                >
-                    <Icon name='ellipsis horizontal' />
-                </Button>
-            </div>
-        )
-    }
-
     renderAllElement() {
         const { project_uuid, type, target } = this.props;
         const verbose_host_link = '/project/' + project_uuid + '/' + type + '/' + target;
@@ -58,7 +46,10 @@ class HidingButtons extends React.Component {
 
 	render() {
 		return (
-            this.renderAllElement()
+            <Box direction="row" align="center">
+                <Button icon={<Google size="medium" />} />
+                <Button icon={<Inspect size="medium" />} />
+            </Box>
 		)	
 	}
 }
