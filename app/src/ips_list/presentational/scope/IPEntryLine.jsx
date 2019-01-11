@@ -56,10 +56,6 @@ class IPEntryLine extends React.Component {
 					align="center"
 					margin="xxsmall"
 					pad="xsmall"
-					border={{
-						size: "xsmall",
-						color: "brand"
-					}}
 					round="xsmall"
 				>
 					<div><b>{x.port_number}</b></div>
