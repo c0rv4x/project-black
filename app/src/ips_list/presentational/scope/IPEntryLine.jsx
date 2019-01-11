@@ -113,8 +113,8 @@ class IPEntryLine extends React.Component {
 							}}
 						>
 							{ip.ip_address}
-							{this.state.copyPasteShown && !this.state.copySuccess && <span>  <Copy size="15px" /></span>}
-							{this.state.copyPasteShown && this.state.copySuccess && <span>  <Checkmark size="15px" /></span>}
+							{this.state.copyPasteShown && !this.state.copySuccess && <span>  <Copy color="plain" size="15px" /></span>}
+							{this.state.copyPasteShown && this.state.copySuccess && <span>  <Checkmark color="plain" size="15px" /></span>}
 						</Heading>
 					</Box>
 					<Box gridArea={"comment-" + ip.ip_address} gap="small" pad="small">
