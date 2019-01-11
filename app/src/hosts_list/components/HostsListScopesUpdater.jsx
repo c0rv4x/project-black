@@ -29,6 +29,8 @@ class HostsListScopesUpdater extends React.Component {
 
 		if (this.props.hosts.update_needed === true) {
 			this.renewHosts();
+			// TODO: not sure if files is needed here. IPs list manage 
+			// to work without one
 			this.renewFiles();
 		}
 		else {
