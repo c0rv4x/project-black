@@ -1,4 +1,5 @@
 import React from 'react'
+import _ from 'lodash'
 
 import {
 	Button,
@@ -20,6 +21,7 @@ import HostsEntryLinePorts from './HostsEntryLinePorts.jsx'
 import TasksScoped from '../../common/tasks_scoped/TasksScoped.jsx'
 import Creds from '../../common/creds/Creds.jsx'
 import HidingButtons from '../../ips_list/presentational/scope/HidingButtons.jsx'
+import FilesStats from '../../common/files_stats/FilesStats.jsx'
 
 
 class HostsEntryLine extends React.Component {
@@ -147,7 +149,9 @@ class HostsEntryLine extends React.Component {
 					<Box gridArea={"ports-" + host.hostname} gap="small" pad="small">
 						{ipsWithPorts}
 					</Box>
-					<Box gridArea={"files-" + host.hostname} />
+					<Box gridArea={"files-" + host.hostname}>
+						<FilesStats targetId={host.host_id} files={host.files} />
+					</Box>
 					<Box gridArea={"control-" + host.hostname}  direction="row" gap="small" >
 						<HidingButtons
 							project_uuid={project_uuid}
