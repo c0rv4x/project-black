@@ -69,6 +69,14 @@ function mapStateToProps(state, ownProps) {
                 if (a.ip_id > b.ip_id) return 1;
                 return 0;
             });
+
+            for (let ip_address of host.ip_addresses) {
+                ip_address.scans = ip_address.scans.sort((a, b) => {
+                    if (a.port_number < b.port_number) return -1;
+                    if (a.port_number > b.port_number) return 1;
+                    return 0
+                });
+            }
         }
     }
 
