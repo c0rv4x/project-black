@@ -11,6 +11,7 @@ import {
     Table
 } from 'semantic-ui-react'
 
+import { UserAdmin } from 'grommet-icons'
 
 class Creds extends React.Component {
     constructor(props) {
