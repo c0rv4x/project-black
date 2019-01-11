@@ -113,9 +113,10 @@ class HostsEntryLine extends React.Component {
 					]}
 					columns={["small", "small", "auto", "small", "xsmall"]}
 					rows={["auto"]}
+					align="center"
 				>
-					<Box gridArea={"host-" + host.hostname} direction="row" align="center" gap="small" pad="small">
-						<b
+					<Box gridArea={"host-" + host.hostname} pad="small">
+						<Heading
 							onMouseOut={() => this.setState({
 								"copyPasteShown": false,
 								"copySuccess": false
@@ -127,26 +128,27 @@ class HostsEntryLine extends React.Component {
 									this.copyToClipboard(e);
 								}
 							}}
+							level="4"
 							style={{
 								"cursor": "pointer"
 							}}
 						>
 							{host.hostname}
-						</b>
+						</Heading>
 						{this.state.copyPasteShown && !this.state.copySuccess && <span>  <Copy /></span>}
 						{this.state.copyPasteShown && this.state.copySuccess && <span>  <Checkmark /></span>}
 					</Box>
-					<Box gridArea={"comment-" + host.hostname} direction="row" align="center" gap="small" pad="small">
+					<Box gridArea={"comment-" + host.hostname} pad="small">
 						<ScopeComment
 							comment={host.comment}
 							onCommentSubmit={onCommentSubmit}
 						/>
 					</Box>
-					<Box gridArea={"ports-" + host.hostname}>
+					<Box gridArea={"ports-" + host.hostname} gap="small" pad="small">
 						{ipsWithPorts}
 					</Box>
 					<Box gridArea={"files-" + host.hostname} />
-					<Box gridArea={"control-" + host.hostname}  direction="row" align="center" gap="small" >
+					<Box gridArea={"control-" + host.hostname}  direction="row" gap="small" >
 						<HidingButtons
 							project_uuid={project_uuid}
 							type="host"

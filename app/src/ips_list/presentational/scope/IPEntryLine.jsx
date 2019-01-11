@@ -92,9 +92,10 @@ class IPEntryLine extends React.Component {
 					]}
 					columns={["small", "small", "auto", "small", "xsmall"]}
 					rows={["auto"]}
+					align="center"
 				>
-					<Box gridArea={"ipaddr-" + ip.ip_address} direction="row" align="center" gap="small" pad="small">
-						<b
+					<Box gridArea={"ipaddr-" + ip.ip_address} direction="row" gap="small" pad="small">
+						<Heading
 							onMouseOut={() => this.setState({
 								"copyPasteShown": false,
 								"copySuccess": false
@@ -106,28 +107,29 @@ class IPEntryLine extends React.Component {
 									this.copyToClipboard(e);
 								}
 							}}
+							level="4"
 							style={{
 								"cursor": "pointer"
 							}}
 						>
 							{ip.ip_address}
-						</b>
+						</Heading>
 						{this.state.copyPasteShown && !this.state.copySuccess && <span>  <Copy /></span>}
 						{this.state.copyPasteShown && this.state.copySuccess && <span>  <Checkmark /></span>}
 					</Box>
-					<Box gridArea={"comment-" + ip.ip_address} direction="row" align="center" gap="small" pad="small">
+					<Box gridArea={"comment-" + ip.ip_address} gap="small" pad="small">
 						<ScopeComment
 							comment={ip.comment}
 							onCommentSubmit={onCommentSubmit}
 						/>
 					</Box>
-					<Box gridArea={"ports-" + ip.ip_address} >
+					<Box gridArea={"ports-" + ip.ip_address} direction="column" gap="small" pad="small">
 						{ports}
 					</Box>
-					<Box gridArea={"files-" + ip.ip_address} >
+					<Box gridArea={"files-" + ip.ip_address} direction="row" gap="small" pad="small">
 						<Files target={ip} />
 					</Box>
-					<Box gridArea={"control-" + ip.ip_address}  direction="row" align="center" gap="small" >
+					<Box gridArea={"control-" + ip.ip_address}  direction="row" gap="small" >
 						<HidingButtons
 							project_uuid={project_uuid}
 							type="ip"
