@@ -22,7 +22,7 @@ class FilesStats extends React.Component {
         const colors = {
             '2xx': 'neutral-1',
 			'3xx': 'none',
-			'4xx': 'neutral-4',
+			'4xx': 'none',
 			'5xx': 'none'
         }
 
@@ -53,7 +53,7 @@ class FilesStats extends React.Component {
                         key={"files" + i + "-" + targetId}
                         margin="xxsmall"
                         border={{
-                            size: "xsmall",
+                            size: "2px",
                             color: colors[statusCodeMask]
                         }}
                         round="xsmall"
