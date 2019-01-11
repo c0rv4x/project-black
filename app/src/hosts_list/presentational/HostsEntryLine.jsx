@@ -10,7 +10,8 @@ import {
 
 import {
 	Box,
-	Grid
+	Grid,
+	Heading
 } from 'grommet'
 import { Copy, Checkmark} from 'grommet-icons'
 
@@ -52,29 +53,42 @@ class HostsEntryLine extends React.Component {
 	render() {
 		const { host, project_uuid, deleteScope, onCommentSubmit } = this.props;
 
-		let files_by_statuses = {
-			'2xx': 0,
-			'3xx': 0,
-			'4xx': 0,
-			'5xx': 0
-		}
-
-		for (let port_number of Object.keys(host.files)) {
-			for (let status_code of Object.keys(host.files[port_number])) {
-				if (Math.floor(status_code / 100) === 3) {
-					files_by_statuses['3xx'] += host.files[port_number][status_code];
-				}
-				else if (Math.floor(status_code / 100) === 4) {
-					files_by_statuses['4xx'] += host.files[port_number][status_code];
-				}
-				else if (Math.floor(status_code / 100) === 5) {
-					files_by_statuses['5xx'] += host.files[port_number][status_code];
-				}
-				else if (Math.floor(status_code / 100) === 2) {
-					files_by_statuses['2xx'] += host.files[port_number][status_code];
-				}
-			}
-		}
+		const ipsWithPorts = host.ip_addresses.map((ip) => {
+			return (
+				<Box
+					key={host.host_id + '_' + ip.ip_id}
+					align="center"
+					margin="xxsmall"
+					pad="xsmall"
+					border={{
+						size: "xsmall",
+						color: "brand"
+					}}
+					round="xsmall"
+				>
+					<Heading margin="xsmall" level="5">{ip.ip_address}</Heading>
+					{
+						ip.scans.sort((a, b) => {
+							if (a["port_number"] > b["port_number"]) return 1;
+							if (a["port_number"] < b["port_number"]) return -1;
+							return 0;
+						}).map((scan) => {
+							return (
+								<Box
+									key={scan.scan_id}
+									align="center"
+									margin="xxsmall"
+									pad="xxsmall"
+								>
+									<Heading level="6" margin="none">{scan.port_number}</Heading>
+									{scan.banner}
+								</Box>
+							)
+						})
+					}
+				</Box>
+			)
+		});
 
 		return (
 			<Box
@@ -132,7 +146,9 @@ class HostsEntryLine extends React.Component {
 							onCommentSubmit={onCommentSubmit}
 						/>
 					</Box>
-					<Box gridArea={"ports-" + host.hostname} />
+					<Box gridArea={"ports-" + host.hostname}>
+						{ipsWithPorts}
+					</Box>
 					<Box gridArea={"files-" + host.hostname} />
 					<Box gridArea={"control-" + host.hostname}  direction="row" align="center" gap="small" >
 						<HidingButtons
