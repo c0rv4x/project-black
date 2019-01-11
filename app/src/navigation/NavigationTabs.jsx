@@ -3,15 +3,12 @@ import React from 'react'
 import {
     Link
 } from 'react-router-dom'
-// import { Tab, Menu, Icon } from 'semantic-ui-react'
 
 import {
 	Box,
 	Tabs,
-	Tab,
-	Text
+	Tab
 } from 'grommet'
-import { Home } from 'grommet-icons';
 
 import ScopeSetupWrapper from '../scope_setup/components/ScopeSetupWrapper.js'
 import IPsListWrapper from '../ips_list/components/IPsListWrapper.js'
@@ -20,22 +17,12 @@ import HostsListWrapper from '../hosts_list/components/HostsListWrapper.js'
 
 // import Perf from 'react-addons-perf'
 
-const RichTabTitle = ({ icon, label }) => (
-	<Box direction="row" align="center" gap="xsmall" margin="xsmall">
-		{icon}
-		<Text size="small">
-			<strong>{label}</strong>
-		</Text>
-	</Box>
-);
-
-
 class NavigationTabs extends React.Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			activeIndex : 2
+			activeIndex : 3
 		}
 
 		this.project_uuid = this.props.match.params.project_uuid;
@@ -89,19 +76,6 @@ class NavigationTabs extends React.Component {
 		const { activeIndex } = this.state;
 
 		return (
-			// <Tab onTabChange={
-			// 		 (event, data) => {
-			// 		 	 var activeIndex = data.activeIndex;
-			// 			 if ((activeIndex !== 4) && (activeIndex !== 0)) {
-			// 				 this.setState({
-			// 					 activeIndex: activeIndex
-			// 				 })
-			// 			 }
-			// 		 }
-			// 	 }
-			// 	 activeIndex={activeIndex}
-			// 	 panes={panes}
-			// />
 			<Tabs
 				activeIndex={activeIndex}
 				onActive={(index) => {this.setState({activeIndex: index})}}
@@ -143,7 +117,7 @@ class NavigationTabs extends React.Component {
 						margin="small"
 						align="stretch"
 					>
-						Hosts list
+						<HostsListWrapper project_uuid={this.project_uuid} />
 					</Box>
 				</Tab>
 			</Tabs>
