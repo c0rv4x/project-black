@@ -115,7 +115,7 @@ class HostsEntryLine extends React.Component {
 					rows={["auto"]}
 					align="center"
 				>
-					<Box gridArea={"host-" + host.hostname} pad="small">
+					<Box gridArea={"host-" + host.hostname} direction="row" pad="small">
 						<Heading
 							onMouseOut={() => this.setState({
 								"copyPasteShown": false,
@@ -134,9 +134,9 @@ class HostsEntryLine extends React.Component {
 							}}
 						>
 							{host.hostname}
+							{this.state.copyPasteShown && !this.state.copySuccess && <span>  <Copy size="15px" /></span>}
+							{this.state.copyPasteShown && this.state.copySuccess && <span>  <Checkmark size="15px" /></span>}
 						</Heading>
-						{this.state.copyPasteShown && !this.state.copySuccess && <span>  <Copy /></span>}
-						{this.state.copyPasteShown && this.state.copySuccess && <span>  <Checkmark /></span>}
 					</Box>
 					<Box gridArea={"comment-" + host.hostname} pad="small">
 						<ScopeComment
