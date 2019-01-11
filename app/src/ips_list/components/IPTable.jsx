@@ -15,13 +15,27 @@ class IPTable extends React.Component {
 	constructor(props) {
 		super(props);
 
-		if (this.props.ips) {
+		const { ips } = this.props;
+
+		if (ips) {
+			let rows = [];
+			let areas = [];
+	
+			for (let i = 0; i < ips.data.length; i++) {
+				const ip = ips.data[i];
+	
+				rows.push('auto');
+				areas.push({
+					name: 'ip_' + ip.ip_id, start: [0, i], end: [0, i]
+				});
+			}
+
 			this.state = {
-				shownData: this.props.ips.data,
-				offsetPage: this.props.ips.page,
-				pageCount: Math.ceil(this.props.ips.selected_ips / this.props.ips.page_size),
-				areas: [],
-				rows: []
+				shownData: ips.data,
+				offsetPage: ips.page,
+				pageCount: Math.ceil(ips.selected_ips / ips.page_size),
+				areas: areas,
+				rows: rows
 			}
 		}
 
