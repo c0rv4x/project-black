@@ -8,6 +8,7 @@ import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmi
 import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmitter.js'
 import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
 import { setLoaded } from '../../redux/hosts/actions.js'
+import Loading from '../../common/loading/Loading.jsx'
 
 
 class HostsListScopesUpdater extends React.Component {
@@ -87,15 +88,17 @@ class HostsListScopesUpdater extends React.Component {
 
 	render() {
 		return (
-			<Segment vertical>
-				<Dimmer active={!this.props.hosts.loaded} inverted>
-					<Loader />
-				</Dimmer>			
-				<HostsList triggerSetLoaded={this.triggerSetLoaded}
-						   renewHosts={this.renewHosts}
-						   requestUpdateHost={this.requestUpdateHost}
-						   {...this.props} />
-			</Segment>
+			<div>
+				<Loading
+					componentLoading={!this.props.hosts.loaded}
+				>
+				<HostsList
+					triggerSetLoaded={this.triggerSetLoaded}
+					renewHosts={this.renewHosts}
+					requestUpdateHost={this.requestUpdateHost}
+					{...this.props} />
+				</Loading>
+			</div>
 		)
 	}
 }
