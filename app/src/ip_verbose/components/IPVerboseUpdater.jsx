@@ -4,10 +4,7 @@ import React from 'react'
 import IPVerbose from './IPVerbose.jsx'
 import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
 
-import {
-    Dimmer,
-    Loader
-} from 'semantic-ui-react'
+import Loading from '../../common/loading/Loading.jsx'
 
 
 class IPVerboseUpdater extends React.Component {
@@ -36,14 +33,14 @@ class IPVerboseUpdater extends React.Component {
 
 		return (
 			<div>
-                <Dimmer active={!loaded}>
-					<Loader />
-			    </Dimmer>
-
-				<IPVerbose
-					loaded={loaded}
-					{...this.props}
-				/>
+				<Loading
+					componentLoading={!loaded}
+				>
+					<IPVerbose
+						loaded={loaded}
+						{...this.props}
+					/>
+				</Loading>
 			</div>
 		)
 	}
