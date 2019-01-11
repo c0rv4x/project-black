@@ -20,8 +20,7 @@ class IPEntryLine extends React.Component {
 
 		this.state = {
 			"copyPasteShown": false,
-			"copySuccess": false,
-			"hovered": false
+			"copySuccess": false
 		};
 
 		this.copyToClipboard = this.copyToClipboard.bind(this);
@@ -45,7 +44,6 @@ class IPEntryLine extends React.Component {
 
 	render() {
 		const { ip, project_uuid, deleteIP, onCommentSubmit } = this.props;
-		const verbose_host_link = '/project/' + project_uuid + '/ip/' + ip.ip_address;
 
 		const ports = _.map(ip.scans.sort((a, b) => {
 			if (a["port_number"] > b["port_number"]) return 1;
@@ -73,9 +71,6 @@ class IPEntryLine extends React.Component {
 		return (
 			<Box
 				gridArea={"ip_" + ip.ip_id}
-				// elevation={this.state.hovered ? "xsmall" : "none"}
-				onMouseOver={() => this.setState({ hovered: true })}
-				onMouseOut={() => this.setState({ hovered: false })}
 				pad="small"
 				border={{
 					size: "xsmall",
@@ -130,7 +125,7 @@ class IPEntryLine extends React.Component {
 						/>
 					</Box>
 					<Box gridArea={"ports-" + ip.ip_address} >
-								{ports}
+						{ports}
 					</Box>
 					<Box gridArea={"files-" + ip.ip_address} >
 						<Files target={ip} />
