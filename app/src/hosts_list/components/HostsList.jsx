@@ -18,6 +18,7 @@ class HostsList extends React.Component {
   			}), this.props.project_uuid);
   		}	
 	}
+
   	shouldComponentUpdate(nextProps) {
   		return (!_.isEqual(nextProps, this.props));
   	}
@@ -52,12 +53,13 @@ class HostsList extends React.Component {
 					project_uuid={project_uuid}
 					filters={filters} />
 
-				<HostsTableTracked project_uuid={project_uuid}
-								   hosts={hosts}
-								   triggerSetLoaded={this.props.triggerSetLoaded}
-								   renewHosts={this.props.renewHosts}
-								   requestUpdateHost={this.props.requestUpdateHost}
-								   applyFilters={this.props.applyFilters} />
+				<HostsTableTracked
+					project_uuid={project_uuid}
+					hosts={hosts}
+					triggerSetLoaded={this.props.triggerSetLoaded}
+					renewHosts={this.props.renewHosts}
+					requestUpdateHost={this.props.requestUpdateHost}
+					applyFilters={this.props.applyFilters} />
 			</div>
 		)
 	}
