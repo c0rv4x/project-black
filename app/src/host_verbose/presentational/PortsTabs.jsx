@@ -1,14 +1,24 @@
 import _ from 'lodash'
 import React from 'react'
 import {
-	Header,
-	Tab
-} from 'semantic-ui-react'
+	Box,
+	Heading,
+	Tab,
+	Tabs
+} from 'grommet'
 
 import DirsearchTable from '../../dirsearch_tables/components/DirsearchTable.jsx';
 
 
 class PortsTabs extends React.Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			activeIndex: 0
+		}
+	}
+
 	render() {
 		let { target, target_id, ports, stats, loaded, files, requestMoreFiles } = this.props;
 		ports = ports.sort((a, b) => {
@@ -22,36 +32,46 @@ class PortsTabs extends React.Component {
 			let stats_for_port = _.get(stats, port.port_number, {});
 			let total_for_port = _.get(stats_for_port, 'total', 0);
 
-			panes.push({
-				menuItem: String(port.port_number),
-				render: () => (
-					<Tab.Pane>
-						{total_for_port != 0 &&
-							<DirsearchTable
-								files={_.get(files, port.port_number, [])}
-								stats={stats_for_port}
-								target_id={target_id}
-								target={target}
-								port_number={port.port_number}
-								requestMore={requestMoreFiles}
-							/>
-						}
-						{total_for_port == 0 && 
-							<Header as="h3">No files for this port</Header>
-						}
-					</Tab.Pane>
-				)
-			});		
+			panes.push(
+				<Tab
+					key={port.port_number}
+					title={port.port_number}
+				>
+					<Box
+						margin="small"
+						align="center"
+					>
+				 		{total_for_port != 0 &&
+				 			<DirsearchTable
+				 				files={_.get(files, port.port_number, [])}
+				 				stats={stats_for_port}
+				 				target_id={target_id}
+				 				target={target}
+				 				port_number={port.port_number}
+				 				requestMore={requestMoreFiles}
+				 			/>
+				 		}
+				 		{total_for_port == 0 && 
+				 			<Heading level="3">No files for this port</Heading>
+				 		}
+					</Box>
+				</Tab>
+			);		
 		}
 
-		if (loaded && (panes.length == 0)) {
+		if (loaded && (ports.length == 0)) {
 			return (
-				<Header as="h3">This host has no ports yet</Header>
+				<Heading level="3">This host has no ports yet</Heading>
 			)
 		}
 		else {
 			return (
-				<Tab onTabChange={(event, data) => { this.props.tabChange(data.activeIndex)} } panes={panes} />
+				<Tabs
+					activeIndex={this.state.activeIndex}
+					onActive={(index) => {this.setState({activeIndex: index})}}
+				>
+					{panes}
+				</Tabs>
 			)
 		}
 	}

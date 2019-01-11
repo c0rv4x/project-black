@@ -5,18 +5,12 @@ import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmi
 import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import PortsTabs from '../../host_verbose/presentational/PortsTabs.jsx'
 
-import { Divider } from "semantic-ui-react"
+import { Heading } from 'grommet'
 
 class IPVerbose extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			'activeTabNumber': null,
-			'activePortNumber': null
-		}		
-
-		this.tabChange = this.tabChange.bind(this);
 		this.commentSubmitted = this.commentSubmitted.bind(this);
 		this.getFilesIPs = this.getFilesIPs.bind(this);
 	}
@@ -41,25 +35,9 @@ class IPVerbose extends React.Component {
 	}
 
 	componentWillReceiveProps(newProps) {
-		if (JSON.stringify(this.props.ports) !== JSON.stringify(newProps.ports)) {
-			if (typeof this.state.activePortNumber === 'undefined') {
-				this.setState({
-					activePortNumber: newProps.ports[0].port_number,
-					activeTabNumber: 0
-				});
-			}
-		}
-
 		if (newProps.update_needed) {
 			this.ipsEmitter.requestSingleIPs(this.props.project_uuid, this.props.ip.ip_address);
 		}		
-	}
-
-	tabChange(newNumber, portNumber) {
-		this.setState({
-			activeTabNumber: newNumber,
-			activePortNumber: portNumber
-		});
 	}
 
 	commentSubmitted(comment, _id) {
@@ -71,9 +49,7 @@ class IPVerbose extends React.Component {
 
 		return (
 			<div>
-				<Divider hidden />
-				<h2>{ip.ip_address}</h2>
-				<Divider hidden />
+				<Heading level="2">{ip.ip_address}</Heading>
 
 				<ScopeComment
 					comment={ip.comment}
@@ -85,8 +61,6 @@ class IPVerbose extends React.Component {
 					target={ip.ip_address}
 					target_id={ip.ip_id}
 					ports={ports}
-					activeTabNumber={this.state.activeTabNumber}
-					tabChange={this.tabChange}
 					files={files}
 					requestMoreFiles={this.getFilesIPs}
 				/>
