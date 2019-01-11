@@ -69,6 +69,7 @@ class ButtonTasks extends React.Component {
 							changeCurrentTask={this.changeCurrentTask}
 						/>
 					}
+					primary
 				/>
 				{
 					this.state.modalOpen && (
