@@ -14,6 +14,7 @@ class ProjectCommentPresentational extends React.Component {
 					onBlur={this.props.commentSubmitted}
 					inputElement={TextArea}
 					element={Markdown}
+					staticRaw={true}
 					placeholder="## Click to edit the comment" />
 			</Box>
 		)
