@@ -68,11 +68,7 @@ class HostsEntryLine extends React.Component {
 				>
 					<Heading margin="xsmall" level="5">{ip.ip_address}</Heading>
 					{
-						ip.scans.sort((a, b) => {
-							if (a["port_number"] > b["port_number"]) return 1;
-							if (a["port_number"] < b["port_number"]) return -1;
-							return 0;
-						}).map((scan) => {
+						ip.scans.map((scan) => {
 							return (
 								<Box
 									key={scan.scan_id}
