@@ -3,7 +3,8 @@ import React from 'react'
 
 import {
 	Box,
-	Grid
+	Grid,
+	Heading
 } from 'grommet'
 import { Copy, Checkmark} from 'grommet-icons'
 
@@ -58,7 +59,7 @@ class IPEntryLine extends React.Component {
 					pad="xsmall"
 					round="xsmall"
 				>
-					<div><b>{x.port_number}</b></div>
+					<div><Heading level="5">{x.port_number}</Heading></div>
 					{x.banner}
 				</Box>
 			)
