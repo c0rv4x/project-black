@@ -7,8 +7,8 @@ import {
 	Label
 } from 'semantic-ui-react'
 
-import { Box, Button } from 'grommet'
-import { Google, Inspect } from 'grommet-icons'
+import { Box, Button, Stack, Text } from 'grommet'
+import { Google, Inspect, Tasks } from 'grommet-icons'
 
 
 class HidingButtons extends React.Component {
@@ -18,6 +18,32 @@ class HidingButtons extends React.Component {
 
 		return (
             <Box direction="row" align="center">
+                <Stack anchor="top-right">
+                    <Box
+                        align="center"
+                        justify="center"
+                        background={{ color: 'white'}}
+                    >
+                        <Button
+                            onClick={() => window.open(verbose_host_link, Math.random().toString(36).substring(7), 'width=850,height=700')}
+                            icon={<Tasks size="medium" />}
+                        />
+                    </Box>
+                    <Box
+                        background="brand"
+                        round="large"
+                        pad="none"
+                    >
+                        <Text
+                            margin={{
+                                top: "-1px",
+                                bottom: "-1px",
+                                left: "1px",
+                                right: "1px"
+                            }}
+                            color="light-1">25</Text>
+                    </Box>
+                </Stack>
                 <Button
                     onClick={() => window.open("https://google.com/search?q=site:" + target, Math.random().toString(36).substring(7))}
                     icon={<Google size="medium" />}

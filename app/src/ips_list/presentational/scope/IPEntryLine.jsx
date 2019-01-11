@@ -12,7 +12,6 @@ import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
 import TasksScoped from '../../../common/tasks_scoped/TasksScoped.jsx'
 import Creds from '../../../common/creds/Creds.jsx'
 import HidingButtons from './HidingButtons.jsx'
-import Files from './Files.jsx'
 import FilesStats from '../../../common/files_stats/FilesStats.jsx'
 
 
@@ -91,7 +90,7 @@ class IPEntryLine extends React.Component {
 						{ name: 'files-' + ip.ip_address, start: [3, 0], end: [3, 0] },
 						{ name: 'control-' + ip.ip_address, start: [4, 0], end: [4, 0] },
 					]}
-					columns={["small", "small", "auto", "small", "xsmall"]}
+					columns={["small", "small", "auto", "small", "small"]}
 					rows={["auto"]}
 					align="center"
 				>

@@ -113,11 +113,11 @@ class HostsEntryLine extends React.Component {
 						{ name: 'files-' + host.hostname, start: [3, 0], end: [3, 0] },
 						{ name: 'control-' + host.hostname, start: [4, 0], end: [4, 0] },
 					]}
-					columns={["small", "small", "auto", "small", "xsmall"]}
+					columns={["small", "small", "auto", "small", "small"]}
 					rows={["auto"]}
 					align="center"
 				>
-					<Box gridArea={"host-" + host.hostname} direction="row" pad="small">
+					<Box gridArea={"host-" + host.hostname} direction="row" pad="small" overflow="hidden">
 						<Heading
 							onMouseOut={() => this.setState({
 								"copyPasteShown": false,
