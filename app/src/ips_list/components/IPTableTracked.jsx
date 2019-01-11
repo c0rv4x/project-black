@@ -23,12 +23,14 @@ class IPTableTracked extends React.Component {
 
 	render() {
 		return (
-			<IPTable ips={this.props.ips}
-					 project_uuid={this.props.project_uuid}
-					 deleteScope={this.deleteScope}
-					 applyFilters={this.props.applyFilters}
-					 setLoaded={this.props.setLoaded}
-					 renewIps={this.props.renewIps} />
+			<IPTable
+				ips={this.props.ips}
+				project_uuid={this.props.project_uuid}
+				deleteScope={this.deleteScope}
+				applyFilters={this.props.applyFilters}
+				setLoaded={this.props.setLoaded}
+				renewIps={this.props.renewIps}
+			/>
 		)
 	}
 
