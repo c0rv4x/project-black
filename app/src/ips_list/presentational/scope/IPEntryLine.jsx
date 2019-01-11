@@ -13,6 +13,7 @@ import TasksScoped from '../../../common/tasks_scoped/TasksScoped.jsx'
 import Creds from '../../../common/creds/Creds.jsx'
 import HidingButtons from './HidingButtons.jsx'
 import Files from './Files.jsx'
+import FilesStats from '../../../common/files_stats/FilesStats.jsx'
 
 
 class IPEntryLine extends React.Component {
@@ -127,7 +128,7 @@ class IPEntryLine extends React.Component {
 						{ports}
 					</Box>
 					<Box gridArea={"files-" + ip.ip_address} direction="row" gap="small" pad="small">
-						<Files target={ip} />
+						<FilesStats targetId={ip.ip_id} files={ip.files} />
 					</Box>
 					<Box gridArea={"control-" + ip.ip_address}  direction="row" gap="small" >
 						<HidingButtons
