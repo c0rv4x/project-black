@@ -85,6 +85,17 @@ class EditableElement extends React.Component {
 
     renderStaticElement() {
         const Element = this.props.element;
+        const text = this.state.value.trim() || this.props.placeholder;
+        const textLines = text.split('\n');
+        let htmlText = [];
+        
+        for (let i = 0; i < textLines.length; i++) {
+            const line = textLines[i];
+
+            htmlText.push(<div key={i}>{line}</div>);
+        }
+
+
         return (
             <div
                 onClick={this.onClick}
@@ -95,7 +106,7 @@ class EditableElement extends React.Component {
                 <Element
                     className={this.props.elementClassName}
                 >
-                    {this.state.value.trim() || this.props.placeholder}
+                    {htmlText}
                 </Element>
             </div>
         );
