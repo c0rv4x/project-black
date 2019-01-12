@@ -1,7 +1,21 @@
 import _ from 'lodash'
 import React from 'react'
 
-import { Button, Icon, Label, Table } from 'semantic-ui-react'
+import {
+	Box,
+	Button,
+	Table,
+	TableHeader,
+	TableBody,
+	TableRow,
+	TableCell,
+	TableFooter
+} from 'grommet'
+import {
+	Add
+} from 'grommet-icons'
+
+import Footer from './Footer.jsx'
 
 
 class DirsearchTable extends React.Component {
@@ -29,6 +43,7 @@ class DirsearchTable extends React.Component {
 		const { files, stats, target_id, target, port_number } = this.props;
 
 		let files_rows = [];
+		console.log(files);
 		if (files) {
 			for (let each_file of files) {
 				let status_code_style = {
@@ -40,77 +55,34 @@ class DirsearchTable extends React.Component {
 				else status_code_style.color = '#333333';
 
 				files_rows.push(
-					<Table.Row key={each_file.file_id}>
-						<Table.Cell style={status_code_style}>{each_file.status_code}</Table.Cell>
-						<Table.Cell><a href={each_file.file_path} target="_blank">{each_file.file_name}</a></Table.Cell>
-						<Table.Cell>{each_file.content_length}</Table.Cell>
-						<Table.Cell>{each_file.special_note}</Table.Cell>
-					</Table.Row>
+					<TableRow key={each_file.file_id}>
+						<TableCell style={status_code_style}>{each_file.status_code}</TableCell>
+						<TableCell><a href={each_file.file_path} target="_blank">{each_file.file_name}</a></TableCell>
+						<TableCell>{each_file.content_length}</TableCell>
+						<TableCell>{each_file.special_note}</TableCell>
+					</TableRow>
 				);
 			}
 		}
 
 		if (stats.total) {
 			return (
-				<Table>
-					<Table.Header>
-						<Table.Row>
-							<Table.HeaderCell width={1}>{target + ':' + port_number}</Table.HeaderCell>
-							<Table.HeaderCell></Table.HeaderCell>
-							<Table.HeaderCell width={2}>Bytes</Table.HeaderCell>
-							<Table.HeaderCell>Redirect to</Table.HeaderCell>
-						</Table.Row>
-					</Table.Header>
-					<Table.Body>
-						{files_rows}
-					</Table.Body>
-					<Table.Footer fullWidth>
-						<Table.Row>
-							<Table.HeaderCell colSpan='4'>
-								{stats[200] && 
-									<Label color="green" size="medium">{stats[200]}x 200</Label>
-								}
-								{stats[301] && 
-									<Label size="medium">{stats[301]}x 301</Label>
-								}
-								{stats[302] && 
-									<Label size="medium">{stats[302]}x 302</Label>
-								}																
-								{stats[400] && 
-									<Label size="medium">{stats[400]}x 400</Label>
-								}						
-								{stats[401] && 
-									<Label color="yellow" size="medium">{stats[401]}x 401</Label>
-								}								
-								<Label size="medium">{stats.total} files</Label>
-								<Button
-									disabled={files_rows.length >= stats.total}
-									floated="right"
-									loading={!this.state.loaded}
-									size="tiny"
-									onClick={() => {
-										// TODO: target_id and port_number can be set via the wrapping component
-										console.log(target_id, port_number);
-										this.props.requestMore(target_id, port_number, 100, files_rows.length);
-									}}
-								>
-									<Icon name='plus' /> Load 100
-								</Button>								
-								<Button
-									disabled={files_rows.length >= stats.total}
-									floated="right"
-									loading={!this.state.loaded}
-									size="tiny"
-									onClick={() => {
-										this.props.requestMore(target_id, port_number, 1, files_rows.length);
-									}}
-								>
-									<Icon name='plus' /> Load 1
-								</Button>								
-							</Table.HeaderCell>
-						</Table.Row>
-					</Table.Footer>					
-				</Table>
+				<Box alignSelf="stretch">
+					<Table alignSelf="stretch">
+						<TableHeader>
+							<TableRow>
+								<TableCell>Code</TableCell>
+								<TableCell>Path</TableCell>
+								<TableCell>Bytes</TableCell>
+								<TableCell>Redirect to</TableCell>
+							</TableRow>
+						</TableHeader>
+						<TableBody>
+							{files_rows}
+						</TableBody>
+					</Table>
+					<Footer got_files={files_rows} {...this.props} />
+				</Box>
 			)
 		}
 		else {
