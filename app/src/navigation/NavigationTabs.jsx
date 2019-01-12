@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import {
-    Link
+    Redirect
 } from 'react-router-dom'
 
 import {
@@ -34,24 +34,6 @@ class NavigationTabs extends React.Component {
 	render() {
 		const dirsearch_link = '/project/' + this.project_uuid + '/dirsearch';
 
-		// const panes = [
-		// 	{
-		// 		menuItem: <Menu.Item key="main" as={Link} to='/' >
-		// 			<Icon name="home"></Icon>
-		// 		</Menu.Item>
-		// 	},		
-		// 	{
-		// 		menuItem: 'Scope Setup',
-		// 		render: (() => <ScopeSetupWrapper project_uuid={this.project_uuid} />)
-		// 	},
-		// 	{
-		// 		menuItem: 'IP List',
-		// 		render: (() => <IPsListWrapper project_uuid={this.project_uuid} />)
-		// 	},
-		// 	{
-		// 		menuItem: 'Hosts List',
-		// 		render: (() => <HostsListWrapper project_uuid={this.project_uuid} />)
-		// 	},
 		// 	{
 		// 		menuItem: <Menu.Item key="dirsearch_table" onClick={() => 
 		// 			window.open(dirsearch_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
@@ -70,12 +52,7 @@ class NavigationTabs extends React.Component {
 				<Tab
 					title="Home"
 				>
-					<Box
-						margin="small"
-						align="center"
-					>
-						Home
-					</Box>
+					<Redirect to="/" push />
 				</Tab>
 				<Tab
 					title="Overview"
@@ -107,6 +84,7 @@ class NavigationTabs extends React.Component {
 						<HostsListWrapper project_uuid={this.project_uuid} />
 					</Box>
 				</Tab>
+				
 			</Tabs>
 		)
 	}
