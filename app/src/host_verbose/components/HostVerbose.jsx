@@ -3,13 +3,10 @@ import React from 'react'
 import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import PortsTabs from '../presentational/PortsTabs.jsx'
 
-import {
-	Divider,
-	Header
-} from 'semantic-ui-react'
 
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter'
 import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
+import { Heading } from 'grommet';
 
 
 class HostVerbose extends React.Component {
@@ -76,9 +73,7 @@ class HostVerbose extends React.Component {
 
 		return (
 			<div>
-				<Divider hidden />
-				<Header as="h2">{host.hostname}</Header>
-				<Divider hidden />
+				<Heading level="2">{host.hostname}</Heading>
 
 				<ScopeComment comment={host.comment}
 							  onCommentSubmit={(value) => this.commentSubmitted(value, host.host_id)} />
