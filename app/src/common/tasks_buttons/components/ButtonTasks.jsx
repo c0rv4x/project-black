@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
+import { DropButton } from 'grommet'
 
 import InnerModal from './InnerModal.jsx'
 import DropButtonContent from './DropButtonContent.jsx'
