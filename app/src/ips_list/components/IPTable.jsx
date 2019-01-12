@@ -75,9 +75,13 @@ class IPTable extends React.Component {
 		}
 
 		this.setState({
-			rows: rows,
-			areas: areas
+			rows: rows
 		});
+
+		// this.setState({
+		// 	rows: rows,
+		// 	areas: areas
+		// });
 
 		if (this.props.ips.selected_ips !== prevProps.ips.selected_ips) {
 			// The amount of ips changed, that means filter was applied, send to 0 page
@@ -122,7 +126,6 @@ class IPTable extends React.Component {
 				{(this.props.ips.data.length !== 0 || !this.props.ips.loaded) &&
 					<div>
 						<Grid
-							areas={areas}
 							columns={['flex']}
 							rows={rows}
 							gap='small'

@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom'
 
 import {
+	Anchor,
 	Box,
 	Tabs,
 	Tab
@@ -13,6 +14,7 @@ import {
 import ScopeSetupWrapper from '../scope_setup/components/ScopeSetupWrapper.js'
 import IPsListWrapper from '../ips_list/components/IPsListWrapper.js'
 import HostsListWrapper from '../hosts_list/components/HostsListWrapper.js'
+import DirsearchWrapper from './DirsearchWrapper.jsx'
 
 
 class NavigationTabs extends React.Component {
@@ -33,15 +35,6 @@ class NavigationTabs extends React.Component {
 	
 	render() {
 		const dirsearch_link = '/project/' + this.project_uuid + '/dirsearch';
-
-		// 	{
-		// 		menuItem: <Menu.Item key="dirsearch_table" onClick={() => 
-		// 			window.open(dirsearch_link, Math.random().toString(36).substring(7), 'width=850,height=700')}>
-		// 			Dirsearch List
-		// 		</Menu.Item>
-		// 	}
-		// ]
-
 		const { activeIndex } = this.state;
 
 		return (
@@ -84,14 +77,19 @@ class NavigationTabs extends React.Component {
 						<HostsListWrapper project_uuid={this.project_uuid} />
 					</Box>
 				</Tab>
-				
+				<Tab
+					title="Dirsearch list"
+				>
+					<Box
+						margin="small"
+						align="stretch"
+					>
+						<Redirect to={dirsearch_link} push />
+					</Box>
+				</Tab>
 			</Tabs>
 		)
 	}
 }
-
-			// 	<Tab eventKey={4} title="All Tasks">
-			// 		<TasksTabWrapper project_uuid={this.project_uuid} />
-			// 	</Tab>				
 
 export default NavigationTabs;

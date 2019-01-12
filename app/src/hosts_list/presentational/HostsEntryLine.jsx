@@ -4,7 +4,8 @@ import _ from 'lodash'
 import {
 	Box,
 	Grid,
-	Heading
+	Heading,
+	Text
 } from 'grommet'
 import { Copy, Checkmark} from 'grommet-icons'
 
@@ -108,8 +109,8 @@ class HostsEntryLine extends React.Component {
 					rows={["auto"]}
 					align="center"
 				>
-					<Box gridArea={"host-" + host.hostname} direction="row" pad="small" overflow="hidden">
-						<Heading
+					<Box gridArea={"host-" + host.hostname} direction="row" pad="small">
+						<Text
 							onMouseOut={() => this.setState({
 								"copyPasteShown": false,
 								"copySuccess": false
@@ -121,15 +122,15 @@ class HostsEntryLine extends React.Component {
 									this.copyToClipboard(e);
 								}
 							}}
-							level="4"
 							style={{
-								"cursor": "pointer"
+								"cursor": "pointer",
+								"whiteSpace": "normal"
 							}}
 						>
 							{host.hostname}
 							{this.state.copyPasteShown && !this.state.copySuccess && <span>  <Copy color="plain" size="15px" /></span>}
 							{this.state.copyPasteShown && this.state.copySuccess && <span>  <Checkmark color="plain" size="15px" /></span>}
-						</Heading>
+						</Text>
 					</Box>
 					<Box gridArea={"comment-" + host.hostname} pad="small">
 						<ScopeComment

@@ -67,7 +67,6 @@ class IPEntryLine extends React.Component {
 
 		return (
 			<Box
-				gridArea={"ip_" + ip.ip_id}
 				pad="small"
 				border={{
 					size: "xsmall",
