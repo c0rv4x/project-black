@@ -4,10 +4,7 @@ import React from 'react'
 import HostVerbose from './HostVerbose.jsx'
 import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
 
-import {
-	Dimmer,
-	Loader
-} from 'semantic-ui-react'
+import Loading from '../../common/loading/Loading.jsx'
 
 
 class HostVerboseUpdater extends React.Component {
@@ -36,14 +33,14 @@ class HostVerboseUpdater extends React.Component {
 
 		return (
 			<div>
-                <Dimmer active={!loaded}>
-					<Loader />
-			    </Dimmer>
-
-				<HostVerbose
-					loaded={loaded}
-					{...this.props}
-				/>                
+				<Loading
+					componentLoading={!loaded}
+				>
+					<HostVerbose
+						loaded={loaded}
+						{...this.props}
+					/>
+				</Loading>
 			</div>				  
 		)
 	}
