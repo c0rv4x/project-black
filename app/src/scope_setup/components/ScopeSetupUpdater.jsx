@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import React from 'react'
-import { Dimmer, Loader, Segment } from 'semantic-ui-react'
 
 import ScopeSetup from './ScopeSetup.jsx'
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'

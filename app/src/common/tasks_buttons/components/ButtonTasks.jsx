@@ -1,8 +1,5 @@
 import _ from 'lodash'
 import React from 'react'
-import { Dropdown, Icon, Popup } from 'semantic-ui-react';
-import { Box, Heading, Text, Button, DropButton } from 'grommet'
-import { Close } from 'grommet-icons'
 
 import InnerModal from './InnerModal.jsx'
 import DropButtonContent from './DropButtonContent.jsx'

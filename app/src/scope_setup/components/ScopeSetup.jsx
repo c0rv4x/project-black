@@ -6,7 +6,6 @@ import HeadButtonsTracked from './HeadButtonsTracked.jsx'
 import ProjectComment from '../../common/project_comment/ProjectComment.jsx'
 
 import Stats from '../presentational/Stats.jsx'
-import { Segment } from 'semantic-ui-react'
 
 class ScopeSetup extends React.Component {
 

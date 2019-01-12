@@ -2,14 +2,6 @@ import React from 'react'
 import _ from 'lodash'
 
 import {
-	Button,
-	Card,
-	List,
-	Header,
-	Divider
-} from 'semantic-ui-react'
-
-import {
 	Box,
 	Grid,
 	Heading
@@ -17,7 +9,6 @@ import {
 import { Copy, Checkmark} from 'grommet-icons'
 
 import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
-import HostsEntryLinePorts from './HostsEntryLinePorts.jsx'
 import TasksScoped from '../../common/tasks_scoped/TasksScoped.jsx'
 import Creds from '../../common/creds/Creds.jsx'
 import HidingButtons from '../../ips_list/presentational/scope/HidingButtons.jsx'

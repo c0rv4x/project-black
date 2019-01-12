@@ -1,12 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
 
-import {
-    Dropdown,
-    Icon,
-	Label
-} from 'semantic-ui-react'
-
 import { Box, Button, Stack, Text } from 'grommet'
 import { Google, Inspect, Tasks } from 'grommet-icons'
 
