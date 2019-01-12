@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types';
-import { Dimmer, Loader, Segment } from 'semantic-ui-react'
 
 import HostsList from './HostsList.jsx'
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'

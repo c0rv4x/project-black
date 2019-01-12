@@ -1,13 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import Select from 'react-select'
-import { Button } from 'semantic-ui-react'
 
-
-function splice(oldStr, start, delCount, newSubStr) {
-	const intStart = parseInt(start);
-    return oldStr.slice(0, intStart) + newSubStr + oldStr.slice(intStart + Math.abs(delCount));
-};
 
 class Search extends React.Component {
 	constructor(props) {
