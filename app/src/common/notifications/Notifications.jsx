@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import PropTypes from 'prop-types';
 
-import { Message } from 'semantic-ui-react'
+import { Box, Text } from 'grommet'
 
 import { notifDismiss } from '../../redux/notifications/actions';
 
@@ -19,22 +19,24 @@ class Notifications extends React.Component {
     render() {
         const { notifications, store } = this.props;
         const renderedNotifications = notifications.map((notification) => {
-            let color = 'cyan';
+            let color = 'brand';
             let kind = getter(notification, 'kind');
             let id = getter(notification, 'id');
 
-            if (kind === 'success') color = 'green'
-            else if (kind === 'error') color = 'red'
+            if (kind === 'success') color = 'status-ok'
+            else if (kind === 'error') color = 'status-critical'
 
             return (
-                <Message
-                  key={id}
-                  id={id}
-                  color={color}
-                  onClick={() => {store.dispatch(notifDismiss(id))}}
+                <Box
+                    key={id}
+                    id={id}
+                    background={color}
+                    round="medium"
+                    pad={{ vertical: "xsmall", horizontal: "small" }}
+                    onClick={() => {store.dispatch(notifDismiss(id))}}
                 >
-                    {getter(notification, 'message')}
-                </Message>
+                    <Text>{getter(notification, 'message')}</Text>
+                </Box>
             )
         });
 
