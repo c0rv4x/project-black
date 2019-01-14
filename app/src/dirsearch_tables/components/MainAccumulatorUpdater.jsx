@@ -38,15 +38,7 @@ class MainAccumulatorUpdater extends React.Component {
 		this.getFilesHosts = this.getFilesHosts.bind(this);
 		this.renewFilesStatsHosts = this.renewFilesStatsHosts.bind(this);
 		this.renewFilesStatsIps = this.renewFilesStatsIps.bind(this);
-		this.setFilesEmpty = this.setFilesEmpty.bind(this);
-
-		if (this.props.ips.data) {
-			this.renewFilesStatsIps();
-		}
-
-		if (this.props.hosts.data) {
-			this.renewFilesStatsHosts();
-		}		
+		this.setFilesEmpty = this.setFilesEmpty.bind(this);		
 	}
 
 	componentDidMount() {
