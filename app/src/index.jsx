@@ -6,7 +6,7 @@ import { createStore } from 'redux'
 import rdcs from './redux/reducers.js'
 import Routing from './navigation/Routing.jsx'
 
-import { Grommet, Box, Grid } from 'grommet';
+import { Grommet, Box } from 'grommet';
 import { grommet } from "grommet/themes";
 
 
@@ -25,13 +25,11 @@ class App extends React.Component {
     render () {
         return (
             <Grommet plain theme={grommet} full={true}>
-                <Grid>
                 <Box pad="medium" align="stretch">
                     <Provider store={mainStore}>
                         <Routing />
                     </Provider>
                 </Box>
-                </Grid>
             </Grommet>
         );
     }

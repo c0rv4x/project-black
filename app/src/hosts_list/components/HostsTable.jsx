@@ -5,7 +5,7 @@ import Search from '../../common/search/Search.jsx'
 import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
 import HostsEntryLine from '../presentational/HostsEntryLine.jsx'
 
-import { Grid, Heading } from 'grommet'
+import { Box, Heading } from 'grommet'
 
 class HostsTable extends React.Component {
 
@@ -15,24 +15,10 @@ class HostsTable extends React.Component {
 		const { hosts } = this.props;
 
 		if (hosts) {
-			let rows = [];
-			let areas = [];
-	
-			for (let i = 0; i < hosts.data.length; i++) {
-				const host = hosts.data[i];
-	
-				rows.push('auto');
-				areas.push({
-					name: 'host_' + host.host_id, start: [0, i], end: [0, i]
-				});
-			}
-
 			this.state = {
 				shownData: hosts.data,
 				offsetPage: hosts.page,
-				pageCount: Math.ceil(hosts.total_db_hosts / hosts.page_size),
-				areas: areas,
-				rows: rows
+				pageCount: Math.ceil(hosts.total_db_hosts / hosts.page_size)
 			}
 		}
 
@@ -45,39 +31,23 @@ class HostsTable extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		if ((this.props.hosts.page !== prevProps.hosts.page) || (this.props.hosts.page_size !== prevProps.hosts.page_size)) {
+		const { hosts } = this.props;
+
+		if ((hosts.page !== prevProps.hosts.page) || (hosts.page_size !== prevProps.hosts.page_size)) {
 			this.props.triggerSetLoaded(true);
 		}
 
-		const { hosts } = this.props;
-		let rows = [];
-		let areas = [];
-
-		for (let i = 0; i < hosts.data.length; i++) {
-			const host = hosts.data[i];
-
-			rows.push('auto');
-			areas.push({
-				name: 'host_' + host.host_id, start: [0, i], end: [0, i]
-			});
-		}
-
-		this.setState({
-			rows: rows,
-			areas: areas
-		});
-
-		if (this.props.hosts.selected_hosts !== prevProps.hosts.selected_hosts) {
+		if (hosts.selected_hosts !== prevProps.hosts.selected_hosts) {
 			this.setState({
-				shownData: this.props.hosts.data,
+				shownData: hosts.data,
 				offsetPage: 0,
-				pageCount: Math.ceil(this.props.hosts.selected_hosts / this.props.hosts.page_size)
+				pageCount: Math.ceil(hosts.selected_hosts / hosts.page_size)
 			});
 		}
 		else {
 			this.setState({
-				shownData: this.props.hosts.data,
-				pageCount: Math.ceil(this.props.hosts.selected_hosts / this.props.hosts.page_size)
+				shownData: hosts.data,
+				pageCount: Math.ceil(hosts.selected_hosts / hosts.page_size)
 			});
 		}
 	}
@@ -93,8 +63,6 @@ class HostsTable extends React.Component {
 	}
 
 	render() {
-		const { areas, rows } = this.state;
-
 		const hosts = _.map(this.state.shownData, (x) => {
 			return (
 				<HostsEntryLine
@@ -116,14 +84,11 @@ class HostsTable extends React.Component {
 				}
 				{(this.props.hosts.data.length !== 0 || !this.props.hosts.loaded) &&
 					<div>
-						<Grid
-							areas={areas}
-							columns={['flex']}
-							rows={rows}
+						<Box
 							gap='small'
 						>
 							{hosts}
-						</Grid>
+						</Box>
 						<br />
 						<ReactPaginate
 							pageNumber={this.props.hosts.page}

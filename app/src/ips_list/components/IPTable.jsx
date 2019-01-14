@@ -7,7 +7,7 @@ import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmi
 import IPEntryLine from '../presentational/scope/IPEntryLine.jsx'
 import Search from '../../common/search/Search.jsx'
 
-import { Grid, Heading } from 'grommet'
+import { Box, Heading } from 'grommet'
 
 
 class IPTable extends React.Component {
@@ -18,24 +18,10 @@ class IPTable extends React.Component {
 		const { ips } = this.props;
 
 		if (ips) {
-			let rows = [];
-			let areas = [];
-	
-			for (let i = 0; i < ips.data.length; i++) {
-				const ip = ips.data[i];
-	
-				rows.push('auto');
-				areas.push({
-					name: 'ip_' + ip.ip_id, start: [0, i], end: [0, i]
-				});
-			}
-
 			this.state = {
 				shownData: ips.data,
 				offsetPage: ips.page,
-				pageCount: Math.ceil(ips.selected_ips / ips.page_size),
-				areas: areas,
-				rows: rows
+				pageCount: Math.ceil(ips.selected_ips / ips.page_size)
 			}
 		}
 
@@ -57,44 +43,24 @@ class IPTable extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		if ((this.props.ips.page !== prevProps.ips.page) || (this.props.ips.page_size !== prevProps.ips.page_size)) {
+		const { ips } = this.props;
+
+		if ((ips.page !== prevProps.ips.page) || (ips.page_size !== prevProps.ips.page_size)) {
 			this.props.setLoaded(true);
 		}
 
-		const { ips } = this.props;
-		let rows = [];
-		let areas = [];
-
-		for (let i = 0; i < ips.data.length; i++) {
-			const ip = ips.data[i];
-
-			rows.push('auto');
-			areas.push({
-				name: 'ip_' + ip.ip_id, start: [0, i], end: [0, i]
-			});
-		}
-
-		this.setState({
-			rows: rows
-		});
-
-		// this.setState({
-		// 	rows: rows,
-		// 	areas: areas
-		// });
-
-		if (this.props.ips.selected_ips !== prevProps.ips.selected_ips) {
+		if (ips.selected_ips !== prevProps.ips.selected_ips) {
 			// The amount of ips changed, that means filter was applied, send to 0 page
 			this.setState({
-				shownData: this.props.ips.data,
+				shownData: ips.data,
 				offsetPage: 0,
-				pageCount: Math.ceil(this.props.ips.selected_ips / this.props.ips.page_size)
+				pageCount: Math.ceil(ips.selected_ips / ips.page_size)
 			});
 		}
 		else {
 			this.setState({
-				shownData: this.props.ips.data,
-				pageCount: Math.ceil(this.props.ips.selected_ips / this.props.ips.page_size)
+				shownData: ips.data,
+				pageCount: Math.ceil(ips.selected_ips / ips.page_size)
 			});
 		}
 	}
@@ -106,8 +72,6 @@ class IPTable extends React.Component {
 	}
 
 	render() {
-		const { areas, rows } = this.state;
-
 		const ips = _.map(this.state.shownData, (x) => {
 			return <IPEntryLine key={x.ip_id} 
 								ip={x}
@@ -125,13 +89,11 @@ class IPTable extends React.Component {
 				}
 				{(this.props.ips.data.length !== 0 || !this.props.ips.loaded) &&
 					<div>
-						<Grid
-							columns={['flex']}
-							rows={rows}
+						<Box
 							gap='small'
 						>
 							{ips}
-						</Grid>
+						</Box>
 						<br />
 						<ReactPaginate
 							pageNumber={this.props.ips.page}

@@ -2,9 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 
 import {
-	Box,
-	Grid,
-	Heading
+	Box
 } from 'grommet'
 
 
@@ -49,7 +47,6 @@ class FilesStats extends React.Component {
             if (count > 0) {
                 filesBoxes.push(
                     <Box
-                        gridArea={"files" + i + "-" + targetId}
                         key={"files" + i + "-" + targetId}
                         margin="xxsmall"
                         border={{
@@ -67,19 +64,11 @@ class FilesStats extends React.Component {
         }) 
 
         return (
-            <Grid
-                areas={[
-                    { name: 'files1-' + targetId, start: [0, 0], end: [0, 0] },
-                    { name: 'files2-' + targetId, start: [1, 0], end: [1, 0] },
-                    { name: 'files3-' + targetId, start: [0, 1], end: [0, 1] },
-                    { name: 'files4-' + targetId, start: [1, 1], end: [1, 1] },
-                ]}
-                columns={["auto", "auto"]}
-                rows={["auto", "auto"]}
+            <Box
                 align="center"
             >
                 {filesBoxes}
-            </Grid>
+            </Box>
         )
     }
 }
