@@ -2,12 +2,14 @@ import _ from 'lodash'
 import React from 'react'
 
 import {
+	Anchor,
 	Box,
 	Table,
 	TableHeader,
 	TableBody,
 	TableRow,
-	TableCell
+	TableCell,
+	Text
 } from 'grommet'
 
 import Footer from './Footer.jsx'
@@ -40,20 +42,17 @@ class DirsearchTable extends React.Component {
 		let files_rows = [];
 		if (files) {
 			for (let each_file of files) {
-				let status_code_style = {
-					color: null
-				};
+				let color = null;
 
-				if (Math.floor(each_file.status_code / 100) == 2) status_code_style.color = '#22CF22';
-				else if (each_file.status_code == 401) status_code_style.color = '#F4DF42';
-				else status_code_style.color = '#333333';
+				if (Math.floor(each_file.status_code / 100) == 2) color = 'status-ok';
+				else if (each_file.status_code == 401) color = 'status-warning';
 
 				files_rows.push(
 					<TableRow key={each_file.file_id}>
-						<TableCell style={status_code_style}>{each_file.status_code}</TableCell>
-						<TableCell><a href={each_file.file_path} target="_blank">{each_file.file_name}</a></TableCell>
-						<TableCell>{each_file.content_length}</TableCell>
-						<TableCell>{each_file.special_note}</TableCell>
+						<TableCell><Text color={color}>{each_file.status_code}</Text></TableCell>
+						<TableCell><Anchor href={each_file.file_path} target="_blank">{each_file.file_name}</Anchor></TableCell>
+						<TableCell><Text>{each_file.content_length}</Text></TableCell>
+						<TableCell><Text>{each_file.special_note}</Text></TableCell>
 					</TableRow>
 				);
 			}
