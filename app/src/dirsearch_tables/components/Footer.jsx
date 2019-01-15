@@ -49,7 +49,8 @@ class Footer extends React.Component {
                 gap='small'
                 margin={{
                     top: "xsmall",
-                    left: "xsmall"
+                    left: "xsmall",
+                    right: "xsmall"
                 }}
             >
                 <Box gridArea="labels" direction="row">							
