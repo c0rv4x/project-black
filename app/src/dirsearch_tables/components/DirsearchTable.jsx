@@ -4,6 +4,7 @@ import React from 'react'
 import {
 	Anchor,
 	Box,
+	Heading,
 	Table,
 	TableHeader,
 	TableBody,
@@ -70,7 +71,17 @@ class DirsearchTable extends React.Component {
 					margin={{
 						"bottom": "small"
 					}}
+					pad="xsmall"
 				>
+					<Heading
+						level="4"
+						margin={{
+							left: "xsmall",
+							bottom: "xsmall"
+						}}
+					>
+						{target}:{port_number}
+					</Heading>
 					<Table alignSelf="stretch">
 						<TableHeader>
 							<TableRow>

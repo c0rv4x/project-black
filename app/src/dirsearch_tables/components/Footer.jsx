@@ -47,7 +47,10 @@ class Footer extends React.Component {
                 columns={['small', 'medium', 'auto']}
                 rows={['auto']}
                 gap='small'
-                margin="xsmall"
+                margin={{
+                    top: "xsmall",
+                    left: "xsmall"
+                }}
             >
                 <Box gridArea="labels" direction="row">							
                     {generateFiles(stats, target_id)}
