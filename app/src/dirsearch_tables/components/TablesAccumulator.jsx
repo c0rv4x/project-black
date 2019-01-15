@@ -66,14 +66,16 @@ class TablesAccumulator extends React.Component {
 				const stats_for_host_port = _.get(stats_for_host, port_number, {});
 
 				tables.push(
-					<DirsearchTable key={each_host.host_id + "_" + port_number} 
-									target={each_host.hostname}
-									target_id={each_host.host_id}
-									port_number={port_number}
-									files={files_for_host_port}
-									stats={stats_for_host_port}
-									project_uuid={project_uuid}
-									requestMore={getFilesHosts} />
+					<DirsearchTable
+						key={each_host.host_id + "_" + port_number} 
+						target={each_host.hostname}
+						target_id={each_host.host_id}
+						port_number={port_number}
+						files={files_for_host_port}
+						stats={stats_for_host_port}
+						project_uuid={project_uuid}
+						requestMore={getFilesHosts}
+					/>
 				);
 			}
 		}
@@ -84,8 +86,7 @@ class TablesAccumulator extends React.Component {
 				<Header as="h2">{project_name}</Header>
 				<Search applyFilters={applyFilters} />
 				<br />
-					{tables}
-				<br />
+				{tables}
 				<ReactPaginate
 					pageNumber={this.props.pageNumberUnmodified}
 					pageCount={this.state.pageCount}

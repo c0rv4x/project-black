@@ -16,6 +16,8 @@ import {
 	Add
 } from 'grommet-icons'
 
+import generateFiles from '../presentational/FileStatsOverview.jsx'
+
 
 class Footer extends React.Component {
 	constructor(props) {
@@ -39,7 +41,8 @@ class Footer extends React.Component {
 	}
 
 	render() {
-		const { stats, target_id, port_number, got_files } = this.props;
+        const { stats, target_id, port_number, got_files } = this.props;
+
         return (
             <Grid
                 areas={[
@@ -50,60 +53,10 @@ class Footer extends React.Component {
                 columns={['small', 'medium', 'auto']}
                 rows={['auto']}
                 gap='small'
+                margin="xsmall"
             >
-                <Box gridArea="labels" direction="row">
-                    {stats[200] && 
-                        <Box
-                            border={{size: "small", color: "status-ok"}}
-                            pad="xxsmall"
-                            round="xsmall"
-                        >
-                            {stats[200]}x 200
-                        </Box>
-                    }
-                    {stats[301] && 
-                        <Box
-                            border={{size: "small", color: "dark-1"}}
-                            pad="xxsmall"
-                            round="xsmall"
-                        >
-                            {stats[301]}x 301
-                        </Box>
-                    }
-                    {stats[302] && 
-                        <Box
-                            border={{size: "small", color: "dark-1"}}
-                            pad="xxsmall"
-                            round="xsmall"
-                        >
-                            {stats[302]}x 302
-                        </Box>
-                    }																
-                    {stats[400] && 
-                        <Box
-                            border={{size: "small", color: "dark-1"}}
-                            pad="xxsmall"
-                            round="xsmall"
-                        >
-                            {stats[400]}x 400
-                        </Box>
-                    }						
-                    {stats[401] && 
-                        <Box
-                            border={{size: "small", color: "status-warning"}}
-                            pad="xxsmall"
-                            round="xsmall"
-                        >
-                            {stats[401]}x 401
-                        </Box>
-                    }								
-                    <Box
-                        border={{size: "small", color: "dark-1"}}
-                        pad="xxsmall"
-                        round="xsmall"
-                    >
-                        {stats.total} files
-                    </Box>
+                <Box gridArea="labels" direction="row">							
+                    {generateFiles(stats, target_id)}
                 </Box>
                 <Box gridArea="buttons" direction="row" justify="end" gap="small">
                     <Button

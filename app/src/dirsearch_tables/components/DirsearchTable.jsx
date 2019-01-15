@@ -43,7 +43,6 @@ class DirsearchTable extends React.Component {
 		const { files, stats, target_id, target, port_number } = this.props;
 
 		let files_rows = [];
-		console.log(files);
 		if (files) {
 			for (let each_file of files) {
 				let status_code_style = {
@@ -67,7 +66,17 @@ class DirsearchTable extends React.Component {
 
 		if (stats.total) {
 			return (
-				<Box alignSelf="stretch">
+				<Box
+					alignSelf="stretch"
+					border={{
+						color: "dark-3",
+						size: "xsmall"
+					}}
+					round="small"
+					margin={{
+						"bottom": "small"
+					}}
+				>
 					<Table alignSelf="stretch">
 						<TableHeader>
 							<TableRow>
