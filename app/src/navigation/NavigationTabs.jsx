@@ -26,21 +26,30 @@ class NavigationTabs extends React.Component {
 		}
 
 		this.project_uuid = this.props.match.params.project_uuid;
-
+		this.tabChange = this.tabChange.bind(this);
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
 		return ((!_.isEqual(nextProps, this.props)) || (!_.isEqual(nextState, this.state)));
 	}
+
+	tabChange(index) {
+		if (index != 4) {
+			this.setState({activeIndex: index});
+		}
+		else {
+			const dirsearch_link = '/project/' + this.project_uuid + '/dirsearch';
+			window.open(dirsearch_link, Math.random().toString(36).substring(7), 'width=850,height=700');
+		}
+	}
 	
 	render() {
-		const dirsearch_link = '/project/' + this.project_uuid + '/dirsearch';
 		const { activeIndex } = this.state;
 
 		return (
 			<Tabs
 				activeIndex={activeIndex}
-				onActive={(index) => {this.setState({activeIndex: index})}}
+				onActive={this.tabChange}
 			>
 				<Tab
 					title="Home"
@@ -80,12 +89,6 @@ class NavigationTabs extends React.Component {
 				<Tab
 					title="Dirsearch list"
 				>
-					<Box
-						margin="small"
-						align="stretch"
-					>
-						<Redirect to={dirsearch_link} push />
-					</Box>
 				</Tab>
 			</Tabs>
 		)
