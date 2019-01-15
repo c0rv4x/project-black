@@ -124,7 +124,7 @@ class HostsEntryLine extends React.Component {
 							}}
 							style={{
 								"cursor": "pointer",
-								"whiteSpace": "normal"
+								"wordBreak": "break-word"
 							}}
 						>
 							{host.hostname}
