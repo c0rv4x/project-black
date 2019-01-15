@@ -12,7 +12,6 @@ class CustomOptions extends React.Component {
 
 	render() {
 		var options = [];
-		console.log(this.props.inputs);
 
 		_.forOwn(this.props.inputs, (value, key) => {
 			options.push(
