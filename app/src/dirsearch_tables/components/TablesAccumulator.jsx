@@ -1,11 +1,10 @@
 import _ from 'lodash'
 import React from 'react'
 
+import { Heading } from 'grommet'
+
 import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
 import Search from '../../common/search/Search.jsx'
-
-import { Header, Divider } from 'semantic-ui-react'
-
 import DirsearchTable from './DirsearchTable.jsx'
 
 
@@ -82,8 +81,7 @@ class TablesAccumulator extends React.Component {
 
 		return (
 			<div>
-				<Divider hidden />
-				<Header as="h2">{project_name}</Header>
+				<Heading level="2">{project_name}</Heading>
 				<Search applyFilters={applyFilters} />
 				<br />
 				{tables}

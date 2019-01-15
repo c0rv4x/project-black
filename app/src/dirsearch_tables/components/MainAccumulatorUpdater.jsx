@@ -9,8 +9,7 @@ import TablesAccumulator from './TablesAccumulator.jsx'
 import { setLoaded as setLoadedIPs } from '../../redux/ips/actions.js'
 import { setLoaded as setLoadedHosts } from '../../redux/hosts/actions.js'
 import { emptyFiles } from '../../redux/files/actions.js'
-
-import { Loader, Dimmer } from 'semantic-ui-react'
+import Loading from '../../common/loading/Loading.jsx'
 
 
 class MainAccumulatorUpdater extends React.Component {
@@ -296,30 +295,31 @@ class MainAccumulatorUpdater extends React.Component {
 
 		return (
 			<div>
-			    <Dimmer active={!loaded}>
-					<Loader />
-			    </Dimmer>
-				<TablesAccumulator
-					applyFilters={applyFilters}
-					files={files}
-					ips={scopes.ips}
-					hosts={scopes.hosts}
-					selected={scopes.selected}
-					project_name={project.project_name}
-					project_uuid={project_uuid}
-					changePage={(x) => {
-						// this.setFilesEmpty();
-						this.changePage(x);
-					}}
-					pageNumberUnmodified={this.state.pageNumberUnmodified}
-					pageSize={this.pageSize}
-					getFilesHosts={(host, port_number, limit, offset) => {
-						this.getFilesHosts(host, port_number, limit, offset, filters['files']);
-					}}
-					getFilesIps={(ip, port_number, limit, offset) => {
-						this.getFilesIps(ip, port_number, limit, offset, filters['files']);
-					}}
-				/>
+				<Loading
+					componentLoading={!this.props.hosts.loaded}
+				>
+					<TablesAccumulator
+						applyFilters={applyFilters}
+						files={files}
+						ips={scopes.ips}
+						hosts={scopes.hosts}
+						selected={scopes.selected}
+						project_name={project.project_name}
+						project_uuid={project_uuid}
+						changePage={(x) => {
+							// this.setFilesEmpty();
+							this.changePage(x);
+						}}
+						pageNumberUnmodified={this.state.pageNumberUnmodified}
+						pageSize={this.pageSize}
+						getFilesHosts={(host, port_number, limit, offset) => {
+							this.getFilesHosts(host, port_number, limit, offset, filters['files']);
+						}}
+						getFilesIps={(ip, port_number, limit, offset) => {
+							this.getFilesIps(ip, port_number, limit, offset, filters['files']);
+						}}
+					/>
+				</Loading>
 			</div>
 		);
 	}
