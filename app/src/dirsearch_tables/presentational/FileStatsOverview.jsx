@@ -2,7 +2,8 @@ import _ from 'lodash'
 import React from 'react'
 
 import {
-	Box
+    Box,
+    Text
 } from 'grommet'
 
 
@@ -28,7 +29,7 @@ function generateFiles(stats, target_id) {
                         right: "xsmall"
                     }}
                 >
-                    {amount}x {code}
+                    <Text size="small">{amount}x {code}</Text>
                 </Box>                
             );
         }
