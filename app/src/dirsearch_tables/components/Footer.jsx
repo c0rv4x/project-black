@@ -4,13 +4,7 @@ import React from 'react'
 import {
 	Box,
     Button,
-    Grid,
-	Table,
-	TableHeader,
-	TableBody,
-	TableRow,
-	TableCell,
-	TableFooter
+    Grid
 } from 'grommet'
 import {
 	Add

@@ -3,17 +3,12 @@ import React from 'react'
 
 import {
 	Box,
-	Button,
 	Table,
 	TableHeader,
 	TableBody,
 	TableRow,
-	TableCell,
-	TableFooter
+	TableCell
 } from 'grommet'
-import {
-	Add
-} from 'grommet-icons'
 
 import Footer from './Footer.jsx'
 
