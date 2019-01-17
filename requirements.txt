@@ -9,7 +9,6 @@ apscheduler
 python-socketio
 eventlet
 aiodns
-asynqp
 pyyaml
 xmltodict
 python-libnmap
