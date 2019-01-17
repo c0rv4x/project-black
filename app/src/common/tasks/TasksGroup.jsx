@@ -35,15 +35,15 @@ class EachTask extends React.Component {
 						alignSelf="stretch"
 					>
 						<Stack
-							anchor="center">
+							anchor="center"
+						>
 							<Meter
 								type="bar"
-								background="light-2"
 								values={[{ value: each_task.progress }]}
 								size="full"
 								thickness="medium"
 							/>
-							<Box direction="row" align="center">
+							<Box direction="row" align="center" pad={{ bottom: "xsmall" }}>
 								<Text size="small" weight="bold">
 									{each_task.progress}
 								</Text>
