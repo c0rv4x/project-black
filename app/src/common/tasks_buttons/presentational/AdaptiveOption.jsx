@@ -7,7 +7,6 @@ import {
 	TextArea
 } from 'grommet'
 
-import getLineHeight from 'line-height'
 import autosize from 'autosize'
 
 
