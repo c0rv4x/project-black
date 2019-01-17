@@ -1,6 +1,7 @@
 """ Async class for Task"""
-import asynqp
-from asyncio import Lock
+import json
+import aio_pika
+from asyncio import Lock, get_event_loop
 from black.db import sessions
 from black.workers.common.task import Task
 
@@ -19,22 +20,33 @@ class AsyncTask(Task):
 
     async def __aenter__(self):
         # connect to the RabbitMQ broker
-        self.connection = await asynqp.connect(
-            CONFIG['rabbit']['host'],
-            CONFIG['rabbit']['port'],
-            username=CONFIG['rabbit']['username'],
-            password=CONFIG['rabbit']['password']
+        self.connection = await aio_pika.connect_robust(
+            "amqp://{}:{}@{}:{}/".format(
+                CONFIG['rabbit']['username'],
+                CONFIG['rabbit']['password'],
+                CONFIG['rabbit']['host'],
+                CONFIG['rabbit']['port']
+            ), loop=get_event_loop()
         )
 
         # Open a communications channel
-        self.channel = await self.connection.open_channel()
+        self.channel = await self.connection.channel()
 
         # Create an exchange on the broker
         self.exchange = await self.channel.declare_exchange(
-            'tasks.exchange', 'direct'
+            'tasks.exchange',
+            durable=True
         )
-        queue = await self.channel.declare_queue('tasks_statuses')
-        await queue.bind(self.exchange, routing_key='tasks_statuses')
+
+        # Create queues on the exchange
+        queue = await self.channel.declare_queue(
+            'tasks_statuses',
+            durable=True
+        )
+        await queue.bind(
+            self.exchange,
+            routing_key='tasks_statuses'
+        )
 
         return self
 
@@ -50,55 +62,53 @@ class AsyncTask(Task):
     async def set_status(self, new_status, progress=0, text=""):
         Task.set_status(self, new_status, progress=progress, text=text)
 
-        msg = asynqp.Message(
-            {
+        msg = aio_pika.Message(
+            body=json.dumps({
                 'task_id': self.task_id,
                 'status': new_status,
                 'progress': progress,
                 'text': text,
                 'new_stdout': "",
                 'new_stderr': ""
-            }
+            }).encode()
         )
 
         await self.exchange_lock.acquire()
-        self.exchange.publish(msg, 'tasks_statuses')
+        await self.exchange.publish(msg, 'tasks_statuses')
         self.exchange_lock.release()
 
     async def append_stdout(self, new_stdout):
-        new_stdout = new_stdout
         Task.append_stdout(self, new_stdout)
 
-        msg = asynqp.Message(
-            {
+        msg = aio_pika.Message(
+            body=json.dumps({
                 'task_id': self.task_id,
                 'status': self.status,
                 'progress': self.progress,
                 'text': self.text,
                 'new_stdout': new_stdout,
                 'new_stderr': ""
-            }
+            }).encode()
         )
 
         await self.exchange_lock.acquire()
-        self.exchange.publish(msg, 'tasks_statuses')
+        await self.exchange.publish(msg, 'tasks_statuses')
         self.exchange_lock.release()
 
     async def append_stderr(self, new_stderr):
-        new_stderr = new_stderr
         Task.append_stderr(self, new_stderr)
 
-        msg = asynqp.Message(
-            {
+        msg = aio_pika.Message(
+            body=json.dumps({
                 'task_id': self.task_id,
                 'status': self.status,
                 'progress': self.progress,
                 'text': self.text,
                 'new_stdout': "",
                 'new_stderr': new_stderr
-            }
+            }).encode()
         )
 
         await self.exchange_lock.acquire()
-        self.exchange.publish(msg, 'tasks_statuses')
+        await self.exchange.publish(msg, 'tasks_statuses')
         self.exchange_lock.release()
