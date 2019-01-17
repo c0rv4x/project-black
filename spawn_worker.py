@@ -30,3 +30,9 @@ if __name__ == '__main__':
 
     if worker_type == 'nmap':
         run(NmapWorker)
+    elif worker_type == 'masscan':
+        run(MasscanWorker)
+    elif worker_type == 'dirsearch':
+        run(DirsearchWorker)
+    elif worker_type == 'patator':
+        run(PatatorWorker)
