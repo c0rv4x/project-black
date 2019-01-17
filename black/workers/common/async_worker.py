@@ -1,6 +1,7 @@
 """ Basic worker """
+import json
 import asyncio
-import asynqp
+import aio_pika
 
 from .worker import Worker
 from config import CONFIG
@@ -19,30 +20,36 @@ class AsyncWorker(Worker):
     async def initialize(self):
         """ Init variables """
         # connect to the RabbitMQ broker
-        connection = await asynqp.connect(
-            CONFIG['rabbit']['host'],
-            CONFIG['rabbit']['port'],
-            username=CONFIG['rabbit']['username'],
-            password=CONFIG['rabbit']['password']
+        connection = await aio_pika.connect_robust(
+            "amqp://{}:{}@{}:{}/".format(
+                CONFIG['rabbit']['username'],
+                CONFIG['rabbit']['password'],
+                CONFIG['rabbit']['host'],
+                CONFIG['rabbit']['port']
+            ), loop=asyncio.get_event_loop()
         )
 
         # Open a communications channel
-        channel = await connection.open_channel()
+        channel = await connection.channel()
 
         # Create an exchange on the broker
-        exchange = await channel.declare_exchange('tasks.exchange', 'direct')
+        exchange = await channel.declare_exchange(
+            'tasks.exchange',
+            durable=True
+        )
 
         # Create two queues on the exchange
-        self.tasks_queue = await channel.declare_queue(self.name + '_tasks')
-        self.notifications_queue = await channel.declare_queue(
-            self.name + '_notifications'
+        self.tasks_queue = await channel.declare_queue(
+            self.name + '_tasks',
+            durable=True
         )
+        await self.tasks_queue.bind(exchange, self.name + '_tasks')
 
-        # Bind the queue to the exchange, so the queue will get messages published to the exchange
-        await self.tasks_queue.bind(exchange, routing_key=self.name + '_tasks')
-        await self.notifications_queue.bind(
-            exchange, routing_key=self.name + '_notifications'
+        self.notifications_queue = await channel.declare_queue(
+            self.name + '_notifications',
+            durable=True
         )
+        await self.notifications_queue.bind(exchange, self.name + '_notifications')
 
     async def acquire_resources(self):
         """ Function that captures resources, now it is just a semaphore """
@@ -62,16 +69,16 @@ class AsyncWorker(Worker):
         loop = asyncio.get_event_loop()
         loop.create_task(self.execute_task(message))
 
-    async def execute_task(self, message):
+    async def execute_task(self, raw_message):
         """ Method launches the task execution, remembering the
             processes's object. """
         await self.acquire_resources()
-        message.ack()
+        raw_message.ack()
 
         try:
             # Add a unique id to the task, so we can track the notifications
             # which are addressed to the ceratin task
-            message = message.json()
+            message = json.loads(raw_message.body)
 
             task_id = message['task_id']
             target = message['target']
@@ -110,13 +117,13 @@ class AsyncWorker(Worker):
         If any, launch the tasks execution """
         await self.notifications_queue.consume(self.handle_notification)
 
-    def handle_notification(self, message):
+    def handle_notification(self, raw_message):
         """ Handle the notification, just received. """
         print("Notification received")
         # Add a unique id to the task, so we can track the notifications
         # which are addressed to the ceratin task
-        message.ack()
-        message = message.json()
+        raw_message.ack()
+        message = json.loads(raw_message.body)
         task_id = message['task_id']
         command = message['command']
 

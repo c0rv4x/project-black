@@ -3,7 +3,8 @@ that is responsible for managing tasks """
 import uuid
 import asyncio
 import json
-import asynqp
+import aio_pika
+from  aio_pika.exceptions import QueueEmpty
 
 from black.db import Sessions, TaskDatabase
 from managers.tasks.shadow_task import ShadowTask
@@ -34,25 +35,29 @@ class TaskManager(object):
 
     async def spawn_asynqp(self):
         """ Spawns all the necessary queues and launches a statuses parser """
-        # connect to the RabbitMQ broker
-        connection = await asynqp.connect(
-            CONFIG['rabbit']['host'],
-            CONFIG['rabbit']['port'],
-            username=CONFIG['rabbit']['username'],
-            password=CONFIG['rabbit']['password']
+        connection = await aio_pika.connect_robust(
+            "amqp://{}:{}@{}:{}/".format(
+                CONFIG['rabbit']['username'],
+                CONFIG['rabbit']['password'],
+                CONFIG['rabbit']['host'],
+                CONFIG['rabbit']['port']
+            ), loop=asyncio.get_event_loop()
         )
 
         # Open a communications channel
-        channel = await connection.open_channel()
+        channel = await connection.channel()
 
         # Create an exchange on the broker
         self.exchange = await channel.declare_exchange(
             'tasks.exchange',
-            'direct'
+            durable=True
         )
 
         # Create queues on the exchange
-        self.tasks_queue = await channel.declare_queue('tasks_statuses')
+        self.tasks_queue = await channel.declare_queue(
+            'tasks_statuses',
+            durable=True
+        )
         await self.tasks_queue.bind(
             self.exchange,
             routing_key='tasks_statuses'
@@ -65,13 +70,18 @@ class TaskManager(object):
             )
             await queue.bind(self.exchange, task_type + '_tasks')
 
-        await self.tasks_queue.consume(self.handle_status_message)
+            await self.tasks_queue.consume(self.handle_status_message)
+            # try:
+            #     message = await self.tasks_queue.get()
+            #     self.handle_status_message(message)
+            # except QueueEmpty:
+            #     pass
 
     def handle_status_message(self, message):
         """ Parse the message from the queue, which contains task status.
         Updates the relevant ShadowTask and, we notify the upper module that
         it must update the scan results. """
-        body = message.json()
+        body = json.loads(message.body)
         
         updated_task = self.cache.update_task(body)
         if updated_task and updated_task.quitted():
@@ -180,14 +190,14 @@ class TaskManager(object):
 
     def launch_task(self, task):
         """ Put a message to the queue, which says "start my task, please """
-        self.exchange.publish(
+        asyncio.get_event_loop().create_task(self.exchange.publish(
             routing_key=task.task_type + "_tasks",
-            message=asynqp.Message(
-                {
+            message=aio_pika.Message(
+                body=json.dumps({
                     'task_id': task.task_id,
                     'target': task.target,
                     'params': task.params,
                     'project_uuid': task.project_uuid
-                }
+                }).encode()
             )
-        )
+        ))

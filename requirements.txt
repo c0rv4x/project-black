@@ -3,12 +3,12 @@ dnspython
 netaddr
 sqlalchemy
 psycopg2
+aio-pika
 sanic==0.7.0
 apscheduler
 python-socketio
 eventlet
 aiodns
-asynqp
 pyyaml
 xmltodict
 python-libnmap
