@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { Button, ButtonProps, Label } from 'semantic-ui-react';
+import { Button } from 'grommet'
 import * as uuid from 'uuid';
 
 
@@ -16,17 +16,16 @@ export class FileButton extends Component {
         return (
             <span>
                 <Button
-                    as="label"
-                    htmlFor={this.id}
-                >
-                    {this.props.children}
-                </Button>
+                    label={this.props.children}
+                    onClick={() => document.getElementById(this.id).click()}
+                />
                 <input
                     hidden
                     id={this.id}
                     multiple
                     type="file"
-                    onChange={this.onChangeFile} />
+                    onChange={this.onChangeFile}
+                />
             </span>
         );
     }

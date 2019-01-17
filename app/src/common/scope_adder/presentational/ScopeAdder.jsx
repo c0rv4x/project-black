@@ -114,6 +114,12 @@ class ScopeAdder extends React.Component {
 					onChange={(e) => this.props.handleNewScopeChange(e.target.value)}
 				/>
 
+				<ScopeUpload
+					fileLoadedHandler={this.props.handleNewScopeChange}
+				>
+					Upload scope
+				</ScopeUpload>
+
 				<Button
 					label="Add to scope"
 					color={color}
