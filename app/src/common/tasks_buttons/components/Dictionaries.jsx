@@ -1,10 +1,8 @@
 import _ from 'lodash'
 import React from 'react'
-import {
-    Button,
-	Divider,
-    Icon
-} from 'semantic-ui-react'
+
+import { Button } from 'grommet'
+import { Catalog } from 'grommet-icons'
 
 import DictionariesManager from './DictionariesManager.jsx'
 
@@ -30,10 +28,9 @@ class Dictionaries extends React.Component {
                 }
                 <Button
                     onClick={() => this.setState({"dictsHidden": !this.state.dictsHidden})}
-                >
-                    <Icon name="book" />{this.state.dictsHidden && "Show"}{!this.state.dictsHidden && "Hide"} Dictionaries
-                </Button>
-                <Divider hidden />
+                    label={(this.state.dictsHidden ? "Show" : "Hide") + " Dictionaries"}
+                    icon={<Catalog />}
+                />
             </div>
 		)
 	}

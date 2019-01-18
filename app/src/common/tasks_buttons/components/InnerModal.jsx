@@ -115,48 +115,6 @@ class InnerModal extends React.Component {
 			)
 		});
 
-			// 	<Modal.Content>
-			// 		{startButtons}
-			// 		<Divider hidden />
-			// 		{
-			// 			task.help && 
-			// 			task.help.map((help_notice) => {
-			// 				if (help_notice.condition === true) {
-			// 					if (help_notice.type == 'warning') {
-			// 						return (
-			// 							<Message
-			// 								warning
-			// 								key={task.help.indexOf(help_notice)}
-			// 							>
-			// 								{help_notice.text}
-			// 							</Message>
-			// 						);
-			// 					}
-			// 					else {
-			// 						return (
-			// 							<Message
-			// 								key={task.help.indexOf(help_notice)}
-			// 							>
-			// 								{help_notice.text}
-			// 							</Message>
-			// 						);
-			// 					}
-			// 				}
-			// 			})
-			// 		}
-			// 		<Divider hidden />
-			// 		<CustomOptions inputs={this.state.inputs}
-			// 					   onInputChange={this.onInputChange} />
-			// 		{ task.dictionaries_available && 
-			// 			<Dictionaries
-			// 				project_uuid={this.props.project_uuid}
-			// 				name={task.name.toLowerCase()}
-			// 				dicts={this.props.dicts}
-			// 			/>
-			// 		}
-			// 	</Modal.Content>
-			// </Modal>
-
 		return (
 			<Layer
 				position="center"
@@ -182,6 +140,7 @@ class InnerModal extends React.Component {
 										round: "xsmall"
 									}
 								}
+
 								return (
 									<Box
 										{...borderProps}
@@ -197,7 +156,13 @@ class InnerModal extends React.Component {
 						inputs={this.state.inputs}
 						onInputChange={this.onInputChange}
 					/>
-				
+			 		{ task.dictionaries_available && 
+			 			<Dictionaries
+			 				project_uuid={this.props.project_uuid}
+			 				name={task.name.toLowerCase()}
+			 				dicts={this.props.dicts}
+			 			/>
+			 		}
 					<Button label="Fire!" onClick={this.startTask} />
 				</Box>
 			</Layer>
