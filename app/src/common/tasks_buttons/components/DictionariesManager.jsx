@@ -1,8 +1,6 @@
 import React from 'react'
-import {
-    Divider,
-    Header
-} from 'semantic-ui-react'
+
+import { Heading } from 'grommet'
 
 import DictionaryStats from './DictionaryStats.jsx'
 import DictUploader from './DictUploader.jsx'
@@ -34,7 +32,7 @@ class DictionariesManager extends React.Component {
     render() {
 		return (
 			<div>
-                <Header as="h3">Dictionaries</Header>
+                <Heading level="3">Dictionaries</Heading>
                 <DictionaryStats
                     dicts={this.props.dicts}
                     deleteDict={this.deleteDict}
@@ -44,7 +42,6 @@ class DictionariesManager extends React.Component {
                     task_name={this.props.name}
                     renewDicts={this.renewDicts}
                 />
-                <Divider hidden />
             </div>
 		)
 	}
