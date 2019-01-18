@@ -8,7 +8,8 @@ import {
 import {
 	Box,
 	Button,
-	Layer
+	Layer,
+	Text
 } from 'grommet'
 
 import Dictionaries from './Dictionaries.jsx'
@@ -171,6 +172,31 @@ class InnerModal extends React.Component {
 					<Box direction="row" align="center" gap="small" pad="xsmall">
 						{startButtons}
 					</Box>
+			 		{
+			 			task.help && 
+			 			task.help.map((help_notice) => {
+			 				if (help_notice.condition === true) {
+								let borderProps = {};
+			 					if (help_notice.type == 'warning') {
+									borderProps = {
+										border: {
+											size: "medium",
+											color: "status-warning"
+										},
+										round: "xsmall"
+									}
+								}
+								return (
+									<Box
+										{...borderProps}
+										key={task.help.indexOf(help_notice)}
+									>
+										<Text size="small">{help_notice.text}</Text>
+									</Box>
+								);
+			 				}
+			 			})
+			 		}
 					<CustomOptions
 						inputs={this.state.inputs}
 						onInputChange={this.onInputChange}
