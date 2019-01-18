@@ -1,9 +1,5 @@
 import _ from 'lodash'
 import React from 'react'
-import {
-	Message,
-	Divider
-} from 'semantic-ui-react'
 
 import {
 	Box,
