@@ -185,7 +185,7 @@ class InnerModal extends React.Component {
 								return (
 									<Box
 										{...borderProps}
-										key={task.help.indexOf(help_notice)}
+										key={"help-" + task.help.indexOf(help_notice)}
 									>
 										<Text size="small">{help_notice.text}</Text>
 									</Box>
