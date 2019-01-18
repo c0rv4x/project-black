@@ -3,6 +3,10 @@ import {
     Form
 } from 'semantic-ui-react'
 
+import { Box, Button, TextArea } from 'grommet'
+import { Upload } from 'grommet-icons'
+
+import autosize from 'autosize'
 
 class DictUploader extends React.Component {
     constructor(props) {
@@ -56,23 +60,45 @@ class DictUploader extends React.Component {
         reader.readAsText(file);
     }
 
+	componentDidUpdate() {
+		if (this.input) {
+			autosize(this.input);
+		}
+	}
+
     render() {
 		return (
 			<div>
-                <Form>
-                    <Form.Group widths='equal'>
-                        <Form.Input
-                            fluid
-                            error={this.state.name.length == 0}
-                            label='Name'
-                            placeholder=''
+                <Box
+                    direction="row"
+                    align="center"
+                    margin={{ right: 'xsmall', bottom: 'xsmall' }}
+                >
+                    <Box margin={{ right: 'xsmall' }}>
+                        <TextArea
+                            ref={(input) => {
+                                this.input = input;
+                            }}
+                            rows={1}
                             value={this.state.name}
+                            placeholder="Name"
                             onChange={(e) => {
                                 this.setState({
                                     "name": e.target.value
                                 });
                             }}
+                            style={{ resize: 'none' }}
                         />
+                    </Box>
+                    <Box>
+                        <input label="Dicitonary" type="file" id="dict_upload_id" onChange={this.onChangeFile}/>
+                    </Box>
+                    <Box>
+                        <Button icon={<Upload />} />
+                    </Box>
+                </Box>
+                {/* <Form>
+                    <Form.Group widths='equal'>
                         <Form.Input
                             fluid
                             label='Dictionary'
@@ -89,7 +115,7 @@ class DictUploader extends React.Component {
                             Upload
                         </Form.Button>
                     </Form.Group>
-                </Form>               
+                </Form>                */}
             </div>
 		)
 	}
