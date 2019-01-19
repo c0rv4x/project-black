@@ -1,10 +1,11 @@
 import React from 'react'
-import {
-    Form
-} from 'semantic-ui-react'
 
-import { Box, Button, TextArea } from 'grommet'
+import classNames from 'classnames'
+import Dropzone from 'react-dropzone'
+
+import { Box, Button, Text, TextArea } from 'grommet'
 import { Upload } from 'grommet-icons'
+import ScopeUpload from '../../scope_adder/components/ScopeUpload.jsx'
 
 import autosize from 'autosize'
 
@@ -71,7 +72,8 @@ class DictUploader extends React.Component {
 			<div>
                 <Box
                     direction="row"
-                    align="center"
+                    align="stretch"
+                    alignContent="stretch"
                     margin={{ right: 'xsmall', bottom: 'xsmall' }}
                 >
                     <Box margin={{ right: 'xsmall' }}>
@@ -90,11 +92,17 @@ class DictUploader extends React.Component {
                             style={{ resize: 'none' }}
                         />
                     </Box>
-                    <Box>
-                        <input label="Dicitonary" type="file" id="dict_upload_id" onChange={this.onChangeFile}/>
+                    <Box
+                        alignSelf="stretch"
+                        justify="center"
+                    >
+                        <ScopeUpload
+                            fileLoadedHandler={(text) => this.setState({ dictionary: text })}
+                            icon={<Upload />}
+                        />
                     </Box>
-                    <Box>
-                        <Button icon={<Upload />} />
+                    <Box alignSelf="center" justify="end">
+                        <Button label="Upload" onClick={this.upload} />
                     </Box>
                 </Box>
                 {/* <Form>
