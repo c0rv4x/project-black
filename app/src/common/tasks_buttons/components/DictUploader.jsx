@@ -1,8 +1,5 @@
 import React from 'react'
 
-import classNames from 'classnames'
-import Dropzone from 'react-dropzone'
-
 import { Box, Button, Text, TextArea } from 'grommet'
 import { Upload } from 'grommet-icons'
 import ScopeUpload from '../../scope_adder/components/ScopeUpload.jsx'
