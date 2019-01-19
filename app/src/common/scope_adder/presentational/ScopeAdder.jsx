@@ -116,9 +116,8 @@ class ScopeAdder extends React.Component {
 
 				<ScopeUpload
 					fileLoadedHandler={this.props.handleNewScopeChange}
-				>
-					Upload scope
-				</ScopeUpload>
+					label="Upload scope"
+				/>
 
 				<Button
 					label="Add to scope"

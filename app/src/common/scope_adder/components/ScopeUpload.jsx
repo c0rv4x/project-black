@@ -13,11 +13,20 @@ export class FileButton extends Component {
     }
 
     render() {
+        let props = {
+            onClick: () => document.getElementById(this.id).click()
+        }
+        if (this.props.label) {
+            props.label = this.props.label;
+        }
+        if (this.props.icon) {
+            props.icon = this.props.icon;
+        }
+
         return (
             <span>
                 <Button
-                    label={this.props.children}
-                    onClick={() => document.getElementById(this.id).click()}
+                    {...props}
                 />
                 <input
                     hidden
