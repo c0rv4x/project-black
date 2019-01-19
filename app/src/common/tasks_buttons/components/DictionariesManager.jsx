@@ -3,7 +3,6 @@ import React from 'react'
 import { Heading } from 'grommet'
 
 import DictionaryStats from './DictionaryStats.jsx'
-import DictUploader from './DictUploader.jsx'
 import DictsSocketioEventsEmitter from '../../../redux/dicts/DictsSocketioEventsEmitter.js'
 
 
@@ -36,11 +35,6 @@ class DictionariesManager extends React.Component {
                 <DictionaryStats
                     dicts={this.props.dicts}
                     deleteDict={this.deleteDict}
-                />
-                <DictUploader
-                    project_uuid={this.props.project_uuid}
-                    task_name={this.props.name}
-                    renewDicts={this.renewDicts}
                 />
             </div>
 		)

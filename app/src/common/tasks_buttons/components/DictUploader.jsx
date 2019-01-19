@@ -1,6 +1,14 @@
 import React from 'react'
 
-import { Box, Button, Text, TextArea } from 'grommet'
+import {
+    Box,
+    Button,
+    TableRow,
+    TableCell,
+    Text,
+    TextArea
+} from 'grommet'
+
 import { Upload } from 'grommet-icons'
 import ScopeUpload from '../../scope_adder/components/ScopeUpload.jsx'
 
@@ -66,62 +74,33 @@ class DictUploader extends React.Component {
 
     render() {
 		return (
-			<div>
-                <Box
-                    direction="row"
-                    align="stretch"
-                    alignContent="stretch"
-                    margin={{ right: 'xsmall', bottom: 'xsmall' }}
-                >
-                    <Box margin={{ right: 'xsmall' }}>
-                        <TextArea
-                            ref={(input) => {
-                                this.input = input;
-                            }}
-                            rows={1}
-                            value={this.state.name}
-                            placeholder="Name"
-                            onChange={(e) => {
-                                this.setState({
-                                    "name": e.target.value
-                                });
-                            }}
-                            style={{ resize: 'none' }}
-                        />
-                    </Box>
-                    <Box
-                        alignSelf="stretch"
-                        justify="center"
-                    >
-                        <ScopeUpload
-                            fileLoadedHandler={(text) => this.setState({ dictionary: text })}
-                            icon={<Upload />}
-                        />
-                    </Box>
-                    <Box alignSelf="center" justify="end">
-                        <Button label="Upload" onClick={this.upload} />
-                    </Box>
-                </Box>
-                {/* <Form>
-                    <Form.Group widths='equal'>
-                        <Form.Input
-                            fluid
-                            label='Dictionary'
-                            type='file'
-                            id='dict_upload_id'
-                            onChange={this.onChangeFile}
-                        />
-                        <Form.Button
-                            fluid
-                            label='Upload'
-                            loading={this.state.upload_in_progress}
-                            onClick={this.upload}
-                        >
-                            Upload
-                        </Form.Button>
-                    </Form.Group>
-                </Form>                */}
-            </div>
+            <TableRow>
+                <TableCell>
+                    <TextArea
+                        ref={(input) => {
+                            this.input = input;
+                        }}
+                        rows={1}
+                        value={this.state.name}
+                        placeholder="Name"
+                        onChange={(e) => {
+                            this.setState({
+                                "name": e.target.value
+                            });
+                        }}
+                        style={{ resize: 'none' }}
+                    />
+                </TableCell>
+                <TableCell>
+                    <ScopeUpload
+                        fileLoadedHandler={(text) => this.setState({ dictionary: text })}
+                        icon={<Upload />}
+                    />
+                </TableCell>
+                <TableCell>
+                    <Button label="Upload" onClick={this.upload} />
+                </TableCell>
+            </TableRow>
 		)
 	}
 
