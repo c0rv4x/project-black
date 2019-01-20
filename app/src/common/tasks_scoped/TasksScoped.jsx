@@ -33,9 +33,11 @@ function renderParams(params) {
 		let dictionaryEntriesParsed = [];
 
 		_.forOwn(params, (value, key) => {
-			dictionaryEntriesParsed.push(
-				<div key={key}>{key}: {value}</div>
-			);
+			if (value) {
+				dictionaryEntriesParsed.push(
+					<div key={key}><b>{key}</b>: {value}</div>
+				);
+			}
 		});
 
 		return (
