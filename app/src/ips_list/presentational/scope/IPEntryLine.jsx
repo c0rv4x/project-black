@@ -10,7 +10,6 @@ import { Copy, Checkmark} from 'grommet-icons'
 
 import ScopeComment from '../../../common/scope_comment/ScopeComment.jsx'
 import TasksScoped from '../../../common/tasks_scoped/TasksScoped.jsx'
-import Creds from '../../../common/creds/Creds.jsx'
 import HidingButtons from './HidingButtons.jsx'
 import FilesStats from '../../../common/files_stats/FilesStats.jsx'
 

@@ -11,7 +11,6 @@ import { Copy, Checkmark} from 'grommet-icons'
 
 import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import TasksScoped from '../../common/tasks_scoped/TasksScoped.jsx'
-import Creds from '../../common/creds/Creds.jsx'
 import HidingButtons from '../../ips_list/presentational/scope/HidingButtons.jsx'
 import FilesStats from '../../common/files_stats/FilesStats.jsx'
 
@@ -148,6 +147,7 @@ class HostsEntryLine extends React.Component {
 						<HidingButtons
 							project_uuid={project_uuid}
 							type="host"
+							scope={host}
 							target={host.hostname}
 						/>
 					</Box>
