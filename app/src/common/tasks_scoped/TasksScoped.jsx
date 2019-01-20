@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 
 import ReactTimeAgo from 'react-time-ago'
@@ -12,6 +13,43 @@ import {
 } from 'grommet'
 import { Tasks } from 'grommet-icons'
 
+
+function renderParams(params) {
+	if (params instanceof Array) {
+		if (params.length <= 1) {
+			return params;
+		}
+		else {
+			return (
+				<Box>
+					{params.map((x) => {
+						return <div key="x">{x}</div>
+					})}
+				</Box>
+			)
+		}
+	}
+	else if (params instanceof Object) {
+		let dictionaryEntriesParsed = [];
+
+		_.forOwn(params, (value, key) => {
+			dictionaryEntriesParsed.push(
+				<div key={key}>{key}: {value}</div>
+			);
+		});
+
+		return (
+			<Box>
+				{dictionaryEntriesParsed}
+			</Box>
+		)
+	}
+	else {
+		alert("Scoped tasks params have incorrect types", params);
+	}
+
+	return JSON.stringify(params);
+}
 
 class TasksScoped extends React.Component {
 	constructor(props) {
@@ -67,7 +105,7 @@ class TasksScoped extends React.Component {
 										render: (task) => {
 											return <Box width="medium" style={{
 												"wordBreak": "break-word"
-											}}>{task.params.program}</Box>
+											}}>{renderParams(task.params.program)}</Box>
 										}
 									},
 									{
@@ -78,7 +116,6 @@ class TasksScoped extends React.Component {
 										property: "date_added",
 										header: "Added",
 										render: (task) => {
-											console.log(task.date_added);
 											return <Box width="xsmall"><ReactTimeAgo date={new Date(task.date_added)} /></Box>
 										}
 									}
