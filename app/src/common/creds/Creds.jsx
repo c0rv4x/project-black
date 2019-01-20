@@ -19,7 +19,7 @@ class Creds extends React.Component {
         super(props);
 
 		this.state = {
-            layerOpened: true,
+            layerOpened: false,
 			data: [],
             inited: false
         };
