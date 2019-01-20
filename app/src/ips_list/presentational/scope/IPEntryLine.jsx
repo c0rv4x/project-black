@@ -127,7 +127,7 @@ class IPEntryLine extends React.Component {
 					<Box gridArea={"files-" + ip.ip_address} direction="row" gap="small" pad="small">
 						<FilesStats targetId={ip.ip_id} files={ip.files} />
 					</Box>
-					<Box gridArea={"control-" + ip.ip_address}  direction="row" gap="small" >
+					<Box gridArea={"control-" + ip.ip_address}  direction="row" gap="small" justify="end">
 						<HidingButtons
 							project_uuid={project_uuid}
 							type="ip"

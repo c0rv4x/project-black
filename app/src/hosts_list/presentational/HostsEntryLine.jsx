@@ -143,7 +143,7 @@ class HostsEntryLine extends React.Component {
 					<Box gridArea={"files-" + host.hostname}>
 						<FilesStats targetId={host.host_id} files={host.files} />
 					</Box>
-					<Box gridArea={"control-" + host.hostname}  direction="row" gap="small" >
+					<Box gridArea={"control-" + host.hostname}  direction="row" gap="small" justify="end">
 						<HidingButtons
 							project_uuid={project_uuid}
 							type="host"

@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 
-import { Box, Button, Stack, Text } from 'grommet'
+import { Box, Button } from 'grommet'
 import { Google, Inspect, Tasks } from 'grommet-icons'
 import Creds from '../../../common/creds/Creds.jsx'
 
@@ -12,7 +12,7 @@ class HidingButtons extends React.Component {
         const verbose_host_link = '/project/' + project_uuid + '/' + type + '/' + target;
 
 		return (
-            <Box direction="row" align="center">
+            <Box direction="row">
                 <Creds
                     scope={scope}
                     project_uuid={project_uuid}
