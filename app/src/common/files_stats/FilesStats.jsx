@@ -54,6 +54,7 @@ class FilesStats extends React.Component {
                             color: colors[statusCodeMask]
                         }}
                         round="xsmall"
+                        pad="xxsmall"
                     >
                         {statusCodeMask}: {count}
                     </Box>
