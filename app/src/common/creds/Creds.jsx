@@ -3,29 +3,28 @@ import React from 'react'
 import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmitter'
 
 import {
+    Box,
     Button,
-    Dropdown,
-    Grid,
-    Label,
-    Modal,
-    Table
-} from 'semantic-ui-react'
-
-import { UserAdmin } from 'grommet-icons'
+    DataTable,
+    DropButton,
+    Heading,
+    Layer,
+    Stack,
+    ThemeContext
+} from 'grommet'
+import { Trash, UserAdmin } from 'grommet-icons'
 
 class Creds extends React.Component {
     constructor(props) {
         super(props);
 
 		this.state = {
-			column: null,
+            layerOpened: true,
 			data: [],
-            direction: null,
             inited: false
         };
 
         this.credsEmitter = new CredsSocketioEventsEmitter();
-        this.handleSortClick = this.handleSortClick.bind(this);
         this.deleteCreds = this.deleteCreds.bind(this);
     }
 
@@ -50,46 +49,23 @@ class Creds extends React.Component {
 
 		if (!this.state.inited) {
 			this.setState({
-				column: null,
 				data: scope.creds.values,
-				direction: null,				
 				inited: true
 			});
 		}
 		else {
 			if (prevProps.scope.creds.values !== scope.creds.values) {
 				this.setState({
-					column: null,
 					data: scope.creds.values,
-					direction: null
 				});
 			}
 		}
 	}
 
-	handleSortClick(clickedColumn) {
-		const { column, data, direction } = this.state
-
-		if (column !== clickedColumn) {
-			this.setState({
-				column: clickedColumn,
-				data: _.sortBy(data, [clickedColumn]),
-				direction: 'ascending',
-			});
-	  
-			return
-		}
-	  
-		this.setState({
-			data: data.reverse(),
-			direction: direction === 'ascending' ? 'descending' : 'ascending',
-		})
-	}    
-
     render() {
         if (this.state.data.length) {
             const { scope, project_uuid } = this.props;
-            const { column, data, direction } = this.state;
+            const { data } = this.state;
 
             let ports = [];
 
@@ -102,101 +78,97 @@ class Creds extends React.Component {
             }
 
             return (
-                <Modal 
-                    trigger={<Label as="a">Accounts<Label.Detail>{scope.creds.values.length}</Label.Detail></Label>}
-                >
-                    <Modal.Header>
-                        <Grid className="ui-header">
-                            <Grid.Column floated='left'>
-                                {scope.target}
-                            </Grid.Column>
-                            <Grid.Column textAlign='right' floated='right' width={3} >
-                                <Dropdown text='Clear' icon='trash' size="big" labeled button className='icon'>
-                                    <Dropdown.Menu>
-                                    {
-                                        ports.map((port_number) => {
-                                            return (
-                                                <Dropdown.Item
-                                                    key={port_number}
-                                                    onClick={() => {
-                                                        this.deleteCreds(port_number);
-                                                    }}
-                                                >
-                                                    {port_number} port
-                                                </Dropdown.Item>
-                                            );
-                                        })
-                                    }
-                                    </Dropdown.Menu>
-                                </Dropdown>                            
-                            </Grid.Column>                            
-                        </Grid>
-                    </Modal.Header>
-                    <Modal.Content>
-                        <Table sortable>
-                            <Table.Header>
-                                <Table.Row>
-                                    <Table.HeaderCell
-                                        sorted={column === 'port_number' ? direction : null}
-                                        onClick={() => {this.handleSortClick('port_number')}}
-                                        width={1}
-                                    >
-                                        Port
-                                    </Table.HeaderCell>
-                                    <Table.HeaderCell
-                                        sorted={column === 'service' ? direction : null}
-                                        onClick={() => {this.handleSortClick('service')}}
-                                        width={2}
-                                    >
-                                        Service
-                                    </Table.HeaderCell>
-                                    <Table.HeaderCell
-                                        sorted={column === 'code' ? direction : null}
-                                        onClick={() => {this.handleSortClick('code')}}
-                                        width={1}
-                                    >
-                                        Code
-                                    </Table.HeaderCell>
-                                    <Table.HeaderCell
-                                        sorted={column === 'candidate' ? direction : null}
-                                        onClick={() => {this.handleSortClick('candidate')}}
-                                        width={5}
-                                    >
-                                        Candidate
-                                    </Table.HeaderCell>
-                                    <Table.HeaderCell
-                                        sorted={column === 'size' ? direction : null}
-                                        onClick={() => {this.handleSortClick('size')}}
-                                        width={1}
-                                    >
-                                        Size
-                                    </Table.HeaderCell>
-                                    <Table.HeaderCell
-                                        sorted={column === 'mesg' ? direction : null}
-                                        onClick={() => {this.handleSortClick('mesg')}}
-                                        width={6}
-                                    >
-                                        Message
-                                    </Table.HeaderCell>
-                                </Table.Row>
-                            </Table.Header>
-                            <Table.Body>
-                                {_.map(data, ({ id, target, port_number, service, code, candidate, size, mesg}) => {
-                                    return (
-                                        <Table.Row key={"cred_" + target + "_" + id}>
-                                            <Table.Cell>{port_number}</Table.Cell>
-                                            <Table.Cell>{service}</Table.Cell>
-                                            <Table.Cell>{code}</Table.Cell>
-                                            <Table.Cell>{candidate}</Table.Cell>
-                                            <Table.Cell>{size}</Table.Cell>
-                                            <Table.Cell>{mesg}</Table.Cell>
-                                        </Table.Row>
-                                    );
-                                })}
-                            </Table.Body>
-                        </Table>
-                    </Modal.Content>
-                </Modal>
+                <div>
+                    <Stack
+                        anchor="top-right"
+                        onClick={() => this.setState({ layerOpened: true })}
+                    >
+                        <Button icon={<UserAdmin />} />
+                        <Box
+                            border={{ size: "xsmall", color: "brand" }}
+                            round="xlarge"
+                            background="brand"
+                            pad={{ left: "xxsmall", right: "xxsmall" }}
+                        >
+                            {scope.creds.values.length}
+                        </Box>
+                    </Stack>
+                    { this.state.layerOpened && (
+                        <Layer
+                            position="center"
+                            modal
+                            onClickOutside={() => this.setState({ layerOpened: false })}
+                            onEsc={() => this.setState({ layerOpened: false })}
+                        >
+                            <Box pad="medium" gap="small" >
+                                <Box direction="row">
+                                    <Box>
+                                        <Heading margin="none" level="3">{scope.target}</Heading>
+                                    </Box>
+                                    <Box fill="horizontal" align="end">
+                                        <ThemeContext.Extend value={{
+                                            global: { edgeSize: { small: '0px' } }
+                                        }}>
+                                            <DropButton
+                                                disabled={ports.length <= 0}
+                                                dropContent={(
+                                                    <Box gap="small" margin="xsmall">
+                                                        { ports.length > 0 &&
+                                                            ports.map((port_number) => {
+                                                                return (
+                                                                    <div
+                                                                        key={port_number}
+                                                                        onClick={() => {
+                                                                            this.deleteCreds(port_number);
+                                                                        }}
+                                                                        style={{ cursor: "pointer" }}
+                                                                    >
+                                                                        {port_number} port
+                                                                    </div>
+                                                                );
+                                                            })
+                                                        }
+                                                    </Box>
+                                                )}
+                                                dropAlign={{ top: "bottom" }}
+                                                icon={<Trash color="status-critical" />}
+                                            />
+                                        </ThemeContext.Extend>  
+                                    </Box>
+                                </Box>
+                                <DataTable
+                                    columns={[
+                                        {
+                                            property: "port_number",
+                                            header: "Port",
+                                            primary: true
+                                        },
+                                        {
+                                            property: "service",
+                                            header: "Service"
+                                        },
+                                        {
+                                            property: "code",
+                                            header: "Code"
+                                        },
+                                        {
+                                            property: "candidate",
+                                            header: "Candidate"
+                                        },
+                                        {
+                                            property: "message",
+                                            header: "Message"
+                                        },
+                                        
+                                    ]}
+                                    data={data}
+                                    sortable
+                                    resizeable
+                                />
+                            </Box>
+                        </Layer>
+                    ) }
+                </div>
             );
         }
         else {

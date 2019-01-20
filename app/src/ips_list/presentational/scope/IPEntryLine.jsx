@@ -132,6 +132,7 @@ class IPEntryLine extends React.Component {
 						<HidingButtons
 							project_uuid={project_uuid}
 							type="ip"
+							scope={ip}
 							target={ip.ip_address}
 						/>
 					</Box>

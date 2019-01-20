@@ -22,7 +22,7 @@ class NavigationTabs extends React.Component {
 		super(props);
 
 		this.state = {
-			activeIndex : 3
+			activeIndex : 2
 		}
 
 		this.project_uuid = this.props.match.params.project_uuid;
