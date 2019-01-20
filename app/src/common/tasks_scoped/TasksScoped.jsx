@@ -17,7 +17,7 @@ class TasksScoped extends React.Component {
 		super(props);
 
 		this.state = {
-			layerOpened: true
+			layerOpened: false
 		}
 	}
 
