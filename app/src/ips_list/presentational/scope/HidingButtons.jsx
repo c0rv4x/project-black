@@ -2,8 +2,9 @@ import _ from 'lodash'
 import React from 'react'
 
 import { Box, Button } from 'grommet'
-import { Google, Inspect, Tasks } from 'grommet-icons'
+import { Google, Inspect } from 'grommet-icons'
 import Creds from '../../../common/creds/Creds.jsx'
+import TasksScoped from '../../../common/tasks_scoped/TasksScoped.jsx'
 
 
 class HidingButtons extends React.Component {
@@ -16,6 +17,10 @@ class HidingButtons extends React.Component {
                 <Creds
                     scope={scope}
                     project_uuid={project_uuid}
+                />
+                <TasksScoped
+                    target={target}
+                    tasks={scope.tasks}
                 />
                 <Button
                     onClick={() => window.open("https://google.com/search?q=site:" + target, Math.random().toString(36).substring(7))}
