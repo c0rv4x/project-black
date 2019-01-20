@@ -10,6 +10,15 @@ import { Grommet, Box } from 'grommet';
 import { grommet } from "grommet/themes";
 
 
+import JavascriptTimeAgo from 'javascript-time-ago'
+ 
+// The desired locales.
+import en from 'javascript-time-ago/locale/en'
+ 
+// Initialize the desired locales.
+JavascriptTimeAgo.locale(en)
+
+
 import './semantic/semantic.min.css';
 import './styles/notification_styles.css';
 import './styles/table_fix.css';

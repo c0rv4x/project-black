@@ -1,5 +1,7 @@
 import React from 'react'
 
+import ReactTimeAgo from 'react-time-ago'
+
 import {
 	Box,
 	Button,
@@ -72,6 +74,10 @@ class TasksScoped extends React.Component {
 									{
 										property: "date_added",
 										header: "Added",
+										render: (task) => {
+											console.log(task.date_added);
+											return <Box width="xsmall"><ReactTimeAgo date={new Date(task.date_added)} /></Box>
+										}
 									}
 								]}
 								data={tasks.active.concat(tasks.finished)}
