@@ -8,8 +8,7 @@ import {
 	DataTable,
 	Heading,
 	Layer,
-	Stack,
-	Text
+	Stack
 } from 'grommet'
 import { Tasks } from 'grommet-icons'
 
@@ -22,6 +21,10 @@ class TasksScoped extends React.Component {
 			layerOpened: false
 		}
 	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+        return (!_.isEqual(nextProps, this.props) || (this.state.layerOpened !== nextState.layerOpened));
+    }
 
 	render() {
 		const { target, tasks } = this.props;

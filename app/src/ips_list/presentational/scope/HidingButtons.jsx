@@ -8,6 +8,10 @@ import TasksScoped from '../../../common/tasks_scoped/TasksScoped.jsx'
 
 
 class HidingButtons extends React.Component {
+	shouldComponentUpdate(nextProps) {
+        return !_.isEqual(nextProps, this.props);
+    }
+
 	render() {
         const { project_uuid, scope, type, target } = this.props;
         const verbose_host_link = '/project/' + project_uuid + '/' + type + '/' + target;
