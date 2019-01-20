@@ -12,7 +12,7 @@ class Dictionaries extends React.Component {
         super(props);
 
         this.state = {
-            "dictsHidden": false
+            "dictsHidden": true
         };
     }
 
