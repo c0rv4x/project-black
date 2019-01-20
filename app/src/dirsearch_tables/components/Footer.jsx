@@ -54,7 +54,7 @@ class Footer extends React.Component {
                 }}
             >
                 <Box gridArea="labels" direction="row">							
-                    {generateFiles(stats, target_id)}
+                    {generateFiles(stats, target_id, port_number)}
                 </Box>
                 <Box gridArea="buttons" direction="row" justify="end" gap="small">
                     <Button
