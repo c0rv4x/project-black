@@ -84,6 +84,7 @@ class TasksScoped extends React.Component {
 									}
 								]}
 								data={tasks.active.concat(tasks.finished)}
+								primaryKey="task_id"
 								sortable
 								resizeable
 							/>
