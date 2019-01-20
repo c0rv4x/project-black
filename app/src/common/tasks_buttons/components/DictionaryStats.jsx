@@ -23,8 +23,8 @@ class DictionariesStats extends React.Component {
     }
 
     render() {
-        const { dicts } = this.props;
- 
+        const { dicts, project_uuid, name, renewDicts } = this.props;
+
         return (
             <Box>
                 <Table>
@@ -69,9 +69,9 @@ class DictionariesStats extends React.Component {
                     </TableBody>
                     <TableFooter>
                         <DictUploader
-                            project_uuid={this.props.project_uuid}
-                            task_name={this.props.name}
-                            renewDicts={this.renewDicts}
+                            project_uuid={project_uuid}
+                            task_name={name}
+                            renewDicts={renewDicts}
                         />
                     </TableFooter>
                 </Table>
