@@ -1,6 +1,8 @@
 import _ from 'lodash'
 import React from 'react'
-import { Menu } from 'semantic-ui-react'
+
+import { Box } from 'grommet'
+import Page from './Page.jsx'
 
 
 class ReactPaginate extends React.Component {
@@ -30,15 +32,30 @@ class ReactPaginate extends React.Component {
 		this.props.clickHandler(number);
 	}
 
-	createItem(i) {
+	createItem(value) {
 		const { activeItem } = this.state;
 
-		return (
-			<Menu.Item key={i}
-					   name={String(i)}
-					   active={activeItem === i}
-			           onClick={() => {this.setPage(i)}} />
-		)
+		if (value == '...') {
+			return (
+				<Page
+					key={"menu-" + value}
+					value={value}
+					active={false}
+					disabled={true}
+				/>
+			)
+		}
+		else {
+			return (
+				<Page
+					key={"menu-" + value}
+					value={String(value)}
+					active={activeItem === value}
+					disabled={false}
+					setActive={() => {this.setPage(value)}}
+				/>
+			)
+		}
 	}
 
 	render() {
@@ -63,7 +80,7 @@ class ReactPaginate extends React.Component {
 			default:
 				if (activeItem > 3) {
 					pages.push(this.createItem(1))
-					pages.push(<Menu.Item key={0} disabled>...</Menu.Item>);
+					pages.push(this.createItem('...'));
 					pages.push(this.createItem(activeItem - 1))
 				}
 				else if (activeItem == 3) {
@@ -80,7 +97,7 @@ class ReactPaginate extends React.Component {
 
 				if (activeItem < pageCount - 2) {
 					pages.push(this.createItem(activeItem + 1))
-					pages.push(<Menu.Item key={pageCount + 1} disabled>...</Menu.Item>);
+					pages.push(this.createItem('...'));
 					pages.push(this.createItem(pageCount))
 				}
 				else if (activeItem == pageCount - 2) {
@@ -98,9 +115,9 @@ class ReactPaginate extends React.Component {
 		}
 
 		return (
-			<Menu pagination>
+			<Box direction="row">
 				{pages}
-			</Menu>
+			</Box>
 		)
 	}
 }
