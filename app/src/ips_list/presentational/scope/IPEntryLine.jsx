@@ -54,11 +54,9 @@ class IPEntryLine extends React.Component {
 				<Box
 					key={x.scan_id + '_' + x.port_number}
 					align="center"
-					margin="xxsmall"
 					pad="xsmall"
-					round="xsmall"
 				>
-					<div><Heading level="5">{x.port_number}</Heading></div>
+					<Heading margin="none" level="5">{x.port_number}</Heading>
 					{x.banner}
 				</Box>
 			)
