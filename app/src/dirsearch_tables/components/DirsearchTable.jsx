@@ -76,6 +76,8 @@ class DirsearchTable extends React.Component {
 					<Heading
 						level="4"
 						margin={{
+							top: "none",
+							bottom: "none",
 							left: "xsmall",
 							bottom: "xsmall"
 						}}
