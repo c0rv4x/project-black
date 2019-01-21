@@ -108,6 +108,7 @@ class IPEntryLine extends React.Component {
 							style={{
 								"cursor": "pointer"
 							}}
+							margin="none"
 						>
 							{ip.ip_address}
 							{this.state.copyPasteShown && !this.state.copySuccess && <span>  <Copy color="plain" size="15px" /></span>}
