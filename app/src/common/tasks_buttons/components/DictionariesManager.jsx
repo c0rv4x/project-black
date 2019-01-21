@@ -33,7 +33,10 @@ class DictionariesManager extends React.Component {
 			<div>
                 <Heading level="3">Dictionaries</Heading>
                 <DictionaryStats
+                    project_uuid={this.props.project_uuid}
+                    name={this.props.name}
                     dicts={this.props.dicts}
+                    renewDicts={this.renewDicts}
                     deleteDict={this.deleteDict}
                 />
             </div>

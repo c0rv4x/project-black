@@ -20,7 +20,7 @@ class Statistic extends React.Component {
 					gap='none'
 				>
 					<Box gridArea='number' align="center">
-						<Heading level="2">{number}</Heading>
+						<Heading level="2" margin="none">{number}</Heading>
 					</Box>
 					<Box gridArea='text' align="center">
 						<Text>{text}</Text>

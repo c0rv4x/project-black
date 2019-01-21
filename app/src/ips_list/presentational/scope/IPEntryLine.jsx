@@ -54,11 +54,9 @@ class IPEntryLine extends React.Component {
 				<Box
 					key={x.scan_id + '_' + x.port_number}
 					align="center"
-					margin="xxsmall"
 					pad="xsmall"
-					round="xsmall"
 				>
-					<div><Heading level="5">{x.port_number}</Heading></div>
+					<Heading margin="none" level="5">{x.port_number}</Heading>
 					{x.banner}
 				</Box>
 			)
@@ -91,8 +89,9 @@ class IPEntryLine extends React.Component {
 					columns={["small", "small", "auto", "small", "small"]}
 					rows={["auto"]}
 					align="center"
+					pad="xsmall"
 				>
-					<Box gridArea={"ipaddr-" + ip.ip_address} direction="row" gap="small" pad="small">
+					<Box gridArea={"ipaddr-" + ip.ip_address} direction="row" gap="small" pad="xxsmall">
 						<Heading
 							onMouseOut={() => this.setState({
 								"copyPasteShown": false,
@@ -109,22 +108,23 @@ class IPEntryLine extends React.Component {
 							style={{
 								"cursor": "pointer"
 							}}
+							margin="none"
 						>
 							{ip.ip_address}
 							{this.state.copyPasteShown && !this.state.copySuccess && <span>  <Copy color="plain" size="15px" /></span>}
 							{this.state.copyPasteShown && this.state.copySuccess && <span>  <Checkmark color="plain" size="15px" /></span>}
 						</Heading>
 					</Box>
-					<Box gridArea={"comment-" + ip.ip_address} gap="small" pad="small">
+					<Box gridArea={"comment-" + ip.ip_address} gap="small" pad="xxsmall">
 						<ScopeComment
 							comment={ip.comment}
 							onCommentSubmit={onCommentSubmit}
 						/>
 					</Box>
-					<Box gridArea={"ports-" + ip.ip_address} direction="column" gap="small" pad="small">
+					<Box gridArea={"ports-" + ip.ip_address} direction="column" gap="small" pad="xxsmall">
 						{ports}
 					</Box>
-					<Box gridArea={"files-" + ip.ip_address} direction="row" gap="small" pad="small">
+					<Box gridArea={"files-" + ip.ip_address} direction="row" gap="small" pad="xxsmall">
 						<FilesStats targetId={ip.ip_id} files={ip.files} />
 					</Box>
 					<Box gridArea={"control-" + ip.ip_address}  direction="row" gap="small" justify="end">

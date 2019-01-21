@@ -109,7 +109,7 @@ class HostsEntryLine extends React.Component {
 					align="center"
 				>
 					<Box gridArea={"host-" + host.hostname} direction="row" pad="small">
-						<Text
+						<Heading
 							onMouseOut={() => this.setState({
 								"copyPasteShown": false,
 								"copySuccess": false
@@ -121,15 +121,17 @@ class HostsEntryLine extends React.Component {
 									this.copyToClipboard(e);
 								}
 							}}
+							level="4"
 							style={{
 								"cursor": "pointer",
 								"wordBreak": "break-word"
 							}}
+							margin="none"
 						>
 							{host.hostname}
 							{this.state.copyPasteShown && !this.state.copySuccess && <span>  <Copy color="plain" size="15px" /></span>}
 							{this.state.copyPasteShown && this.state.copySuccess && <span>  <Checkmark color="plain" size="15px" /></span>}
-						</Text>
+						</Heading>
 					</Box>
 					<Box gridArea={"comment-" + host.hostname} pad="small">
 						<ScopeComment
