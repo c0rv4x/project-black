@@ -68,7 +68,7 @@ async def cb_serve_media_file(request, filename=""):
 @authorized()
 async def cb_upload_dict(request):
     dict_params = request.json
-    content = base64.b64decode(dict_params["content"]).decode('utf-8')
+    content = base64.b64decode(dict_params["content"]).decode()
     save_result = HANDLERS.dict_manager.create(
         name=dict_params["name"],
         dict_type=dict_params["dict_type"],

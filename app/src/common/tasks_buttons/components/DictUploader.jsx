@@ -14,6 +14,16 @@ import ScopeUpload from '../../scope_adder/components/ScopeUpload.jsx'
 
 import autosize from 'autosize'
 
+function b64EncodeUnicode(str) {
+    // first we use encodeURIComponent to get percent-encoded UTF-8,
+    // then we convert the percent encodings into raw bytes which
+    // can be fed into btoa.
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+        function toSolidBytes(match, p1) {
+            return String.fromCharCode('0x' + p1);
+    }));
+}
+
 class DictUploader extends React.Component {
     constructor(props) {
         super(props);
@@ -49,7 +59,7 @@ class DictUploader extends React.Component {
             "project_uuid": this.props.project_uuid,
             "dict_type": this.props.task_name,
             "name": this.state.name,
-            "content": btoa(this.state.dictionary)
+            "content": b64EncodeUnicode(this.state.dictionary)
         }));
     }
 
