@@ -7,17 +7,26 @@ import { Lock } from 'grommet-icons'
 
 class Statistic extends React.Component {
 	render() {
-		const { number, text } = this.props;
+		const { number, text, locked } = this.props;
 
 		return (
-			<Box align="center">
-				<Box>
-					<Heading level="1" margin="none">{number}</Heading>
+			<Stack anchor="center">
+				<Box align="center">
+					<Box>
+						<Heading level="1" margin="none">{number}</Heading>
+					</Box>
+					<Box>
+						<Text>{text}</Text>
+					</Box>
 				</Box>
-				<Box>
-					<Text>{text}</Text>
-				</Box>
-			</Box>
+				{ locked &&
+					<Box
+						background="rgba(0, 0, 0, 0.2)"
+					>
+						<Lock size="xlarge" />
+					</Box>
+				}
+			</Stack>
 		)
 	}
 }

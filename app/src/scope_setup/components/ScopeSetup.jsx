@@ -41,6 +41,7 @@ class ScopeSetup extends React.Component {
 					hosts={hosts}
 					scans={scans}
 					files={files}
+					project={project}
 				/>
 
 				<br />

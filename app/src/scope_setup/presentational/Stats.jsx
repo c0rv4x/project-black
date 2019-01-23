@@ -8,7 +8,7 @@ import Statistic from '../presentational/Statistic.jsx'
 
 class ScopeSetup extends React.Component {
 	render() {
-		let { ips, hosts, scans, files } = this.props;
+		let { ips, hosts, scans, files, project } = this.props;
 
 		const all_loaded = ips.loaded && hosts.loaded && scans.loaded && files.loaded;
 
@@ -25,10 +25,12 @@ class ScopeSetup extends React.Component {
 							>
 								<Statistic
 									number={ips.total_db_ips}
+									locked={project.ips_locked}
 									text="ips"
 								/>
 								<Statistic
 									number={hosts.total_db_hosts}
+									locked={project.hosts_locked}
 									text="hosts"
 								/>
 								<Statistic
