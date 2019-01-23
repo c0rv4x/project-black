@@ -33,6 +33,12 @@ class AdaptiveOption extends React.Component {
 		}
 	}
 
+	componentDidMount() {
+		if (this.input) {
+			autosize(this.input);
+		}
+	}
+
 	render() {
 		const { value, objectKey } = this.props;
 
@@ -54,6 +60,7 @@ class AdaptiveOption extends React.Component {
 						ref={(input) => {
 							this.input = input;
 						}}
+						rows={1}
 						style={{ resize: 'none' }}
 						id={"text-area-" + objectKey}
 						type={value.type}

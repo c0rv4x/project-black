@@ -98,6 +98,12 @@ class ScopeAdder extends React.Component {
 		this.props.onNewScopeClick(this.props.newScopeInput);
 	}
 
+	componentDidUpdate() {
+		if (this.input) {
+			autosize(this.input);
+		}
+	}
+
 	render() {
 		let { color, loading } = this.state;
 
