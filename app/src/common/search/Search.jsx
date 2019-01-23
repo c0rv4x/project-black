@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import Select from 'react-select'
+import Creatable from 'react-select/lib/Creatable'
 
 
 class Search extends React.Component {
@@ -60,8 +60,8 @@ class Search extends React.Component {
 		return (
 			<div className="section">
 				<h3 className="section-heading">{this.props.label}</h3>
-				<Select.Creatable
-					multi={true}
+				<Creatable
+					isMulti={true}
 					options={options}
 					onChange={this.handleOnChange}
 					value={multiValue}
