@@ -18,9 +18,8 @@ import en from 'javascript-time-ago/locale/en'
 // Initialize the desired locales.
 JavascriptTimeAgo.locale(en)
 
-
 import './styles/notification_styles.css';
-import 'react-select/dist/react-select.css';
+
 
 var mainStore = createStore(rdcs);
 
