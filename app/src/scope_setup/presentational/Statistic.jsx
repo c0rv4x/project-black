@@ -1,7 +1,8 @@
 import _ from 'lodash'
 import React from 'react'
 
-import { Box, Grid, Heading, Text } from 'grommet'
+import { Box, Stack, Heading, Text } from 'grommet'
+import { Lock } from 'grommet-icons'
 
 
 class Statistic extends React.Component {
@@ -10,22 +11,12 @@ class Statistic extends React.Component {
 
 		return (
 			<Box align="center">
-				<Grid
-					areas={[
-						{ name: 'number', start: [0, 0], end: [0, 0] },
-						{ name: 'text', start: [0, 1], end: [0, 1] },
-					]}
-					columns={['auto']}
-					rows={['auto', 'auto']}
-					gap='none'
-				>
-					<Box gridArea='number' align="center">
-						<Heading level="2" margin="none">{number}</Heading>
-					</Box>
-					<Box gridArea='text' align="center">
-						<Text>{text}</Text>
-					</Box>
-				</Grid>
+				<Box>
+					<Heading level="1" margin="none">{number}</Heading>
+				</Box>
+				<Box>
+					<Text>{text}</Text>
+				</Box>
 			</Box>
 		)
 	}
