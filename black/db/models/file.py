@@ -11,7 +11,7 @@ class FileDatabase(Base):
     """ Keeps data on the found file """
     __tablename__ = "files"
     __table_args__ = (
-        UniqueConstraint('file_path', 'status_code', 'content_length'),
+        UniqueConstraint('file_path', 'status_code', 'content_length', 'project_uuid'),
     )
 
     # Primary key
