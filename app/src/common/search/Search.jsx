@@ -1,79 +1,23 @@
 import _ from 'lodash'
 import React from 'react'
-import Creatable from 'react-select/lib/Creatable'
-import { components } from 'react-select';
 
-import { Box, Text } from 'grommet'
+import { Box, MaskedInput, Keyboard, Text } from 'grommet'
 import { Close } from 'grommet-icons'
 
-
-const SelectContainer = ({ children, ...props }) => {
-	return (
-	  <select>
-		<components.SelectContainer {...props}>
-		  {children}
-		</components.SelectContainer>
-	  </select>
-	);
-  };
-
-const MultiValueContainer = (props) => {
-	return (
-	  <Box
-		background="brand"
-		direction="row"
-		round="xsmall"
-	  >
-		<components.MultiValueContainer {...props} />
-	  </Box>
-	);
-};
-
-const MultiValueLabel = (props) => {
-	return (
-	  <Box
-		background="brand"
-		direction="row"
-	  >
-		<components.MultiValueLabel {...props}>
-			<Text color="light-2">{props.children}</Text>
-		</components.MultiValueLabel>
-	  </Box>
-	);
-};
-
-
-const MultiValueRemove = (props) => {
-	return (
-	  <Box
-		background="brand"
-		direction="row"
-	  >
-		<components.MultiValueRemove {...props}>
-			<Close color="light-2" size="small" />
-		</components.MultiValueRemove>
-	  </Box>
-	);
-};
 
 class Search extends React.Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			multiValue: [],
-			options: [
-				{ value: 'host: %.ru', label: 'host: %.ru'},
-				{ value: 'ip: 8.8.8.8', label: 'ip: 8.8.8.8' },
-				{ value: 'port: 80', label: 'port: 80' },
-				{ value: 'port: %', label: 'port: %' },
-				{ value: 'files: 200', label: 'files: 200' },
-				{ value: 'banner: apache', label: 'banner: apache' }
-			]
+			currentEnteredValue: "",
+			currentValue: [],
 		}
 
 		this.handleOnChange = this.handleOnChange.bind(this);
+		this.addNewValue = this.addNewValue.bind(this);
 		this.parseActiveOptions = this.parseActiveOptions.bind(this);
+		this.getDynamicOptions = this.getDynamicOptions.bind(this);
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -81,17 +25,26 @@ class Search extends React.Component {
 	}
 
 	handleOnChange(value) {
-		this.setState({ multiValue: value });
+		this.setState({ currentValue: value });
+
+		setTimeout(this.parseActiveOptions, 100);
+	}
+
+	addNewValue() {
+		this.setState({
+			currentValue: this.state.currentValue.concat([this.state.currentEnteredValue]),
+			currentEnteredValue: ""
+		});
 
 		setTimeout(this.parseActiveOptions, 100);
 	}
 
 	parseActiveOptions() {
-		const { multiValue } = this.state;
+		const { currentValue } = this.state;
 		var resultObject = {};
 
-		for (var eachValue of multiValue) {
-			const unparsedOptions = eachValue.value;
+		for (var eachValue of currentValue) {
+			const unparsedOptions = eachValue;
 			const splitted = unparsedOptions.split(":");
 
 			const key = splitted[0].trim();
@@ -108,19 +61,124 @@ class Search extends React.Component {
 		this.props.applyFilters(resultObject);
 	}
 
+	getDynamicOptions() {
+		const { currentEnteredValue } = this.state;
+
+		if (currentEnteredValue.indexOf("port") === 0) {
+			return {
+				options: ["80", "!80", "%"],
+				regexp: /^(\!{0,1}[0-9]{1,5})|%$/,
+				placeholder: "value (Shift+Enter to submit)"
+			}
+		}
+		else if (currentEnteredValue.indexOf("protocol") === 0) {
+			return {
+				options: ["http%", "ssh"],
+				regexp: /^.+$/,
+				placeholder: "value (Shift+Enter to submit)"
+			}
+		}
+		else if (currentEnteredValue.indexOf("banner") === 0) {
+			return {
+				options: ["%apache%", "nginx"],
+				regexp: /^.+$/,
+				placeholder: "value (Shift+Enter to submit)"
+			}
+		}
+		else if (currentEnteredValue.indexOf("ip") === 0) {
+			return {
+				options: ["192%", "10.10.121.25"],
+				regexp: /^[0-9%]+$/,
+				placeholder: "value (Shift+Enter to submit)"
+			}
+		}
+		else if (currentEnteredValue.indexOf("host") === 0) {
+			return {
+				options: ["yandex.ru", "%.ru", "%.com"],
+				regexp: /^.+$/,
+				placeholder: "value (Shift+Enter to submit)"
+			}
+		}
+		else if (currentEnteredValue.indexOf("files") === 0) {
+			return {
+				options: ["200", "401"],
+				regexp: /^([0-9]{3})$/,
+				placeholder: "value (Shift+Enter to submit)"
+			}
+		}
+		else {
+			return {
+				options: [],
+				regexp: /^$/,
+				placeholder: "value (Shift+Enter to submit)"
+			}
+		}
+	}
+
 	render() {
-		const { multiValue, options } = this.state;
+		const { currentValue, currentEnteredValue } = this.state;
+		const generatedOptions = this.getDynamicOptions();
+
 		return (
-			<div className="section">
+			<Box
+				gap="xsmall"
+			>
 				<h3 className="section-heading">{this.props.label}</h3>
-				<Creatable
-					components={{ MultiValueContainer, MultiValueLabel, MultiValueRemove }}
-					isMulti={true}
-					options={options}
-					onChange={this.handleOnChange}
-					value={multiValue}
-				/>
-			</div>
+				<Box direction="row" >
+					{
+						currentValue.map((option) => {
+							return (
+								<Box
+									key={option}
+									align="center"
+									gap="xxsmall"
+									direction="row"
+									pad="xsmall"
+									border={{
+										size: "small",
+										color: "brand"
+									}}
+									round="xsmall"
+								>
+									{option} <Close size="small" />
+								</Box>
+							);
+						})
+					}
+				</Box>
+				<Keyboard
+					onEnter={(e) => {
+						if (e.shiftKey) {
+							this.addNewValue();
+						}
+					}}
+				>
+					<MaskedInput
+						mask={[
+							{
+								options: [
+									"banner",
+									"files",
+									"host",
+									"ip",
+									"port",
+									"protocol",
+								],
+								regexp: /^[a-z]+$/,
+								placeholder: "type"
+							},
+							{ fixed: ': '},
+							{
+								options: generatedOptions["options"],
+								regexp: generatedOptions["regexp"],
+								placeholder: generatedOptions["placeholder"]
+							}
+						]}
+						value={currentEnteredValue}
+						onChange={(event) => this.setState({ currentEnteredValue: event.target.value })}
+					/>
+				</Keyboard>
+			</Box>
 		);
 	}
 }
