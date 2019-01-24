@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 
-import { Box, MaskedInput, Keyboard, Text } from 'grommet'
+import { Box, MaskedInput, Keyboard } from 'grommet'
 import { Close } from 'grommet-icons'
 
 
@@ -15,7 +15,8 @@ class Search extends React.Component {
 		}
 
 		this.handleOnChange = this.handleOnChange.bind(this);
-		this.addNewValue = this.addNewValue.bind(this);
+		this.addOption = this.addOption.bind(this);
+		this.popOption = this.popOption.bind(this);
 		this.parseActiveOptions = this.parseActiveOptions.bind(this);
 		this.getDynamicOptions = this.getDynamicOptions.bind(this);
 	}
@@ -26,17 +27,28 @@ class Search extends React.Component {
 
 	handleOnChange(value) {
 		this.setState({ currentValue: value });
-
-		setTimeout(this.parseActiveOptions, 100);
 	}
 
-	addNewValue() {
+	addOption() {
 		this.setState({
 			currentValue: this.state.currentValue.concat([this.state.currentEnteredValue]),
 			currentEnteredValue: ""
 		});
 
-		setTimeout(this.parseActiveOptions, 100);
+	}
+
+	popOption(option) {
+		const { currentValue } = this.state;
+		let copyCurrentValue = JSON.parse(JSON.stringify(currentValue));
+		copyCurrentValue.pop(currentValue.indexOf(option));
+
+		this.setState({ currentValue: copyCurrentValue });
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if (!_.isEqual(this.state.currentValue, prevState.currentValue)) {
+			this.parseActiveOptions();
+		}
 	}
 
 	parseActiveOptions() {
@@ -123,7 +135,6 @@ class Search extends React.Component {
 			<Box
 				gap="xsmall"
 			>
-				<h3 className="section-heading">{this.props.label}</h3>
 				<Box direction="row" >
 					{
 						currentValue.map((option) => {
@@ -140,7 +151,7 @@ class Search extends React.Component {
 									}}
 									round="xsmall"
 								>
-									{option} <Close size="small" />
+									{option} <Close size="small" onClick={() => this.popOption(option)} />
 								</Box>
 							);
 						})
@@ -149,7 +160,7 @@ class Search extends React.Component {
 				<Keyboard
 					onEnter={(e) => {
 						if (e.shiftKey) {
-							this.addNewValue();
+							this.addOption();
 						}
 					}}
 				>
