@@ -79,7 +79,7 @@ class Search extends React.Component {
 		if (currentEnteredValue.indexOf("port") === 0) {
 			return {
 				options: ["80", "!80", "%"],
-				regexp: /^(\!{0,1}[0-9]{1,5})|%$/,
+				regexp: /^(\!{0,1}[0-9]{0,5})|%$/,
 				placeholder: "value (Shift+Enter to submit)"
 			}
 		}
@@ -133,38 +133,23 @@ class Search extends React.Component {
 
 		return (
 			<Box
+				margin={{
+					top: "small"
+				}}
 				gap="xsmall"
 			>
-				<Box direction="row" >
-					{
-						currentValue.map((option) => {
-							return (
-								<Box
-									key={option}
-									align="center"
-									gap="xxsmall"
-									direction="row"
-									pad="xsmall"
-									border={{
-										size: "small",
-										color: "brand"
-									}}
-									round="xsmall"
-								>
-									{option} <Close size="small" onClick={() => this.popOption(option)} />
-								</Box>
-							);
-						})
-					}
-				</Box>
 				<Keyboard
 					onEnter={(e) => {
 						if (e.shiftKey) {
-							this.addOption();
+							document.getElementById('maskedinput').blur();
+							setTimeout(() => {
+								this.addOption();
+							}, 150);
 						}
 					}}
 				>
 					<MaskedInput
+						id="maskedinput"
 						mask={[
 							{
 								options: [
@@ -189,6 +174,28 @@ class Search extends React.Component {
 						onChange={(event) => this.setState({ currentEnteredValue: event.target.value })}
 					/>
 				</Keyboard>
+				<Box direction="row" gap="xsmall">
+					{
+						currentValue.map((option) => {
+							return (
+								<Box
+									key={option}
+									align="center"
+									gap="xxsmall"
+									direction="row"
+									pad="xsmall"
+									border={{
+										size: "small",
+										color: "brand"
+									}}
+									round="xsmall"
+								>
+									{option} <Close size="small" onClick={() => this.popOption(option)} />
+								</Box>
+							);
+						})
+					}
+				</Box>
 			</Box>
 		);
 	}
