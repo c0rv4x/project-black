@@ -22,7 +22,7 @@ async def save_raw_output(task_id, output, project_uuid):
                 if find_anomalies(host):
                     print("[-] Hostname seems to be not valid", host)
 
-                if HostDatabase.find(host, project_uuid) is None:
+                if await HostDatabase.find(host, project_uuid) is None:
                     new_host = HostDatabase(
                         target=host,
                         task_id=task_id,
