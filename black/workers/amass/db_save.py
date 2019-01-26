@@ -5,7 +5,7 @@ from black.db import Sessions, HostDatabase
 
 
 def find_anomalies(hostname):
-    if ' ' in host:
+    if ' ' in hostname:
         return True
     return False
 
