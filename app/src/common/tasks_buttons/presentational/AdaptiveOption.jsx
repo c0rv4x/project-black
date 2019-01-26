@@ -29,7 +29,7 @@ class AdaptiveOption extends React.Component {
 
 	componentDidUpdate() {
 		if (this.input) {
-			autosize(this.input);
+			autosize.update(this.input);
 		}
 	}
 
