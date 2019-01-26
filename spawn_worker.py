@@ -2,6 +2,7 @@ import sys
 import asyncio
 import argparse
 
+from black.workers.amass.amass_worker import AmassWorker
 from black.workers.nmap.nmap_worker import NmapWorker
 from black.workers.masscan.masscan_worker import MasscanWorker
 from black.workers.patator.patator_worker import PatatorWorker
@@ -22,13 +23,15 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Launch one of workers')
     parser.add_argument(
         'worker', nargs=1,
-        choices=['masscan', 'nmap', 'patator', 'dirsearch'],
+        choices=['amass', 'masscan', 'nmap', 'patator', 'dirsearch'],
         help='worker type')
 
     args = parser.parse_args()
     worker_type = args.worker[0]
 
-    if worker_type == 'nmap':
+    if worker_type == 'amass':
+        run(AmassWorker)
+    elif worker_type == 'nmap':
         run(NmapWorker)
     elif worker_type == 'masscan':
         run(MasscanWorker)
