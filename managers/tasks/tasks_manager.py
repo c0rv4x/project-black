@@ -189,7 +189,6 @@ class TaskManager(object):
                 targets += list(top_level_hosts)
 
             targets = list(filter(lambda x: x, set(targets)))
-            print(targets)
 
             tasks = TaskSpawner.start_amass(
                 targets, params, project_uuid
@@ -211,6 +210,7 @@ class TaskManager(object):
 
     def launch_task(self, task):
         """ Put a message to the queue, which says "start my task, please """
+        print("Launching", task.task_type)
         asyncio.get_event_loop().create_task(self.exchange.publish(
             routing_key=task.task_type + "_tasks",
             message=aio_pika.Message(

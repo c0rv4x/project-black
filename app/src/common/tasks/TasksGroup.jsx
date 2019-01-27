@@ -28,28 +28,45 @@ class EachTask extends React.Component {
 
 		for (let each_task of tasks_sorted) {
 			if (each_task.status == 'Working') {
+				const progressValue = each_task.progress;
 				progresses.push(
 					<Box
 						id={"progress_task_" + each_task.task_id}
 						key={"progress_task_" + each_task.task_id}
 						alignSelf="stretch"
 					>
-						<Stack
-							anchor="center"
-						>
-							<Meter
-								type="bar"
-								values={[{ value: each_task.progress }]}
-								size="full"
-								thickness="medium"
-							/>
-							<Box direction="row" align="center" pad={{ bottom: "xsmall" }}>
-								<Text size="small" weight="bold">
-									{each_task.progress}
-								</Text>
-								<Text size="small">%</Text>
-							</Box>
-						</Stack>
+						{
+							(progressValue == 1337) ? (
+								<Stack anchor="center">
+									<Meter
+										type="bar"
+										values={[{ value: progressValue }]}
+										size="full"
+										thickness="medium"
+									/>
+									<Box direction="row" align="center" pad={{ bottom: "xsmall" }}>
+										<Text size="small" weight="bold">
+											{each_task.progress}
+										</Text>
+										<Text size="small">%</Text>
+									</Box>
+								</Stack>
+							) : (
+								<Stack anchor="center">
+									<Meter
+										type="bar"
+										values={[{ value: 100 }]}
+										size="full"
+										thickness="medium"
+									/>
+									<Box direction="row" align="center" pad={{ bottom: "xsmall" }}>
+										<Text size="small" weight="bold">
+											N/A
+										</Text>
+									</Box>
+								</Stack>
+							)
+						}
 					</Box>
 				);
 			}

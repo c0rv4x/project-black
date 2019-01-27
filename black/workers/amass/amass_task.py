@@ -29,7 +29,8 @@ class AmassTask(AsyncTask):
             self.command = ['amass', '-d'] + [self.target] + [self.params['program']['argv']]
             self.proc = await asyncio.create_subprocess_shell(' '.join(self.command), stdout=PIPE, stderr=PIPE)
 
-            await self.set_status("Working", progress=0)
+            # 1337 is hardcoded to show frontend that we don't track progress here
+            await self.set_status("Working", progress=1337)
     
             # Launch readers
             loop = asyncio.get_event_loop()
