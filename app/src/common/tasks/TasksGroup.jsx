@@ -25,10 +25,10 @@ class EachTask extends React.Component {
 			if (a.task_id < b.task_id) return -1;
 			return 0;
 		});
-
 		for (let each_task of tasks_sorted) {
 			if (each_task.status == 'Working') {
 				const progressValue = each_task.progress;
+
 				progresses.push(
 					<Box
 						id={"progress_task_" + each_task.task_id}
@@ -36,7 +36,7 @@ class EachTask extends React.Component {
 						alignSelf="stretch"
 					>
 						{
-							(progressValue == 1337) ? (
+							(progressValue != 1337) ? (
 								<Stack anchor="center">
 									<Meter
 										type="bar"
