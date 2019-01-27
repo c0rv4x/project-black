@@ -163,3 +163,20 @@ class TaskSpawner(object):
                             project_uuid=project_uuid))
 
         return tasks
+
+    @staticmethod
+    def start_amass(targets, params, project_uuid):
+        tasks = []
+
+        for host in targets:
+            tasks.append(
+                ShadowTask(
+                    task_id=None,
+                    task_type='amass',
+                    target=host,
+                    params=params,
+                    project_uuid=project_uuid
+                )
+            )
+
+        return tasks

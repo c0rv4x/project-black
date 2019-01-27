@@ -174,6 +174,27 @@ class TaskManager(object):
                 targets, params, project_uuid
             )
 
+        elif task_type == 'amass':
+            targets = params['program']['hosts'].strip().split('\n')
+
+            if params['program']['all_top_level_domains']:
+                all_hosts_db = self.scope_manager.get_hosts_with_ports({}, project_uuid)
+                all_hosts = list(map(lambda host: host['hostname'], all_hosts_db['hosts']))
+
+                top_level_hosts = set()
+
+                for host in all_hosts:
+                    top_level_hosts.add('.'.join(host.split('.')[-2:]))
+
+                targets += list(top_level_hosts)
+
+            targets = list(filter(lambda x: x, set(targets)))
+            print(targets)
+
+            tasks = TaskSpawner.start_amass(
+                targets, params, project_uuid
+            )
+
         self.cache.add_tasks(tasks)
 
         for task in tasks:
