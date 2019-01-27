@@ -3,7 +3,6 @@ import React from 'react'
 
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
 import ButtonTasks from '../../common/tasks_buttons/components/ButtonTasks.jsx'
-import HostsChoser from '../presentational/HostsChoser.jsx'
 
 
 class TaskButton extends React.Component {
