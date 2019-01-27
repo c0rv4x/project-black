@@ -140,6 +140,16 @@ class InnerModal extends React.Component {
 										round: "xsmall"
 									}
 								}
+								else if (help_notice.type == 'info') {
+									borderProps = {
+										border: {
+											size: "medium",
+											color: "accent-1"
+										},
+										background: "accent-1",
+										round: "xsmall"
+									}
+								}
 
 								return (
 									<Box
