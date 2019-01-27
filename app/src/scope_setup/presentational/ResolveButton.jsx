@@ -3,7 +3,7 @@ import React from 'react'
 import { Button } from 'grommet'
 
 
-class HeadButtons extends React.Component {
+class ResolveButton extends React.Component {
 	constructor(props) {
 		super(props);
 
@@ -44,4 +44,4 @@ class HeadButtons extends React.Component {
 	}
 }
 
-export default HeadButtons;
+export default ResolveButton;

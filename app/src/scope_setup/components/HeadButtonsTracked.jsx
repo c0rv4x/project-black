@@ -5,8 +5,9 @@ import { Box } from 'grommet'
 import ProjectsSocketioEventsEmitter from '../../redux/projects/ProjectsSocketioEventsEmitter.js'
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
-import HeadButtons from '../presentational/HeadButtons.jsx'
+import ResolveButton from '../presentational/ResolveButton.jsx'
 import ScopesLock from '../presentational/ScopesLock.jsx'
+import TaskButton from './TaskButton.jsx'
 
 
 class HeadButtonsTracked extends React.Component {
@@ -38,7 +39,7 @@ class HeadButtonsTracked extends React.Component {
 
 	render() {
 		return (
-			<Box direction="row" align="center" gap="small" pad="xsmall">
+			<Box direction="row" align="center" gap="xsmall" pad="xsmall">
 				<ScopesLock 
 					status={this.props.project.ips_locked}
 					name="ips"
@@ -51,9 +52,16 @@ class HeadButtonsTracked extends React.Component {
 					setLock={this.setLockHosts}
 				/>
 				
-				<HeadButtons project={this.props.project}
-							 hostsResolved={this.props.hosts.resolve_finished}
-							 resolveScopes={() => this.resolveScopes(null, this.props.project.project_uuid)}/>
+				<ResolveButton
+					project={this.props.project}
+					hostsResolved={this.props.hosts.resolve_finished}
+					resolveScopes={() => this.resolveScopes(null, this.props.project.project_uuid)}
+				/>
+
+				<TaskButton
+					project_uuid={this.props.project.project_uuid}
+					hosts={this.props.hosts}
+				/>
 			</Box>
 		)
 	}
