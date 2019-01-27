@@ -66,7 +66,7 @@ class HostsTable extends React.Component {
 		const hosts = _.map(this.state.shownData, (x) => {
 			return (
 				<HostsEntryLine
-					key={x.host_id} 
+					key={"hosttable-" + x.host_id} 
 					host={x}
 					project_uuid={this.props.project_uuid}
 					onCommentSubmit={(value) => this.commentSubmitted(value, x.host_id)}
