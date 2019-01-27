@@ -23,6 +23,9 @@ class NotificationCreator:
             self.dnsscan_notify(task)
         elif task.task_type == "patator":
             self.patator_notify(task)
+        elif task.task_type == "amass":
+            self.amass_notify(task)
+
 
     def dirsearch_notify(self, task):
         self.queue.put(
@@ -44,3 +47,7 @@ class NotificationCreator:
             ("creds", task.target, task.project_uuid, None, task.task_type, task.status)
         )
     
+    def amass_notify(self, task):
+        self.queue.put(
+            ("scope", task.target, task.project_uuid, None, task.task_type, task.status)
+        )
