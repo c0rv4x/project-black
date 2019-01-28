@@ -8,7 +8,7 @@ import asyncio
 from asyncio.subprocess import PIPE
 
 from black.workers.common.async_task import AsyncTask
-from black.workers.amass.db_save import save_raw_output
+from black.workers.amass.db_save import Saver
 
 
 class AmassTask(AsyncTask):
@@ -27,6 +27,7 @@ class AmassTask(AsyncTask):
         """ Launch the task and readers of stdout, stderr """
         try:
             self.command = ['amass', '-d'] + [self.target] + [self.params['program']['argv']]
+            print(' '.join(self.command))
             self.proc = await asyncio.create_subprocess_shell(' '.join(self.command), stdout=PIPE, stderr=PIPE)
 
             # 1337 is hardcoded to show frontend that we don't track progress here
@@ -38,6 +39,7 @@ class AmassTask(AsyncTask):
             loop.create_task(self.read_stderr())
 
         except Exception as exc:
+            print(str(exc))
             await self.set_status("Aborted", 0, str(exc))
 
     def send_notification(self, command):
@@ -127,13 +129,13 @@ class AmassTask(AsyncTask):
                 await self.set_status("Finished", progress=100, text=json.dumps(self.target))
         else:
             await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
+
+        print('Finished', ' '.join(self.command))
  
     async def save(self):
         """ Parse output of the task and save it to the db"""
-        return await save_raw_output(
-                            self.task_id,
-                            self.stdout,
-                            self.project_uuid)
+        saver = Saver(self.task_id, self.project_uuid)
+        await saver.save_raw_output(self.stdout)
 
     async def cancel(self):
         self.send_notification("stop")
