@@ -42,8 +42,8 @@ async def send(loop):
             body=json.dumps({
                 'task_id': rand_string(),
                 'target': sys.argv[1],
-                'params': {'program': []},
-                'project_uuid': 1
+                'params': {'program': {"argv": ""}},
+                'project_uuid': 3
             }).encode()
         )
     )
