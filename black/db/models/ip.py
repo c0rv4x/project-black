@@ -1,7 +1,7 @@
 import asyncio
 import datetime
 from uuid import uuid4
-from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
+from sqlalchemy import Column, String, DateTime, ForeignKey, Integer, UniqueConstraint
 from sqlalchemy.orm import relationship, joinedload
 
 from .base import Base, association_table, asyncify
@@ -14,6 +14,9 @@ class IPDatabase(Base):
     * IPs
     * Related data (like, 'scope_id' and the project name)  """
     __tablename__ = 'ips'
+    __table_args__ = (
+        UniqueConstraint('target', 'project_uuid'),
+    )
 
     # Primary key (probably uuid4)
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -78,14 +81,15 @@ class IPDatabase(Base):
 
     @classmethod
     @asyncify
-    def create(cls, target, project_uuid):
+    def create(cls, target, project_uuid, task_id):
         """ Creates a new scope if it is not in the db yet """
-
+        print(project_uuid, target)
         if cls._find(target, project_uuid) is None:
             try:
                 new_scope = cls(
                     target=target,
-                    project_uuid=project_uuid
+                    project_uuid=project_uuid,
+                    task_id=task_id
                 )
 
                 with cls.session_spawner.get_session() as session:
@@ -99,6 +103,27 @@ class IPDatabase(Base):
                 }
 
         return {"status": "duplicate", "text": "duplicate"}
+
+    @classmethod
+    @asyncify
+    def get_or_create(cls, target, project_uuid, task_id=None):
+        found = cls._find(target, project_uuid)
+
+        if found is None:
+            try:
+                new_scope = cls(
+                    target=target,
+                    project_uuid=project_uuid,
+                    task_id=task_id
+                )
+
+                with cls.session_spawner.get_session() as session:
+                    session.add(new_scope)
+            except Exception as exc:
+                return None
+            else:
+                return new_scope
+        return found
 
     @classmethod
     @asyncify

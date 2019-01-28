@@ -74,14 +74,15 @@ class HostDatabase(Base):
 
     @classmethod
     @asyncify
-    def create(cls, target, project_uuid):
+    def create(cls, target, project_uuid, task_id=None):
         """ Creates a new scope if it is not in the db yet """
 
         if cls._find(target, project_uuid) is None:
             try:
                 new_scope = cls(
                     target=target,
-                    project_uuid=project_uuid
+                    project_uuid=project_uuid,
+                    task_id=task_id
                 )
 
                 with cls.session_spawner.get_session() as session:
@@ -95,6 +96,27 @@ class HostDatabase(Base):
                 }
 
         return {"status": "duplicate", "text": "duplicate"}
+
+    @classmethod
+    @asyncify
+    def get_or_create(cls, target, project_uuid, task_id=None):
+        found = cls._find(target, project_uuid)
+
+        if found is None:
+            try:
+                new_scope = cls(
+                    target=target,
+                    project_uuid=project_uuid,
+                    task_id=task_id
+                )
+
+                with cls.session_spawner.get_session() as session:
+                    session.add(new_scope)
+            except Exception as exc:
+                return None
+            else:
+                return new_scope
+        return found
 
     @classmethod
     @asyncify
