@@ -50,6 +50,18 @@ class TaskButton extends React.Component {
 								"options": {
 									"argv": "-brute -min-for-recursive 2"
 								}
+							},
+							{
+								"name": "Passive",
+								"options": {
+									"argv": "-passive"
+								}
+							},
+							{
+								"name": "With IPs",
+								"options": {
+									"argv": "-ip"
+								}
 							}
 						],
 						"available_options": [
