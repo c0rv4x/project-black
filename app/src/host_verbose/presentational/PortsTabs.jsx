@@ -21,11 +21,6 @@ class PortsTabs extends React.Component {
 
 	render() {
 		let { target, target_id, ports, stats, loaded, files, requestMoreFiles } = this.props;
-		ports = ports.sort((a, b) => {
-			if (a.port_number < b.port_number) return -1;
-			if (a.port_number > b.port_number) return 1;
-			return 0;
-		});
 
 		let panes = [];
 		for (let port of ports) {
