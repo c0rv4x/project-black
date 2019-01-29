@@ -15,21 +15,40 @@ import { Tasks } from 'grommet-icons'
 
 
 function renderParams(params) {
-	if (params instanceof Array) {
-		if (params.length <= 1) {
-			return params;
+	if (params.program) {
+		if (params instanceof Array) {
+			if (params.length <= 1) {
+				return params;
+			}
+			else {
+				return (
+					<Box>
+						{params.map((x) => {
+							return <div key="x">{x}</div>
+						})}
+					</Box>
+				)
+			}
 		}
-		else {
+		else if (params instanceof Object) {
+			let dictionaryEntriesParsed = [];
+
+			_.forOwn(params, (value, key) => {
+				if (value) {
+					dictionaryEntriesParsed.push(
+						<div key={key}><b>{key}</b>: {value}</div>
+					);
+				}
+			});
+
 			return (
 				<Box>
-					{params.map((x) => {
-						return <div key="x">{x}</div>
-					})}
+					{dictionaryEntriesParsed}
 				</Box>
 			)
 		}
-	}
-	else if (params instanceof Object) {
+	} else if (params instanceof Object) {
+		console.log(params);
 		let dictionaryEntriesParsed = [];
 
 		_.forOwn(params, (value, key) => {
@@ -47,6 +66,7 @@ function renderParams(params) {
 		)
 	}
 	else {
+		console.log(params);
 		alert("Scoped tasks params have incorrect types", params);
 	}
 
@@ -107,7 +127,7 @@ class TasksScoped extends React.Component {
 										render: (task) => {
 											return <Box width="medium" style={{
 												"wordBreak": "break-word"
-											}}>{renderParams(task.params.program)}</Box>
+											}}>{renderParams(task.params)}</Box>
 										}
 									},
 									{
