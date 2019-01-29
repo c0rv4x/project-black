@@ -106,6 +106,8 @@ function host_data_updated(state = initialState, action) {
 				break;
 			}
 		}
+	} else {
+		found = true;
 	}
 
 

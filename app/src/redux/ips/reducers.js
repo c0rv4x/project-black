@@ -110,6 +110,9 @@ function updated_ips(state = initialState, action) {
 			}
 		}
 	}
+	else {
+		found = True
+	}
 
 	if (found) {
 		var new_state = JSON.parse(JSON.stringify(state));
