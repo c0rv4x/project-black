@@ -147,6 +147,14 @@ class Search extends React.Component {
 							}, 150);
 						}
 					}}
+					onBackspace={(e) => {
+						if (currentEnteredValue.indexOf(": ") == (currentEnteredValue.length - 2)) {
+							this.setState({
+								currentEnteredValue: ""
+							});
+						}
+					}
+					}
 				>
 					<MaskedInput
 						id="maskedinput"
