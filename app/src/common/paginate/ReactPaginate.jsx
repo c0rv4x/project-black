@@ -32,13 +32,13 @@ class ReactPaginate extends React.Component {
 		this.props.clickHandler(number);
 	}
 
-	createItem(value) {
+	createItem(value, additionalKey) {
 		const { activeItem } = this.state;
 
 		if (value == '...') {
 			return (
 				<Page
-					key={"menu-" + value}
+					key={"menu-" + additionalKey}
 					value={value}
 					active={false}
 					disabled={true}
@@ -72,7 +72,7 @@ class ReactPaginate extends React.Component {
 			case 3:
 			case 4:
 			case 5:
-				for (var i = 1; i < pageCount + 1; i++) {
+				for (let i = 1; i < pageCount + 1; i++) {
 					pages.push(this.createItem(i));
 				}
 
@@ -80,7 +80,7 @@ class ReactPaginate extends React.Component {
 			default:
 				if (activeItem > 3) {
 					pages.push(this.createItem(1))
-					pages.push(this.createItem('...'));
+					pages.push(this.createItem('...', 'left'));
 					pages.push(this.createItem(activeItem - 1))
 				}
 				else if (activeItem == 3) {
@@ -97,7 +97,7 @@ class ReactPaginate extends React.Component {
 
 				if (activeItem < pageCount - 2) {
 					pages.push(this.createItem(activeItem + 1))
-					pages.push(this.createItem('...'));
+					pages.push(this.createItem('...', 'right'));
 					pages.push(this.createItem(pageCount))
 				}
 				else if (activeItem == pageCount - 2) {
