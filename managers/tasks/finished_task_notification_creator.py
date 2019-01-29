@@ -49,5 +49,5 @@ class NotificationCreator:
     
     def amass_notify(self, task):
         self.queue.put(
-            ("scope", task.target, task.project_uuid, None, task.task_type, task.status)
+            ("scope", task.target, task.project_uuid, task.text, task.task_type, task.status)
         )
