@@ -20,7 +20,7 @@ class PortsTabs extends React.Component {
 	}
 
 	render() {
-		let { target, target_id, ports, stats, loaded, files, requestMoreFiles } = this.props;
+		const { target, target_id, ports, stats, loaded, files, requestMoreFiles } = this.props;
 
 		let panes = [];
 		for (let port of ports) {
