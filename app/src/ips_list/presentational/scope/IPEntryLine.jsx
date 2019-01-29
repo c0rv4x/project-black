@@ -86,7 +86,7 @@ class IPEntryLine extends React.Component {
 						{ name: 'files-' + ip.ip_address, start: [3, 0], end: [3, 0] },
 						{ name: 'control-' + ip.ip_address, start: [4, 0], end: [4, 0] },
 					]}
-					columns={["small", "small", "auto", "small", "small"]}
+					columns={["small", "small", "auto", "auto", "auto"]}
 					rows={["auto"]}
 					align="center"
 					pad="xsmall"

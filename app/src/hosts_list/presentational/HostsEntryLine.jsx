@@ -104,7 +104,7 @@ class HostsEntryLine extends React.Component {
 						{ name: 'files-' + host.hostname, start: [3, 0], end: [3, 0] },
 						{ name: 'control-' + host.hostname, start: [4, 0], end: [4, 0] },
 					]}
-					columns={["small", "small", "auto", "small", "small"]}
+					columns={["medium", "small", "auto", "auto", "auto"]}
 					rows={["auto"]}
 					align="center"
 				>
