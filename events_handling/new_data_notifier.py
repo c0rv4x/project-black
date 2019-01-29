@@ -36,6 +36,8 @@ class Notifier:
             await self.notify_on_files(project_uuid, text, task_status)
         if data_type == "creds":
             await self.notify_on_creds(project_uuid, target, task_status)
+        if data_type == "scope":
+            await self.notify_on_scope(project_uuid, text, target, task_status)
 
     async def notify_on_scans(self, project_uuid, text, task_name, task_status):
         targets = None
@@ -163,4 +165,23 @@ class Notifier:
                     'updated_hostname': updated_target
                 },
                 namespace='/hosts'
+            )
+
+    async def notify_on_scope(self, project_uuid, text, target, task_status):
+        if text["updated_hosts"]:
+            await self.socketio.emit(
+                'hosts:updated', {
+                    'status': 'success',
+                    'project_uuid': project_uuid
+                },
+                namespace='/hosts'
+            )
+
+        if text["updated_ips"]:
+            await self.socketio.emit(
+                'ips:updated', {
+                    'status': 'success',
+                    'project_uuid': project_uuid
+                },
+                namespace='/ips'
             )

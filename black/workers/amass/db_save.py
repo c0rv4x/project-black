@@ -14,8 +14,8 @@ class Saver:
     async def save_raw_output(self, output):
         print("saving '{}'".format(output))
         try:
-            created_hosts = []
-            created_ips = []
+            updated_hosts = False
+            updated_ips = False
 
             targets = ''.join(output).strip().split()
             for target in targets:
@@ -30,9 +30,11 @@ class Saver:
                 if self.find_anomalies(host):
                     print("[-] Hostname seems to be not valid", host)
 
-                await self.save_host_ips(host, ips)
+                new_hosts, new_ips = await self.save_host_ips(host, ips)
+                updated_hosts = updated_hosts or new_hosts
+                updated_ips = updated_ips or new_ips
 
-            return list(set(created_hosts))
+            return updated_hosts, updated_ips
 
         except Exception as e:
             print("Exception while saving amass", str(e))

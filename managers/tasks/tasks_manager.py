@@ -84,6 +84,7 @@ class TaskManager(object):
         body = json.loads(message.body)
         
         updated_task = self.cache.update_task(body)
+
         if updated_task and updated_task.quitted():
             self.notification_creator.notify(updated_task)
 

@@ -121,12 +121,15 @@ class AmassTask(AsyncTask):
 
         if self.exit_code == 0:
             try:
-                await self.save()
+                updated_hosts, updated_ips  = await self.save()
             except Exception as exc:
                 print("Save exception", exc)
                 await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
             else:
-                await self.set_status("Finished", progress=100, text=json.dumps(self.target))
+                await self.set_status("Finished", progress=100, text=json.dumps({
+                    "updated_hosts": updated_hosts,
+                    "updated_ips": updated_ips
+                }))
         else:
             await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
 
@@ -135,7 +138,7 @@ class AmassTask(AsyncTask):
     async def save(self):
         """ Parse output of the task and save it to the db"""
         saver = Saver(self.task_id, self.project_uuid)
-        await saver.save_raw_output(self.stdout)
+        return await saver.save_raw_output(self.stdout)
 
     async def cancel(self):
         self.send_notification("stop")
