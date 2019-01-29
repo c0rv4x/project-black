@@ -12,6 +12,7 @@ class Search extends React.Component {
 		this.state = {
 			currentEnteredValue: "",
 			currentValue: [],
+			lastHighlighted: false
 		}
 
 		this.handleOnChange = this.handleOnChange.bind(this);
@@ -128,7 +129,7 @@ class Search extends React.Component {
 	}
 
 	render() {
-		const { currentValue, currentEnteredValue } = this.state;
+		const { currentValue, currentEnteredValue, lastHighlighted } = this.state;
 		const generatedOptions = this.getDynamicOptions();
 
 		return (
@@ -138,6 +139,38 @@ class Search extends React.Component {
 				}}
 				gap="xsmall"
 			>
+				<Box direction="row" gap="xsmall">
+					{
+						currentValue.map((option) => {
+							let background = "";
+
+							if (currentValue.indexOf(option) === (currentValue.length - 1)) {
+								if (lastHighlighted) {
+									background = "brand";
+								}
+							}
+							
+
+							return (
+								<Box
+									key={option}
+									align="center"
+									gap="xxsmall"
+									direction="row"
+									pad="xsmall"
+									border={{
+										size: "small",
+										color: "brand"
+									}}
+									round="xsmall"
+									background={background}
+								>
+									{option} <Close size="small" onClick={() => this.popOption(option)} />
+								</Box>
+							);
+						})
+					}
+				</Box>
 				<Keyboard
 					onEnter={(e) => {
 						if (e.shiftKey) {
@@ -153,8 +186,29 @@ class Search extends React.Component {
 								currentEnteredValue: ""
 							});
 						}
-					}
-					}
+						else {
+							if (currentEnteredValue === "") {
+								if (lastHighlighted === false) {
+									this.setState({
+										lastHighlighted: true
+									});
+								}
+								else {
+									this.setState({
+										lastHighlighted: false
+									});
+									this.popOption();
+								}
+							}
+						}
+					}}
+					onKeyDown={(e) => {
+						if (e.key != 'Backspace') {
+							this.setState({
+								lastHighlighted: false
+							});
+						}
+					}}
 				>
 					<MaskedInput
 						id="maskedinput"
@@ -182,28 +236,6 @@ class Search extends React.Component {
 						onChange={(event) => this.setState({ currentEnteredValue: event.target.value })}
 					/>
 				</Keyboard>
-				<Box direction="row" gap="xsmall">
-					{
-						currentValue.map((option) => {
-							return (
-								<Box
-									key={option}
-									align="center"
-									gap="xxsmall"
-									direction="row"
-									pad="xsmall"
-									border={{
-										size: "small",
-										color: "brand"
-									}}
-									round="xsmall"
-								>
-									{option} <Close size="small" onClick={() => this.popOption(option)} />
-								</Box>
-							);
-						})
-					}
-				</Box>
 			</Box>
 		);
 	}
