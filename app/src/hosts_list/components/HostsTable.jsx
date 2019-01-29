@@ -55,7 +55,9 @@ class HostsTable extends React.Component {
 	handlePageClick(page_number) {
 		this.props.triggerSetLoaded(false);
 		window.scrollTo(0, 0);
-		this.props.renewHosts(page_number - 1, this.props.hosts.page_size);
+		setTimeout(() => {
+			this.props.renewHosts(page_number - 1, this.props.hosts.page_size);
+		}, 100);
 	}
 
 	commentSubmitted(comment, _id) {

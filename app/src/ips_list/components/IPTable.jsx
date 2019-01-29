@@ -68,7 +68,9 @@ class IPTable extends React.Component {
 	handlePageClick(page_number) {
 		window.scrollTo(0, 0);
 		this.props.setLoaded(false);
-		this.props.renewIps(page_number - 1);
+		setTimeout(() => {
+			this.props.renewIps(page_number - 1);
+		}, 100);
 	}
 
 	render() {
