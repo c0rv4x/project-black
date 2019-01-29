@@ -100,6 +100,11 @@ class HostDatabase(Base):
     @classmethod
     @asyncify
     def get_or_create(cls, target, project_uuid, task_id=None):
+        """ Returns a tuple (new_scope, created).
+        Second value:
+            False if existed
+            True if created
+        """
         found = cls._find(target, project_uuid)
 
         if found is None:
@@ -113,10 +118,10 @@ class HostDatabase(Base):
                 with cls.session_spawner.get_session() as session:
                     session.add(new_scope)
             except Exception as exc:
-                return None
+                return (None, None)
             else:
-                return new_scope
-        return found
+                return (new_scope, True)
+        return (found, False)
 
     @classmethod
     @asyncify

@@ -120,10 +120,10 @@ class IPDatabase(Base):
                 with cls.session_spawner.get_session() as session:
                     session.add(new_scope)
             except Exception as exc:
-                return None
+                return (None, None)
             else:
-                return new_scope
-        return found
+                return (new_scope, True)
+        return (found, False)
 
     @classmethod
     @asyncify

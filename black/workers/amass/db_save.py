@@ -45,10 +45,19 @@ class Saver:
         return False
 
     async def save_host_ips(self, host, ips):
-        host_db = await HostDatabase.get_or_create(host, self.project_uuid, self.task_id)
+        updated_hosts = False
+        updated_ips = False
+
+        host_db, created = await HostDatabase.get_or_create(host, self.project_uuid, self.task_id)
+
+        if created:
+            updated_hosts = True
 
         for ip in ips:
-            ip_db = await IPDatabase.get_or_create(ip, self.project_uuid, self.task_id)
+            ip_db, created = await IPDatabase.get_or_create(ip, self.project_uuid, self.task_id)
+
+            if created:
+                updated_ips = True
 
             if host_db and ip_db:
                 found = False
@@ -64,6 +73,10 @@ class Saver:
                     try:
                         session.add(host_db)
                         session.commit()
+                        updated_hosts = True
+                        updated_ips = True
                     except Exception as exc:
                         session.rollback()
                         print("[-] Save exception of {}+{}: {}".format(host, ip, exc))
+
+        return updated_hosts, updated_ips
