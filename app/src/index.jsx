@@ -21,6 +21,35 @@ JavascriptTimeAgo.locale(en)
 import './styles/notification_styles.css';
 
 
+const theme = {
+    "global": {
+        "colors": {
+            "brand": "#185dcc",
+            "accent": ["#b6ceb6", "#b6b6ce"]
+        },
+        "input": {
+            "border": {
+                "radius": "4px"
+            }
+        }
+    },
+    "button": {
+        "border": {
+            "radius": "4px"
+        }
+    },
+    "checkBox": {
+        "border": {
+            "radius": "4px"
+        }
+    },
+    "layer": {
+        "border": {
+            "radius": "4px"
+        }
+    }
+};
+
 var mainStore = createStore(rdcs);
 
 class App extends React.Component {
@@ -30,7 +59,7 @@ class App extends React.Component {
 
     render () {
         return (
-            <Grommet plain theme={grommet} full={true}>
+            <Grommet theme={theme} full={true}>
                 <Box pad="medium" align="stretch">
                     <Provider store={mainStore}>
                         <Routing />
