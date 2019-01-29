@@ -1,7 +1,9 @@
+*.prof
 **/node_modules/
-public/
-.env/
+**/wordlists/*
 __pycache__/
+.env/
+.python-version
 .vscode
 logs/
-**/wordlists/*
+public/
