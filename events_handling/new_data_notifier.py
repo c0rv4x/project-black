@@ -13,22 +13,6 @@ class Notifier:
 
     async def notify(self, task):
         data_type, target, project_uuid, text, task_name, task_status = task
-            # if data_type == "scope":
-            #     # This is triggered when dnsscan finds something new
-            #     await send_notification(
-            #         self.socketio,
-            #         "success",
-            #         "Task finished",
-            #         "DNSscan for {} finished".format(target),
-            #         project_uuid=project_uuid
-            #     )
-
-            #     self.scope_manager.update_from_db(project_uuid)
-            #     await self.scope_handlers.send_scopes_back(
-            #         project_uuid, broadcast=True)
-
-            #     self.data_updated_queue.task_done()
-
 
         if data_type == "scan":
             await self.notify_on_scans(project_uuid, text, task_name, task_status)
@@ -168,6 +152,8 @@ class Notifier:
             )
 
     async def notify_on_scope(self, project_uuid, text, target, task_status):
+        text = json.loads(text)
+
         if text["updated_hosts"]:
             await self.socketio.emit(
                 'hosts:updated', {
