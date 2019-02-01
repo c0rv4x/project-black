@@ -10,5 +10,3 @@ for cmdline_entry in sys.argv:
 
 with open(CONFIG_FILE) as w:
     CONFIG = yaml.load(w.read())
-    print(CONFIG)
-print(CONFIG)
