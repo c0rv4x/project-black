@@ -26,4 +26,4 @@ ADD . /app
 RUN python3.6 -m pip install -r requirements.txt
 RUN python3.6 -m pip install -r black/requirements.txt
 
-CMD ["python3", "server.py", "--config", "/app/config/config_docker.yml"]
+CMD ["python3.6", "server.py", "--config", "/app/config/config_docker.yml"]
