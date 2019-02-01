@@ -2,7 +2,7 @@ import sys
 import yaml
 
 
-CONFIG_FILE = "./config/config.yaml"
+CONFIG_FILE = "./config/config.yml"
 
 for cmdline_entry in sys.argv:
     if cmdline_entry.endswith("yml"):
