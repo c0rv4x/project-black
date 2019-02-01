@@ -4,20 +4,25 @@ FROM ubuntu:16.04
 #FROM continuumio/miniconda3
 
 LABEL Name=masscan_black Version=1.0.0
-EXPOSE 5000
 
-RUN apt update && apt install -y \
-    masscan \
-    python3 \
+RUN apt-get update
+RUN apt-get install -y software-properties-common vim
+RUN add-apt-repository ppa:jonathonf/python-3.6
+RUN apt-get update
+
+RUN apt install -y \
+    build-essential \
+    python3.6 \
+    python3.6-dev \
     python3-pip \
     sudo
 
-RUN python3 -m pip install --upgrade pip
+RUN python3.6 -m pip install --upgrade pip
 
 WORKDIR /app
 ADD . /app
 
-RUN python3 -m pip install -r requirements.txt
-RUN python3 -m pip install -r black/requirements.txt
+RUN python3.6 -m pip install -r requirements.txt
+RUN python3.6 -m pip install -r black/requirements.txt
 
-CMD ["sudo", "python3", "masscan_worker.py", "docker"]
+CMD ["sudo", "python3", "spawn_worker.py", "masscan", "--config", "/app/config/config_docker.yml"]
