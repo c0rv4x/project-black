@@ -25,6 +25,9 @@ if __name__ == '__main__':
         'worker', nargs=1,
         choices=['amass', 'masscan', 'nmap', 'patator', 'dirsearch'],
         help='worker type')
+    parser.add_argument(
+        '--config', nargs='+',
+        help='config file')
 
     args = parser.parse_args()
     worker_type = args.worker[0]

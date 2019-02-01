@@ -4,11 +4,11 @@ import yaml
 
 CONFIG_FILE = "./config/config.yaml"
 
-if len(sys.argv) > 1:
-        if sys.argv[1] == "docker":
-                CONFIG_FILE = "./config/config_docker.yaml"
-        elif sys.argv[1] == "custom":
-                CONFIG_FILE = "./config/custom.yaml"
+for cmdline_entry in sys.argv:
+    if cmdline_entry.endswith("yml"):
+        CONFIG_FILE = cmdline_entry
 
 with open(CONFIG_FILE) as w:
     CONFIG = yaml.load(w.read())
+    print(CONFIG)
+print(CONFIG)
