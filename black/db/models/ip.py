@@ -81,7 +81,7 @@ class IPDatabase(Base):
 
     @classmethod
     @asyncify
-    def create(cls, target, project_uuid, task_id):
+    def create(cls, target, project_uuid, task_id=None):
         """ Creates a new scope if it is not in the db yet """
         print(project_uuid, target)
         if cls._find(target, project_uuid) is None:
