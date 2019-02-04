@@ -45,3 +45,31 @@ export function fetchProjects() {
 				json => dispatch(receiveProjects(json))
 			)
 }
+
+
+export const RECEIVE_NEW_PROJECT = 'RECEIVE_NEW_PROJECT'
+export function receiveNewProject(message) {
+	return { type: RECEIVE_NEW_PROJECT, message }
+}
+
+export function submitNewProject(projectName) {
+	return dispatch =>
+	fetch(
+		'/projects/create', {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				name: projectName
+			})
+		}
+	)
+		.then(
+			response => response.json(),
+			error => console.log(error)
+		)
+		.then(
+			json => dispatch(receiveNewProject(json))
+		)
+}

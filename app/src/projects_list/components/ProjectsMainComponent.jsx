@@ -4,7 +4,10 @@ import PropTypes from 'prop-types'
 import ProjectsMain from '../presentational/ProjectsMain.jsx'
 import ProjectsSocketioEventsEmitter from '../../redux/projects/ProjectsSocketioEventsEmitter.js'
 
-import { fetchProjects } from '../../redux/projects/actions.js'
+import {
+	fetchProjects,
+	submitNewProject
+} from '../../redux/projects/actions.js'
 
 
 
@@ -18,6 +21,7 @@ class ProjectsMainComponent extends React.Component {
 		}
 
 		this.changeNewProjectName = this.changeNewProjectName.bind(this);
+		this.createProject = this.createProject.bind(this);
 	}
 
 	componentDidMount() {
@@ -31,12 +35,16 @@ class ProjectsMainComponent extends React.Component {
 		});
 	}
 
+	createProject(projectName) {
+		this.context.store.dispatch(submitNewProject(projectName));
+	}
+
 	render() {
 		return (
 			<ProjectsMain projects={this.props.projects}
 						  onDelete={(project_uuid) => this.emitter.requestDeleteProject(project_uuid)} 
 
-						  submitNewProject={(new_name) => this.emitter.requestCreateProject(new_name.trim())}
+						  submitNewProject={(new_name) => this.createProject(new_name.trim())}
 			/>
 		)
 	}
