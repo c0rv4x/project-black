@@ -43,10 +43,7 @@ if __name__ == '__main__':
 
     dict_handlers = DictHandlers(meta_manager.dict_manager)
     app.add_route(dict_handlers.cb_upload_dict, '/upload_dict', methods=['POST'])
-    app.add_route(DictHandlers.cb_get_dictionary, '/dictionary/<dict_id>')
-
-
-    app.static('static', './public/static')
+    app.add_route(dict_handlers.cb_get_dictionary, '/dictionary/<dict_id>')
 
     HANDLERS = Handlers(SOCKET_IO, app, meta_manager)
 
