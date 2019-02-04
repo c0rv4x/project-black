@@ -35,7 +35,6 @@ export function receiveProjects(message) {
 }
 
 export function fetchProjects() {
-	console.log(123);
 	return dispatch =>
 		fetch('/projects')
 			.then(
