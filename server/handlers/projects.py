@@ -17,6 +17,27 @@ class ProjectsHandlers:
     @authorized_class_method()
     async def cb_create_project(self, request):
         name = request.json['name']
-        projects = await self.project_manager.create_project(name)
+        create_result = await self.project_manager.create_project(name)
+        if create_result['status'] == 'success':
+            return response.json({ 'status': 'ok' })
+        else:
+            return response.json({
+                'status': 'error',
+                'message': create_result['text']
+            })
 
-        return response.json(projects)
+
+    @authorized_class_method()
+    async def cb_delete_project(self, request):
+        project_uuid = request.json['uuid']
+        delete_result = await self.project_manager.delete_project(
+            project_uuid=project_uuid)
+
+        if delete_result['status'] == 'success':
+            return response.json({ 'status': 'ok' })
+        else:
+            return response.json({
+                'status': 'error',
+                'message': delete_result['text']
+            })
+            
