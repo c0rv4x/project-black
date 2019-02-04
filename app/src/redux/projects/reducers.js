@@ -5,7 +5,9 @@ import {
 	DELETE_PROJECT, 
 	UPDATE_PROJECT, 
 	UPDATE_COMMENT, 
-	RENEW_PROJECTS 
+	RENEW_PROJECTS ,
+
+	RECEIVE_PROJECTS
 } from './actions.js'
 
 
@@ -89,6 +91,18 @@ function update_comment(state = [], action) {
 }
 
 
+function receiveProjects(state = [], action) {
+	const message = action.message;
+
+	var newState = message['projects'].sort((a, b) => {
+		if (a.project_uuid > b.project_uuid) return 1;
+		if (a.project_uuid < b.project_uuid) return -1;
+		return 0;
+	});
+
+	return newState;
+}
+
 
 function project_reduce(state = [], action) {
 	switch (action.type) {
@@ -101,7 +115,9 @@ function project_reduce(state = [], action) {
 		case UPDATE_PROJECT:
 			return update_project(state, action);
 		case UPDATE_COMMENT:
-			return update_comment(state, action);			
+			return update_comment(state, action);	
+		case RECEIVE_PROJECTS:
+			return receiveProjects(state, action);		
 		default:
 			return state;
 	}

@@ -1,7 +1,8 @@
 import React from 'react'
 import {render} from 'react-dom'
+import thunkMiddleware from 'redux-thunk'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 
 import rdcs from './redux/reducers.js'
 import Routing from './navigation/Routing.jsx'
@@ -50,7 +51,12 @@ const theme = {
     }
 };
 
-var mainStore = createStore(rdcs);
+var mainStore = createStore(
+    rdcs,
+    applyMiddleware(
+        thunkMiddleware
+    )
+);
 
 class App extends React.Component {
     constructor(props) {

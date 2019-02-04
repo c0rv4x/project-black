@@ -1,3 +1,6 @@
+import fetch from 'cross-fetch'
+
+
 export const CREATE_PROJECT = 'CREATE_PROJECT'
 export const DELETE_PROJECT = 'DELETE_PROJECT'
 export const RENEW_PROJECTS = 'RENEW_PROJECTS'
@@ -23,4 +26,23 @@ export function updateProject(message) {
 
 export function updateComment(message) {
 	return { type: UPDATE_COMMENT, message }
+}
+
+
+export const RECEIVE_PROJECTS = 'RECEIVE_PROJECTS'
+export function receiveProjects() {
+	return { type: RECEIVE_PROJECTS }
+}
+
+export function fetchProjects() {
+	console.log(123);
+	return dispatch =>
+		fetch('/projects')
+			.then(
+				response => response.json(),
+				error => console.log(error)
+			)
+			.then(
+				json => dispatch(receiveProjects(json))
+			)
 }

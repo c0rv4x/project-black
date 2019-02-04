@@ -1,7 +1,11 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import ProjectsMain from '../presentational/ProjectsMain.jsx'
 import ProjectsSocketioEventsEmitter from '../../redux/projects/ProjectsSocketioEventsEmitter.js'
+
+import { fetchProjects } from '../../redux/projects/actions.js'
+
 
 
 class ProjectsMainComponent extends React.Component {
@@ -18,6 +22,7 @@ class ProjectsMainComponent extends React.Component {
 
 	componentDidMount() {
 		this.emitter = new ProjectsSocketioEventsEmitter();
+		this.context.store.dispatch(fetchProjects());
 	}
 
 	changeNewProjectName(newName) {
@@ -35,6 +40,10 @@ class ProjectsMainComponent extends React.Component {
 			/>
 		)
 	}
+}
+
+ProjectsMainComponent.contextTypes = {
+    store: PropTypes.object
 }
 
 

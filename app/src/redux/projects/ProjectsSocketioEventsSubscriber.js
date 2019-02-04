@@ -18,8 +18,8 @@ class ProjectsSocketioEventsSubscriber {
         this.connector = new Connector('projects');
 
         this.connector.after_connected((x) => {
-        	this.emitter = new ProjectsSocketioEventsEmitter();
-        	this.emitter.requestRenewProjects();
+        	// this.emitter = new ProjectsSocketioEventsEmitter();
+        	// this.emitter.requestRenewProjects();
         });
 
         this.basic_events_registration();

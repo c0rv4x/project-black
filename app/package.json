@@ -39,6 +39,7 @@
   "dependencies": {
     "autosize": "^4.0.2",
     "classnames": "^2.2.5",
+    "cross-fetch": "^3.0.1",
     "css-loader": "^0.28.7",
     "grommet": "^2.3.1",
     "grommet-icons": "^4.1.0",
@@ -59,6 +60,7 @@
     "react-transition-group": "^1.2.1",
     "redux": "^3.6.0",
     "redux-notifications": "^4.0.1",
+    "redux-thunk": "^2.3.0",
     "socket.io-client": "^1.7.3",
     "styled-components": "^4.1.3"
   }
