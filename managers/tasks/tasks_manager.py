@@ -21,9 +21,7 @@ class TaskManager(object):
     """ TaskManager keeps track of all tasks in the system,
     exposing some interfaces for public use. """
 
-    def __init__(self, data_updated_queue, scope_manager):
-        self.notification_creator = NotificationCreator(data_updated_queue)
-
+    def __init__(self, scope_manager):
         self.scope_manager = scope_manager
 
         self.cache = TasksCache()
@@ -32,6 +30,10 @@ class TaskManager(object):
         self.tasks_queue = None
 
         self.sessions = Sessions()
+
+    def attach_data_updated_queue(self, data_updated_queue):
+        self.notification_creator = NotificationCreator(data_updated_queue)
+
 
     async def spawn_asynqp(self):
         """ Spawns all the necessary queues and launches a statuses parser """

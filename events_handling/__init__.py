@@ -27,31 +27,25 @@ from managers import (
 @log
 class Handlers(object):
 
-    def __init__(self, socketio, app):
+    def __init__(self, socketio, app, meta_manager):
         self.socketio = socketio
         self.app = app
+        self.meta_manager = meta_manager
 
         # This queue keeps messages that indicate, that scope should be updated
         self.data_updated_queue = queue.Queue()
 
-        self.project_manager = ProjectManager()
-        self.scope_manager = ScopeManager()
-        self.task_manager = TaskManager(self.data_updated_queue, self.scope_manager)
-        self.app.add_task(self.task_manager.spawn_asynqp())
+        self.meta_manager.task_manager.attach_data_updated_queue(self.data_updated_queue)
+        self.app.add_task(self.meta_manager.task_manager.spawn_asynqp())
 
-        self.scan_manager = ScanManager()
-        self.file_manager = FileManager()
-        self.creds_manager = CredManager()
-        self.dict_manager = DictManager()
+        ProjectHandlers(self.socketio, self.meta_manager.project_manager)
 
-        ProjectHandlers(self.socketio, self.project_manager)
-
-        self.scope_handlers = ScopeHandlers(self.socketio, self.scope_manager)
-        self.scan_handlers = ScanHandlers(self.socketio, self.scan_manager)
-        self.file_handlers = FileHandlers(self.socketio, self.file_manager)
-        self.task_handlers = TaskHandlers(self.socketio, self.task_manager)
-        self.cred_handlers = CredHandlers(self.socketio, self.creds_manager)
-        self.dict_handlers = DictHandlers(self.socketio, self.dict_manager)
+        self.scope_handlers = ScopeHandlers(self.socketio, self.meta_manager.scope_manager)
+        self.scan_handlers = ScanHandlers(self.socketio, self.meta_manager.scan_manager)
+        self.file_handlers = FileHandlers(self.socketio, self.meta_manager.file_manager)
+        self.task_handlers = TaskHandlers(self.socketio, self.meta_manager.task_manager)
+        self.cred_handlers = CredHandlers(self.socketio, self.meta_manager.creds_manager)
+        self.dict_handlers = DictHandlers(self.socketio, self.meta_manager.dict_manager)
 
         self.notifier = Notifier(self.socketio)
 
