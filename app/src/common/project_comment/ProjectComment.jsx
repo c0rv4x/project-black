@@ -1,7 +1,10 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import ProjectCommentPresentational from './ProjectCommentPresentational.jsx'
 import ProjectsSocketioEventsEmitter from '../../redux/projects/ProjectsSocketioEventsEmitter.js'
+
+import { submitUpdateProject } from '../../redux/projects/actions.js'
 
 
 class ProjectComment extends React.Component {
@@ -35,9 +38,13 @@ class ProjectComment extends React.Component {
 	}
 
 	commentSubmitted(comment) {
-		this.projectsEmitter.requestUpdateProject(this.props.project.project_uuid,
-												  this.props.project.project_name,
-												  comment);
+		this.context.store.dispatch(submitUpdateProject(
+			this.props.project.project_uuid,
+			{ comment: comment }
+		));
+		// this.projectsEmitter.requestUpdateProject(this.props.project.project_uuid,
+		// 										  this.props.project.project_name,
+		// 										  comment);
 	}
 
 
@@ -47,6 +54,11 @@ class ProjectComment extends React.Component {
 										  commentSubmitted={this.commentSubmitted} />
 		)
 	}
+}
+
+
+ProjectComment.contextTypes = {
+    store: PropTypes.object
 }
 
 export default ProjectComment;

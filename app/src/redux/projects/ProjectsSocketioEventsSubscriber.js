@@ -1,10 +1,8 @@
 import { 
-	fetchProjects,
-	updateProject
+	fetchProjects
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
-import ProjectsSocketioEventsEmitter from './ProjectsSocketioEventsEmitter.js';
 
 
 class ProjectsSocketioEventsSubscriber {
@@ -13,16 +11,7 @@ class ProjectsSocketioEventsSubscriber {
         this.store = store;
         this.connector = new Connector('projects');
 
-        this.basic_events_registration();
-	}
-
-	basic_events_registration() {
-		/* Register handlers on basic events */
-
 		this.register_socketio_handler('projects:updated', fetchProjects);
-
-		// Backend tried to update a project (both: successfully and not successfully)
-		this.register_socketio_handler('projects:update', updateProject);
 	}
 
 	register_socketio_handler(eventName, callback) {

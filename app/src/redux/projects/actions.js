@@ -1,4 +1,5 @@
 import fetch from 'cross-fetch'
+import { notificationSend } from '../notifications/actions.js'
 
 
 export const RECEIVE_PROJECTS = 'RECEIVE_PROJECTS'
@@ -61,5 +62,40 @@ export function submitDeleteProject(projectUUID) {
 		)
 		.then(
 			json => dispatch(fetchProjects())
+		)
+}
+
+
+export function submitUpdateProject(projectUUID, parameters) {
+	return dispatch =>
+	fetch(
+		'/projects/update', {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				uuid: projectUUID,
+				parameters
+			})
+		}
+	)
+		.then(
+			response => response.json(),
+			error => console.log(error)
+		)
+		.then(
+			json => {
+				if (json.status == "ok") {
+					dispatch(notificationSend({
+						message: "Comment updated",
+						kind: "success",
+						dismissAfter: 5000
+					}));
+				}
+				else {
+					console.log("error upating comment for project", json);
+				}
+			}
 		)
 }
