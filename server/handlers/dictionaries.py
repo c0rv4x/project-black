@@ -2,7 +2,7 @@ import base64
 
 from sanic import response
 
-from server.handlers.utils import authorized
+from server.handlers.utils import authorized_class_method
 from black.db.models.dictionary import DictDatabase
 
 
@@ -11,7 +11,7 @@ class DictHandlers:
         self.dict_manager = dict_manager
 
 
-    @authorized()
+    @authorized_class_method()
     async def cb_upload_dict(self, request):
         dict_params = request.json
         content = base64.b64decode(dict_params["content"]).decode()
@@ -30,7 +30,7 @@ class DictHandlers:
 
 
     @staticmethod
-    @authorized()
+    @authorized_class_method()
     async def cb_get_dictionary(request, dict_id):
         get_result = DictDatabase.get(dict_id=dict_id)
 
