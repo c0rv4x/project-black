@@ -30,8 +30,8 @@ if __name__ == '__main__':
     SOCKET_IO.attach(app)
 
     # # AJAX requests handlers
-    # projects_handlers = ProjectsHandlers()
-    # app.add_route(cb_get_projects, '/projects')
+    projects_handlers = ProjectsHandlers(meta_manager.project_manager)
+    app.add_route(projects_handlers.cb_get_projects, '/projects')
 
     app.add_route(StaticHandlers.cb_index_handler, '/')
     app.add_route(StaticHandlers.cb_index_handler, '/project/<project_uuid>')
