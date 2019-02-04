@@ -7,12 +7,6 @@ class ProjectsSocketioEventsEmitter {
         this.connector = new Connector('projects');
 	}
 
-	requestDeleteProject(project_uuid) {
-		this.connector.emit('projects:delete:project_uuid', {
-			'project_uuid': project_uuid
-		});
-	}
-
 	requestUpdateProject(project_uuid, project_name, comment) {
 		this.connector.emit('projects:update', {
 			'project_uuid': project_uuid,
@@ -33,10 +27,6 @@ class ProjectsSocketioEventsEmitter {
 			'project_uuid': project_uuid,
 			'hosts_locked': value
 		});		
-	}
-
-	requestRenewProjects() {
-		this.connector.emit('projects:all:get');
 	}
 
 }

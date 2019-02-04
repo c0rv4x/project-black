@@ -13,11 +13,6 @@ class ProjectsSocketioEventsSubscriber {
         this.store = store;
         this.connector = new Connector('projects');
 
-        this.connector.after_connected((x) => {
-        	// this.emitter = new ProjectsSocketioEventsEmitter();
-        	// this.emitter.requestRenewProjects();
-        });
-
         this.basic_events_registration();
 	}
 
@@ -25,10 +20,6 @@ class ProjectsSocketioEventsSubscriber {
 		/* Register handlers on basic events */
 
 		this.register_socketio_handler('projects:updated', fetchProjects);
-
-
-		// Backend tried to delete a project (both: successfully and not successfully)
-		this.register_socketio_handler('projects:delete', deleteProject);
 
 		// Backend tried to update a project (both: successfully and not successfully)
 		this.register_socketio_handler('projects:update', updateProject);

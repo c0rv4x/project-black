@@ -6,7 +6,8 @@ import ProjectsSocketioEventsEmitter from '../../redux/projects/ProjectsSocketio
 
 import {
 	fetchProjects,
-	submitNewProject
+	submitNewProject,
+	submitDeleteProject
 } from '../../redux/projects/actions.js'
 
 
@@ -22,6 +23,7 @@ class ProjectsMainComponent extends React.Component {
 
 		this.changeNewProjectName = this.changeNewProjectName.bind(this);
 		this.createProject = this.createProject.bind(this);
+		this.deleteProject = this.deleteProject.bind(this);
 	}
 
 	componentDidMount() {
@@ -39,10 +41,14 @@ class ProjectsMainComponent extends React.Component {
 		this.context.store.dispatch(submitNewProject(projectName));
 	}
 
+	deleteProject(projectUUID) {
+		this.context.store.dispatch(submitDeleteProject(projectUUID));
+	}
+
 	render() {
 		return (
 			<ProjectsMain projects={this.props.projects}
-						  onDelete={(project_uuid) => this.emitter.requestDeleteProject(project_uuid)} 
+						  onDelete={(project_uuid) => this.deleteProject(project_uuid)} 
 
 						  submitNewProject={(new_name) => this.createProject(new_name.trim())}
 			/>
