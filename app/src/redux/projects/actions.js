@@ -30,8 +30,8 @@ export function updateComment(message) {
 
 
 export const RECEIVE_PROJECTS = 'RECEIVE_PROJECTS'
-export function receiveProjects() {
-	return { type: RECEIVE_PROJECTS }
+export function receiveProjects(message) {
+	return { type: RECEIVE_PROJECTS, message }
 }
 
 export function fetchProjects() {

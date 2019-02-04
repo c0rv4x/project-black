@@ -94,7 +94,7 @@ function update_comment(state = [], action) {
 function receiveProjects(state = [], action) {
 	const message = action.message;
 
-	var newState = message['projects'].sort((a, b) => {
+	var newState = message.sort((a, b) => {
 		if (a.project_uuid > b.project_uuid) return 1;
 		if (a.project_uuid < b.project_uuid) return -1;
 		return 0;
