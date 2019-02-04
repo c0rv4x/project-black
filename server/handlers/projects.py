@@ -41,3 +41,23 @@ class ProjectsHandlers:
                 'message': delete_result['text']
             })
             
+
+    @authorized_class_method()
+    async def cb_update_project(self, request):
+        project_uuid = request.json['uuid']
+        project_name = request.json.get('project_name', None)
+        comment = request.json.get('comment', None)
+        ips_locked = request.json.get('ips_locked', None)
+        hosts_locked = request.json.get('hosts_locked', None)
+
+        update_result = await self.project_manager.update_project(
+            project_uuid, project_name=project_name, comment=comment,
+            ips_locked=ips_locked, hosts_locked=hosts_locked)
+
+        if update_result['status'] == 'success':
+            return response.json({ 'status': 'ok' })
+        else:
+            return response.json({
+                'status': 'error',
+                'message': update_result['text']
+            })
