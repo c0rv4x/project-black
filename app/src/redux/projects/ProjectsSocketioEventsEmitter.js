@@ -7,12 +7,6 @@ class ProjectsSocketioEventsEmitter {
         this.connector = new Connector('projects');
 	}
 
-	requestCreateProject(project_name) {
-		this.connector.emit('projects:create', {
-			'project_name': project_name
-		});
-	}
-
 	requestDeleteProject(project_uuid) {
 		this.connector.emit('projects:delete:project_uuid', {
 			'project_uuid': project_uuid
