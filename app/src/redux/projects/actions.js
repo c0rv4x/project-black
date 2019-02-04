@@ -8,10 +8,6 @@ export const UPDATE_PROJECT = 'UPDATE_PROJECT'
 export const UPDATE_COMMENT = 'UPDATE_COMMENT'
 
 
-export function createProject(message) {
-	return { type: CREATE_PROJECT, message }
-}
-
 export function deleteProject(message) {
 	return { type: DELETE_PROJECT, message }
 }
@@ -47,11 +43,6 @@ export function fetchProjects() {
 }
 
 
-export const RECEIVE_NEW_PROJECT = 'RECEIVE_NEW_PROJECT'
-export function receiveNewProject(message) {
-	return { type: RECEIVE_NEW_PROJECT, message }
-}
-
 export function submitNewProject(projectName) {
 	return dispatch =>
 	fetch(
@@ -70,6 +61,6 @@ export function submitNewProject(projectName) {
 			error => console.log(error)
 		)
 		.then(
-			json => dispatch(receiveNewProject(json))
+			json => dispatch(fetchProjects())
 		)
 }

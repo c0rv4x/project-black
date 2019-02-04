@@ -1,9 +1,5 @@
-import Notifications from 'react-notification-system-redux'
-
 import { 
-	createProject, 
-	deleteProject,
-	renewProjects,
+	fetchProjects,
 	updateProject
 } from './actions';
 
@@ -28,11 +24,8 @@ class ProjectsSocketioEventsSubscriber {
 	basic_events_registration() {
 		/* Register handlers on basic events */
 
-		// Received all projects in one message
-		this.register_socketio_handler('projects:all:get:back', renewProjects);
+		this.register_socketio_handler('projects:updated', fetchProjects);
 
-		// Backend tried to create a new project (both: successfully and not successfully)
-		this.register_socketio_handler('projects:create', createProject);
 
 		// Backend tried to delete a project (both: successfully and not successfully)
 		this.register_socketio_handler('projects:delete', deleteProject);
