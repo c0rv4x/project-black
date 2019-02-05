@@ -12,7 +12,6 @@ import {
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
-import IPsSocketioEventsEmitter from './IPsSocketioEventsEmitter.js';
 
 
 class IPsSocketioEventsSubscriber {
@@ -21,14 +20,6 @@ class IPsSocketioEventsSubscriber {
         this.store = store;
         this.project_uuid = project_uuid;
         this.connector = new Connector('ips');
-
-        this.connector.after_connected((x) => {
-        	this.emitter = new IPsSocketioEventsEmitter();
-
-			// if (ip_address) {
-	        // 	this.emitter.requestSingleIPs(this.project_uuid, ip_address);
-        	// }
-        });
 
         this.basic_events_registration();
 	}

@@ -10,6 +10,7 @@ import FilesSocketioEventsSubsriber from '../redux/files/FilesSocketioEventsSubs
 import CredsSocketioEventsSubscriber from '../redux/creds/CredsSocketioEventsSubscriber'
 
 import { fetchProjects } from '../redux/projects/actions.js'
+import { requestSingleIP } from '../redux/ips/actions.js'
 
 class IP extends React.Component {
     constructor(props) {
@@ -22,6 +23,7 @@ class IP extends React.Component {
         var mainStore = this.context.store;
 
         mainStore.dispatch(fetchProjects());
+        mainStore.dispatch(requestSingleIP(project_uuid, ip_address));
         this.ipsSubscriber = new IPsSocketioEventsSubsriber(mainStore, project_uuid, ip_address);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);

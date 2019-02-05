@@ -18,10 +18,6 @@ class IPVerbose extends React.Component {
 	componentDidMount() {
 		this.ipsEmitter = new IPsSocketioEventsEmitter();		
 		this.filesEmitter = new FilesSocketioEventsEmitter();
-
-		if (this.props.update_needed) {
-			this.ipsEmitter.requestSingleIPs(this.props.project_uuid, this.props.ip.ip_address);
-		}
 	}
 
 	getFilesIPs(host, port_number, limit=3, offset=0) {
@@ -32,12 +28,6 @@ class IPVerbose extends React.Component {
 			limit,
 			offset
 		);
-	}
-
-	componentWillReceiveProps(newProps) {
-		if (newProps.update_needed) {
-			this.ipsEmitter.requestSingleIPs(this.props.project_uuid, this.props.ip.ip_address);
-		}		
 	}
 
 	commentSubmitted(comment, _id) {

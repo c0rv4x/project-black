@@ -61,6 +61,35 @@ export function setLoaded(message, current_project_uuid) {
 	}
 }
 
+////// 
+
+export const RECEIVE_IPS = 'RECEIVE_IPS'
+export function receiveIPs(message) {
+	return { type: RECEIVE_IPS, message }
+}
+
+
+export function requestSingleIP(project_uuid, ip_address) {
+	return dispatch => {
+		dispatch(setLoadingIPs(true));
+		dispatch(fetchSingleIP(project_uuid, ip_address)).then(() => {
+			dispatch(setLoadingIPs(false))
+		});
+	}
+}
+
+export function fetchSingleIP(project_uuid, ip_address) {
+	return dispatch =>
+		fetch(`/project/${project_uuid}/ip/get/${ip_address}`)
+			.then(
+				response => response.json(),
+				error => console.log(error)
+			)
+			.then(
+				json => dispatch(receiveIPs(json))
+			)
+}
+
 
 export function requestIPs(project_uuid, filters={}, ip_page=0, ip_page_size=12) {
 	const params = {
@@ -103,9 +132,4 @@ export function fetchIPs(project_uuid, params) {
 			.then(
 				json => dispatch(receiveIPs(json))
 			)
-}
-
-export const RECEIVE_IPS = 'RECEIVE_IPS'
-export function receiveIPs(message) {
-	return { type: RECEIVE_IPS, message }
 }
