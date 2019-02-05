@@ -24,13 +24,13 @@ if __name__ == '__main__':
 
     meta_manager = MetaManager()
 
-    SOCKET_IO = socketio.AsyncServer(async_mode='sanic')
+    socketio = socketio.AsyncServer(async_mode='sanic')
     app = Sanic()
 
-    SOCKET_IO.attach(app)
+    socketio.attach(app)
 
     # # AJAX requests handlers
-    projects_handlers = ProjectsHandlers(meta_manager.project_manager)
+    projects_handlers = ProjectsHandlers(meta_manager.project_manager, socketio)
     app.add_route(projects_handlers.cb_get_projects, '/projects')
     app.add_route(projects_handlers.cb_create_project, '/projects/create', methods=['POST'])
     app.add_route(projects_handlers.cb_delete_project, '/projects/delete', methods=['POST'])
@@ -48,7 +48,7 @@ if __name__ == '__main__':
     app.add_route(dict_handlers.cb_upload_dict, '/upload_dict', methods=['POST'])
     app.add_route(dict_handlers.cb_get_dictionary, '/dictionary/<dict_id>')
 
-    HANDLERS = Handlers(SOCKET_IO, app, meta_manager)
+    HANDLERS = Handlers(socketio, app, meta_manager)
 
     @app.listener('before_server_start')
     async def cb_instantiate_scheduler(app, loop):

@@ -3,9 +3,9 @@ from server.handlers.utils import authorized_class_method
 
 
 class ProjectsHandlers:
-    def __init__(self, project_manager):
+    def __init__(self, project_manager, socketio):
         self.project_manager = project_manager
-
+        self.notifier = ProjectsNotifier(socketio)
 
     @authorized_class_method()
     async def cb_get_projects(self, request):
@@ -19,6 +19,8 @@ class ProjectsHandlers:
         name = request.json['name']
         create_result = await self.project_manager.create_project(name)
         if create_result['status'] == 'success':
+            await self.notifier.notify_on_created_project()
+
             return response.json({ 'status': 'ok' })
         else:
             return response.json({
@@ -34,6 +36,8 @@ class ProjectsHandlers:
             project_uuid=project_uuid)
 
         if delete_result['status'] == 'success':
+            await self.notifier.notify_on_deleted_project()
+
             return response.json({ 'status': 'ok' })
         else:
             return response.json({
@@ -50,16 +54,40 @@ class ProjectsHandlers:
         comment = parameters.get('comment', None)
         ips_locked = parameters.get('ips_locked', None)
         hosts_locked = parameters.get('hosts_locked', None)
-        print(parameters)
 
         update_result = await self.project_manager.update_project(
             project_uuid, project_name=project_name, comment=comment,
             ips_locked=ips_locked, hosts_locked=hosts_locked)
 
         if update_result['status'] == 'success':
+            await self.notifier.notify_on_updated_project()
+
             return response.json({ 'status': 'ok' })
         else:
             return response.json({
                 'status': 'error',
                 'message': update_result['text']
             })
+
+
+class ProjectsNotifier:
+    def __init__(self, socketio):
+        self.socketio = socketio
+
+    async def notify_on_created_project(self):
+        await self.socketio.emit(
+            'project:created', {},
+            room=None, namespace='/projects'
+        )
+
+    async def notify_on_deleted_project(self):
+        await self.socketio.emit(
+            'project:deleted', {},
+            room=None, namespace='/projects'
+        )
+
+    async def notify_on_updated_project(self):
+        await self.socketio.emit(
+            'project:updated', {},
+            room=None, namespace='/projects'
+        )
