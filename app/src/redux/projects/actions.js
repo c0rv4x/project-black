@@ -88,10 +88,11 @@ export function submitUpdateProject(projectUUID, parameters) {
 			json => {
 				if (json.status == "ok") {
 					dispatch(notificationSend({
-						message: "Comment updated",
+						message: "Project updated",
 						kind: "success",
 						dismissAfter: 5000
 					}));
+					dispatch(fetchProjects());
 				}
 				else {
 					console.log("error upating comment for project", json);

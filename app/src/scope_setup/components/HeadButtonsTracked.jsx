@@ -1,13 +1,15 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import { Box } from 'grommet'
 
-import ProjectsSocketioEventsEmitter from '../../redux/projects/ProjectsSocketioEventsEmitter.js'
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
 import ResolveButton from '../presentational/ResolveButton.jsx'
 import ScopesLock from '../presentational/ScopesLock.jsx'
 import TaskButton from './TaskButton.jsx'
+
+import { submitUpdateProject } from '../../redux/projects/actions.js'
 
 
 class HeadButtonsTracked extends React.Component {
@@ -20,7 +22,6 @@ class HeadButtonsTracked extends React.Component {
 	}
 
 	componentDidMount() {
-		this.projectsEmitter = new ProjectsSocketioEventsEmitter();
 		this.hostsEmitter = new HostsSocketioEventsEmitter();
 		this.tasksEmitter = new TasksSocketioEventsEmitter();
 	}
@@ -30,11 +31,17 @@ class HeadButtonsTracked extends React.Component {
 	}
 
 	setLockIps(value) {
-		this.projectsEmitter.requestUpdateIpsLock(this.props.project.project_uuid, value);
+		this.context.store.dispatch(submitUpdateProject(
+			this.props.project.project_uuid,
+			{ ips_locked: value }
+		));
 	}
 
 	setLockHosts(value) {
-		this.projectsEmitter.requestUpdateHostsLock(this.props.project.project_uuid, value);
+		this.context.store.dispatch(submitUpdateProject(
+			this.props.project.project_uuid,
+			{ hosts_locked: value }
+		));
 	}
 
 	render() {
@@ -66,5 +73,10 @@ class HeadButtonsTracked extends React.Component {
 		)
 	}
 }
+
+HeadButtonsTracked.contextTypes = {
+    store: PropTypes.object
+}
+
 
 export default HeadButtonsTracked;
