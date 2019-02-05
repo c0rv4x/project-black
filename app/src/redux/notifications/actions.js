@@ -28,6 +28,22 @@ export function notificationSend(notif) {
   };
 }
 
+export function notifySuccess(message) {
+  return notificationSend({
+    message: message,
+    kind: 'success',
+    dismissAfter: 5000
+  });
+}
+
+export function notifyError(message) {
+  return notificationSend({
+    message: message,
+    kind: 'error',
+    dismissAfter: 15000
+  });
+}
+
 /**
  * Dismiss a notification by the given id.
  */

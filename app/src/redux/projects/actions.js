@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch'
-import { notificationSend } from '../notifications/actions.js'
+import { notifySuccess, notifyError } from '../notifications/actions.js'
 
 
 export const RECEIVE_PROJECTS = 'RECEIVE_PROJECTS'
@@ -38,7 +38,15 @@ export function submitNewProject(projectName) {
 			error => console.log(error)
 		)
 		.then(
-			json => dispatch(fetchProjects())
+			json => {
+				if (json.status == "ok") {
+					dispatch(notifySuccess("Project created"));
+					dispatch(fetchProjects())
+				}
+				else {
+					dispatch(notifyError("Error creating projects " + json.message));
+				}
+			}
 		)
 }
 
@@ -61,7 +69,15 @@ export function submitDeleteProject(projectUUID) {
 			error => console.log(error)
 		)
 		.then(
-			json => dispatch(fetchProjects())
+			json => {
+				if (json.status == "ok") {
+					dispatch(notifySuccess("Project deleted"));
+					dispatch(fetchProjects())
+				}
+				else {
+					dispatch(notifyError("Error deleting projects " + json.message));
+				}
+			}
 		)
 }
 
@@ -87,15 +103,11 @@ export function submitUpdateProject(projectUUID, parameters) {
 		.then(
 			json => {
 				if (json.status == "ok") {
-					dispatch(notificationSend({
-						message: "Project updated",
-						kind: "success",
-						dismissAfter: 5000
-					}));
+					dispatch(notifySuccess("Project updated"));
 					dispatch(fetchProjects());
 				}
 				else {
-					console.log("error upating comment for project", json);
+					dispatch(notifyError("Error updating projects " + json.message));
 				}
 			}
 		)
