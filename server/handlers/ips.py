@@ -7,6 +7,7 @@ from server.handlers.utils import authorized_class_method
 class IPsHandlers:
     def __init__(self, scope_manager, socketio):
         self.scope_manager = scope_manager
+        self.notifier = IPsNotifier(socketio)
 
     @authorized_class_method()
     async def cb_get_ips(self, request, project_uuid):
@@ -42,3 +43,47 @@ class IPsHandlers:
             'selected_ips': ips['selected_ips'],
             'total_db_ips': ips['total_db_ips']
         })
+
+    @authorized_class_method()
+    async def cb_update_comment(self, request, project_uuid, ip_id):
+        comment = request.json['comment']
+
+        result = await self.scope_manager.update_scope(
+            scope_id=ip_id, comment=comment, scope_type='ip_address'
+        )
+
+        if result['status'] == 'success':
+            await self.notifier.notify_on_updated_ip(
+                project_uuid, ip_id, comment
+            )
+
+            return response.json({ 'status': 'ok' })
+        else:
+            return response.json({ 'status': 'error', 'message': result['text'] })
+
+
+class IPsNotifier:
+    def __init__(self, socketio):
+        self.socketio = socketio
+
+    async def notify_on_created_project(self):
+        await self.socketio.emit(
+            'project:created', {},
+            room=None, namespace='/projects'
+        )
+
+    async def notify_on_deleted_project(self):
+        await self.socketio.emit(
+            'project:deleted', {},
+            room=None, namespace='/projects'
+        )
+
+    async def notify_on_updated_ip(self, project_uuid, ip_id, comment):
+        await self.socketio.emit(
+            'ip:comment_updated', {
+                'project_uuid': project_uuid,
+                'ip_id': ip_id,
+                'comment': comment
+            },
+            room=None, namespace='/ips'
+        )
