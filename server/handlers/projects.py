@@ -45,10 +45,12 @@ class ProjectsHandlers:
     @authorized_class_method()
     async def cb_update_project(self, request):
         project_uuid = request.json['uuid']
-        project_name = request.json.get('project_name', None)
-        comment = request.json.get('comment', None)
-        ips_locked = request.json.get('ips_locked', None)
-        hosts_locked = request.json.get('hosts_locked', None)
+        parameters = request.json['parameters']
+        project_name = parameters.get('project_name', None)
+        comment = parameters.get('comment', None)
+        ips_locked = parameters.get('ips_locked', None)
+        hosts_locked = parameters.get('hosts_locked', None)
+        print(parameters)
 
         update_result = await self.project_manager.update_project(
             project_uuid, project_name=project_name, comment=comment,
