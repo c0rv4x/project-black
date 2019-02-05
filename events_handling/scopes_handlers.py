@@ -12,15 +12,6 @@ class IPHandlers(object):
 
         self.register_handlers()
 
-    def register_handlers(self):
-        @self.socketio.on('ips:single:get', namespace='/ips')
-        async def _cb_handle_scope_single_get(sio, msg):
-            """ When received this message, send back a single ip address """
-            project_uuid = int(msg.get('project_uuid', None))
-            ip_address = msg.get('ip_address')
-
-            await self.send_ips_back({'ip': [ip_address]}, sio, project_uuid)
-
         @self.socketio.on('ips:update', namespace='/ips')
         async def _cb_handle_scope_update(sio, msg):
             """ Update the scope (now only used for comment). """
@@ -107,32 +98,6 @@ class IPHandlers(object):
                 get_result,
                 namespace='/ips'
             )
-
-    async def send_ips_back(
-        self, filters, sio=None,
-        project_uuid=None, ip_page=0, ip_page_size=12
-    ):
-        """ Collects all relative hosts and ips from
-        the manager and sends them back """
-        ips = self.scope_manager.get_ips_with_ports(
-            filters, project_uuid, ip_page, ip_page_size)
-
-        await self.socketio.emit(
-            'ips:part:set', {
-                'status': 'success',
-                'project_uuid': project_uuid,
-                'ips': {
-                    'page': ip_page,
-                    'page_size': ip_page_size,
-                    'data': ips['ips'],
-                    'selected_ips': ips['selected_ips'],
-                    'total_db_ips': ips['total_db_ips']
-                }
-            },
-            room=sio,
-            namespace='/ips'
-        )
-
 
 class HostHandlers(object):
 
