@@ -26,3 +26,21 @@ class IPsHandlers:
             'selected_ips': ips['selected_ips'],
             'total_db_ips': ips['total_db_ips']
         })
+
+    @authorized_class_method()
+    async def cb_get_single_ip(self, request, project_uuid, ip_address):
+        project_uuid = int(project_uuid)
+
+        ips = self.scope_manager.get_ips_with_ports(
+            { 'ip': [ip_address] }, project_uuid
+        )
+
+        print(1234)
+
+        return response.json({
+            'page': 0,
+            'page_size': 1,
+            'data': ips['ips'],
+            'selected_ips': ips['selected_ips'],
+            'total_db_ips': ips['total_db_ips']
+        })
