@@ -12,6 +12,7 @@ class IPHandlers(object):
 
         self.register_handlers()
 
+    def register_handlers(self):
         @self.socketio.on('ips:update', namespace='/ips')
         async def _cb_handle_scope_update(sio, msg):
             """ Update the scope (now only used for comment). """
