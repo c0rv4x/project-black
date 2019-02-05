@@ -7,7 +7,6 @@ import asyncio
 
 from common.logger import log
 
-from events_handling.projects_handlers import ProjectHandlers
 from events_handling.scopes_handlers import ScopeHandlers
 from events_handling.tasks_handlers import TaskHandlers
 from events_handling.scans_handlers import ScanHandlers
@@ -37,8 +36,6 @@ class Handlers(object):
 
         self.meta_manager.task_manager.attach_data_updated_queue(self.data_updated_queue)
         self.app.add_task(self.meta_manager.task_manager.spawn_asynqp())
-
-        ProjectHandlers(self.socketio, self.meta_manager.project_manager)
 
         self.scope_handlers = ScopeHandlers(self.socketio, self.meta_manager.scope_manager)
         self.scan_handlers = ScanHandlers(self.socketio, self.meta_manager.scan_manager)
