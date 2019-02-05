@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 
 import HostPage from '../host_verbose/components/HostVerboseWrapper.jsx'
 
-import ProjectsSocketioEventsSubscriber from '../redux/projects/ProjectsSocketioEventsSubscriber'
 import HostsSocketioEventsSubsriber from '../redux/hosts/HostsSocketioEventsSubscriber'
 import TasksSocketioEventsSubsriber from '../redux/tasks/TasksSocketioEventsSubsriber'
 import ScansSocketioEventsSubsriber from '../redux/scans/ScansSocketioEventsSubscriber'
 import FilesSocketioEventsSubsriber from '../redux/files/FilesSocketioEventsSubscriber'
 import CredsSocketioEventsSubscriber from '../redux/creds/CredsSocketioEventsSubscriber'
 
+import { fetchProjects } from '../redux/projects/actions.js'
 
 class Host extends React.Component {
     constructor(props) {
@@ -21,7 +21,7 @@ class Host extends React.Component {
         const hostname = this.props.match.params.hostname;        
         var mainStore = this.context.store;
 
-        this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
+        mainStore.dispatch(fetchProjects());
         this.hostsSubscriber = new HostsSocketioEventsSubsriber(mainStore, project_uuid, hostname);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);

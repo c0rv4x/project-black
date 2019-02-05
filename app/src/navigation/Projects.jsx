@@ -6,6 +6,7 @@ import ProjectsMainComponentWrapper from '../projects_list/components/ProjectsMa
 import ProjectsSocketioEventsSubscriber from '../redux/projects/ProjectsSocketioEventsSubscriber'
 import NotificationsSocketioEventsSubscriber from '../redux/notifications/NotificationsSocketioEventsSubscriber'
 
+import { fetchProjects } from '../redux/projects/actions.js'
 
 class Projects extends React.Component {
     constructor(props) {
@@ -15,7 +16,8 @@ class Projects extends React.Component {
     componentDidMount() {
         var mainStore = this.context.store;
 
-        this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore);        
+        this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore); 
+        mainStore.dispatch(fetchProjects());       
         this.notificationsSubscriber = new NotificationsSocketioEventsSubscriber(mainStore);        
     }
 

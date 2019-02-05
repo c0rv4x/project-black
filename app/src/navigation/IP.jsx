@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 
 import IPPage from '../ip_verbose/components/MainAccumulatorWrapper.jsx'
 
-import ProjectsSocketioEventsSubscriber from '../redux/projects/ProjectsSocketioEventsSubscriber'
 import IPsSocketioEventsSubsriber from '../redux/ips/IPsSocketioEventsSubscriber'
 import TasksSocketioEventsSubsriber from '../redux/tasks/TasksSocketioEventsSubsriber'
 import ScansSocketioEventsSubsriber from '../redux/scans/ScansSocketioEventsSubscriber'
 import FilesSocketioEventsSubsriber from '../redux/files/FilesSocketioEventsSubscriber'
 import CredsSocketioEventsSubscriber from '../redux/creds/CredsSocketioEventsSubscriber'
 
+import { fetchProjects } from '../redux/projects/actions.js'
 
 class IP extends React.Component {
     constructor(props) {
@@ -21,7 +21,7 @@ class IP extends React.Component {
         const ip_address = this.props.match.params.ip_address;
         var mainStore = this.context.store;
 
-        this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
+        mainStore.dispatch(fetchProjects());
         this.ipsSubscriber = new IPsSocketioEventsSubsriber(mainStore, project_uuid, ip_address);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);

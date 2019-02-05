@@ -5,7 +5,6 @@ import ProjectsMain from '../presentational/ProjectsMain.jsx'
 import ProjectsSocketioEventsEmitter from '../../redux/projects/ProjectsSocketioEventsEmitter.js'
 
 import {
-	fetchProjects,
 	submitNewProject,
 	submitDeleteProject
 } from '../../redux/projects/actions.js'
@@ -28,7 +27,6 @@ class ProjectsMainComponent extends React.Component {
 
 	componentDidMount() {
 		this.emitter = new ProjectsSocketioEventsEmitter();
-		this.context.store.dispatch(fetchProjects());
 	}
 
 	changeNewProjectName(newName) {

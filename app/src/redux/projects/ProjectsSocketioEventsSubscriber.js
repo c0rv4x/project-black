@@ -9,7 +9,7 @@ class ProjectsSocketioEventsSubscriber {
 	/* Class for managing events subscription for the projects */
 	constructor(store) {
         this.store = store;
-        this.connector = new Connector('projects');
+		this.connector = new Connector('projects');
 
 		this.register_socketio_handler('projects:updated', fetchProjects);
 	}
