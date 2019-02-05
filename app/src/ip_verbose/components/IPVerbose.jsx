@@ -1,9 +1,12 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
 import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
 import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import PortsTabs from '../../host_verbose/presentational/PortsTabs.jsx'
+
+import { requestUpdateIPComment } from '../../redux/ips/actions.js'
 
 import { Heading } from 'grommet'
 
@@ -31,7 +34,7 @@ class IPVerbose extends React.Component {
 	}
 
 	commentSubmitted(comment, _id) {
-		this.ipsEmitter.requestUpdateIP(comment, _id, this.props.project_uuid, 'ip_address');
+		this.context.store.dispatch(requestUpdateIPComment(this.props.project_uuid, _id, comment));
 	}
 
 	render() {
@@ -57,6 +60,10 @@ class IPVerbose extends React.Component {
 			</div>
 		)
 	}
+}
+
+IPVerbose.contextTypes = {
+    store: PropTypes.object
 }
 
 export default IPVerbose;

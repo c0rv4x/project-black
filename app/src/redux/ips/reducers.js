@@ -5,12 +5,12 @@ import {
 	DELETE_IP, 
 	RENEW_IPS,
 	UPDATED_IPS,
-	UPDATE_IP,
 	GET_TASKS_BY_IPS,
 	SET_LOADED,
 
 	SET_LOADING_IPS,
-	RECEIVE_IPS
+	RECEIVE_IPS,
+	IP_COMMENT_UPDATED
 } from './actions.js'
 
 
@@ -64,29 +64,6 @@ function renew_ips(state = initialState, action) {
 	}
 }
 
-function update_ip(state = initialState, action) {
-	const message = action.message;
-
-	var { ip_id, ip_type, comment } = message;
-
-	for (var each_ip of state.data) {
-		if (each_ip.ip_id == ip_id) {
-			var new_state = JSON.parse(JSON.stringify(state));
-
-			for (var each_new_ip of new_state.data) {
-				if (each_new_ip.ip_id == ip_id) {
-					each_new_ip.comment = comment;
-					break;
-				}
-			}
-
-			return new_state;
-		}
-	}
-
-	return state;
-
-}
 
 function updated_ips(state = initialState, action) {
 	const message = action.message;
@@ -206,6 +183,31 @@ function receiveIPs(state = initialState, action) {
 }
 
 
+function ipCommentUpdated(state = initialState, action) {
+	const message = action.message;
+
+	var { ip_id, ip_type, comment } = message;
+
+	for (var each_ip of state.data) {
+		if (each_ip.ip_id == ip_id) {
+			var new_state = JSON.parse(JSON.stringify(state));
+
+			for (var each_new_ip of new_state.data) {
+				if (each_new_ip.ip_id == ip_id) {
+					each_new_ip.comment = comment;
+					break;
+				}
+			}
+
+			return new_state;
+		}
+	}
+
+	return state;
+
+}
+
+
 function ip_reduce(state = initialState, action) {
 	if (action.message && action.message.project_uuid && (action.current_project_uuid != action.message.project_uuid)) { return state; }
 	else {
@@ -216,8 +218,7 @@ function ip_reduce(state = initialState, action) {
 				return delete_ip(state, action);
 			case RENEW_IPS:
 				return renew_ips(state, action);
-			case UPDATE_IP:
-				return update_ip(state, action);
+
 			case UPDATED_IPS:
 				return updated_ips(state, action);
 			case GET_TASKS_BY_IPS:
@@ -229,6 +230,8 @@ function ip_reduce(state = initialState, action) {
 				return setLoadingIPs(state, action);
 			case RECEIVE_IPS:
 				return receiveIPs(state, action);
+			case IP_COMMENT_UPDATED:
+				return ipCommentUpdated(state, action);
 			default:
 				return state;
 		}

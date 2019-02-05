@@ -4,7 +4,7 @@ import {
 	createIP, 
 	deleteIP,
 	renewIPs,
-	updateIP,
+	IPCommentUpdated,
 	updatedIPs,
 	resolveIPs,
 	getByIps,
@@ -27,7 +27,8 @@ class IPsSocketioEventsSubscriber {
 	basic_events_registration() {
 		/* Register handlers on basic events */
 		// Received all ips in one message
-		this.register_socketio_handler('ips:update:back', updateIP);
+		this.register_socketio_handler('ip:comment_updated', IPCommentUpdated);
+
 		this.register_socketio_handler('ips:create', createIP);
 		this.register_socketio_handler('ips:delete', deleteIP);
 		this.register_socketio_handler('ips:updated', updatedIPs);

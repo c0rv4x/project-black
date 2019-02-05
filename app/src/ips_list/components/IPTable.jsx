@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
 import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
@@ -8,6 +9,8 @@ import IPEntryLine from '../presentational/scope/IPEntryLine.jsx'
 import Search from '../../common/search/Search.jsx'
 
 import { Box, Heading } from 'grommet'
+
+import { requestUpdateIPComment } from '../../redux/ips/actions.js'
 
 
 class IPTable extends React.Component {
@@ -35,7 +38,7 @@ class IPTable extends React.Component {
 	}
 
 	commentSubmitted(comment, _id) {
-		this.ipsEmitter.requestUpdateIP(comment, _id, this.props.project_uuid, 'ip_address');
+		this.context.store.dispatch(requestUpdateIPComment(this.props.project_uuid, _id, comment));
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -107,6 +110,10 @@ class IPTable extends React.Component {
 			</div>
 		)
 	}
+}
+
+IPTable.contextTypes = {
+    store: PropTypes.object
 }
 
 export default IPTable;

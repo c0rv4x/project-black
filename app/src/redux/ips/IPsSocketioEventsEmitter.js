@@ -8,15 +8,6 @@ class IPsSocketioEventsEmitter {
         this.connector = new Connector('ips');
 	}
 
-	requestUpdateIP(comment, ip_id, project_uuid, ip_type) {
-		this.connector.emit('ips:update', {
-			'ip_id': ip_id,
-			'comment': comment,
-			'project_uuid': project_uuid,
-			'ip_type': ip_type
-		});
-	}
-
 	requestTasksByIps(ips, project_uuid) {
 		this.connector.emit('ips:get:tasks', {
 			'project_uuid': project_uuid,

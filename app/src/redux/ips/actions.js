@@ -1,7 +1,10 @@
+import { notifySuccess, notifyError } from '../notifications/actions.js'
+
+
+
 export const CREATE_IP = 'CREATE_IP'
 export const DELETE_IP = 'DELETE_IP'
 export const RENEW_IPS = 'RENEW_IPS'
-export const UPDATE_IP = 'UPDATE_IP'
 export const UPDATED_IPS = 'UPDATED_IPS'
 export const GET_TASKS_BY_IPS = 'GET_TASKS_BY_IPS'
 export const SET_LOADED = 'SET_LOADED'
@@ -23,13 +26,6 @@ export function deleteIP(message, current_project_uuid) {
 	}
 }
 
-export function updateIP(message, current_project_uuid) {
-	return {
-		type: UPDATE_IP,
-		current_project_uuid: current_project_uuid,
-		message
-	}
-}
 
 export function updatedIPs(message, current_project_uuid) {
 	return {
@@ -124,4 +120,42 @@ export function fetchIPs(project_uuid, params) {
 			.then(
 				json => dispatch(receiveIPs(json))
 			)
+}
+
+
+export function requestUpdateIPComment(project_uuid, ip_id, comment) {
+	return dispatch =>
+	fetch(`/project/${project_uuid}/ip/update/${ip_id}`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			comment: comment
+		})
+	})
+		.then(
+			response => response.json(),
+			error => console.log(error)
+		)
+		.then(
+			json => {
+				if (json.status == 'ok') {
+					dispatch(notifySuccess("IP comment updated"))
+				}
+				else {
+					dispatch(notifyError("Error updating IP comment " + json.message));
+				}				
+			}
+		)
+}
+
+export const IP_COMMENT_UPDATED = 'IP_COMMENT_UPDATED'
+
+export function IPCommentUpdated(message, current_project_uuid) {
+	return {
+		type: IP_COMMENT_UPDATED,
+		current_project_uuid: current_project_uuid,
+		message
+	}
 }
