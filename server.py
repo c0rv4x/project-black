@@ -14,6 +14,7 @@ from config import CONFIG
 from managers.meta_manager import MetaManager
 
 from server.handlers.dictionaries import DictHandlers
+from server.handlers.ips import IPsHandlers
 from server.handlers.projects import ProjectsHandlers
 from server.handlers.static import StaticHandlers
 from server.handlers.utils import authorized
@@ -29,13 +30,18 @@ if __name__ == '__main__':
 
     socketio.attach(app)
 
-    # # AJAX requests handlers
+    # Manage projects
     projects_handlers = ProjectsHandlers(meta_manager.project_manager, socketio)
     app.add_route(projects_handlers.cb_get_projects, '/projects')
     app.add_route(projects_handlers.cb_create_project, '/projects/create', methods=['POST'])
     app.add_route(projects_handlers.cb_delete_project, '/projects/delete', methods=['POST'])
     app.add_route(projects_handlers.cb_update_project, '/projects/update', methods=['POST'])
+    
+    # Manager IPS
+    ips_handlers = IPsHandlers(meta_manager.scope_manager, socketio)
+    app.add_route(ips_handlers.cb_get_ips, '/project/<project_uuid>/ips')
 
+    # Static handlers: index.html and bundle.js
     app.add_route(StaticHandlers.cb_index_handler, '/')
     app.add_route(StaticHandlers.cb_index_handler, '/project/<project_uuid>')
     app.add_route(StaticHandlers.cb_index_handler, '/project/<project_uuid>/dirsearch')
