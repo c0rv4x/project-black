@@ -15,6 +15,8 @@ import CredsSocketioEventsSubscriber from '../redux/creds/CredsSocketioEventsSub
 import DictsSocketioEventsSubscriber from '../redux/dicts/DictsSocketioEventsSubscriber'
 
 import { fetchProjects } from '../redux/projects/actions.js'
+import { requestIPs } from '../redux/ips/actions.js'
+
 
 class NavigationTabsWrapper extends React.Component {
     constructor(props) {
@@ -28,8 +30,9 @@ class NavigationTabsWrapper extends React.Component {
         this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
         mainStore.dispatch(fetchProjects());       
 
-
         this.ipsSubscriber = new IPsSocketioEventsSubsriber(mainStore, project_uuid);
+        mainStore.dispatch(requestIPs(project_uuid));
+
         this.hostsSubscriber = new HostsSocketioEventsSubsriber(mainStore, project_uuid);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);

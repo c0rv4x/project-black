@@ -7,7 +7,10 @@ import {
 	UPDATED_IPS,
 	UPDATE_IP,
 	GET_TASKS_BY_IPS,
-	SET_LOADED
+	SET_LOADED,
+
+	SET_LOADING_IPS,
+	RECEIVE_IPS
 } from './actions.js'
 
 
@@ -183,32 +186,51 @@ function set_loaded(state = initialState, action) {
 	}
 }
 
-function ip_reduce(state = initialState, action) {
-	if (!action.hasOwnProperty('message')) {
-		return state
-	}
+////////
 
+function setLoadingIPs(state = initialState, action) {
+	const isLoading = action.isLoading;
+
+	return {
+		...state,
+		loaded: !isLoading
+	}
+}
+
+function receiveIPs(state = initialState, action) {
+	const ips = action.message;
+
+	return {
+		...ips
+	}
+}
+
+
+function ip_reduce(state = initialState, action) {
+	if (action.message && action.message.project_uuid && (action.current_project_uuid != action.message.project_uuid)) { return state; }
 	else {
-		if (action.message && action.current_project_uuid != action.message.project_uuid) { return state; }
-		else {
-			switch (action.type) {
-				case CREATE_IP:
-					return create_ip(state, action);
-				case DELETE_IP:
-					return delete_ip(state, action);
-				case RENEW_IPS:
-					return renew_ips(state, action);
-				case UPDATE_IP:
-					return update_ip(state, action);
-				case UPDATED_IPS:
-					return updated_ips(state, action);
-				case GET_TASKS_BY_IPS:
-					return get_tasks_by_ips(state, action);
-				case SET_LOADED:
-					return set_loaded(state, action);
-				default:
-					return state;
-			}
+		switch (action.type) {
+			case CREATE_IP:
+				return create_ip(state, action);
+			case DELETE_IP:
+				return delete_ip(state, action);
+			case RENEW_IPS:
+				return renew_ips(state, action);
+			case UPDATE_IP:
+				return update_ip(state, action);
+			case UPDATED_IPS:
+				return updated_ips(state, action);
+			case GET_TASKS_BY_IPS:
+				return get_tasks_by_ips(state, action);
+			case SET_LOADED:
+				return set_loaded(state, action);
+
+			case SET_LOADING_IPS:
+				return setLoadingIPs(state, action);
+			case RECEIVE_IPS:
+				return receiveIPs(state, action);
+			default:
+				return state;
 		}
 	}
 }

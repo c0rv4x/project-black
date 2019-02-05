@@ -7,7 +7,8 @@ import {
 	updateIP,
 	updatedIPs,
 	resolveIPs,
-	getByIps
+	getByIps,
+	requestIPs
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
@@ -24,12 +25,12 @@ class IPsSocketioEventsSubscriber {
         this.connector.after_connected((x) => {
         	this.emitter = new IPsSocketioEventsEmitter();
 
-        	if (ip_address) {
-	        	this.emitter.requestSingleIPs(this.project_uuid, ip_address);
-        	}
-        	else {
-	        	this.emitter.requestRenewIPs(this.project_uuid, filters, 0, pageSize);
-        	}
+			// if (ip_address) {
+	        // 	this.emitter.requestSingleIPs(this.project_uuid, ip_address);
+        	// }
+        	// else {
+	        // 	this.emitter.requestRenewIPs(this.project_uuid, filters, 0, pageSize);
+        	// }
         });
 
         this.basic_events_registration();

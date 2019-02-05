@@ -60,3 +60,36 @@ export function setLoaded(message, current_project_uuid) {
 		message
 	}
 }
+
+
+export function requestIPs(project_uuid) {
+	return dispatch => {
+		dispatch(setLoadingIPs(true));
+		dispatch(fetchIPs(project_uuid)).then(() => {
+			dispatch(setLoadingIPs(false))
+		});
+	}
+}
+
+
+export const SET_LOADING_IPS = 'SET_LOADING_IPS'
+export function setLoadingIPs(isLoading) {
+	return { type: SET_LOADING_IPS, isLoading }
+}
+
+export function fetchIPs(project_uuid) {
+	return dispatch =>
+		fetch(`/project/${project_uuid}/ips`)
+			.then(
+				response => response.json(),
+				error => console.log(error)
+			)
+			.then(
+				json => dispatch(receiveIPs(json))
+			)
+}
+
+export const RECEIVE_IPS = 'RECEIVE_IPS'
+export function receiveIPs(message) {
+	return { type: RECEIVE_IPS, message }
+}
