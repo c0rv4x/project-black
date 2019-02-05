@@ -1,9 +1,11 @@
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import ScopeSetup from './ScopeSetup.jsx'
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'
-import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
+
+import { requestIPs } from '../../redux/ips/actions.js'
 
 
 class ScopeSetupUpdater extends React.Component {
@@ -19,10 +21,9 @@ class ScopeSetupUpdater extends React.Component {
 
 	componentDidMount() {
 		this.hostsEmitter = new HostsSocketioEventsEmitter();
-		this.ipsEmitter = new IPsSocketioEventsEmitter();
 
 		if (this.props.hosts.update_needed === true) {
-			this.ipsEmitter.requestRenewIPs(this.props.project_uuid);
+			this.context.store.dispatch(requestIPs(this.props.project_uuid));
 			this.hostsEmitter.requestRenewHosts(this.props.project_uuid);
 		}
 	}
@@ -38,7 +39,7 @@ class ScopeSetupUpdater extends React.Component {
 
 		if (hosts.update_needed === true) {
 			this.setLoading(true);
-			this.ipsEmitter.requestRenewIPs(this.props.project_uuid);
+			this.context.store.dispatch(requestIPs(this.props.project_uuid));
 			this.hostsEmitter.requestRenewHosts(this.props.project_uuid);
 		}
 
@@ -53,6 +54,10 @@ class ScopeSetupUpdater extends React.Component {
 			<ScopeSetup {...this.props} />
 		)
 	}
+}
+
+ScopeSetupUpdater.contextTypes = {
+    store: PropTypes.object
 }
 
 export default ScopeSetupUpdater;

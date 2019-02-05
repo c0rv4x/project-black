@@ -9,6 +9,8 @@ import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmi
 import { setLoaded } from '../../redux/ips/actions.js'
 import Loading from '../../common/loading/Loading.jsx'
 
+import { requestIPs } from '../../redux/ips/actions.js'
+
 class IPsListScopesUpdater extends React.Component {
 	constructor(props) {
 		super(props);
@@ -45,7 +47,7 @@ class IPsListScopesUpdater extends React.Component {
 	renewIps(ip_page=this.props.ips.page, filters=this.props.filters) {
 		let { ips, project_uuid } = this.props;
 
-		this.ipsEmitter.requestRenewIPs(project_uuid, filters, ip_page, ips.page_size);
+		this.context.store.dispatch(requestIPs(project_uuid, filters, ip_page, ips.page_size));
 	}
 
 	renewCreds(ips=this.props.ips.data) {

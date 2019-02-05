@@ -11,6 +11,8 @@ import { setLoaded as setLoadedHosts } from '../../redux/hosts/actions.js'
 import { emptyFiles } from '../../redux/files/actions.js'
 import Loading from '../../common/loading/Loading.jsx'
 
+import { requestIPs } from '../../redux/ips/actions.js'
+
 
 class MainAccumulatorUpdater extends React.Component {
 
@@ -137,7 +139,7 @@ class MainAccumulatorUpdater extends React.Component {
 			newFilters['files'] = ['%'];
 		}
 
-		this.ipsEmitter.requestRenewIPs(this.props.project_uuid, newFilters, page, this.pageSize);
+		this.context.store.dispatch(requestIPs(this.props.project_uuid, newFilters, page, this.pageSize));
 	}
 
 	renewFilesStatsIps() {

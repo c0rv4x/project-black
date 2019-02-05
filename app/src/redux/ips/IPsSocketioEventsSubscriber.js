@@ -28,9 +28,6 @@ class IPsSocketioEventsSubscriber {
 			// if (ip_address) {
 	        // 	this.emitter.requestSingleIPs(this.project_uuid, ip_address);
         	// }
-        	// else {
-	        // 	this.emitter.requestRenewIPs(this.project_uuid, filters, 0, pageSize);
-        	// }
         });
 
         this.basic_events_registration();

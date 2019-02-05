@@ -23,15 +23,6 @@ class IPsSocketioEventsEmitter {
 		});
 	}
 
-	requestRenewIPs(project_uuid, filters={}, ip_page=0, ip_page_size=12) {
-		this.connector.emit('ips:part:get', {
-			'project_uuid': project_uuid,
-			'ip_filters': filters,
-			'ip_page': ip_page,
-			'ip_page_size': ip_page_size,
-		});
-	}
-
 	requestSingleIPs(project_uuid, ip_address) {
 		this.connector.emit('ips:single:get', {
 			'project_uuid': project_uuid,
