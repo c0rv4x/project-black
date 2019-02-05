@@ -79,6 +79,19 @@ export function fetchSingleIP(project_uuid, ip_address) {
 }
 
 
+export const FLUSH_IPS = 'FLUSH_IPS'
+export function flushIPs(isLoading) {
+	return { type: FLUSH_IPS, isLoading }
+}
+
+export function flushAndRequestIPs(project_uuid, filters={}, ip_page=0, ip_page_size=12) {
+	return dispatch => {
+		dispatch(flushIPs());
+		dispatch(requestIPs(project_uuid, filters, ip_page, ip_page_size));
+	}
+}
+
+
 export function requestIPs(project_uuid, filters={}, ip_page=0, ip_page_size=12) {
 	const params = {
 		filters: filters,

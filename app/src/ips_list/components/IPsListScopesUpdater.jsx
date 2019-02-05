@@ -9,7 +9,7 @@ import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmi
 import { setLoaded } from '../../redux/ips/actions.js'
 import Loading from '../../common/loading/Loading.jsx'
 
-import { requestIPs } from '../../redux/ips/actions.js'
+import { flushAndRequestIPs } from '../../redux/ips/actions.js'
 
 class IPsListScopesUpdater extends React.Component {
 	constructor(props) {
@@ -19,21 +19,6 @@ class IPsListScopesUpdater extends React.Component {
 		this.renewIps = this.renewIps.bind(this);
 		this.renewCreds = this.renewCreds.bind(this);
 		this.renewFiles = this.renewFiles.bind(this);
-	}
-
-	componentDidMount() {
-		this.ipsEmitter = new IPsSocketioEventsEmitter();
-		this.credsEmitter = new CredsSocketioEventsEmitter();
-		this.filesEmitter = new FilesSocketioEventsEmitter();
-
-		if (this.props.ips.update_needed === true) {
-			this.renewIps();
-		}
-		else {
-			// console.log("Constructor renewing creds");
-			this.renewCreds();
-			this.renewFiles();
-		}
 	}
 
 	triggerSetLoaded(value) {
@@ -47,7 +32,7 @@ class IPsListScopesUpdater extends React.Component {
 	renewIps(ip_page=this.props.ips.page, filters=this.props.filters) {
 		let { ips, project_uuid } = this.props;
 
-		this.context.store.dispatch(requestIPs(project_uuid, filters, ip_page, ips.page_size));
+		this.context.store.dispatch(flushAndRequestIPs(project_uuid, filters, ip_page, ips.page_size));
 	}
 
 	renewCreds(ips=this.props.ips.data) {
@@ -65,22 +50,9 @@ class IPsListScopesUpdater extends React.Component {
 	componentDidUpdate(prevProps) {
 		let { ips, filters } = this.props;
 
-		if (ips.update_needed === true) {
-			if (ips.loaded) {
-				this.triggerSetLoaded(false);
-				this.renewIps(this.props.ips.page, filters);
-			}
-		}
-		else {
-			if ((prevProps.ips.update_needed === true) || (!_.isEqual(ips.data, prevProps.ips.data))) {
-				this.renewCreds();
-				this.renewFiles();
-			}
-
-			if (!_.isEqual(filters, prevProps.filters)) {
-				this.triggerSetLoaded(false);
-				this.renewIps(0, filters);
-			}
+		if (!_.isEqual(filters, prevProps.filters)) {
+			this.triggerSetLoaded(false);
+			this.renewIps(0, filters);
 		}
 	}
 

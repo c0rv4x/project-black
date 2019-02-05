@@ -10,7 +10,8 @@ import {
 
 	SET_LOADING_IPS,
 	RECEIVE_IPS,
-	IP_COMMENT_UPDATED
+	IP_COMMENT_UPDATED,
+	FLUSH_IPS
 } from './actions.js'
 
 
@@ -24,8 +25,7 @@ const initialState = {
 	"tasks": {
 		"active": [],
 		"finished": []
-	},
-	"update_needed": false
+	}
 }
 
 function create_ip(state = initialState, action) {
@@ -165,6 +165,14 @@ function set_loaded(state = initialState, action) {
 
 ////////
 
+function flushIPs(state = initialState, action) {
+	return {
+		...state,
+		selected_ips: initialState['selected_ips'],
+		data: initialState['data']
+	}
+}
+
 function setLoadingIPs(state = initialState, action) {
 	const isLoading = action.isLoading;
 
@@ -232,6 +240,8 @@ function ip_reduce(state = initialState, action) {
 				return receiveIPs(state, action);
 			case IP_COMMENT_UPDATED:
 				return ipCommentUpdated(state, action);
+			case FLUSH_IPS:
+				return flushIPs(state, action);
 			default:
 				return state;
 		}
