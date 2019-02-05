@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import ProjectsMain from '../presentational/ProjectsMain.jsx'
-import ProjectsSocketioEventsEmitter from '../../redux/projects/ProjectsSocketioEventsEmitter.js'
 
 import {
 	submitNewProject,
@@ -23,10 +22,6 @@ class ProjectsMainComponent extends React.Component {
 		this.changeNewProjectName = this.changeNewProjectName.bind(this);
 		this.createProject = this.createProject.bind(this);
 		this.deleteProject = this.deleteProject.bind(this);
-	}
-
-	componentDidMount() {
-		this.emitter = new ProjectsSocketioEventsEmitter();
 	}
 
 	changeNewProjectName(newName) {
