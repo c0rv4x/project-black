@@ -9,16 +9,6 @@ import { requestIPs } from '../../redux/ips/actions.js'
 
 
 class ScopeSetupUpdater extends React.Component {
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			loading: false
-		}
-
-		this.setLoading = this.setLoading.bind(this);
-	}
-
 	componentDidMount() {
 		this.hostsEmitter = new HostsSocketioEventsEmitter();
 
@@ -28,23 +18,12 @@ class ScopeSetupUpdater extends React.Component {
 		}
 	}
 
-	setLoading(value) {
-		this.setState({
-			loading: value
-		});
-	}
-
 	componentWillReceiveProps(nextProps) {
 		var { hosts } = nextProps;
 
 		if (hosts.update_needed === true) {
-			this.setLoading(true);
 			this.context.store.dispatch(requestIPs(this.props.project_uuid));
 			this.hostsEmitter.requestRenewHosts(this.props.project_uuid);
-		}
-
-		if (this.state.loading) {
-			this.setLoading(false);
 		}
 		
 	}
