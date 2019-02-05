@@ -23,14 +23,6 @@ export function deleteIP(message, current_project_uuid) {
 	}
 }
 
-export function renewIPs(message, current_project_uuid) {
-	return {
-		type: RENEW_IPS,
-		current_project_uuid: current_project_uuid,
-		message
-	}
-}
-
 export function updateIP(message, current_project_uuid) {
 	return {
 		type: UPDATE_IP,
