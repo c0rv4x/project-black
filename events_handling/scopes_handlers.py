@@ -13,18 +13,6 @@ class IPHandlers(object):
         self.register_handlers()
 
     def register_handlers(self):
-        @self.socketio.on('ips:part:get', namespace='/ips')
-        async def _cb_handle_scopes_get(sio, msg):
-            """ When received this message, send back all the ips """
-            project_uuid = int(msg.get('project_uuid', None))
-            ip_page = msg.get('ip_page', 0)
-            ip_page_size = msg.get('ip_page_size', 12)
-            ip_filters = msg.get('ip_filters')
-
-            await self.send_ips_back(
-                ip_filters, sio, project_uuid, ip_page, ip_page_size
-            )
-
         @self.socketio.on('ips:single:get', namespace='/ips')
         async def _cb_handle_scope_single_get(sio, msg):
             """ When received this message, send back a single ip address """
