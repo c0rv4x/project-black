@@ -66,16 +66,16 @@ class IPsNotifier:
     def __init__(self, socketio):
         self.socketio = socketio
 
-    async def notify_on_created_project(self):
+    async def notify_on_created_ip(self):
         await self.socketio.emit(
-            'project:created', {},
-            room=None, namespace='/projects'
+            'ip:created', {},
+            room=None, namespace='/ips'
         )
 
-    async def notify_on_deleted_project(self):
+    async def notify_on_deleted_ip(self):
         await self.socketio.emit(
-            'project:deleted', {},
-            room=None, namespace='/projects'
+            'ip:deleted', {},
+            room=None, namespace='/ips'
         )
 
     async def notify_on_updated_ip(self, project_uuid, ip_id, comment):
