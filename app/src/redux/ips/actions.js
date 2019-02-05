@@ -62,10 +62,16 @@ export function setLoaded(message, current_project_uuid) {
 }
 
 
-export function requestIPs(project_uuid) {
+export function requestIPs(project_uuid, filters={}, ip_page=0, ip_page_size=12) {
+	const params = {
+		filters: filters,
+		ip_page: ip_page,
+		ip_page_size: ip_page_size,
+	}
+
 	return dispatch => {
 		dispatch(setLoadingIPs(true));
-		dispatch(fetchIPs(project_uuid)).then(() => {
+		dispatch(fetchIPs(project_uuid, params)).then(() => {
 			dispatch(setLoadingIPs(false))
 		});
 	}
@@ -77,9 +83,19 @@ export function setLoadingIPs(isLoading) {
 	return { type: SET_LOADING_IPS, isLoading }
 }
 
-export function fetchIPs(project_uuid) {
+export function fetchIPs(project_uuid, params) {
+	const filters = encodeURIComponent(JSON.stringify(params['filters']));
+
+	const queryFields = [
+		`filters=${filters}`,
+		`ip_page=${params['ip_page']}`,
+		`ip_page_size=${params['ip_page_size']}`,
+	];
+
+	const query = queryFields.join('&');
+
 	return dispatch =>
-		fetch(`/project/${project_uuid}/ips`)
+		fetch(`/project/${project_uuid}/ips?${query}`)
 			.then(
 				response => response.json(),
 				error => console.log(error)
