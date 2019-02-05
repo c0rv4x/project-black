@@ -78,7 +78,7 @@ class IPTable extends React.Component {
 
 	render() {
 		const ips = _.map(this.state.shownData, (x) => {
-			return <IPEntryLine key={x.ip_id} 
+			return <IPEntryLine key={this.props.project_uuid + '-' + x.ip_id} 
 								ip={x}
 								project_uuid={this.props.project_uuid}
 								onCommentSubmit={(value) => this.commentSubmitted(value, x.ip_id)}
