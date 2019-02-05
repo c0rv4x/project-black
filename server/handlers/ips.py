@@ -35,8 +35,6 @@ class IPsHandlers:
             { 'ip': [ip_address] }, project_uuid
         )
 
-        print(1234)
-
         return response.json({
             'page': 0,
             'page_size': 1,
