@@ -10,6 +10,7 @@ import FilesSocketioEventsSubsriber from '../redux/files/FilesSocketioEventsSubs
 import CredsSocketioEventsSubscriber from '../redux/creds/CredsSocketioEventsSubscriber'
 
 import { fetchProjects } from '../redux/projects/actions.js'
+import { setProjectUuid } from '../redux/project_uuid/actions.js'
 
 class Host extends React.Component {
     constructor(props) {
@@ -20,6 +21,8 @@ class Host extends React.Component {
         const project_uuid = this.props.match.params.project_uuid;
         const hostname = this.props.match.params.hostname;        
         var mainStore = this.context.store;
+
+        mainStore.dispatch(setProjectUuid(project_uuid));
 
         mainStore.dispatch(fetchProjects());
         this.hostsSubscriber = new HostsSocketioEventsSubsriber(mainStore, project_uuid, hostname);

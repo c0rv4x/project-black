@@ -11,6 +11,7 @@ import CredsSocketioEventsSubscriber from '../redux/creds/CredsSocketioEventsSub
 
 import { fetchProjects } from '../redux/projects/actions.js'
 import { requestSingleIP } from '../redux/ips/actions.js'
+import { setProjectUuid } from '../redux/project_uuid/actions.js'
 
 class IP extends React.Component {
     constructor(props) {
@@ -21,6 +22,8 @@ class IP extends React.Component {
         const project_uuid = this.props.match.params.project_uuid;
         const ip_address = this.props.match.params.ip_address;
         var mainStore = this.context.store;
+
+        mainStore.dispatch(setProjectUuid(project_uuid));
 
         mainStore.dispatch(fetchProjects());
         mainStore.dispatch(requestSingleIP(project_uuid, ip_address));

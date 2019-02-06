@@ -16,6 +16,7 @@ import DictsSocketioEventsSubscriber from '../redux/dicts/DictsSocketioEventsSub
 
 import { fetchProjects } from '../redux/projects/actions.js'
 import { requestIPs } from '../redux/ips/actions.js'
+import { setProjectUuid } from '../redux/project_uuid/actions.js'
 
 
 class NavigationTabsWrapper extends React.Component {
@@ -26,6 +27,8 @@ class NavigationTabsWrapper extends React.Component {
     componentDidMount() {
         const project_uuid = this.props.match.params.project_uuid;
         var mainStore = this.context.store;
+
+        mainStore.dispatch(setProjectUuid(project_uuid));
 
         this.projectsSubscriber = new ProjectsSocketioEventsSubscriber(mainStore, project_uuid);
         mainStore.dispatch(fetchProjects());       

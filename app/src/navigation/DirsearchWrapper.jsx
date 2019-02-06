@@ -10,6 +10,7 @@ import ScansSocketioEventsSubsriber from '../redux/scans/ScansSocketioEventsSubs
 import FilesSocketioEventsSubsriber from '../redux/files/FilesSocketioEventsSubscriber'
 
 import { fetchProjects } from '../redux/projects/actions.js'
+import { setProjectUuid } from '../redux/project_uuid/actions.js'
 
 class DirsearchWrapper extends React.Component {
     constructor(props) {
@@ -19,6 +20,8 @@ class DirsearchWrapper extends React.Component {
     componentWillMount() {
         const project_uuid = this.props.match.params.project_uuid;
         var mainStore = this.context.store;
+
+        mainStore.dispatch(setProjectUuid(project_uuid));
 
         mainStore.dispatch(fetchProjects());
         this.ipsSubscriber = new IPsSocketioEventsSubsriber(mainStore, project_uuid, null, {'files': ['%']}, 4);

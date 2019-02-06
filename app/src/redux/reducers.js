@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 
 import project_reduce from './projects/reducers';
+import project_uuid_reduce from './project_uuid/reducers';
 import ip_reduce from './ips/reducers';
 import host_reduce from './hosts/reducers';
 import task_reduce from './tasks/reducers';
@@ -16,6 +17,7 @@ import dicts_reduce from './dicts/reducers';
 const all_reducers = combineReducers({
 	tasks: task_reduce,
 	projects: project_reduce,
+	project_uuid: project_uuid_reduce,
 	ips: ip_reduce,
 	hosts: host_reduce,
 	scans: scan_reduce,
