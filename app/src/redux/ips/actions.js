@@ -156,6 +156,11 @@ export function IPsCreated(message) {
 
 
 export function IPDeleted(message) {
+	return (dispatch, getState) => {
+		const { project_uuid, ips } = getState();
+
+		dispatch(requestIPs(project_uuid, ips.filters, ips.page, ips.page_size));
+	}
 }
 
 export const SET_IPS_FILTERS = 'SET_IPS_FILTERS'
