@@ -56,7 +56,6 @@ class HostsList extends React.Component {
 				<HostsTableTracked
 					project_uuid={project_uuid}
 					hosts={hosts}
-					triggerSetLoaded={this.props.triggerSetLoaded}
 					renewHosts={this.props.renewHosts}
 					requestUpdateHost={this.props.requestUpdateHost}
 					applyFilters={this.props.applyFilters} />

@@ -3,14 +3,17 @@ import _ from 'lodash';
 import { 
 	CREATE_HOST, 
 	DELETE_HOST, 
-	RENEW_HOSTS,
 	UPDATE_HOST,
 	UPDATED_IPS,
 	RESOLVE_HOSTS,
 	HOST_DATA_UPDATED,
 	GET_TASKS_BY_HOSTS,
-	SET_LOADED_HOSTS
+	SET_LOADED_HOSTS,
+
+	SET_LOADING_HOSTS,
+	RECEIVE_HOSTS
 } from './actions.js'
+import { receiveIPs } from '../ips/actions.js';
 
 
 const initialState = {
@@ -36,7 +39,6 @@ function create_host(state = initialState, action) {
 
 	return {
 		...state,
-		'update_needed': false,
 		'total_db_hosts': total_db_hosts,
 		'data': data
 	};
@@ -45,19 +47,8 @@ function create_host(state = initialState, action) {
 function delete_host(state = initialState, action) {
 	return {
 		...state,
-		'loaded': true,
-		'update_needed': true
+		'loaded': true
 	};
-}
-
-function renew_hosts(state = initialState, action) {
-	const message = action.message;
-
-	return {
-		...message.hosts,
-		'loaded': true,
-		'update_needed': false
-	}
 }
 
 function update_host(state = initialState, action) {
@@ -113,8 +104,7 @@ function host_data_updated(state = initialState, action) {
 
 	if (found) {
 		return {
-			...state,
-			'update_needed': true
+			...state
 		};
 	}
 	else {
@@ -143,8 +133,7 @@ function updated_ips(state = initialState, action) {
 
 	if (found) {
 		return {
-			...state,
-			'update_needed': true
+			...state
 		};
 	}
 	else {
@@ -155,7 +144,6 @@ function updated_ips(state = initialState, action) {
 function resolve_hosts(state = initialState, action) {
 	return {
 		...state,
-		update_needed: true,
 		resolve_finished: true
 	};
 }
@@ -217,36 +205,51 @@ function set_loaded(state = initialState, action) {
 	}
 }
 
-function host_reduce(state = initialState, action) {
-	if (!action.hasOwnProperty('message')) {
-		return state
-	}
+function setLoadingHosts(state = initialState, action) {
+	const isLoading = action.isLoading;
 
+	return {
+		...state,
+		'loaded': !isLoading
+	}
+}
+
+function receiveHosts(state = initialState, action) {
+	const hosts = action.message;
+
+	return {
+		...hosts,
+		filters: state['filters']
+	}
+}
+
+function host_reduce(state = initialState, action) {
+	if (action.message && action.message.project_uuid && (action.current_project_uuid != action.message.project_uuid)) { return state; }
 	else {
-		if (action.message && action.current_project_uuid != action.message.project_uuid) { return state; }
-		else {
-			switch (action.type) {
-				case CREATE_HOST:
-					return create_host(state, action);
-				case DELETE_HOST:
-					return delete_host(state, action);
-				case RENEW_HOSTS:
-					return renew_hosts(state, action);
-				case UPDATE_HOST:
-					return update_host(state, action);
-				case RESOLVE_HOSTS:
-					return resolve_hosts(state, action);
-				case UPDATED_IPS:
-					return updated_ips(state, action);	
-				case HOST_DATA_UPDATED:
-					return host_data_updated(state, action);
-				case GET_TASKS_BY_HOSTS:
-					return get_tasks_by_hosts(state, action);
-				case SET_LOADED_HOSTS:
-					return set_loaded(state, action);
-				default:
-					return state;
-			}
+		switch (action.type) {
+			case CREATE_HOST:
+				return create_host(state, action);
+			case DELETE_HOST:
+				return delete_host(state, action);
+			case UPDATE_HOST:
+				return update_host(state, action);
+			case RESOLVE_HOSTS:
+				return resolve_hosts(state, action);
+			case UPDATED_IPS:
+				return updated_ips(state, action);	
+			case HOST_DATA_UPDATED:
+				return host_data_updated(state, action);
+			case GET_TASKS_BY_HOSTS:
+				return get_tasks_by_hosts(state, action);
+			case SET_LOADED_HOSTS:
+				return set_loaded(state, action);
+
+			case SET_LOADING_HOSTS:
+				return setLoadingHosts(state, action);
+			case RECEIVE_HOSTS:
+				return receiveHosts(state, action);
+			default:
+				return state;
 		}
 	}
 }

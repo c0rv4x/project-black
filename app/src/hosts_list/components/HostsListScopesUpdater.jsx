@@ -51,7 +51,7 @@ class HostsListScopesUpdater extends React.Component {
 	}
 
 	renewHosts(page=this.props.hosts.page, page_size=this.props.hosts.page_size, filters=this.props.filters) {
-		this.hostsEmitter.requestRenewHosts(this.props.project_uuid, filters, page, this.props.hosts.page_size);
+		this.context.store.dispatch(requestHosts(this.props.project_uuid, filters, page, this.props.hosts.page_size));
 	}
 
 	renewCreds(hosts=this.props.hosts.data) {
@@ -69,21 +69,8 @@ class HostsListScopesUpdater extends React.Component {
 	componentDidUpdate(prevProps) {
 		var { hosts, filters } = this.props;
 
-		if (hosts.update_needed === true) {
-			if (hosts.loaded) {
-				this.triggerSetLoaded(false);
-				this.renewHosts(hosts.page, hosts.page_size, filters);
-			}
-		}
-		else {
-			if ((prevProps.hosts.update_needed === true) || (!_.isEqual(hosts.data, prevProps.hosts.data))) {
-				this.renewCreds();
-				this.renewFiles();
-			}
-			if (!_.isEqual(filters, prevProps.filters)) {
-				this.triggerSetLoaded(false);
-				this.renewHosts(0, hosts.page_size, filters);
-			}
+		if (!_.isEqual(filters, prevProps.filters)) {
+			this.renewHosts(0, hosts.page_size, filters);
 		}
 	}
 

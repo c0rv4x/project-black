@@ -12,7 +12,6 @@ import {
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
-import HostsSocketioEventsEmitter from './HostsSocketioEventsEmitter.js';
 
 
 class HostsSocketioEventsSubscriber {
@@ -21,17 +20,6 @@ class HostsSocketioEventsSubscriber {
         this.store = store;
         this.project_uuid = project_uuid;
         this.connector = new Connector('hosts');
-
-        this.connector.after_connected((x) => {
-        	this.emitter = new HostsSocketioEventsEmitter();
-
-        	if (hostname) {
-        		this.emitter.requestSingleHost(this.project_uuid, hostname)
-        	}
-        	else {
-	        	this.emitter.requestRenewHosts(this.project_uuid, filters, 0, pageSize);
-        	}
-        });
 
         this.basic_events_registration();
 	}

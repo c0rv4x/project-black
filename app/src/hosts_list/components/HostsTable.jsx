@@ -33,10 +33,6 @@ class HostsTable extends React.Component {
 	componentDidUpdate(prevProps) {
 		const { hosts } = this.props;
 
-		if ((hosts.page !== prevProps.hosts.page) || (hosts.page_size !== prevProps.hosts.page_size)) {
-			this.props.triggerSetLoaded(true);
-		}
-
 		if (hosts.selected_hosts !== prevProps.hosts.selected_hosts) {
 			this.setState({
 				shownData: hosts.data,
@@ -53,7 +49,6 @@ class HostsTable extends React.Component {
 	}
 
 	handlePageClick(page_number) {
-		this.props.triggerSetLoaded(false);
 		window.scrollTo(0, 0);
 		setTimeout(() => {
 			this.props.renewHosts(page_number - 1, this.props.hosts.page_size);
