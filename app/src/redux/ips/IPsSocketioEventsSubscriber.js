@@ -27,7 +27,7 @@ class IPsSocketioEventsSubscriber {
 	basic_events_registration() {
 		/* Register handlers on basic events */
 		// Received all ips in one message
-		this.register_socketio_handler('ip:comment_updated', IPsCreated);
+		this.register_socketio_handler('ip:comment_updated', IPCommentUpdated);
 		this.register_socketio_handler('ips:created', IPsCreated);
 		this.register_socketio_handler('ip:deleted', IPDeleted);
 
