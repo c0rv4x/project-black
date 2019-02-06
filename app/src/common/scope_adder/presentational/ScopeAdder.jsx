@@ -9,22 +9,12 @@ class ScopeAdder extends React.Component {
 
 	constructor(props) {
 		super(props);
-
-		this.state = {
-			"color": "brand",
-			"loading": false
-		};
 		
 		this.handleKeyPress = this.handleKeyPress.bind(this);
 	}
 
 	handleKeyPress(e) {
 		if (e.key === 'Enter' && e.shiftKey) {         
-			this.setState({
-				color: "status-warning",
-				loading: true,
-				forceStateColor: true
-			});
 			this.props.onNewScopeClick(this.props.newScopeInput);
 		}
 	}
@@ -60,41 +50,7 @@ class ScopeAdder extends React.Component {
 		}
 	}
 
-	componentWillReceiveProps(nextProps, nextState) {
-		if (nextProps.scopesCreated == "error") {
-			this.setState({
-				color: "status-critical",
-				loading: false
-			});
-
-			this.context.store.dispatch(
-				createScope(
-					{"status": null, "project_uuid": this.props.project_uuid},
-					this.props.project_uuid
-				)
-			);
-		}
-		else 
-		if (nextProps.scopesCreated == "success") {
-			this.setState({
-				color: "status-ok",
-				loading: false
-			});
-			this.context.store.dispatch(
-				createScope(
-					{"status": null, "project_uuid": this.props.project_uuid},
-					this.props.project_uuid
-				)
-			);
-		}
-	}
-
 	submitNewScope() {
-		this.setState({
-			color: "status-warning",
-			loading: true,
-			forceStateColor: true
-		});
 		this.props.onNewScopeClick(this.props.newScopeInput);
 	}
 
@@ -105,7 +61,7 @@ class ScopeAdder extends React.Component {
 	}
 
 	render() {
-		let { color, loading } = this.state;
+		const { scopesCreated } = this.props;
 
 		return (
 			<div>
@@ -127,17 +83,10 @@ class ScopeAdder extends React.Component {
 
 				<Button
 					label="Add to scope"
-					color={color}
-					active={loading}
-					disabled={loading}
-					onClick={() => {
-						this.setState({
-							color: "status-warning",
-							loading: true,
-							forceStateColor: true
-						});
-						this.props.onNewScopeClick(this.props.newScopeInput);
-					}}
+					color={scopesCreated ? 'brand' : 'status-warning'}
+					active={!scopesCreated}
+					disabled={!scopesCreated}
+					onClick={() => this.props.onNewScopeClick(this.props.newScopeInput)}
 				/>
 			</div>
 		)

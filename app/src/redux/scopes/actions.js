@@ -1,24 +1,27 @@
-export const CREATE_SCOPE = 'CREATE_SCOPE'
+import { notifySuccess, notifyError } from '../notifications/actions.js'
 
 
-export function createScope(message, current_project_uuid) {
+export const SET_SCOPES_CREATED = 'SET_SCOPES_CREATED'
+
+
+export function setScopesCreated(scopeCreated) {
 	return {
-		type: CREATE_SCOPE,
-		current_project_uuid: current_project_uuid,
-		message
+		type: SET_SCOPES_CREATED,
+		scopeCreated
 	}
 }
 
 
 export function requestCreateScope(project_uuid, scopes) {
 	return dispatch => {
-		fetch(`/project/${project_uuid}/scopes/`, {
+		dispatch(setScopesCreated(false));
+
+		fetch(`/project/${project_uuid}/scopes`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
-				'project_uuid': project_uuid,
 				'scopes': scopes.split('\n').map((x) => {
 					const scope = x.trim();
 	
@@ -36,10 +39,16 @@ export function requestCreateScope(project_uuid, scopes) {
 			.then(
 				json => {
 					if (json.status == 'ok') {
-						dispatch(notifySuccess("IP comment updated"))
+						dispatch(notifySuccess("Scopes added"))
+						dispatch(setScopesCreated(true));
+						// Data update will be fired when sio event is received
+						// This is done to make sure we don't update the data twice:
+						//     - on http request success
+						//     - on sio event received
 					}
 					else {
 						dispatch(notifyError("Error updating IP comment " + json.message));
+						dispatch(setScopesCreated(true));
 					}				
 				}
 			)

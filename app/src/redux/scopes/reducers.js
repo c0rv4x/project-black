@@ -1,39 +1,26 @@
 import _ from 'lodash';
 
 import { 
-	CREATE_SCOPE
+	SET_SCOPES_CREATED
 } from './actions.js'
 
 
 const initialState = {
-	"scopes_created": null
+	"scopes_created": true
 }
 
-function create_scope(state = initialState, action) {
-	const message = action.message;
-
-	let new_state = {};
-
-	new_state.scopes_created = message["status"];
-
-	return new_state;
+function setScopesCreated(state = initialState, action) {
+	return {
+		scopes_created: action.scopeCreated
+	}
 }
 
 function scope_reduce(state = initialState, action) {
-	if (!action.hasOwnProperty('message')) {
-		return state
-	}
-
-	else {
-		if (action.message && action.current_project_uuid != action.message.project_uuid) { return state; }
-		else {
-			switch (action.type) {
-				case CREATE_SCOPE:
-					return create_scope(state, action);
-				default:
-					return state;
-			}
-		}
+	switch (action.type) {
+		case SET_SCOPES_CREATED:
+			return setScopesCreated(state, action);
+		default:
+			return state;
 	}
 }
 
