@@ -62,6 +62,23 @@ class IPsHandlers:
             return response.json({ 'status': 'error', 'message': result['text'] })
 
 
+    @authorized_class_method()
+    async def cb_delete_ip(self, request, project_uuid):
+        ip_id = request.json['ip_id']
+
+        delete_result = await self.scope_manager.delete_scope(
+            scope_id=ip_id, scope_type='ip_address')
+
+        if delete_result['status'] == 'success':
+            await self.notifier.notify_on_deleted_ip(
+                project_uuid, ip_id
+            )
+
+            return response.json({ 'status': 'ok' })
+        else:
+            return response.json({ 'status': 'error', 'message': delete_result['text'] })
+
+
 class IPsNotifier:
     def __init__(self, socketio):
         self.socketio = socketio
@@ -74,7 +91,10 @@ class IPsNotifier:
 
     async def notify_on_deleted_ip(self):
         await self.socketio.emit(
-            'ip:deleted', {},
+            'ip:deleted', {
+                'ip_id': ip_id,
+                'project_uuid': project_uuid
+            },
             room=None, namespace='/ips'
         )
 
