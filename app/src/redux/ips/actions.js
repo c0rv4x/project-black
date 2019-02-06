@@ -148,9 +148,9 @@ export function requestUpdateIPComment(project_uuid, ip_id, comment) {
 
 export function IPsCreated(message) {
 	return (dispatch, getState) => {
-		const { project, ips } = getState();
+		const { project_uuid, ips } = getState();
 
-		dispatch(requestIPs(project.project_uuid, ips.filters, ips.page, ips.page_size));
+		dispatch(requestIPs(project_uuid, ips.filters, ips.page, ips.page_size));
 	}
 }
 
