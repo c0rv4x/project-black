@@ -28,11 +28,6 @@ const spinning = (
     </svg>
   );
   
-const loading = (
-    <Box  align="center" justify="center" style={{ height: '100px', opacity: 1 }}>
-        {spinning}
-    </Box>
-);
 
 class Loading extends React.Component {
   render() {

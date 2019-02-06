@@ -1,5 +1,5 @@
 import React from 'react'
-import loading from '../../common/loading/Loading.jsx'
+import Loading from '../../common/loading/Loading.jsx'
 
 import { Box, Grid } from 'grommet'
 
@@ -43,7 +43,7 @@ class ScopeSetup extends React.Component {
 								/>
 							</Grid>
 					) : (
-						loading
+						<Loading />
 					)
 				}
 			</div>
