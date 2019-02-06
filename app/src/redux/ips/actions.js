@@ -5,7 +5,6 @@ import { notifySuccess, notifyError } from '../notifications/actions.js'
 export const RENEW_IPS = 'RENEW_IPS'
 export const UPDATED_IPS = 'UPDATED_IPS'
 export const GET_TASKS_BY_IPS = 'GET_TASKS_BY_IPS'
-export const SET_LOADED = 'SET_LOADED'
 
 
 
@@ -19,13 +18,6 @@ export function updatedIPs(message, current_project_uuid) {
 
 export function getByIps(message, current_project_uuid) {
 	return { type: GET_TASKS_BY_IPS,
-		current_project_uuid: current_project_uuid,
-		message
-	}
-}
-
-export function setLoaded(message, current_project_uuid) {
-	return { type: SET_LOADED,
 		current_project_uuid: current_project_uuid,
 		message
 	}

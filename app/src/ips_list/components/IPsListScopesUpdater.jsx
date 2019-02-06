@@ -6,7 +6,6 @@ import IPsList from './IPsList.jsx'
 import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
 import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmitter.js'
 import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
-import { setLoaded } from '../../redux/ips/actions.js'
 import Loading from '../../common/loading/Loading.jsx'
 
 import { flushAndRequestIPs } from '../../redux/ips/actions.js'
@@ -15,18 +14,9 @@ class IPsListScopesUpdater extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.triggerSetLoaded = this.triggerSetLoaded.bind(this);
 		this.renewIps = this.renewIps.bind(this);
 		this.renewCreds = this.renewCreds.bind(this);
 		this.renewFiles = this.renewFiles.bind(this);
-	}
-
-	triggerSetLoaded(value) {
-		this.context.store.dispatch(setLoaded({
-			'status': 'success',
-			'value': value,
-			'project_uuid': String(this.props.project_uuid)
-		}, String(this.props.project_uuid)));
 	}
 
 	renewIps(ip_page=this.props.ips.page, filters=this.props.filters) {
@@ -48,10 +38,9 @@ class IPsListScopesUpdater extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		let { ips, filters } = this.props;
+		let { filters } = this.props;
 
 		if (!_.isEqual(filters, prevProps.filters)) {
-			this.triggerSetLoaded(false);
 			this.renewIps(0, filters);
 		}
 	}
@@ -63,7 +52,6 @@ class IPsListScopesUpdater extends React.Component {
 					componentLoading={!this.props.ips.loaded}
 				>
 					<IPsList
-						setLoaded={this.triggerSetLoaded}
 						renewIps={this.renewIps}
 						{...this.props}
 					/>

@@ -48,10 +48,6 @@ class IPTable extends React.Component {
 	componentDidUpdate(prevProps) {
 		const { ips } = this.props;
 
-		if ((ips.page !== prevProps.ips.page) || (ips.page_size !== prevProps.ips.page_size)) {
-			this.props.setLoaded(true);
-		}
-
 		if (ips.selected_ips !== prevProps.ips.selected_ips) {
 			// The amount of ips changed, that means filter was applied, send to 0 page
 			this.setState({
@@ -70,7 +66,6 @@ class IPTable extends React.Component {
 
 	handlePageClick(page_number) {
 		window.scrollTo(0, 0);
-		this.props.setLoaded(false);
 		setTimeout(() => {
 			this.props.renewIps(page_number - 1);
 		}, 100);

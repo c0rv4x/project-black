@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import ScopesSocketioEventsEmitter from '../../../redux/scopes/ScopesSocketioEventsEmitter.js'
 
@@ -55,5 +56,8 @@ class ScopeAdderTracked extends React.Component {
 
 }
 
+ScopeAdderTracked.contextTypes = {
+    store: PropTypes.object
+}
 
 export default ScopeAdderTracked;

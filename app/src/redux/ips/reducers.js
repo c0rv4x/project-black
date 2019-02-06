@@ -4,7 +4,6 @@ import {
 	RENEW_IPS,
 	UPDATED_IPS,
 	GET_TASKS_BY_IPS,
-	SET_LOADED,
 
 	SET_LOADING_IPS,
 	RECEIVE_IPS,
@@ -154,15 +153,6 @@ function get_tasks_by_ips(state = initialState, action) {
 	};
 }
 
-function set_loaded(state = initialState, action) {
-	const message = action.message;
-
-	return {
-		...state,
-		loaded: message.value
-	}
-}
-
 ////////
 
 function flushIPs(state = initialState, action) {
@@ -234,8 +224,6 @@ function ip_reduce(state = initialState, action) {
 				return updated_ips(state, action);
 			case GET_TASKS_BY_IPS:
 				return get_tasks_by_ips(state, action);
-			case SET_LOADED:
-				return set_loaded(state, action);
 
 			case SET_LOADING_IPS:
 				return setLoadingIPs(state, action);
