@@ -81,7 +81,6 @@ class HostsListScopesUpdater extends React.Component {
 					componentLoading={!this.props.hosts.loaded}
 				>
 				<HostsList
-					triggerSetLoaded={this.triggerSetLoaded}
 					renewHosts={this.renewHosts}
 					requestUpdateHost={this.requestUpdateHost}
 					{...this.props} />
