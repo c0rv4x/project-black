@@ -89,7 +89,7 @@ class IPsNotifier:
             room=None, namespace='/ips'
         )
 
-    async def notify_on_deleted_ip(self):
+    async def notify_on_deleted_ip(self, project_uuid, ip_id):
         await self.socketio.emit(
             'ip:deleted', {
                 'ip_id': ip_id,
