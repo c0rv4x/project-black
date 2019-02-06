@@ -4,6 +4,7 @@ import aiodns
 import pprint
 import asyncio
 import datetime
+from netaddr import IPNetwork
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased, joinedload, contains_eager
 
@@ -397,6 +398,11 @@ class ScopeManager(object):
             target=ip_address,
             project_uuid=project_uuid
         )
+
+    async def create_ips_network(self, network, project_uuid):
+        ips = IPNetwork(network)
+
+        return await self.create_batch_ips(list(map(str, ips)), project_uuid)
 
     async def create_batch_ips(self, ips, project_uuid):
         with self.session_spawner.get_session() as session:
