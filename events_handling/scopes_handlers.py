@@ -13,59 +13,6 @@ class IPHandlers(object):
         self.register_handlers()
 
     def register_handlers(self):
-        @self.socketio.on('ips:update', namespace='/ips')
-        async def _cb_handle_scope_update(sio, msg):
-            """ Update the scope (now only used for comment). """
-            ip_id = msg['ip_id']
-            comment = msg['comment']
-            project_uuid = msg['project_uuid']
-
-            result = await self.scope_manager.update_scope(
-                scope_id=ip_id, comment=comment, scope_type='ip_address'
-            )
-
-            target = result['target']
-
-            if result["status"] == "success":
-                await self.socketio.emit(
-                    'ips:update:back',
-                    {
-                        "status": "success",
-                        "ip_id": ip_id,
-                        "comment": comment,
-                        "project_uuid": project_uuid
-                    },
-                    namespace='/ips'
-                )
-
-                await send_notification(
-                    self.socketio,
-                    "success",
-                    "Scope updated",
-                    "Comment for {} has been updated".format(
-                        target
-                    ),
-                    project_uuid=project_uuid
-                )
-            else:
-                result['project_uuid'] = project_uuid
-
-                await self.socketio.emit(
-                    'ips:update:back',
-                    result,
-                    namespace='/ips'
-                )
-
-                await send_notification(
-                    self.socketio,
-                    "error",
-                    "Scope not updated",
-                    "Comment for {} updated with an error".format(
-                        target
-                    ),
-                    project_uuid=project_uuid
-                )
-
         @self.socketio.on('ips:get:tasks', namespace='/ips')
         async def _cb_handle_tasks_get(sio, msg):
             """ When received this message, send back all the tasks """
