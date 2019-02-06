@@ -83,9 +83,9 @@ class IPsNotifier:
     def __init__(self, socketio):
         self.socketio = socketio
 
-    async def notify_on_created_ip(self):
+    async def notify_on_created_ip(self, project_uuid):
         await self.socketio.emit(
-            'ips:created', {},
+            'ips:created', { 'project_uuid': project_uuid },
             room=None, namespace='/ips'
         )
 

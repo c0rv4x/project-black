@@ -2,11 +2,13 @@ import json
 from sanic import response
 
 from server.handlers.utils import authorized_class_method
+from server.handlers.ips import IPsNotifier
 
 
 class ScopesHandlers:
     def __init__(self, scope_manager, socketio):
         self.scope_manager = scope_manager
+        self.ips_notifier = IPsNotifier(socketio)
 
     @authorized_class_method()
     async def cd_create_scopes(self, request, project_uuid):
@@ -59,7 +61,11 @@ class ScopesHandlers:
                     results['error_message'] = create_result['text']
 
         if not results['error']:
-            # TODO: notify all sio clients on this update
+            if results['ips_added']:
+                await self.ips_notifier.notify_on_created_ip(project_uuid)
+            if results['hosts_added']:
+                # TODO: implement this when HostsNotifier is finished
+                pass
 
             return response.json({ 'status': 'ok' })
         else:
