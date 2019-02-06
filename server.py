@@ -15,6 +15,7 @@ from managers.meta_manager import MetaManager
 
 from server.handlers.dictionaries import DictHandlers
 from server.handlers.ips import IPsHandlers
+from server.handlers.hosts import HostsHandlers
 from server.handlers.projects import ProjectsHandlers
 from server.handlers.scopes import ScopesHandlers
 from server.handlers.static import StaticHandlers
@@ -37,7 +38,11 @@ if __name__ == '__main__':
     app.add_route(projects_handlers.cb_create_project, '/projects/create', methods=['POST'])
     app.add_route(projects_handlers.cb_delete_project, '/projects/delete', methods=['POST'])
     app.add_route(projects_handlers.cb_update_project, '/projects/update', methods=['POST'])
-    
+
+    # Handlers for scopes
+    scopes_handlers = ScopesHandlers(meta_manager.scope_manager, socketio)
+    app.add_route(scopes_handlers.cd_create_scopes, '/project/<project_uuid>/scopes', methods=['POST'])
+
     # Manager IPS
     ips_handlers = IPsHandlers(meta_manager.scope_manager, socketio)
     app.add_route(ips_handlers.cb_get_ips, '/project/<project_uuid>/ips')
@@ -45,9 +50,12 @@ if __name__ == '__main__':
     app.add_route(ips_handlers.cb_update_comment, '/project/<project_uuid>/ip/update/<ip_id>', methods=['POST'])
     app.add_route(ips_handlers.cb_delete_ip, '/project/<project_uuid>/ip/delete', methods=['POST'])
 
-    # Handlers for scopes
-    scopes_handlers = ScopesHandlers(meta_manager.scope_manager, socketio)
-    app.add_route(scopes_handlers.cd_create_scopes, '/project/<project_uuid>/scopes', methods=['POST'])
+    # Handlers for hosts
+    hosts_handlers = HostsHandlers(meta_manager.scope_manager, socketio)
+    app.add_route(hosts_handlers.cb_get_hosts, '/project/<project_uuid>/hosts')
+    app.add_route(hosts_handlers.cb_get_single_host, '/project/<project_uuid>/host/get/<hostname>')
+    app.add_route(hosts_handlers.cb_update_comment, '/project/<project_uuid>/host/update/<host_id>', methods=['POST'])
+    app.add_route(hosts_handlers.cb_delete_host, '/project/<project_uuid>/host/delete', methods=['POST'])
 
     # Static handlers: index.html and bundle.js
     app.add_route(StaticHandlers.cb_index_handler, '/')
