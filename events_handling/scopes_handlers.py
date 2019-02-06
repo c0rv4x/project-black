@@ -384,17 +384,6 @@ class ScopeHandlers(object):
                     },
                     namespace='/hosts'
                 )
-
-                await send_notification(
-                    self.socketio,
-                    "success",
-                    "Hosts added",
-                    "Added {} hosts".format(
-                        len(new_hosts)
-                    ),
-                    project_uuid=project_uuid
-                )
-
             if new_ips:
                 await self.socketio.emit(
                     'ips:create', {
@@ -403,16 +392,6 @@ class ScopeHandlers(object):
                         'new_ips': new_ips
                     },
                     namespace='/ips'
-                )
-
-                await send_notification(
-                    self.socketio,
-                    "success",
-                    "IPs added",
-                    "Added {} ips".format(
-                        len(new_ips)
-                    ),
-                    project_uuid=project_uuid
                 )
 
         @self.socketio.on('scopes:delete:scope_id', namespace='/scopes')
