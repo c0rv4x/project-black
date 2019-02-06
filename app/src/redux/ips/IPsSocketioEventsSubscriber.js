@@ -1,8 +1,8 @@
 import Notifications from 'react-notification-system-redux'
 
 import { 
-	createIP, 
-	deleteIP,
+	IPsCreated, 
+	IPDeleted,
 	renewIPs,
 	IPCommentUpdated,
 	updatedIPs,
@@ -27,12 +27,11 @@ class IPsSocketioEventsSubscriber {
 	basic_events_registration() {
 		/* Register handlers on basic events */
 		// Received all ips in one message
-		this.register_socketio_handler('ip:comment_updated', IPCommentUpdated);
+		this.register_socketio_handler('ip:comment_updated', IPsCreated);
+		this.register_socketio_handler('ips:created', IPsCreated);
+		this.register_socketio_handler('ip:deleted', IPDeleted);
 
-		this.register_socketio_handler('ips:create', createIP);
-		this.register_socketio_handler('ips:delete', deleteIP);
 		this.register_socketio_handler('ips:updated', updatedIPs);
-
 		/* This handler receives tasks for current ips */
 		this.register_socketio_handler('ips:get:tasks:back', getByIps);
 	}

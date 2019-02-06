@@ -1,8 +1,6 @@
 import _ from 'lodash';
 
 import { 
-	CREATE_IP, 
-	DELETE_IP, 
 	RENEW_IPS,
 	UPDATED_IPS,
 	GET_TASKS_BY_IPS,
@@ -11,7 +9,8 @@ import {
 	SET_LOADING_IPS,
 	RECEIVE_IPS,
 	IP_COMMENT_UPDATED,
-	FLUSH_IPS
+	FLUSH_IPS,
+	SET_IPS_FILTERS
 } from './actions.js'
 
 
@@ -22,6 +21,7 @@ const initialState = {
 	"total_db_ips": 0,
 	"selected_ips": 0,
 	"data": [],
+	"filters": {},
 	"tasks": {
 		"active": [],
 		"finished": []
@@ -186,7 +186,8 @@ function receiveIPs(state = initialState, action) {
 	const ips = action.message;
 
 	return {
-		...ips
+		...ips,
+		filters: state['filters']
 	}
 }
 
@@ -194,13 +195,13 @@ function receiveIPs(state = initialState, action) {
 function ipCommentUpdated(state = initialState, action) {
 	const message = action.message;
 
-	var { ip_id, ip_type, comment } = message;
+	var { ip_id, comment } = message;
 
-	for (var each_ip of state.data) {
+	for (let each_ip of state.data) {
 		if (each_ip.ip_id == ip_id) {
-			var new_state = JSON.parse(JSON.stringify(state));
+			let new_state = JSON.parse(JSON.stringify(state));
 
-			for (var each_new_ip of new_state.data) {
+			for (let each_new_ip of new_state.data) {
 				if (each_new_ip.ip_id == ip_id) {
 					each_new_ip.comment = comment;
 					break;
@@ -212,7 +213,13 @@ function ipCommentUpdated(state = initialState, action) {
 	}
 
 	return state;
+}
 
+function setIPsFilters(state = initialState, action) {
+	return {
+		...state,
+		filters: action.filters
+	}
 }
 
 
@@ -220,10 +227,6 @@ function ip_reduce(state = initialState, action) {
 	if (action.message && action.message.project_uuid && (action.current_project_uuid != action.message.project_uuid)) { return state; }
 	else {
 		switch (action.type) {
-			case CREATE_IP:
-				return create_ip(state, action);
-			case DELETE_IP:
-				return delete_ip(state, action);
 			case RENEW_IPS:
 				return renew_ips(state, action);
 
@@ -242,6 +245,8 @@ function ip_reduce(state = initialState, action) {
 				return ipCommentUpdated(state, action);
 			case FLUSH_IPS:
 				return flushIPs(state, action);
+			case SET_IPS_FILTERS:
+				return setIPsFilters(state, action);
 			default:
 				return state;
 		}

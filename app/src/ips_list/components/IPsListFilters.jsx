@@ -1,6 +1,9 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import IPsListScopesUpdater from './IPsListScopesUpdater.jsx'
+
+import { setIPsFilters } from '../../redux/ips/actions'
 
 
 class IPsListFilters extends React.Component {
@@ -8,17 +11,11 @@ class IPsListFilters extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			filters: {}
-		};
-
 		this.applyFilters = this.applyFilters.bind(this);	
 	}
 
 	applyFilters(filters) {
-		this.setState({
-			filters: filters
-		})
+		this.context.store.dispatch(setIPsFilters(filters));
 	}
 
 	render() {
@@ -29,12 +26,15 @@ class IPsListFilters extends React.Component {
 				 project_uuid={this.props.project_uuid}
 				 tasks={this.props.tasks}
 				 dicts={this.props.dicts}
-				 filters={this.state.filters}
+				 filters={this.props.ips.filters}
 				 applyFilters={this.applyFilters} />
 		)
 	}
 
 }
 
+IPsListFilters.contextTypes = {
+    store: PropTypes.object
+}
 
 export default IPsListFilters;
