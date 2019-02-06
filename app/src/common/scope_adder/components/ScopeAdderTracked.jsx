@@ -1,8 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import ScopesSocketioEventsEmitter from '../../../redux/scopes/ScopesSocketioEventsEmitter.js'
-
 import ScopeAdder from '../presentational/ScopeAdder.jsx'
 import { requestCreateScope } from '../../../redux/scopes/actions.js'
 
@@ -18,10 +16,6 @@ class ScopeAdderTracked extends React.Component {
 
 		this.handleNewScopeChange = this.handleNewScopeChange.bind(this);
 		this.submitNewScope = this.submitNewScope.bind(this);
-	}
-
-	componentDidMount() {
-		this.scopesEmitter = new ScopesSocketioEventsEmitter();		
 	}
 
 	handleNewScopeChange(text) {

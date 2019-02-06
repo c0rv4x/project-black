@@ -31,8 +31,8 @@ class IPsSocketioEventsSubscriber {
 		this.register_socketio_handler('ips:created', IPsCreated);
 		this.register_socketio_handler('ip:deleted', IPDeleted);
 
+		// Old handlers which might still be useful
 		this.register_socketio_handler('ips:updated', updatedIPs);
-		/* This handler receives tasks for current ips */
 		this.register_socketio_handler('ips:get:tasks:back', getByIps);
 	}
 

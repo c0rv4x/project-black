@@ -8,19 +8,8 @@ import ProjectComment from '../../common/project_comment/ProjectComment.jsx'
 import Stats from '../presentational/Stats.jsx'
 
 class ScopeSetup extends React.Component {
-
-	constructor(props) {
-		super(props);
-
-		this.deleteScope = this.deleteScope.bind(this);
-	}
-
 	shouldComponentUpdate(nextProps) {
 		return !_.isEqual(nextProps, this.props);
-	}
-
-	deleteScope(scope_id) {
-		this.scopesEmitter.requestDeleteScope(scope_id, this.props.project_uuid);
 	}
 
 	render() {

@@ -137,11 +137,32 @@ export function requestUpdateIPComment(project_uuid, ip_id, comment) {
 		)
 }
 
+export function requestDelteIP(project_uuid, ip_id) {
+	return dispatch =>
+		fetch(`/project/${project_uuid}/ip/delete`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				ip_id: ip_id
+			})
+		})
+			.then(
+				response => response.json(),
+				error => console.log(error)
+			)
+			.then(
+				json => dispatch(renewIPsCurrentPage())
+			)
+}
 
-export function IPsCreated(message) {
+
+export function renewIPsCurrentPage() {
 	return (dispatch, getState) => {
 		const { project_uuid, ips } = getState();
 
+		dispatch(flushIPs());
 		dispatch(requestIPs(project_uuid, ips.filters, ips.page, ips.page_size));
 	}
 }
