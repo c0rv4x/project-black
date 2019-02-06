@@ -168,6 +168,17 @@ export function renewIPsCurrentPage() {
 }
 
 
+export function IPsCreated(message) {
+	return (dispatch, getState) => {
+		const { project_uuid } = getState();
+
+		if (project_uuid == message.project_uuid) {
+			dispatch(renewIPsCurrentPage());
+		}
+	}
+}
+
+
 export function IPDeleted(message) {
 	return (dispatch, getState) => {
 		const { project_uuid, ips } = getState();
