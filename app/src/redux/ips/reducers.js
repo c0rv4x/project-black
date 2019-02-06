@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
 import { 
-	RENEW_IPS,
 	UPDATED_IPS,
 	GET_TASKS_BY_IPS,
 
@@ -51,16 +50,6 @@ function delete_ip(state = initialState, action) {
 		'loaded': true,
 		'update_needed': true
 	};
-}
-
-function renew_ips(state = initialState, action) {
-	const message = action.message;
-
-	return {
-		...message.ips,
-		'loaded': true,
-		'update_needed': false
-	}
 }
 
 
@@ -217,9 +206,6 @@ function ip_reduce(state = initialState, action) {
 	if (action.message && action.message.project_uuid && (action.current_project_uuid != action.message.project_uuid)) { return state; }
 	else {
 		switch (action.type) {
-			case RENEW_IPS:
-				return renew_ips(state, action);
-
 			case UPDATED_IPS:
 				return updated_ips(state, action);
 			case GET_TASKS_BY_IPS:
