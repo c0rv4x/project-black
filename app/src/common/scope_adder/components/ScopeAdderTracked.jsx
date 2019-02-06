@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import ScopesSocketioEventsEmitter from '../../../redux/scopes/ScopesSocketioEventsEmitter.js'
 
 import ScopeAdder from '../presentational/ScopeAdder.jsx'
+import { requestCreateScope } from '../../../redux/scopes/actions.js'
 
 
 class ScopeAdderTracked extends React.Component {
@@ -28,7 +29,7 @@ class ScopeAdderTracked extends React.Component {
 	}
 
 	submitNewScope(scopes) {
-		this.scopesEmitter.requestCreateScope(scopes, this.props.project.project_uuid);
+		this.context.store.dispatch(requestCreateScope(this.props.project.project_uuid, scopes));
 	}
 
 	render() {
