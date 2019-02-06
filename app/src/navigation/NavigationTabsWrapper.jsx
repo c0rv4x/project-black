@@ -10,7 +10,6 @@ import TasksSocketioEventsSubsriber from '../redux/tasks/TasksSocketioEventsSubs
 import ScansSocketioEventsSubsriber from '../redux/scans/ScansSocketioEventsSubscriber'
 import FilesSocketioEventsSubsriber from '../redux/files/FilesSocketioEventsSubscriber'
 import NotificationsSocketioEventsSubscriber from '../redux/notifications/NotificationsSocketioEventsSubscriber'
-import ScopesSocketioEventsSubscriber from '../redux/scopes/ScopesSocketioEventsSubscriber'
 import CredsSocketioEventsSubscriber from '../redux/creds/CredsSocketioEventsSubscriber'
 import DictsSocketioEventsSubscriber from '../redux/dicts/DictsSocketioEventsSubscriber'
 
@@ -41,7 +40,6 @@ class NavigationTabsWrapper extends React.Component {
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
         this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);   
         this.notificationsSubscriber = new NotificationsSocketioEventsSubscriber(mainStore, project_uuid);
-        this.scopesSubscriber = new ScopesSocketioEventsSubscriber(mainStore, project_uuid);
         this.credsSubscriber = new CredsSocketioEventsSubscriber(mainStore, project_uuid);
         this.dictsSubscriber = new DictsSocketioEventsSubscriber(mainStore, project_uuid);
     }
