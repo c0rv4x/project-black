@@ -16,6 +16,7 @@ from managers.meta_manager import MetaManager
 from server.handlers.dictionaries import DictHandlers
 from server.handlers.ips import IPsHandlers
 from server.handlers.projects import ProjectsHandlers
+from server.handlers.scopes import ScopesHandlers
 from server.handlers.static import StaticHandlers
 from server.handlers.utils import authorized
 
@@ -42,6 +43,10 @@ if __name__ == '__main__':
     app.add_route(ips_handlers.cb_get_ips, '/project/<project_uuid>/ips')
     app.add_route(ips_handlers.cb_get_single_ip, '/project/<project_uuid>/ip/get/<ip_address>')
     app.add_route(ips_handlers.cb_update_comment, '/project/<project_uuid>/ip/update/<ip_id>', methods=['POST'])
+
+    # Handlers for scopes
+    scopes_handlers = ScopesHandlers(meta_manager.scope_manager, socketio)
+    app.add_route(scopes_handlers.cd_create_scopes, '/project/<project_uuid>/scopes', methods=['POST'])
 
     # Static handlers: index.html and bundle.js
     app.add_route(StaticHandlers.cb_index_handler, '/')
