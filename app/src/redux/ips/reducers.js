@@ -26,32 +26,6 @@ const initialState = {
 	}
 }
 
-function create_ip(state = initialState, action) {
-	const message = action.message;
-
-	let new_state = JSON.parse(JSON.stringify(state));
-	let new_ips = message.new_ips;
-
-	new_state.data = new_ips.concat(new_state.data).slice(0, new_state.page_size);
-	new_state.total_db_ips += new_ips.length;
-
-	if (new_state.page_size > new_state.selected_ips) {
-		new_state.selected_ips += 1;
-	}
-
-	new_state.update_needed = false;	
-
-	return new_state;
-}
-
-function delete_ip(state = initialState, action) {
-	return {
-		...state,
-		'loaded': true,
-		'update_needed': true
-	};
-}
-
 
 function updated_ips(state = initialState, action) {
 	const message = action.message;
@@ -94,55 +68,7 @@ function updated_ips(state = initialState, action) {
 	}
 }
 
-function get_tasks_by_ips(state = initialState, action) {
-	const message = action.message;
-
-	const active_tasks = message['active'];
-
-	var parsed_active_tasks = _.map(active_tasks, (x) => {
-		return {
-			"task_id": x["task_id"],
-			"task_type": x["task_type"],
-			"params": x["params"],
-			"target": x["target"],
-			"status": x["status"],
-			"progress": x["progress"],
-			"project_uuid": x["project_uuid"],
-			"text": x["text"],
-			"stdout": x["stdout"],
-			"stderr": x["stderr"],
-			"date_added": x["date_added"]
-		}
-	});
-
-	const finished_tasks = message['finished'];
-
-	var parsed_finished_tasks = _.map(finished_tasks, (x) => {
-		return {
-			"task_id": x["task_id"],
-			"task_type": x["task_type"],
-			"params": x["params"],
-			"target": x["target"],
-			"status": x["status"],
-			"progress": x["progress"],
-			"project_uuid": x["project_uuid"],
-			"text": x["text"],
-			"stdout": x["stdout"],
-			"stderr": x["stderr"],
-			"date_added": x["date_added"]
-		}
-	});
-
-	return {
-		...state,
-		"tasks": {
-			"active": parsed_active_tasks,
-			"finished": parsed_finished_tasks
-		}
-	};
-}
-
-////////
+///
 
 function flushIPs(state = initialState, action) {
 	return {
