@@ -2,7 +2,6 @@ import _ from 'lodash';
 
 import { 
 	UPDATED_IPS,
-	GET_TASKS_BY_IPS,
 
 	SET_LOADING_IPS,
 	RECEIVE_IPS,
