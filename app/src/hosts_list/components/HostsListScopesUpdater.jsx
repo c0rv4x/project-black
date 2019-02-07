@@ -3,10 +3,6 @@ import React from 'react'
 import PropTypes from 'prop-types';
 
 import HostsList from './HostsList.jsx'
-import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'
-import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmitter.js'
-import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
-import { setLoaded } from '../../redux/hosts/actions.js'
 import Loading from '../../common/loading/Loading.jsx'
 
 import { flushAndRequestHosts } from '../../redux/hosts/actions.js'
@@ -31,11 +27,9 @@ class HostsListScopesUpdater extends React.Component {
 	}
 
 	renewCreds(hosts=this.props.hosts.data) {
-		this.credsEmitter.renewCreds(this.props.project_uuid, hosts.map((host) => {return host.hostname}));
 	}
 
 	renewFiles(hosts=this.props.hosts.data) {
-		this.filesEmitter.requestStatsHost(this.props.project_uuid, hosts.map((host) => {return host.host_id}));
 	}
 
 	componentDidUpdate(prevProps) {
