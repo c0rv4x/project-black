@@ -28,7 +28,6 @@ class HostsTableTracked extends React.Component {
 				deleteScope={this.deleteScope}
 				applyFilters={this.props.applyFilters}
 				renewHosts={this.props.renewHosts}
-				requestUpdateHost={this.props.requestUpdateHost}
 			/>
 		)
 	}

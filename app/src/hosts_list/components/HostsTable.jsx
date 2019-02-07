@@ -5,6 +5,8 @@ import Search from '../../common/search/Search.jsx'
 import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
 import HostsEntryLine from '../presentational/HostsEntryLine.jsx'
 
+import { requestUpdateHostComment } from '../../redux/hosts/action.js'
+
 import { Box, Heading } from 'grommet'
 
 class HostsTable extends React.Component {
@@ -54,7 +56,7 @@ class HostsTable extends React.Component {
 	}
 
 	commentSubmitted(comment, _id) {
-		this.props.requestUpdateHost(comment, _id);
+		this.context.store.dispatch(requestUpdateHostComment(this.props.project_uuid, _id, comment));
 	}
 
 	render() {

@@ -57,7 +57,6 @@ class HostsList extends React.Component {
 					project_uuid={project_uuid}
 					hosts={hosts}
 					renewHosts={this.props.renewHosts}
-					requestUpdateHost={this.props.requestUpdateHost}
 					applyFilters={this.props.applyFilters} />
 			</div>
 		)

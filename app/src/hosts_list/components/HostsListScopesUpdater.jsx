@@ -38,10 +38,6 @@ class HostsListScopesUpdater extends React.Component {
 		this.filesEmitter.requestStatsHost(this.props.project_uuid, hosts.map((host) => {return host.host_id}));
 	}
 
-	requestUpdateHost(comment, _id) {
-		this.hostsEmitter.requestUpdateHost(comment, _id, this.props.project_uuid, "host");
-	}
-
 	componentDidUpdate(prevProps) {
 		var { hosts, filters } = this.props;
 
@@ -58,7 +54,6 @@ class HostsListScopesUpdater extends React.Component {
 				>
 				<HostsList
 					renewHosts={this.renewHosts}
-					requestUpdateHost={this.requestUpdateHost}
 					{...this.props} />
 				</Loading>
 			</div>
