@@ -1,7 +1,10 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import PortsTabs from '../presentational/PortsTabs.jsx'
+
+import { requestUpdateHostComment } from '../../redux/hosts/actions.js'
 
 import { Heading } from 'grommet';
 
@@ -39,7 +42,7 @@ class HostVerbose extends React.Component {
 	}
 
 	commentSubmitted(comment, _id) {
-		this.emitter.requestUpdateHost(comment, _id, this.props.project_uuid, "host");
+		this.context.store.dispatch(requestUpdateHostComment(this.props.project_uuid, _id, comment));
 	}
 
 	getFilesHosts(host, port_number, limit=3, offset=0) {
@@ -76,6 +79,10 @@ class HostVerbose extends React.Component {
 			</div>				  
 		)
 	}
+}
+
+HostVerbose.contextTypes = {
+    store: PropTypes.object
 }
 
 export default HostVerbose;
