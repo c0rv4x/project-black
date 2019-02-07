@@ -3,8 +3,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
-import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
-import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmitter.js'
 import IPEntryLine from '../presentational/scope/IPEntryLine.jsx'
 import Search from '../../common/search/Search.jsx'
 
@@ -22,7 +20,6 @@ class IPTable extends React.Component {
 
 		if (ips) {
 			this.state = {
-				shownData: ips.data,
 				offsetPage: ips.page,
 				pageCount: Math.ceil(ips.selected_ips / ips.page_size)
 			}
@@ -30,11 +27,6 @@ class IPTable extends React.Component {
 
 		this.commentSubmitted = this.commentSubmitted.bind(this);
 		this.handlePageClick = this.handlePageClick.bind(this);
-	}
-
-	componentDidMount() {
-		this.ipsEmitter = new IPsSocketioEventsEmitter();
-		this.credsEmitter = new CredsSocketioEventsEmitter();
 	}
 
 	commentSubmitted(comment, _id) {
@@ -51,14 +43,12 @@ class IPTable extends React.Component {
 		if (ips.selected_ips !== prevProps.ips.selected_ips) {
 			// The amount of ips changed, that means filter was applied, send to 0 page
 			this.setState({
-				shownData: ips.data,
 				offsetPage: 0,
 				pageCount: Math.ceil(ips.selected_ips / ips.page_size)
 			});
 		}
 		else {
 			this.setState({
-				shownData: ips.data,
 				pageCount: Math.ceil(ips.selected_ips / ips.page_size)
 			});
 		}
@@ -72,31 +62,38 @@ class IPTable extends React.Component {
 	}
 
 	render() {
-		const ips = _.map(this.state.shownData, (x) => {
-			return <IPEntryLine key={this.props.project_uuid + '-' + x.ip_id} 
-								ip={x}
-								project_uuid={this.props.project_uuid}
-								onCommentSubmit={(value) => this.commentSubmitted(value, x.ip_id)}
-								deleteIP={() => this.props.deleteScope(x.ip_id)} />
+		const { ips, project_uuid, applyFilters, deleteScope } = this.props;
+		const ipsList = ips.data;
+
+		const ipsLines = _.map(ipsList, (x) => {
+			return (
+				<IPEntryLine
+					key={project_uuid + '-' + x.ip_id} 
+					ip={x}
+					project_uuid={project_uuid}
+					onCommentSubmit={(value) => this.commentSubmitted(value, x.ip_id)}
+					deleteIP={() => deleteScope(x.ip_id)}
+				/>
+			);
 		});
 
 		return (
 			<div>
-				<Search applyFilters={this.props.applyFilters} />
+				<Search applyFilters={applyFilters} />
 				<br />
-				{this.props.ips.data.length === 0 && this.props.ips.loaded && 
+				{ipsList.length === 0 && ips.loaded && 
 					<Heading level="2">No data found.</Heading>
 				}
-				{(this.props.ips.data.length !== 0 || !this.props.ips.loaded) &&
+				{(ipsList.length !== 0 || !ips.loaded) &&
 					<div>
 						<Box
 							gap='small'
 						>
-							{ips}
+							{ipsLines}
 						</Box>
 						<br />
 						<ReactPaginate
-							pageNumber={this.props.ips.page}
+							pageNumber={ips.page}
 							pageCount={this.state.pageCount}
 							clickHandler={this.handlePageClick}
 						/>
