@@ -79,6 +79,25 @@ class HostsHandlers:
             return response.json({ 'status': 'error', 'message': delete_result['text'] })
 
 
+    @authorized_class_method()
+    async def cb_get_tasks_for_hosts(self, request, project_uuid):
+        hosts = request.json['hosts']
+
+        get_result = await self.scope_manager.get_tasks_filtered(
+            project_uuid,
+            ips=None,
+            hosts=hosts
+        )
+
+        if get_result['status'] == 'success':
+            return response.json({
+                'active': get_result['active'],
+                'finished': get_result['finished']  
+            })
+        else:
+            return response.json({ 'status': 'error', 'message': get_result.text })
+
+
 class HostsNotifier:
     def __init__(self, socketio):
         self.socketio = socketio

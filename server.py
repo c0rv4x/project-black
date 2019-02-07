@@ -57,6 +57,7 @@ if __name__ == '__main__':
     app.add_route(hosts_handlers.cb_get_single_host, '/project/<project_uuid>/host/get/<hostname>')
     app.add_route(hosts_handlers.cb_update_comment, '/project/<project_uuid>/host/update/<host_id>', methods=['POST'])
     app.add_route(hosts_handlers.cb_delete_host, '/project/<project_uuid>/host/delete', methods=['POST'])
+    app.add_route(hosts_handlers.cb_get_tasks_for_hosts, '/project/<project_uuid>/hosts/tasks', methods=['POST'])
 
     # Static handlers: index.html and bundle.js
     app.add_route(StaticHandlers.cb_index_handler, '/')
