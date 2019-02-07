@@ -3,7 +3,6 @@ import Connector from '../SocketConnector.jsx';
 
 
 class HostsSocketioEventsEmitter {
-	/* Singleton class for managing events subscrhosttion for the hosts */
 	constructor() {
         this.connector = new Connector('hosts');
 	}

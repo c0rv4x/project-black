@@ -1,9 +1,6 @@
-import Notifications from 'react-notification-system-redux'
-
 import { 
 	resolveHosts,
 	updatedIPs,
-	getTasksByHosts,
 
 	hostCommentUpdated,
 	hostsCreated,
