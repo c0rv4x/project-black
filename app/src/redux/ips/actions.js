@@ -76,6 +76,7 @@ export function requestIPs(project_uuid, filters={}, ip_page=0, ip_page_size=12)
 	return dispatch => {
 		dispatch(setLoadingIPs(true));
 		dispatch(fetchIPs(project_uuid, params)).then(() => {
+			dispatch(fetchTasksForShownIPs());
 			dispatch(setLoadingIPs(false))
 		});
 	}
@@ -207,3 +208,36 @@ export function IPCommentUpdated(message, current_project_uuid) {
 	}
 }
 
+
+export function fetchTasksForShownIPs() {
+	return (dispatch, getState) => {
+		const { ips, project_uuid } = getState();
+		const ip_addresses = ips.data.map((ip) => ip.ip_address);
+
+		fetch(`/project/${project_uuid}/ips/tasks`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				ips: ip_addresses
+			})
+		})
+			.then(
+				response => response.json(),
+				error => console.log(error)
+			)
+			.then(
+				json => dispatch(receiveTasksForIPs(json))
+			)
+	}
+}
+
+export const RECEIVE_TASKS_FOR_IPS = 'RECEIVE_TASKS_FOR_IPS'
+
+export function receiveTasksForIPs(tasks) {
+	return {
+		type: RECEIVE_TASKS_FOR_IPS,
+		tasks
+	}
+}

@@ -3,12 +3,8 @@ import Notifications from 'react-notification-system-redux'
 import { 
 	IPsCreated, 
 	IPDeleted,
-	renewIPs,
 	IPCommentUpdated,
 	updatedIPs,
-	resolveIPs,
-	getByIps,
-	requestIPs
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
@@ -33,7 +29,6 @@ class IPsSocketioEventsSubscriber {
 
 		// Old handlers which might still be useful
 		this.register_socketio_handler('ips:updated', updatedIPs);
-		this.register_socketio_handler('ips:get:tasks:back', getByIps);
 	}
 
 	register_socketio_handler(eventName, dispatchCallback) {

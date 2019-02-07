@@ -4,40 +4,11 @@ import React from 'react'
 import TitleButtonsWithHandlers from './TitleButtonsWithHandlers.jsx'
 import IPTableTracked from './IPTableTracked.jsx'
 import Tasks from '../../common/tasks/Tasks.jsx'
-import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
 
 
 class IPsList extends React.Component {
-	componentDidMount() {
-		this.emitter = new IPsSocketioEventsEmitter();
-
-  		if (this.props.ips)
-  		{
-  			this.emitter.requestTasksByIps(this.props.ips.data.map((ip) => {
-  				return ip.ip_address;
-  			}), this.props.project_uuid);
-  		}
-	}
-
   	shouldComponentUpdate(nextProps) {
   		return !_.isEqual(nextProps, this.props);
-  	}
-
-  	componentDidUpdate(prevProps) {
-  		let prevIps = prevProps.ips;
-  		let { ips, tasks, project_uuid } = this.props;
-
-  		if (
-  			(!prevIps) ||
-  			(prevIps.page != ips.page) ||
-  			(prevIps.page_size != ips.page_size) ||
-  			(JSON.stringify(prevProps.tasks) != JSON.stringify(tasks))
-		   )
-  		{
-  			this.emitter.requestTasksByIps(ips.data.map((ip) => {
-  				return ip.ip_address;
-  			}), project_uuid);
-  		}
   	}
 
 	render() {

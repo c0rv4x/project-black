@@ -8,7 +8,8 @@ import {
 	RECEIVE_IPS,
 	IP_COMMENT_UPDATED,
 	FLUSH_IPS,
-	SET_IPS_FILTERS
+	SET_IPS_FILTERS,
+	RECEIVE_TASKS_FOR_IPS
 } from './actions.js'
 
 
@@ -201,6 +202,53 @@ function setIPsFilters(state = initialState, action) {
 	}
 }
 
+function receiveTasksForIPs(state = initialState, action) {
+	const tasks = action.tasks;
+	const active_tasks = tasks['active'];
+
+	var parsed_active_tasks = _.map(active_tasks, (x) => {
+		return {
+			"task_id": x["task_id"],
+			"task_type": x["task_type"],
+			"params": x["params"],
+			"target": x["target"],
+			"status": x["status"],
+			"progress": x["progress"],
+			"project_uuid": x["project_uuid"],
+			"text": x["text"],
+			"stdout": x["stdout"],
+			"stderr": x["stderr"],
+			"date_added": x["date_added"]
+		}
+	});
+
+	const finished_tasks = tasks['finished'];
+
+	var parsed_finished_tasks = _.map(finished_tasks, (x) => {
+		return {
+			"task_id": x["task_id"],
+			"task_type": x["task_type"],
+			"params": x["params"],
+			"target": x["target"],
+			"status": x["status"],
+			"progress": x["progress"],
+			"project_uuid": x["project_uuid"],
+			"text": x["text"],
+			"stdout": x["stdout"],
+			"stderr": x["stderr"],
+			"date_added": x["date_added"]
+		}
+	});
+
+	return {
+		...state,
+		"tasks": {
+			"active": parsed_active_tasks,
+			"finished": parsed_finished_tasks
+		}
+	};
+}
+
 
 function ip_reduce(state = initialState, action) {
 	if (action.message && action.message.project_uuid && (action.current_project_uuid != action.message.project_uuid)) { return state; }
@@ -208,8 +256,6 @@ function ip_reduce(state = initialState, action) {
 		switch (action.type) {
 			case UPDATED_IPS:
 				return updated_ips(state, action);
-			case GET_TASKS_BY_IPS:
-				return get_tasks_by_ips(state, action);
 
 			case SET_LOADING_IPS:
 				return setLoadingIPs(state, action);
@@ -221,6 +267,8 @@ function ip_reduce(state = initialState, action) {
 				return flushIPs(state, action);
 			case SET_IPS_FILTERS:
 				return setIPsFilters(state, action);
+			case RECEIVE_TASKS_FOR_IPS:
+				return receiveTasksForIPs(state, action);
 			default:
 				return state;
 		}

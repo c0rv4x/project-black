@@ -2,7 +2,6 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types';
 
-import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'
 import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
 import TablesAccumulator from './TablesAccumulator.jsx'
@@ -44,7 +43,6 @@ class MainAccumulatorUpdater extends React.Component {
 	}
 
 	componentDidMount() {
-		this.ipsEmitter = new IPsSocketioEventsEmitter();
 		this.hostsEmitter = new HostsSocketioEventsEmitter();
 		this.filesEmitter = new FilesSocketioEventsEmitter();
 	}
