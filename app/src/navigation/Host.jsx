@@ -11,6 +11,7 @@ import CredsSocketioEventsSubscriber from '../redux/creds/CredsSocketioEventsSub
 
 import { fetchProjects } from '../redux/projects/actions.js'
 import { setProjectUuid } from '../redux/project_uuid/actions.js'
+import { requestSingleHost } from '../redux/hosts/actions.js'
 
 class Host extends React.Component {
     constructor(props) {
@@ -25,6 +26,7 @@ class Host extends React.Component {
         mainStore.dispatch(setProjectUuid(project_uuid));
 
         mainStore.dispatch(fetchProjects());
+        mainStore.dispatch(requestSingleHost(project_uuid, hostname));
         this.hostsSubscriber = new HostsSocketioEventsSubsriber(mainStore, project_uuid, hostname);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
