@@ -235,15 +235,15 @@ export function receiveTasksForHosts(tasks) {
 
 export function hostsDataUpdated(message, current_project_uuid) {
 	return (dispatch, getState) => {
-		const { project_uuid } = getState();
+		const { project_uuid, hosts } = getState();
 
 		if (current_project_uuid == project_uuid) {
 			let found = false;
 
 			if (message.updated_hosts) {
 				for (let each_host of message.updated_hosts) {
-					for (let state_host of state.data) {
-						if (state_host.hostname == each_host) {
+					for (let stored_host of hosts.data) {
+						if (stored_host.hostname == each_host) {
 							found = true;
 							break;
 						}
