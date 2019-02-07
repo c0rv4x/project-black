@@ -3,9 +3,6 @@ import React from 'react'
 import PropTypes from 'prop-types';
 
 import IPsList from './IPsList.jsx'
-import IPsSocketioEventsEmitter from '../../redux/ips/IPsSocketioEventsEmitter.js'
-import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmitter.js'
-import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
 import Loading from '../../common/loading/Loading.jsx'
 
 import { flushAndRequestIPs } from '../../redux/ips/actions.js'
@@ -26,11 +23,9 @@ class IPsListScopesUpdater extends React.Component {
 	}
 
 	renewCreds(ips=this.props.ips.data) {
-		this.credsEmitter.renewCreds(this.props.project_uuid, ips.map((ip) => {return ip.ip_address}));
 	}
 
 	renewFiles(ips=this.props.ips.data) {
-		this.filesEmitter.requestStatsIPs(this.props.project_uuid, ips.map((ip) => {return ip.ip_id}));
 	}
 
 	shouldComponentUpdate(nextProps) {
