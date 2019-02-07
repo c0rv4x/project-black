@@ -59,7 +59,7 @@ class HostsTable extends React.Component {
 	render() {
 		const { hosts, project_uuid, deleteScope, applyFilters } = this.props;
 
-		const hostsList = _.map(hosts.data, (x) => {
+		const hostsList = hosts.data.map((x) => {
 			return (
 				<HostsEntryLine
 					key={"hosttable-" + x.host_id} 
