@@ -56,14 +56,6 @@ class HostHandlers(object):
         self.register_handlers()
 
     def register_handlers(self):
-        @self.socketio.on('hosts:single:get', namespace='/hosts')
-        async def _cb_handle_single_scope_get(sio, msg):
-            """ When received this message, send back all the scopes """
-            project_uuid = int(msg.get('project_uuid', None))
-            hostname = msg.get('hostname')
-
-            await self.send_single_host_back(hostname, project_uuid, sio)
-
         @self.socketio.on('hosts:resolve', namespace='/hosts')
         async def _cb_handle_scope_resolve(sio, msg):
             """ On receive, resolve the needed scope """
@@ -173,39 +165,7 @@ class HostHandlers(object):
                 'hosts:get:tasks:back',
                 get_result,
                 namespace='/hosts'
-            )            
-
-    async def send_single_host_back(
-        self, host, project_uuid=None, sio=None
-    ):
-        """ Applies a filter to get only one host from the db """
-        await self.send_hosts_back({'host': [host]}, sio, project_uuid)
-
-    async def send_hosts_back(
-        self, filters, sio=None, project_uuid=None,
-        host_page=0, host_page_size=12
-    ):
-        """ Collects all relative hosts and ips from
-        the manager and sends them back """
-
-        hosts = self.scope_manager.get_hosts_with_ports(
-            filters, project_uuid, host_page, host_page_size)
-
-        await self.socketio.emit(
-            'hosts:part:set', {
-                'status': 'success',
-                'project_uuid': project_uuid,
-                'hosts': {
-                    'page': host_page,
-                    'page_size': host_page_size,
-                    'data': hosts['hosts'],
-                    'total_db_hosts': hosts['total_db_hosts'],
-                    'selected_hosts': hosts['selected_hosts']
-                }
-            },
-            room=sio,
-            namespace='/hosts'
-        )
+            )
 
 
 class ScopeHandlers(object):
