@@ -5,7 +5,6 @@ import {
 	RESOLVE_HOSTS,
 	HOST_DATA_UPDATED,
 	GET_TASKS_BY_HOSTS,
-	SET_LOADED_HOSTS,
 
 	SET_LOADING_HOSTS,
 	RECEIVE_HOSTS,
@@ -153,15 +152,6 @@ function get_tasks_by_hosts(state = initialState, action) {
 	};
 }
 
-function set_loaded(state = initialState, action) {
-	const message = action.message;
-
-	return {
-		...state,
-		'loaded': message.value
-	}
-}
-
 function setLoadingHosts(state = initialState, action) {
 	const isLoading = action.isLoading;
 
@@ -228,8 +218,6 @@ function host_reduce(state = initialState, action) {
 				return host_data_updated(state, action);
 			case GET_TASKS_BY_HOSTS:
 				return get_tasks_by_hosts(state, action);
-			case SET_LOADED_HOSTS:
-				return set_loaded(state, action);
 
 			case SET_LOADING_HOSTS:
 				return setLoadingHosts(state, action);
