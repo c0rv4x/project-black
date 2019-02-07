@@ -105,7 +105,7 @@ class Notifier:
                 'ips:updated', {
                     'status': 'success',
                     'project_uuid': project_uuid,
-                    'updated_ip_address': updated_target
+                    'updated_ips': [updated_target]
                 },
                 namespace='/ips'
             )  
@@ -114,7 +114,7 @@ class Notifier:
                 'hosts:updated', {
                     'status': 'success',
                     'project_uuid': project_uuid,
-                    'updated_hostname': updated_target
+                    'updated_hosts': [updated_target]
                 },
                 namespace='/hosts'
             )
