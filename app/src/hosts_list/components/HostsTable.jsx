@@ -1,11 +1,12 @@
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import Search from '../../common/search/Search.jsx'
 import ReactPaginate from '../../common/paginate/ReactPaginate.jsx'
 import HostsEntryLine from '../presentational/HostsEntryLine.jsx'
 
-import { requestUpdateHostComment } from '../../redux/hosts/action.js'
+import { requestUpdateHostComment } from '../../redux/hosts/actions.js'
 
 import { Box, Heading } from 'grommet'
 
@@ -96,7 +97,10 @@ class HostsTable extends React.Component {
 			</div>
 		)
 	}
+}
 
+HostsTable.contextTypes = {
+    store: PropTypes.object
 }
 
 export default HostsTable;
