@@ -15,7 +15,6 @@ class HostsListScopesUpdater extends React.Component {
 		this.renewHosts = this.renewHosts.bind(this);
 		this.renewCreds = this.renewCreds.bind(this);
 		this.renewFiles = this.renewFiles.bind(this);
-		this.requestUpdateHost = this.requestUpdateHost.bind(this);
 	}
 
 	shouldComponentUpdate(nextProps) {
