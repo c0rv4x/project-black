@@ -3,9 +3,6 @@ import React from 'react'
 import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import PortsTabs from '../presentational/PortsTabs.jsx'
 
-
-import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter'
-import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
 import { Heading } from 'grommet';
 
 
@@ -23,15 +20,6 @@ class HostVerbose extends React.Component {
 		this.getFilesHosts = this.getFilesHosts.bind(this);
 	}
 
-	componentDidMount() {
-		this.emitter = new HostsSocketioEventsEmitter();
-		this.filesEmitter = new FilesSocketioEventsEmitter();
-
-		if (this.props.update_needed) {
-			this.emitter.requestRenewHosts({'host': [this.props.host.hostname]});
-		}
-	}
-
 	componentWillReceiveProps(newProps) {
 		if (JSON.stringify(this.props.ports) !== JSON.stringify(newProps.ports)) {
 			if (typeof this.state.activePortNumber === 'undefined') {
@@ -40,10 +28,6 @@ class HostVerbose extends React.Component {
 					activeTabNumber: 0
 				});
 			}		
-		}
-
-		if (newProps.update_needed) {
-			this.emitter.requestRenewHosts(this.props.project_uuid, {'host': [this.props.host.hostname]});
 		}
 	}
 
