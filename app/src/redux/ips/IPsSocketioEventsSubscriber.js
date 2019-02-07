@@ -4,7 +4,7 @@ import {
 	IPsCreated, 
 	IPDeleted,
 	IPCommentUpdated,
-	updatedIPs,
+	IPsDataUpdated
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
@@ -12,7 +12,7 @@ import Connector from '../SocketConnector.jsx';
 
 class IPsSocketioEventsSubscriber {
 	/* Singleton class for managing events subscription for the ips */
-	constructor(store, project_uuid, ip_address=null, filters={}, pageSize=12) {
+	constructor(store, project_uuid) {
         this.store = store;
         this.project_uuid = project_uuid;
         this.connector = new Connector('ips');
@@ -26,9 +26,7 @@ class IPsSocketioEventsSubscriber {
 		this.register_socketio_handler('ip:comment_updated', IPCommentUpdated);
 		this.register_socketio_handler('ips:created', IPsCreated);
 		this.register_socketio_handler('ip:deleted', IPDeleted);
-
-		// Old handlers which might still be useful
-		this.register_socketio_handler('ips:updated', updatedIPs);
+		this.register_socketio_handler('ips:updated', IPsDataUpdated);
 	}
 
 	register_socketio_handler(eventName, dispatchCallback) {

@@ -228,3 +228,32 @@ export function receiveTasksForIPs(tasks) {
 		tasks
 	}
 }
+
+
+// This is fired when ips have received some data updates on the server side
+export function IPsDataUpdated(message, current_project_uuid) {
+	return (dispatch, getState) => {
+		const { project_uuid } = getState();
+
+		// By this check we make sure that this notification is indeed us
+		if (current_project_uuid == project_uuid) {
+			let found = false;
+		
+			if (message.updated_ips) {
+				for (let each_ip_address of message.updated_ips) {
+					for (let state_ip of state.data) {
+						if (state_ip.ip_address == each_ip_address) {
+							found = true;
+							break;
+						}
+					}
+					if (found) break;
+				}
+			}
+
+			if (found) {
+				dispatch(renewIPsCurrentPage());
+			}
+		}
+	}
+}

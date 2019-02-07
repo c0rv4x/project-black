@@ -1,8 +1,6 @@
 import _ from 'lodash';
 
 import { 
-	UPDATED_IPS,
-
 	SET_LOADING_IPS,
 	RECEIVE_IPS,
 	IP_COMMENT_UPDATED,
@@ -26,49 +24,6 @@ const initialState = {
 	}
 }
 
-
-function updated_ips(state = initialState, action) {
-	const message = action.message;
-
-	var found = false;
-
-	if (message.updated_ips) {
-
-		for (var each_ip_address of message.updated_ips) {
-			for (var state_ip of state.data) {
-				if (state_ip.ip_address == each_ip_address) {
-					found = true;
-					break;
-				}
-			}
-			if (found) break;
-		}
-	}
-	else if (message.updated_ip_address) {
-		for (var state_ip of state.data) {
-			if (state_ip.ip_address == message.updated_ip_address) {
-				found = true;
-				break;
-			}
-		}
-	}
-	else {
-		found = True
-	}
-
-	if (found) {
-		var new_state = JSON.parse(JSON.stringify(state));
-
-		new_state.update_needed = true;
-
-		return new_state;
-	}
-	else {
-		return state;
-	}
-}
-
-///
 
 function flushIPs(state = initialState, action) {
 	return {
@@ -179,9 +134,6 @@ function ip_reduce(state = initialState, action) {
 	if (action.message && action.message.project_uuid && (action.current_project_uuid != action.message.project_uuid)) { return state; }
 	else {
 		switch (action.type) {
-			case UPDATED_IPS:
-				return updated_ips(state, action);
-
 			case SET_LOADING_IPS:
 				return setLoadingIPs(state, action);
 			case RECEIVE_IPS:
