@@ -49,6 +49,7 @@ if __name__ == '__main__':
     app.add_route(ips_handlers.cb_get_single_ip, '/project/<project_uuid>/ip/get/<ip_address>')
     app.add_route(ips_handlers.cb_update_comment, '/project/<project_uuid>/ip/update/<ip_id>', methods=['POST'])
     app.add_route(ips_handlers.cb_delete_ip, '/project/<project_uuid>/ip/delete', methods=['POST'])
+    app.add_route(ips_handlers.cb_get_tasks_for_ips, '/project/<project_uuid>/ips/tasks', methods=['POST'])
 
     # Handlers for hosts
     hosts_handlers = HostsHandlers(meta_manager.scope_manager, socketio)

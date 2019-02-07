@@ -9,6 +9,7 @@ class IPsHandlers:
         self.scope_manager = scope_manager
         self.notifier = IPsNotifier(socketio)
 
+
     @authorized_class_method()
     async def cb_get_ips(self, request, project_uuid):
         project_uuid = int(project_uuid)
@@ -28,6 +29,7 @@ class IPsHandlers:
             'total_db_ips': ips['total_db_ips']
         })
 
+
     @authorized_class_method()
     async def cb_get_single_ip(self, request, project_uuid, ip_address):
         project_uuid = int(project_uuid)
@@ -43,6 +45,7 @@ class IPsHandlers:
             'selected_ips': ips['selected_ips'],
             'total_db_ips': ips['total_db_ips']
         })
+
 
     @authorized_class_method()
     async def cb_update_comment(self, request, project_uuid, ip_id):
@@ -77,6 +80,25 @@ class IPsHandlers:
             return response.json({ 'status': 'ok' })
         else:
             return response.json({ 'status': 'error', 'message': delete_result['text'] })
+
+
+    @authorized_class_method()
+    async def cb_get_tasks_for_ips(self, request, project_uuid):
+        ips = request.json['ips']
+
+        get_result = await self.scope_manager.get_tasks_filtered(
+            project_uuid,
+            ips=ips,
+            hosts=None
+        )
+
+        if get_result['status'] == 'success':
+            return response.json({
+                'active': get_result['active'],
+                'finished': get_result['finished']  
+            })
+        else:
+            return response.json({ 'status': 'error', 'message': get_result.text })
 
 
 class IPsNotifier:
