@@ -9,12 +9,13 @@ import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmi
 import { setLoaded } from '../../redux/hosts/actions.js'
 import Loading from '../../common/loading/Loading.jsx'
 
+import { flushAndRequestHosts } from '../../redux/hosts/actions.js'
+
 
 class HostsListScopesUpdater extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.triggerSetLoaded = this.triggerSetLoaded.bind(this);
 		this.renewHosts = this.renewHosts.bind(this);
 		this.renewCreds = this.renewCreds.bind(this);
 		this.renewFiles = this.renewFiles.bind(this);
@@ -42,16 +43,8 @@ class HostsListScopesUpdater extends React.Component {
 		return !_.isEqual(nextProps, this.props);
 	}
 
-	triggerSetLoaded(value) {
-		this.context.store.dispatch(setLoaded({
-			'status': 'success',
-			'value': value,
-			'project_uuid': String(this.props.project_uuid)
-		}, String(this.props.project_uuid)));
-	}
-
 	renewHosts(page=this.props.hosts.page, page_size=this.props.hosts.page_size, filters=this.props.filters) {
-		this.context.store.dispatch(requestHosts(this.props.project_uuid, filters, page, this.props.hosts.page_size));
+		this.context.store.dispatch(flushAndRequestHosts(this.props.project_uuid, filters, page, this.props.hosts.page_size));
 	}
 
 	renewCreds(hosts=this.props.hosts.data) {
