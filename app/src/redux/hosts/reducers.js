@@ -10,7 +10,8 @@ import {
 	SET_LOADING_HOSTS,
 	RECEIVE_HOSTS,
 	HOST_COMMENT_UPDATED,
-	FLUSH_HOSTS
+	FLUSH_HOSTS,
+	SET_HOSTS_FILTERS
 } from './actions.js'
 
 
@@ -18,6 +19,7 @@ const initialState = {
 	"loaded": false,
 	"page": 0,
 	"page_size": 12,
+	"filters": {},
 	"resolve_finished": false,
 	"total_db_hosts": 0,
 	"selected_hosts": 0,
@@ -205,7 +207,13 @@ function flushHosts(state = initialState, action) {
 		selected_hosts: initialState['selected_hosts'],
 		data: initialState['data']
 	}
+}
 
+function setHostsFilters(state = initialState, action) {
+	return {
+		...state,
+		filters: action.filters
+	}
 }
 
 function host_reduce(state = initialState, action) {
@@ -231,6 +239,8 @@ function host_reduce(state = initialState, action) {
 				return hostCommentUpdated(state, action);
 			case FLUSH_HOSTS:
 				return flushHosts(state, action);
+			case SET_HOSTS_FILTERS:
+				return setHostsFilters(state, action);
 			default:
 				return state;
 		}

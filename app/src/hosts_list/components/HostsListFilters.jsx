@@ -1,6 +1,9 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import HostsListScopesUpdater from './HostsListScopesUpdater.jsx'
+
+import { setHostsFilters } from '../../redux/hosts/actions.js'
 
 
 class HostsListFilters extends React.Component {
@@ -8,17 +11,11 @@ class HostsListFilters extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			filters: {}
-		};
-
 		this.applyFilters = this.applyFilters.bind(this);	
 	}
 
 	applyFilters(filters) {
-		this.setState({
-			filters: filters
-		})
+		this.context.store.dispatch(setHostsFilters(filters));
 	}
 
 	render() {
@@ -27,7 +24,7 @@ class HostsListFilters extends React.Component {
 				 hosts={this.props.hosts}
 				 dicts={this.props.dicts}
 				 project_uuid={this.props.project_uuid}
-				 filters={this.state.filters}
+				 filters={this.props.hosts.filters}
 				 applyFilters={this.applyFilters}
 				 tasks={this.props.tasks} />
 		)
@@ -35,5 +32,8 @@ class HostsListFilters extends React.Component {
 
 }
 
+HostsListFilters.contextTypes = {
+    store: PropTypes.object
+}
 
 export default HostsListFilters;
