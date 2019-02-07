@@ -11,9 +11,10 @@ import {
 	SET_LOADED_HOSTS,
 
 	SET_LOADING_HOSTS,
-	RECEIVE_HOSTS
+	RECEIVE_HOSTS,
+	HOST_COMMENT_UPDATED,
+	FLUSH_HOSTS
 } from './actions.js'
-import { receiveIPs } from '../ips/actions.js';
 
 
 const initialState = {
@@ -49,29 +50,6 @@ function delete_host(state = initialState, action) {
 		...state,
 		'loaded': true
 	};
-}
-
-function update_host(state = initialState, action) {
-	const message = action.message;
-
-	var { host_id, comment } = message;
-
-	for (var each_host of state.data) {
-		if (each_host.host_id == host_id) {
-			var new_state = JSON.parse(JSON.stringify(state));
-
-			for (var each_new_host of new_state.data) {
-				if (each_new_host.host_id == host_id) {
-					each_new_host.comment = comment;
-					break;
-				}
-			}
-
-			return new_state;
-		}
-	}
-
-	return state;
 }
 
 function host_data_updated(state = initialState, action) {
@@ -223,6 +201,36 @@ function receiveHosts(state = initialState, action) {
 	}
 }
 
+function hostCommentUpdated(state = initialState, action) {
+	const { host_id, comment } = action.message;
+
+	for (let each_host of state.data) {
+		if (each_host.host_id == host_id) {
+			let new_state = JSON.parse(JSON.stringify(state));
+
+			for (let each_new_host of new_state.data) {
+				if (each_new_host.host_id == host_id) {
+					each_new_host.comment = comment;
+					break;
+				}
+			}
+
+			return new_state;
+		}
+	}
+
+	return state;
+}
+
+function flushHosts(state = initialState, action) {
+	return {
+		...state,
+		selected_hosts: initialState['selected_hosts'],
+		data: initialState['data']
+	}
+
+}
+
 function host_reduce(state = initialState, action) {
 	if (action.message && action.message.project_uuid && (action.current_project_uuid != action.message.project_uuid)) { return state; }
 	else {
@@ -248,6 +256,10 @@ function host_reduce(state = initialState, action) {
 				return setLoadingHosts(state, action);
 			case RECEIVE_HOSTS:
 				return receiveHosts(state, action);
+			case HOST_COMMENT_UPDATED:
+				return hostCommentUpdated(state, action);
+			case FLUSH_HOSTS:
+				return flushHosts(state, action);
 			default:
 				return state;
 		}
