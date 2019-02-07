@@ -23,7 +23,7 @@ class HostsListScopesUpdater extends React.Component {
 	}
 
 	renewHosts(page=this.props.hosts.page, page_size=this.props.hosts.page_size, filters=this.props.filters) {
-		this.context.store.dispatch(flushAndRequestHosts(this.props.project_uuid, filters, page, this.props.hosts.page_size));
+		this.context.store.dispatch(flushAndRequestHosts(this.props.project_uuid, filters, page, page_size));
 	}
 
 	renewCreds(hosts=this.props.hosts.data) {
