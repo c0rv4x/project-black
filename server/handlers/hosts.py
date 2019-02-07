@@ -49,7 +49,7 @@ class HostsHandlers:
         comment = request.json['comment']
 
         result = await self.scope_manager.update_scope(
-            scope_id=host_id, comment=comment, scope_type='ip_address'
+            scope_id=host_id, comment=comment, scope_type='hostname'
         )
 
         if result['status'] == 'success':
