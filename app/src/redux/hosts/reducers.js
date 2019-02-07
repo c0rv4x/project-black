@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
 import { 
-	UPDATED_IPS,
 	RESOLVE_HOSTS,
 
 	SET_LOADING_HOSTS,
@@ -25,36 +24,6 @@ const initialState = {
 	"tasks": {
 		"active": [],
 		"finished": []
-	}
-}
-
-
-function updated_ips(state = initialState, action) {
-	const message = action.message;
-
-	var found = false;
-
-	if (message.updated_ips) {
-		for (var each_id of message.updated_ips) {
-			for (var state_host of state.data) {
-				for (var state_ip of state_host.ip_addresses) {
-					if (state_ip.ip_id == each_id) {
-						found = true;
-						break;
-					}
-				}
-			}
-			if (found) break;
-		}
-	}
-
-	if (found) {
-		return {
-			...state
-		};
-	}
-	else {
-		return state;
 	}
 }
 
@@ -175,8 +144,6 @@ function host_reduce(state = initialState, action) {
 		switch (action.type) {
 			case RESOLVE_HOSTS:
 				return resolve_hosts(state, action);
-			case UPDATED_IPS:
-				return updated_ips(state, action);	
 
 			case SET_LOADING_HOSTS:
 				return setLoadingHosts(state, action);

@@ -1,17 +1,6 @@
 import { notifySuccess, notifyError } from '../notifications/actions.js'
 
-
-export const UPDATED_IPS = 'UPDATED_IPS'
 export const RESOLVE_HOSTS = 'RESOLVE_HOSTS'
-
-
-export function updatedIPs(message, current_project_uuid) {
-	return {
-		type: UPDATED_IPS,
-		current_project_uuid: current_project_uuid,
-		message
-	}
-}
 
 export function resolveHosts(message, current_project_uuid) {
 	return {
@@ -259,6 +248,32 @@ export function hostsDataUpdated(message, current_project_uuid) {
 							break;
 						}
 					}
+				}
+			}
+
+			if (found) {
+				dispatch(renewHostsCurrentPage());
+			}
+		}
+	}
+}
+
+export function IPsInHostsUpdated(message, current_project_uuid) {
+	return (dispatch, getState) => {
+		const { project_uuid, hosts } = getState();
+
+		if (current_project_uuid == project_uuid) {
+			if (message.updated_ips) {
+				for (let each_id of message.updated_ips) {
+					for (let stored_host of hosts.data) {
+						for (let stored_ip of stored_host.ip_addresses) {
+							if (stored_ip.ip_id == each_id) {
+								found = true;
+								break;
+							}
+						}
+					}
+					if (found) break;
 				}
 			}
 
