@@ -3,7 +3,6 @@ import _ from 'lodash';
 import { 
 	UPDATED_IPS,
 	RESOLVE_HOSTS,
-	HOST_DATA_UPDATED,
 
 	SET_LOADING_HOSTS,
 	RECEIVE_HOSTS,
@@ -29,44 +28,6 @@ const initialState = {
 	}
 }
 
-
-function host_data_updated(state = initialState, action) {
-	const message = action.message;
-
-	var found = false;
-
-	if (message.updated_hosts) {
-		for (var each_host of message.updated_hosts) {
-			for (var state_host of state.data) {
-				if (state_host.hostname == each_host) {
-					console.log("Got some files for currently displayed hosts");
-					found = true;
-					break;
-				}
-			}
-		}
-	}
-	else if (message.updated_hostname) {
-		for (var state_ip of state.data) {
-			if (state_ip.hostname == message.updated_hostname) {
-				found = true;
-				break;
-			}
-		}
-	} else {
-		found = true;
-	}
-
-
-	if (found) {
-		return {
-			...state
-		};
-	}
-	else {
-		return state;
-	}
-}
 
 function updated_ips(state = initialState, action) {
 	const message = action.message;
@@ -216,8 +177,6 @@ function host_reduce(state = initialState, action) {
 				return resolve_hosts(state, action);
 			case UPDATED_IPS:
 				return updated_ips(state, action);	
-			case HOST_DATA_UPDATED:
-				return host_data_updated(state, action);
 
 			case SET_LOADING_HOSTS:
 				return setLoadingHosts(state, action);
