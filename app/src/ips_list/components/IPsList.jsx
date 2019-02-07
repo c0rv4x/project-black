@@ -41,7 +41,7 @@ class IPsList extends React.Component {
   	}
 
 	render() {
-		let { ips, tasks, project_uuid, filters, applyFilters, setLoaded, renewIps } = this.props;
+		let { ips, tasks, project_uuid, filters, applyFilters, renewIps } = this.props;
 
 		return (
 			<div>
@@ -58,7 +58,6 @@ class IPsList extends React.Component {
 					project_uuid={project_uuid}
 					applyFilters={applyFilters}
 					filters={filters}
-					setLoaded={setLoaded}
 					renewIps={renewIps}/>
 			</div>
 		)
