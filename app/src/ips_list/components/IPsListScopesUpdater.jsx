@@ -16,10 +16,10 @@ class IPsListScopesUpdater extends React.Component {
 		this.renewFiles = this.renewFiles.bind(this);
 	}
 
-	renewIps(ip_page=this.props.ips.page, filters=this.props.filters) {
-		let { ips, project_uuid } = this.props;
+	renewIps(ip_page=this.props.ips.page, ip_page_size=this.props.ips.page_size, filters=this.props.filters) {
+		let { project_uuid } = this.props;
 
-		this.context.store.dispatch(flushAndRequestIPs(project_uuid, filters, ip_page, ips.page_size));
+		this.context.store.dispatch(flushAndRequestIPs(project_uuid, filters, ip_page, ip_page_size));
 	}
 
 	renewCreds(ips=this.props.ips.data) {
@@ -33,10 +33,10 @@ class IPsListScopesUpdater extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		let { filters } = this.props;
+		let { filters, ips } = this.props;
 
 		if (!_.isEqual(filters, prevProps.filters)) {
-			this.renewIps(0, filters);
+			this.renewIps(0, ips.pages_size, filters);
 		}
 	}
 
