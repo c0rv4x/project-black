@@ -1,9 +1,6 @@
 import _ from 'lodash';
 
 import { 
-	CREATE_HOST, 
-	DELETE_HOST, 
-	UPDATE_HOST,
 	UPDATED_IPS,
 	RESOLVE_HOSTS,
 	HOST_DATA_UPDATED,
@@ -31,26 +28,6 @@ const initialState = {
 	}
 }
 
-function create_host(state = initialState, action) {
-	const message = action.message;
-
-	let new_hosts = message.new_hosts;
-	let total_db_hosts = state.total_db_hosts + new_hosts.length;
-	let data = new_hosts.concat(state.data).slice(0, state.page_size);
-
-	return {
-		...state,
-		'total_db_hosts': total_db_hosts,
-		'data': data
-	};
-}
-
-function delete_host(state = initialState, action) {
-	return {
-		...state,
-		'loaded': true
-	};
-}
 
 function host_data_updated(state = initialState, action) {
 	const message = action.message;
@@ -235,12 +212,6 @@ function host_reduce(state = initialState, action) {
 	if (action.message && action.message.project_uuid && (action.current_project_uuid != action.message.project_uuid)) { return state; }
 	else {
 		switch (action.type) {
-			case CREATE_HOST:
-				return create_host(state, action);
-			case DELETE_HOST:
-				return delete_host(state, action);
-			case UPDATE_HOST:
-				return update_host(state, action);
 			case RESOLVE_HOSTS:
 				return resolve_hosts(state, action);
 			case UPDATED_IPS:

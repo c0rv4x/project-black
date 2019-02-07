@@ -1,14 +1,13 @@
 import Notifications from 'react-notification-system-redux'
 
 import { 
-	createHost, 
-	deleteHost,
-	renewHosts,
-	updateHost,
 	resolveHosts,
 	updatedIPs,
-	hostsDataUpdated,
-	getTasksByHosts
+	getTasksByHosts,
+
+	hostCommentUpdated,
+	hostsCreated,
+	hostDeleted
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
@@ -27,12 +26,12 @@ class HostsSocketioEventsSubscriber {
 	basic_events_registration() {
 		/* Register handlers on basic events */
 		// Received all hosts in one message
+		this.register_socketio_handler('host:comment_updated', hostCommentUpdated);
+		this.register_socketio_handler('hosts:created', hostsCreated);
+		this.register_socketio_handler('host:deleted', hostDeleted);
 
-		this.register_socketio_handler('hosts:update:back', updateHost);
+
 		this.register_socketio_handler('hosts:updated:ips', updatedIPs);
-		this.register_socketio_handler('hosts:updated', hostsDataUpdated);
-		this.register_socketio_handler('hosts:create', createHost);
-		this.register_socketio_handler('hosts:delete', deleteHost);
 		this.register_socketio_handler('hosts:resolve:done', resolveHosts);
 		this.register_socketio_handler('hosts:get:tasks:back', getTasksByHosts);
 
@@ -41,15 +40,7 @@ class HostsSocketioEventsSubscriber {
 	register_socketio_handler(eventName, dispatchCallback, callback) {
 		/* Just a wrapper for connector.listen */
 		this.connector.listen(eventName, (data) => {
-			if (data.status == 'success') {
-				this.store.dispatch(dispatchCallback(data, this.project_uuid));
-			}
-			else {
-				this.store.dispatch(Notifications.error({
-					title: 'Error with hosts',
-					message: data.text
-				}));
-			}				
+			this.store.dispatch(dispatchCallback(data, this.project_uuid));
 		});
 	}
 

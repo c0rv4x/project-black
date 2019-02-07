@@ -1,39 +1,12 @@
 import { notifySuccess, notifyError } from '../notifications/actions.js'
 
 
-export const CREATE_HOST = 'CREATE_HOST'
-export const DELETE_HOST = 'DELETE_HOST'
-export const UPDATE_HOST = 'UPDATE_HOST'
 export const UPDATED_IPS = 'UPDATED_IPS'
 export const RESOLVE_HOSTS = 'RESOLVE_HOSTS'
 export const HOST_DATA_UPDATED = 'HOST_DATA_UPDATED'
 export const GET_TASKS_BY_HOSTS = 'GET_TASKS_BY_HOSTS'
 export const SET_LOADED_HOSTS = 'SET_LOADED_HOSTS'
 
-
-export function createHost(message, current_project_uuid) {
-	return {
-		type: CREATE_HOST,
-		current_project_uuid: current_project_uuid,
-		message
-	}
-}
-
-export function deleteHost(message, current_project_uuid) {
-	return {
-		type: DELETE_HOST,
-		current_project_uuid: current_project_uuid,
-		message
-	}
-}
-
-export function updateHost(message, current_project_uuid) {
-	return {
-		type: UPDATE_HOST,
-		current_project_uuid: current_project_uuid,
-		message
-	}
-}
 
 export function updatedIPs(message, current_project_uuid) {
 	return {
@@ -223,7 +196,7 @@ export function renewHostsCurrentPage() {
 }
 
 
-export function HostssCreated(message) {
+export function hostsCreated(message) {
 	return (dispatch, getState) => {
 		const { project_uuid } = getState();
 
@@ -234,7 +207,7 @@ export function HostssCreated(message) {
 }
 
 
-export function HostDeleted(message) {
+export function hostDeleted(message) {
 	return (dispatch, getState) => {
 		const { project_uuid, hosts } = getState();
 
@@ -254,7 +227,7 @@ export function setHostsFilters(filters) {
 
 export const HOST_COMMENT_UPDATED = 'HOST_COMMENT_UPDATED'
 
-export function HostCommentUpdated(message, current_project_uuid) {
+export function hostCommentUpdated(message, current_project_uuid) {
 	return {
 		type: HOST_COMMENT_UPDATED,
 		current_project_uuid: current_project_uuid,
