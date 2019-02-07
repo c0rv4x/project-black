@@ -22,23 +22,6 @@ class HostsListScopesUpdater extends React.Component {
 		this.requestUpdateHost = this.requestUpdateHost.bind(this);
 	}
 
-	componentDidMount() {
-		this.hostsEmitter = new HostsSocketioEventsEmitter();
-		this.credsEmitter = new CredsSocketioEventsEmitter();
-		this.filesEmitter = new FilesSocketioEventsEmitter();
-
-		if (this.props.hosts.update_needed === true) {
-			this.renewHosts();
-			// TODO: not sure if files is needed here. IPs list manage 
-			// to work without one
-			this.renewFiles();
-		}
-		else {
-			this.renewCreds();
-			this.renewFiles();
-		}
-	}
-
 	shouldComponentUpdate(nextProps) {
 		return !_.isEqual(nextProps, this.props);
 	}
