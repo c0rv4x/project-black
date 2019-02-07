@@ -82,56 +82,6 @@ class HostHandlers(object):
                 project_uuid=project_uuid
             )            
 
-        @self.socketio.on('hosts:update', namespace='/hosts')
-        async def _cb_handle_scope_update(sio, msg):
-            """ Update the scope (now only used for comment). """
-            host_id = msg['host_id']
-            comment = msg['comment']
-            project_uuid = msg['project_uuid']
-
-            update_result = await self.scope_manager.update_scope(
-                scope_id=host_id, comment=comment, scope_type='host'
-            )
-            target = update_result['target']
-
-            if update_result["status"] == "success":
-                await self.socketio.emit(
-                    'hosts:update:back',
-                    {
-                     "status": "success",
-                     "host_id": host_id,
-                     "comment": comment,
-                     "project_uuid": project_uuid},
-                    namespace='/hosts'
-                )
-
-                await send_notification(
-                    self.socketio,
-                    "success",
-                    "Host updated",
-                    "Comment for {} updated".format(
-                        target
-                    ),
-                    project_uuid=project_uuid
-                )
-            else:
-                update_result['project_uuid'] = project_uuid
-                await self.socketio.emit(
-                    'hosts:update:back',
-                    update_result,
-                    namespace='/hosts'
-                )
-
-                await send_notification(
-                    self.socketio,
-                    "error",
-                    "Host not updated",
-                    "Comment for {} updated with an error".format(
-                        target
-                    ),
-                    project_uuid=project_uuid
-                )
-
         @self.socketio.on('hosts:get:tasks', namespace='/hosts')
         async def _cb_handle_tasks_get(sio, msg):
             """ When received this message, send back all the tasks """

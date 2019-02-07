@@ -15,15 +15,6 @@ class HostsSocketioEventsEmitter {
 		});
 	}
 
-	requestUpdateHost(comment, host_id, project_uuid, host_type) {
-		this.connector.emit('hosts:update', {
-			'host_id': host_id,
-			'comment': comment,
-			'project_uuid': project_uuid,
-			'host_type': host_type
-		});
-	}
-
 	requestTasksByHosts(hosts, project_uuid) {
 		this.connector.emit('hosts:get:tasks', {
 			'project_uuid': project_uuid,
