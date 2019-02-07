@@ -18,7 +18,6 @@ class HostsTable extends React.Component {
 
 		if (hosts) {
 			this.state = {
-				shownData: hosts.data,
 				offsetPage: hosts.page,
 				pageCount: Math.ceil(hosts.total_db_hosts / hosts.page_size)
 			}
@@ -37,14 +36,12 @@ class HostsTable extends React.Component {
 
 		if (hosts.selected_hosts !== prevProps.hosts.selected_hosts) {
 			this.setState({
-				shownData: hosts.data,
 				offsetPage: 0,
 				pageCount: Math.ceil(hosts.selected_hosts / hosts.page_size)
 			});
 		}
 		else {
 			this.setState({
-				shownData: hosts.data,
 				pageCount: Math.ceil(hosts.selected_hosts / hosts.page_size)
 			});
 		}
@@ -60,35 +57,37 @@ class HostsTable extends React.Component {
 	}
 
 	render() {
-		const hosts = _.map(this.state.shownData, (x) => {
+		const { hosts, project_uuid, deleteScope, applyFilters } = this.props;
+
+		const hostsList = _.map(hosts.data, (x) => {
 			return (
 				<HostsEntryLine
 					key={"hosttable-" + x.host_id} 
 					host={x}
-					project_uuid={this.props.project_uuid}
+					project_uuid={project_uuid}
 					onCommentSubmit={(value) => this.commentSubmitted(value, x.host_id)}
-					deleteHost={() => this.props.deleteScope(x.host_id)}
+					deleteHost={() => deleteScope(x.host_id)}
 				/>
 			)
 		});
 
 		return (
 			<div>
-				<Search applyFilters={this.props.applyFilters} />
+				<Search applyFilters={applyFilters} />
 				<br />
-				{this.props.hosts.data.length === 0 && this.props.hosts.loaded && 
+				{hosts.data.length === 0 && hosts.loaded && 
 					<Heading level="2">No data found.</Heading>
 				}
-				{(this.props.hosts.data.length !== 0 || !this.props.hosts.loaded) &&
+				{(hosts.data.length !== 0 || !hosts.loaded) &&
 					<div>
 						<Box
 							gap='small'
 						>
-							{hosts}
+							{hostsList}
 						</Box>
 						<br />
 						<ReactPaginate
-							pageNumber={this.props.hosts.page}
+							pageNumber={hosts.page}
 							pageCount={this.state.pageCount}
 							clickHandler={this.handlePageClick}
 						/>
