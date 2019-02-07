@@ -56,17 +56,6 @@ class HostHandlers(object):
         self.register_handlers()
 
     def register_handlers(self):
-        @self.socketio.on('hosts:part:get', namespace='/hosts')
-        async def _cb_handle_scopes_get(sio, msg):
-            """ When received this message, send back all the scopes """
-            project_uuid = int(msg.get('project_uuid', None))
-            host_page = msg.get('host_page', 0)
-            host_page_size = msg.get('host_page_size', 12)
-            host_filters = msg.get('host_filters', {})
-
-            await self.send_hosts_back(
-                host_filters, sio, project_uuid, host_page, host_page_size)
-
         @self.socketio.on('hosts:single:get', namespace='/hosts')
         async def _cb_handle_single_scope_get(sio, msg):
             """ When received this message, send back all the scopes """

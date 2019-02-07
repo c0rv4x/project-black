@@ -15,15 +15,6 @@ class HostsSocketioEventsEmitter {
 		});
 	}
 
-	requestRenewHosts(project_uuid, host_filters={}, host_page=0, host_page_size=12) {
-		this.connector.emit('hosts:part:get', {
-			'project_uuid': project_uuid,
-			'host_filters': host_filters,
-			'host_page': host_page,
-			'host_page_size': host_page_size			
-		});
-	}
-
 	requestSingleHost(project_uuid, hostname) {
 		this.connector.emit('hosts:single:get', {
 			'project_uuid': project_uuid,

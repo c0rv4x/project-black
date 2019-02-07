@@ -27,7 +27,6 @@ class HostsSocketioEventsSubscriber {
 	basic_events_registration() {
 		/* Register handlers on basic events */
 		// Received all hosts in one message
-		this.register_socketio_handler('hosts:part:set', renewHosts);
 
 		this.register_socketio_handler('hosts:update:back', updateHost);
 		this.register_socketio_handler('hosts:updated:ips', updatedIPs);
