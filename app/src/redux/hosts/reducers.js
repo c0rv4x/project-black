@@ -4,13 +4,13 @@ import {
 	UPDATED_IPS,
 	RESOLVE_HOSTS,
 	HOST_DATA_UPDATED,
-	GET_TASKS_BY_HOSTS,
 
 	SET_LOADING_HOSTS,
 	RECEIVE_HOSTS,
 	HOST_COMMENT_UPDATED,
 	FLUSH_HOSTS,
-	SET_HOSTS_FILTERS
+	SET_HOSTS_FILTERS,
+	RECEIVE_TASKS_FOR_HOSTS
 } from './actions.js'
 
 
@@ -105,53 +105,6 @@ function resolve_hosts(state = initialState, action) {
 }
 
 
-function get_tasks_by_hosts(state = initialState, action) {
-	const message = action.message;
-	const active_tasks = message['active'];
-
-	var parsed_active_tasks = _.map(active_tasks, (x) => {
-		return {
-			"task_id": x["task_id"],
-			"task_type": x["task_type"],
-			"params": x["params"],
-			"target": x["target"],
-			"status": x["status"],
-			"progress": x["progress"],
-			"project_uuid": x["project_uuid"],
-			"text": x["text"],
-			"stdout": x["stdout"],
-			"stderr": x["stderr"],
-			"date_added": x["date_added"]
-		}
-	});
-
-	const finished_tasks = message['finished'];
-
-	var parsed_finished_tasks = _.map(finished_tasks, (x) => {
-		return {
-			"task_id": x["task_id"],
-			"task_type": x["task_type"],
-			"params": x["params"],
-			"target": x["target"],
-			"status": x["status"],
-			"progress": x["progress"],
-			"project_uuid": x["project_uuid"],
-			"text": x["text"],
-			"stdout": x["stdout"],
-			"stderr": x["stderr"],
-			"date_added": x["date_added"]
-		}
-	});
-
-	return {
-		...state,
-		"tasks": {
-			"active": parsed_active_tasks,
-			"finished": parsed_finished_tasks
-		}
-	};
-}
-
 function setLoadingHosts(state = initialState, action) {
 	const isLoading = action.isLoading;
 
@@ -206,6 +159,55 @@ function setHostsFilters(state = initialState, action) {
 	}
 }
 
+
+function receiveTasksForHosts(state = initialState, action) {
+	const tasks = action.tasks;
+	const active_tasks = tasks['active'];
+
+	var parsed_active_tasks = _.map(active_tasks, (x) => {
+		return {
+			"task_id": x["task_id"],
+			"task_type": x["task_type"],
+			"params": x["params"],
+			"target": x["target"],
+			"status": x["status"],
+			"progress": x["progress"],
+			"project_uuid": x["project_uuid"],
+			"text": x["text"],
+			"stdout": x["stdout"],
+			"stderr": x["stderr"],
+			"date_added": x["date_added"]
+		}
+	});
+
+	const finished_tasks = tasks['finished'];
+
+	var parsed_finished_tasks = _.map(finished_tasks, (x) => {
+		return {
+			"task_id": x["task_id"],
+			"task_type": x["task_type"],
+			"params": x["params"],
+			"target": x["target"],
+			"status": x["status"],
+			"progress": x["progress"],
+			"project_uuid": x["project_uuid"],
+			"text": x["text"],
+			"stdout": x["stdout"],
+			"stderr": x["stderr"],
+			"date_added": x["date_added"]
+		}
+	});
+
+	return {
+		...state,
+		"tasks": {
+			"active": parsed_active_tasks,
+			"finished": parsed_finished_tasks
+		}
+	};
+}
+
+
 function host_reduce(state = initialState, action) {
 	if (action.message && action.message.project_uuid && (action.current_project_uuid != action.message.project_uuid)) { return state; }
 	else {
@@ -216,8 +218,6 @@ function host_reduce(state = initialState, action) {
 				return updated_ips(state, action);	
 			case HOST_DATA_UPDATED:
 				return host_data_updated(state, action);
-			case GET_TASKS_BY_HOSTS:
-				return get_tasks_by_hosts(state, action);
 
 			case SET_LOADING_HOSTS:
 				return setLoadingHosts(state, action);
@@ -229,6 +229,8 @@ function host_reduce(state = initialState, action) {
 				return flushHosts(state, action);
 			case SET_HOSTS_FILTERS:
 				return setHostsFilters(state, action);
+			case RECEIVE_TASKS_FOR_HOSTS:
+				return receiveTasksForHosts(state, action);
 			default:
 				return state;
 		}

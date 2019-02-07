@@ -4,7 +4,6 @@ import { notifySuccess, notifyError } from '../notifications/actions.js'
 export const UPDATED_IPS = 'UPDATED_IPS'
 export const RESOLVE_HOSTS = 'RESOLVE_HOSTS'
 export const HOST_DATA_UPDATED = 'HOST_DATA_UPDATED'
-export const GET_TASKS_BY_HOSTS = 'GET_TASKS_BY_HOSTS'
 export const SET_LOADED_HOSTS = 'SET_LOADED_HOSTS'
 
 
@@ -27,14 +26,6 @@ export function resolveHosts(message, current_project_uuid) {
 export function hostsDataUpdated(message, current_project_uuid) {
 	return {
 		type: HOST_DATA_UPDATED,
-		current_project_uuid: current_project_uuid,
-		message
-	}
-}
-
-export function getTasksByHosts(message, current_project_uuid) {
-	return {
-		type: GET_TASKS_BY_HOSTS,
 		current_project_uuid: current_project_uuid,
 		message
 	}
@@ -102,7 +93,8 @@ export function requestHosts(project_uuid, filters={}, host_page=0, host_page_si
 	return dispatch => {
 		dispatch(setLoadingHosts(true));
 		dispatch(fetchHosts(project_uuid, params)).then(() => {
-			dispatch(setLoadingHosts(false))
+			dispatch(fetchTasksForShownHosts());
+			dispatch(setLoadingHosts(false));
 		});
 	}
 }
@@ -232,5 +224,39 @@ export function hostCommentUpdated(message, current_project_uuid) {
 		type: HOST_COMMENT_UPDATED,
 		current_project_uuid: current_project_uuid,
 		message
+	}
+}
+
+
+export function fetchTasksForShownHosts() {
+	return (dispatch, getState) => {
+		const { hosts, project_uuid } = getState();
+		const hostnames = hosts.data.map((host) => host.hostname);
+
+		fetch(`/project/${project_uuid}/hosts/tasks`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				hosts: hostnames
+			})
+		})
+			.then(
+				response => response.json(),
+				error => console.log(error)
+			)
+			.then(
+				json => dispatch(receiveTasksForHosts(json))
+			)
+	}
+}
+
+export const RECEIVE_TASKS_FOR_HOSTS = 'RECEIVE_TASKS_FOR_HOSTS'
+
+export function receiveTasksForHosts(tasks) {
+	return {
+		type: RECEIVE_TASKS_FOR_HOSTS,
+		tasks
 	}
 }

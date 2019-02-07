@@ -33,7 +33,6 @@ class HostsSocketioEventsSubscriber {
 
 		this.register_socketio_handler('hosts:updated:ips', updatedIPs);
 		this.register_socketio_handler('hosts:resolve:done', resolveHosts);
-		this.register_socketio_handler('hosts:get:tasks:back', getTasksByHosts);
 
 	}
 
