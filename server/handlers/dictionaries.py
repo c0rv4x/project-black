@@ -42,3 +42,13 @@ class DictHandlers:
         else:
             return response.text(get_result, status=500)
 
+
+    @authorized_class_method()
+    async def cb_get_dicts_stats(self, request, project_uuid):
+        get_result = self.dict_manager.get(project_uuid=project_uuid)
+
+        if get_result["status"] == "success":
+            return response.text(get_result["dicts"], status=200)
+        else:
+            return response.text(get_result, status=500)
+

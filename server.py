@@ -65,6 +65,12 @@ if __name__ == '__main__':
     app.add_route(creds_handlers.cb_get_creds, '/project/<project_uuid>/creds', methods=['POST'])
     app.add_route(creds_handlers.cb_delete_creds, '/project/<project_uuid>/creds/delete')
 
+    ## Handlers for dicts
+    dict_handlers = DictHandlers(meta_manager.dict_manager)
+    app.add_route(dict_handlers.cb_upload_dict, '/upload_dict', methods=['POST'])
+    app.add_route(dict_handlers.cb_get_dictionary, '/dictionary/<dict_id>')
+    app.add_route(dict_handlers.cb_get_dicts_stats, '/dictionary/<project_uuid>/dicts/stats')
+
     # Static handlers: index.html and bundle.js
     app.add_route(StaticHandlers.cb_index_handler, '/')
     app.add_route(StaticHandlers.cb_index_handler, '/project/<project_uuid>')
@@ -72,11 +78,6 @@ if __name__ == '__main__':
     app.add_route(StaticHandlers.cb_index_handler, '/project/<project_uuid>/host/<host>')
     app.add_route(StaticHandlers.cb_index_handler, '/project/<project_uuid>/ip/<host>')
     app.add_route(StaticHandlers.cb_bundle_handler, '/bundle.js')
-    # app.add_route(StaticHandlers.cb_serve_media_file, '/<filename:[a-z0-9]+.(eot|woff|woff2)>')
-
-    dict_handlers = DictHandlers(meta_manager.dict_manager)
-    app.add_route(dict_handlers.cb_upload_dict, '/upload_dict', methods=['POST'])
-    app.add_route(dict_handlers.cb_get_dictionary, '/dictionary/<dict_id>')
 
     HANDLERS = Handlers(socketio, app, meta_manager)
 
