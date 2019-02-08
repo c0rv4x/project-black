@@ -63,6 +63,7 @@ if __name__ == '__main__':
     # Handlers for creds
     creds_handlers = CredsHandlers(meta_manager.creds_manager)
     app.add_route(creds_handlers.cb_get_creds, '/project/<project_uuid>/creds', methods=['POST'])
+    app.add_route(creds_handlers.cb_delete_creds, '/project/<project_uuid>/creds/delete')
 
     # Static handlers: index.html and bundle.js
     app.add_route(StaticHandlers.cb_index_handler, '/')
