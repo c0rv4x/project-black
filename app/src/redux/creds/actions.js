@@ -56,3 +56,33 @@ export function receiveCreds(creds) {
 		creds: creds.creds
 	}
 }
+
+export function requestDeleteCreds(target, port_number) {
+	return (dispatch, getState) => {
+		const { project_uuid } = getState();
+
+		fetch(`/project/${project_uuid}/creds/delete?target=${target}&port_number=${port_number}`)
+			.then(
+				response => response.json(),
+				error => console.log(error)
+			)
+			.then(
+				json => {
+					if (isIP(target)) {
+						dispatch(fetchCredsForIPs())
+					}
+					else {
+						dispatch(fetchCredsForHosts())
+					}
+				}
+			)
+	}
+}
+
+
+function isIP(ipaddress) {  
+	if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress)) {  
+	  return (true)  
+	}  
+	return (false)  
+} 

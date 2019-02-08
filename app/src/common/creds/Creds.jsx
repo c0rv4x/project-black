@@ -1,6 +1,7 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
-import CredsSocketioEventsEmitter from '../../redux/creds/CredsSocketioEventsEmitter'
+import { requestDeleteCreds } from '../../redux/creds/actions.js'
 
 import {
     Box,
@@ -24,14 +25,13 @@ class Creds extends React.Component {
             inited: false
         };
 
-        this.credsEmitter = new CredsSocketioEventsEmitter();
         this.deleteCreds = this.deleteCreds.bind(this);
     }
 
     deleteCreds(port_number) {
-        const { scope, project_uuid } = this.props;
+        const { scope } = this.props;
 
-        this.credsEmitter.deleteCreds(project_uuid, scope.target, port_number);
+        this.context.store.dispatch(requestDeleteCreds(scope.target, port_number));
     }
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -176,5 +176,10 @@ class Creds extends React.Component {
         }
     }
 }
+
+Creds.contextTypes = {
+    store: PropTypes.object
+}
+
 
 export default Creds;
