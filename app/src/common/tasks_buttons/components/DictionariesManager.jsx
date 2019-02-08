@@ -1,9 +1,10 @@
 import React from 'react'
-
-import { Heading } from 'grommet'
+import PropTypes from 'prop-types'
 
 import DictionaryStats from './DictionaryStats.jsx'
-import DictsSocketioEventsEmitter from '../../../redux/dicts/DictsSocketioEventsEmitter.js'
+import { requestDicts } from '../../../redux/dicts/actions.js'
+
+import { Heading } from 'grommet'
 
 
 class DictionariesManager extends React.Component {
@@ -15,12 +16,10 @@ class DictionariesManager extends React.Component {
     }
 
     renewDicts() {
-        this.dictsEmitter.getDicts(this.props.project_uuid);
+        this.context.store.dispatch(requestDicts());
     }
 
     componentDidMount() {
-        // TODO: This can probably lead to race condition
-        this.dictsEmitter = new DictsSocketioEventsEmitter();
         this.renewDicts();
     }
 
@@ -43,6 +42,10 @@ class DictionariesManager extends React.Component {
 		)
 	}
 
+}
+
+DictionariesManager.contextTypes = {
+    store: PropTypes.object
 }
 
 export default DictionariesManager;
