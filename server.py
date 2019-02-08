@@ -69,7 +69,7 @@ if __name__ == '__main__':
     dict_handlers = DictHandlers(meta_manager.dict_manager)
     app.add_route(dict_handlers.cb_upload_dict, '/upload_dict', methods=['POST'])
     app.add_route(dict_handlers.cb_get_dictionary, '/dictionary/<dict_id>')
-    app.add_route(dict_handlers.cb_get_dicts_stats, '/dictionary/<project_uuid>/dicts/stats')
+    app.add_route(dict_handlers.cb_get_dicts_stats, '/project/<project_uuid:int>/dicts/stats')
 
     # Static handlers: index.html and bundle.js
     app.add_route(StaticHandlers.cb_index_handler, '/')
