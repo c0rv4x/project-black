@@ -1,8 +1,6 @@
 import asyncio
-from netaddr import IPNetwork
 
 from events_handling.notifications_spawner import send_notification
-
 
 
 class HostHandlers(object):
@@ -39,6 +37,7 @@ class HostHandlers(object):
                 ),
                 project_uuid=project_uuid
             )
+
 
 class ScopeHandlers(object):
     def __init__(self, socketio, scope_manager):
