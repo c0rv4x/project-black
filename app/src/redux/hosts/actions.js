@@ -1,3 +1,5 @@
+import fetch from 'cross-fetch'
+
 import { notifySuccess, notifyError } from '../notifications/actions.js'
 
 export const RESOLVE_HOSTS = 'RESOLVE_HOSTS'
