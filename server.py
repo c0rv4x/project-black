@@ -13,6 +13,7 @@ from config import CONFIG
 
 from managers.meta_manager import MetaManager
 
+from server.handlers.creds import CredsHandlers
 from server.handlers.dictionaries import DictHandlers
 from server.handlers.ips import IPsHandlers
 from server.handlers.hosts import HostsHandlers
@@ -58,6 +59,10 @@ if __name__ == '__main__':
     app.add_route(hosts_handlers.cb_update_comment, '/project/<project_uuid>/host/update/<host_id>', methods=['POST'])
     app.add_route(hosts_handlers.cb_delete_host, '/project/<project_uuid>/host/delete', methods=['POST'])
     app.add_route(hosts_handlers.cb_get_tasks_for_hosts, '/project/<project_uuid>/hosts/tasks', methods=['POST'])
+
+    # Handlers for creds
+    creds_handlers = CredsHandlers(meta_manager.creds_manager)
+    app.add_route(creds_handlers.cb_get_creds, '/project/<project_uuid>/creds', methods=['POST'])
 
     # Static handlers: index.html and bundle.js
     app.add_route(StaticHandlers.cb_index_handler, '/')
