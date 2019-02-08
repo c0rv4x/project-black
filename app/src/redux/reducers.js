@@ -7,7 +7,6 @@ import host_reduce from './hosts/reducers';
 import task_reduce from './tasks/reducers';
 import scan_reduce from './scans/reducers';
 import file_reduce from './files/reducers';
-import filter_reduce from './filters/reducers';
 import notification_reduce from './notifications/reducers';
 import scope_reduce from './scopes/reducers';
 import creds_reduce from './creds/reducers';
@@ -22,7 +21,6 @@ const all_reducers = combineReducers({
 	hosts: host_reduce,
 	scans: scan_reduce,
 	files: file_reduce,
-	filters: filter_reduce,
 	notifs: notification_reduce,
 	scopes: scope_reduce,
 	creds: creds_reduce,
