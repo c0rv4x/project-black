@@ -1,30 +1,10 @@
 import fetch from 'cross-fetch'
 
-export const RENEW_CREDS_STATS = 'RENEW_CREDS_STATS'
-export const RENEW_CREDS = 'RENEW_CREDS'
 
-
-export function renewCredsStats(message, current_project_uuid) {
-	return {
-		type: RENEW_CREDS_STATS,
-		current_project_uuid: current_project_uuid,
-		message
-	}
-}
-
-export function renewCreds(message, current_project_uuid) {
-	return {
-		type: RENEW_CREDS,
-		current_project_uuid: current_project_uuid,
-		message
-	}
-}
-
-
-export function fetchCreds(targets) {
+export function fetchCredsForIPs() {
 	return (dispatch, getState) => {
-		console.log(123);
-		const { project_uuid } = getState();
+		const { project_uuid, ips } = getState();
+		const targets = ips.data.map((ip) => ip.ip_address);
 
 		fetch(`/project/${project_uuid}/creds`, {
 			method: "POST",
@@ -49,6 +29,6 @@ export const RECEIVE_CREDS = 'RECEIVE_CREDS'
 export function receiveCreds(creds) {
 	return {
 		type: RECEIVE_CREDS,
-		creds
+		creds: creds.creds
 	}
 }

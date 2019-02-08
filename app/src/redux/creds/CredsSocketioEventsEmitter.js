@@ -7,19 +7,6 @@ class CredsSocketioEventsEmitter {
         this.connector = new Connector('creds');
     }
 
-    renewCount(project_uuid) {
-        this.connector.emit('creds:stats:get', {
-            "project_uuid": project_uuid
-        });
-    }
-
-    renewCreds(project_uuid, targets) {
-        this.connector.emit('creds:get', {
-            "project_uuid": project_uuid,
-            "targets": targets
-        });        
-    }
-
     deleteCreds(project_uuid, target, port_number) {
         this.connector.emit('creds:delete', {
             "project_uuid": project_uuid,

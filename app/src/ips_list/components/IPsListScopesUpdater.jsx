@@ -12,7 +12,6 @@ class IPsListScopesUpdater extends React.Component {
 		super(props);
 
 		this.renewIps = this.renewIps.bind(this);
-		this.renewCreds = this.renewCreds.bind(this);
 		this.renewFiles = this.renewFiles.bind(this);
 	}
 
@@ -20,9 +19,6 @@ class IPsListScopesUpdater extends React.Component {
 		let { project_uuid } = this.props;
 
 		this.context.store.dispatch(flushAndRequestIPs(project_uuid, filters, page, page_size));
-	}
-
-	renewCreds(ips=this.props.ips.data) {
 	}
 
 	renewFiles(ips=this.props.ips.data) {

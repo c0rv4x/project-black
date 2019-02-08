@@ -14,7 +14,7 @@ export function updatedIPs(message, current_project_uuid) {
 
 ////// 
 
-import { fetchCreds } from '../creds/actions.js'
+import { fetchCredsForIPs } from '../creds/actions.js'
 
 
 export const RECEIVE_IPS = 'RECEIVE_IPS'
@@ -70,7 +70,7 @@ export function requestIPs(project_uuid, filters={}, ip_page=0, ip_page_size=12)
 		dispatch(fetchIPs(project_uuid, params)).then(() => {
 			dispatch(fetchTasksForShownIPs());
 			dispatch(setLoadingIPs(false));
-			dispatch(fetchCreds());
+			dispatch(fetchCredsForIPs());
 		});
 	}
 }
