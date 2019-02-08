@@ -14,6 +14,8 @@ export function resolveHosts(message, current_project_uuid) {
 
 /////
 
+import { fetchCredsForHosts } from '../creds/actions.js'
+
 export const RECEIVE_HOSTS = 'RECEIVE_HOSTS'
 export function receiveHosts(message) {
 	return { type: RECEIVE_HOSTS, message }
@@ -68,6 +70,7 @@ export function requestHosts(project_uuid, filters={}, host_page=0, host_page_si
 		dispatch(fetchHosts(project_uuid, params)).then(() => {
 			dispatch(fetchTasksForShownHosts());
 			dispatch(setLoadingHosts(false));
+			dispatch(fetchCredsForHosts());
 		});
 	}
 }

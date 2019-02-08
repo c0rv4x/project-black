@@ -9,6 +9,12 @@ const initialState = {
 };
 
 function receiveCreds(state = initialState, action) {
+	// TODO: if there are creds on both ips and hosts
+	// we turn up in a situation when there are no creds displayed:
+	//   1. Fetch ips and creds for ips
+	//   2. Fetch hosts and creds for hosts
+	//   3. ips creds are replaced with hosts creds
+
 	return {
 		current_values: action.creds
 	}

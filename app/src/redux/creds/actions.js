@@ -25,6 +25,30 @@ export function fetchCredsForIPs() {
 	}
 }
 
+export function fetchCredsForHosts() {
+	return (dispatch, getState) => {
+		const { project_uuid, hosts } = getState();
+		const targets = hosts.data.map((host) => host.hostname);
+
+		fetch(`/project/${project_uuid}/creds`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				targets: targets
+			})
+		})
+			.then(
+				response => response.json(),
+				error => console.log(error)
+			)
+			.then(
+				json => dispatch(receiveCreds(json))
+			)
+	}
+}
+
 export const RECEIVE_CREDS = 'RECEIVE_CREDS'
 export function receiveCreds(creds) {
 	return {
