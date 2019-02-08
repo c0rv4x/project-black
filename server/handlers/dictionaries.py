@@ -48,7 +48,7 @@ class DictHandlers:
         get_result = self.dict_manager.get(project_uuid=project_uuid)
 
         if get_result["status"] == "success":
-            return response.text(get_result["dicts"], status=200)
+            return response.json(get_result["dicts"], status=200)
         else:
-            return response.text(get_result, status=500)
+            return response.json(get_result, status=500)
 
