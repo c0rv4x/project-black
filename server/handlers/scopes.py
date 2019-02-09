@@ -12,7 +12,6 @@ class ScopesHandlers:
 
     @authorized_class_method()
     async def cd_create_scopes(self, request, project_uuid):
-        project_uuid = int(project_uuid)
         scopes = json.loads(request.body)['scopes']
 
         results = {

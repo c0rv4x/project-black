@@ -11,7 +11,6 @@ class HostsHandlers:
 
     @authorized_class_method()
     async def cb_get_hosts(self, request, project_uuid):
-        project_uuid = int(project_uuid)
         params = request.raw_args
         host_page = int(params.get('host_page', '0'))
         host_page_size = int(params.get('host_page_size', '12'))
@@ -30,8 +29,6 @@ class HostsHandlers:
 
     @authorized_class_method()
     async def cb_get_single_host(self, request, project_uuid, hostname):
-        project_uuid = int(project_uuid)
-
         hosts = self.scope_manager.get_hosts_with_ports(
             { 'host': [hostname] }, project_uuid
         )

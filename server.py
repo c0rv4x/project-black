@@ -42,28 +42,28 @@ if __name__ == '__main__':
 
     # Handlers for scopes
     scopes_handlers = ScopesHandlers(meta_manager.scope_manager, socketio)
-    app.add_route(scopes_handlers.cd_create_scopes, '/project/<project_uuid>/scopes', methods=['POST'])
+    app.add_route(scopes_handlers.cd_create_scopes, '/project/<project_uuid:int>/scopes', methods=['POST'])
 
     # Manager IPS
     ips_handlers = IPsHandlers(meta_manager.scope_manager, socketio)
-    app.add_route(ips_handlers.cb_get_ips, '/project/<project_uuid>/ips')
-    app.add_route(ips_handlers.cb_get_single_ip, '/project/<project_uuid>/ip/get/<ip_address>')
-    app.add_route(ips_handlers.cb_update_comment, '/project/<project_uuid>/ip/update/<ip_id>', methods=['POST'])
-    app.add_route(ips_handlers.cb_delete_ip, '/project/<project_uuid>/ip/delete', methods=['POST'])
-    app.add_route(ips_handlers.cb_get_tasks_for_ips, '/project/<project_uuid>/ips/tasks', methods=['POST'])
+    app.add_route(ips_handlers.cb_get_ips, '/project/<project_uuid:int>/ips')
+    app.add_route(ips_handlers.cb_get_single_ip, '/project/<project_uuid:int>/ip/get/<ip_address>')
+    app.add_route(ips_handlers.cb_update_comment, '/project/<project_uuid:int>/ip/update/<ip_id>', methods=['POST'])
+    app.add_route(ips_handlers.cb_delete_ip, '/project/<project_uuid:int>/ip/delete', methods=['POST'])
+    app.add_route(ips_handlers.cb_get_tasks_for_ips, '/project/<project_uuid:int>/ips/tasks', methods=['POST'])
 
     # Handlers for hosts
     hosts_handlers = HostsHandlers(meta_manager.scope_manager, socketio)
-    app.add_route(hosts_handlers.cb_get_hosts, '/project/<project_uuid>/hosts')
-    app.add_route(hosts_handlers.cb_get_single_host, '/project/<project_uuid>/host/get/<hostname>')
-    app.add_route(hosts_handlers.cb_update_comment, '/project/<project_uuid>/host/update/<host_id>', methods=['POST'])
-    app.add_route(hosts_handlers.cb_delete_host, '/project/<project_uuid>/host/delete', methods=['POST'])
-    app.add_route(hosts_handlers.cb_get_tasks_for_hosts, '/project/<project_uuid>/hosts/tasks', methods=['POST'])
+    app.add_route(hosts_handlers.cb_get_hosts, '/project/<project_uuid:int>/hosts')
+    app.add_route(hosts_handlers.cb_get_single_host, '/project/<project_uuid:int>/host/get/<hostname>')
+    app.add_route(hosts_handlers.cb_update_comment, '/project/<project_uuid:int>/host/update/<host_id>', methods=['POST'])
+    app.add_route(hosts_handlers.cb_delete_host, '/project/<project_uuid:int>/host/delete', methods=['POST'])
+    app.add_route(hosts_handlers.cb_get_tasks_for_hosts, '/project/<project_uuid:int>/hosts/tasks', methods=['POST'])
 
     # Handlers for creds
     creds_handlers = CredsHandlers(meta_manager.creds_manager)
-    app.add_route(creds_handlers.cb_get_creds, '/project/<project_uuid>/creds', methods=['POST'])
-    app.add_route(creds_handlers.cb_delete_creds, '/project/<project_uuid>/creds/delete')
+    app.add_route(creds_handlers.cb_get_creds, '/project/<project_uuid:int>/creds', methods=['POST'])
+    app.add_route(creds_handlers.cb_delete_creds, '/project/<project_uuid:int>/creds/delete')
 
     ## Handlers for dicts
     dict_handlers = DictHandlers(meta_manager.dict_manager)

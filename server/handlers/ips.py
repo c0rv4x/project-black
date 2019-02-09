@@ -12,7 +12,6 @@ class IPsHandlers:
 
     @authorized_class_method()
     async def cb_get_ips(self, request, project_uuid):
-        project_uuid = int(project_uuid)
         params = request.raw_args
         ip_page = int(params.get('ip_page', '0'))
         ip_page_size = int(params.get('ip_page_size', '12'))
@@ -32,8 +31,6 @@ class IPsHandlers:
 
     @authorized_class_method()
     async def cb_get_single_ip(self, request, project_uuid, ip_address):
-        project_uuid = int(project_uuid)
-
         ips = self.scope_manager.get_ips_with_ports(
             { 'ip': [ip_address] }, project_uuid
         )
