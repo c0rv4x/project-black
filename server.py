@@ -18,6 +18,7 @@ from server.handlers.dictionaries import DictHandlers
 from server.handlers.ips import IPsHandlers
 from server.handlers.hosts import HostsHandlers
 from server.handlers.projects import ProjectsHandlers
+from server.handlers.scans import ScansHandlers
 from server.handlers.scopes import ScopesHandlers
 from server.handlers.static import StaticHandlers
 from server.handlers.tasks import TasksHandlers
@@ -76,6 +77,10 @@ if __name__ == '__main__':
     tasks_handlers = TasksHandlers(meta_manager.task_manager, socketio)
     app.add_route(tasks_handlers.cb_get_tasks, '/project/<project_uuid:int>/tasks')
     app.add_route(tasks_handlers.cb_create_task, '/project/<project_uuid:int>/tasks/create', methods=['POST'])
+
+    # Handler for scans
+    scans_handlers = ScansHandlers(meta_manager.scan_manager)
+    app.add_route(scans_handlers.cb_count_scans, '/project/<project_uuid:int>/scans/count')
 
     # Static handlers: index.html and bundle.js
     app.add_route(StaticHandlers.cb_index_handler, '/')
