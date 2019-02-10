@@ -20,6 +20,7 @@ from server.handlers.hosts import HostsHandlers
 from server.handlers.projects import ProjectsHandlers
 from server.handlers.scopes import ScopesHandlers
 from server.handlers.static import StaticHandlers
+from server.handlers.tasks import TasksHandlers
 from server.handlers.utils import authorized
 
 
@@ -70,6 +71,10 @@ if __name__ == '__main__':
     app.add_route(dict_handlers.cb_upload_dict, '/upload_dict', methods=['POST'])
     app.add_route(dict_handlers.cb_get_dictionary, '/dictionary/<dict_id>')
     app.add_route(dict_handlers.cb_get_dicts_stats, '/project/<project_uuid:int>/dicts/stats')
+
+    # Handlers for tasks
+    tasks_handlers = TasksHandlers(meta_manager.task_manager, socketio)
+    app.add_route(tasks_handlers.cb_create_task, '/project/<project_uuid:int>/tasks/create', methods=['POST'])
 
     # Static handlers: index.html and bundle.js
     app.add_route(StaticHandlers.cb_index_handler, '/')
