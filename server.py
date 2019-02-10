@@ -74,6 +74,7 @@ if __name__ == '__main__':
 
     # Handlers for tasks
     tasks_handlers = TasksHandlers(meta_manager.task_manager, socketio)
+    app.add_route(tasks_handlers.cb_get_tasks, '/project/<project_uuid:int>/tasks')
     app.add_route(tasks_handlers.cb_create_task, '/project/<project_uuid:int>/tasks/create', methods=['POST'])
 
     # Static handlers: index.html and bundle.js

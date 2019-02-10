@@ -26,6 +26,15 @@ class TasksHandlers:
         return response.json({})
 
 
+    @authorized_class_method()
+    async def cb_get_tasks(self, request, project_uuid):
+        tasks = self.task_manager.get_tasks(
+            project_uuid, only_fresh=False
+        )
+
+        return response.json(tasks)
+
+
 class TasksNotifier:
     def __init__(self, socketio):
         self.socketio = socketio
