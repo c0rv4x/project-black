@@ -2,7 +2,6 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
 import ButtonTasks from '../../common/tasks_buttons/components/ButtonTasks.jsx'
 
 import { requestCreateTask } from '../../redux/tasks/actions.js'
@@ -21,10 +20,6 @@ class TitleButtonsWithHandlers extends React.Component {
 		
 		this.dirbusterStart = this.dirbusterStart.bind(this);
 		this.runPatator = this.runPatator.bind(this);
-	}
-
-	componentDidMount() {
-		this.tasksEmitter = new TasksSocketioEventsEmitter();
 	}
 
 	shouldComponentUpdate(nextProps) {

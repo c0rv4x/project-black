@@ -1,7 +1,9 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
-import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
 import ButtonTasks from '../../common/tasks_buttons/components/ButtonTasks.jsx'
+
+import { requestCreateTask } from '../../redux/tasks/actions.js'
 
 
 class TasksButtonsTracked extends React.Component {
@@ -11,19 +13,15 @@ class TasksButtonsTracked extends React.Component {
 		this.dirbusterStart = this.dirbusterStart.bind(this);
 	}
 
-	componentDidMount() {
-		this.tasksEmitter = new TasksSocketioEventsEmitter();
-	}
-
 	dirbusterStart(options) {
-		var scheme = this.props.activePortNumber === 443 ? 'https' : 'http';
 		var target = this.props.host.hostname;
-		this.tasksEmitter.requestCreateTask('dirsearch', 
+
+		this.context.store.dispatch(requestCreateTask('dirsearch', 
 											{'host': [target],
 											 'port:': [this.props.activePortNumber]}, 
 											{'program': options,
 											 'targets': 'hosts'}, 
-											this.props.project_uuid)
+											this.props.project_uuid));
 	}
 
 	render() {
@@ -95,6 +93,10 @@ class TasksButtonsTracked extends React.Component {
 			} />
 		)
 	}
+}
+
+TasksButtonsTracked.contextTypes = {
+    store: PropTypes.object
 }
 
 export default TasksButtonsTracked;

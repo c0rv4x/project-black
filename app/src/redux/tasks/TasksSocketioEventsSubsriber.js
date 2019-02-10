@@ -1,4 +1,3 @@
-import Notifications from 'react-notification-system-redux'
 
 import { 
 	renewTasks,
@@ -8,7 +7,6 @@ import {
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
-import TasksSocketioEventsEmitter from './TasksSocketioEventsEmitter.js';
 
 
 let instance = null;
@@ -20,20 +18,16 @@ class TasksSocketioEventsSubsriber {
         this.project_uuid = project_uuid;
         this.connector = new Connector('tasks');
 
-        this.connector.after_connected((x) => {
-        	this.emitter = new TasksSocketioEventsEmitter();
-        	this.emitter.requestRenewTasks(this.project_uuid, true);
-        });
-
         this.basic_events_registration();
 	}
 
 	basic_events_registration() {
 		/* Register handlers on basic events */
 		// Received all tasks in one message
+		this.register_socketio_handler('tasks:new', tasksCreated);
+
 		this.register_socketio_handler('tasks:all:get:back:all', renewTasks);
 		this.register_socketio_handler('tasks:all:get:back:updated', updateTasks);
-		this.register_socketio_handler('tasks:new', tasksCreated);
 	}
 
 	register_socketio_handler(eventName, callback) {

@@ -1,8 +1,10 @@
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 
-import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
 import ButtonTasks from '../../common/tasks_buttons/components/ButtonTasks.jsx'
+
+import { requestCreateTask } from '../../redux/tasks/actions.js'
 
 
 class TaskButton extends React.Component {
@@ -13,19 +15,17 @@ class TaskButton extends React.Component {
 		this.runAmass = this.runAmass.bind(this);
 	}
 
-	componentDidMount() {
-		this.tasksEmitter = new TasksSocketioEventsEmitter();
-	}
-
 	shouldComponentUpdate(nextProps) {
 		return !_.isEqual(nextProps, this.props);
 	}
 
 	runAmass(params) {
-		this.tasksEmitter.requestCreateTask('amass',
-											null,
-											{'program': params},
-											this.props.project_uuid)
+		this.context.store.dispatch(requestCreateTask(
+			'amass',
+			null,
+			{'program': params},
+			this.props.project_uuid
+		));
 	}
 
 	render() {
@@ -89,5 +89,9 @@ class TaskButton extends React.Component {
 
 }
 
+
+TaskButton.contextTypes = {
+    store: PropTypes.object
+}
 
 export default TaskButton;

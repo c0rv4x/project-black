@@ -1,8 +1,10 @@
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 
-import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
 import ButtonTasks from '../../common/tasks_buttons/components/ButtonTasks.jsx'
+
+import { requestCreateTask } from '../../redux/tasks/actions.js'
 
 
 class TasksButtonsTracked extends React.Component {
@@ -13,28 +15,28 @@ class TasksButtonsTracked extends React.Component {
 		this.runPatator = this.runPatator.bind(this);
 	}
 
-	componentDidMount() {
-		this.tasksEmitter = new TasksSocketioEventsEmitter();
-	}
-
 	shouldComponentUpdate(nextProps) {
 		return !_.isEqual(nextProps, this.props);
 	}	
 
 	dirbusterStart(options) {
-		this.tasksEmitter.requestCreateTask('dirsearch',
-											this.props.filters,
-											{'program': options,
-											 'targets': 'hosts'},
-											this.props.project_uuid);
+		this.context.store.dispatch(requestCreateTask(
+			'dirsearch', 
+			this.props.filters,
+			{'program': options,
+				'targets': 'hosts'},
+			this.props.project_uuid
+		));
 	}
 
 	runPatator(params) {
-		this.tasksEmitter.requestCreateTask('patator', 
-											this.props.filters, 
-											{'program': [params["argv"]],
-											'targets': 'hosts'},
-											this.props.project_uuid);
+		this.context.store.dispatch(requestCreateTask(
+			'patator', 
+			this.props.filters, 
+			{'program': [params["argv"]],
+			'targets': 'hosts'},
+			this.props.project_uuid
+		));
 	}
 
 
@@ -148,6 +150,10 @@ class TasksButtonsTracked extends React.Component {
 			} />
 		)
 	}
+}
+
+TasksButtonsTracked.contextTypes = {
+    store: PropTypes.object
 }
 
 export default TasksButtonsTracked;

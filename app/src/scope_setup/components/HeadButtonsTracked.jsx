@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import { Box } from 'grommet'
 
 import HostsSocketioEventsEmitter from '../../redux/hosts/HostsSocketioEventsEmitter.js'
-import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
 import ResolveButton from '../presentational/ResolveButton.jsx'
 import ScopesLock from '../presentational/ScopesLock.jsx'
 import TaskButton from './TaskButton.jsx'
@@ -23,7 +22,6 @@ class HeadButtonsTracked extends React.Component {
 
 	componentDidMount() {
 		this.hostsEmitter = new HostsSocketioEventsEmitter();
-		this.tasksEmitter = new TasksSocketioEventsEmitter();
 	}
 
 	resolveScopes(scopes_ids, project_uuid) {
