@@ -33,11 +33,6 @@ class TasksSocketioEventsSubsriber {
 		// Received all tasks in one message
 		this.register_socketio_handler('tasks:all:get:back:all', renewTasks);
 		this.register_socketio_handler('tasks:all:get:back:updated', updateTasks);
-		this.register_project_new_task();
-	}
-
-	register_project_new_task() {
-		/* Check new task */
 		this.register_socketio_handler('tasks:new', newTask);
 	}
 

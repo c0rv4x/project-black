@@ -17,12 +17,6 @@ class TasksSocketioEventsEmitter {
 		});
 	}
 
-	requestChangeStatusTask(task_id) {
-		this.connector.emit('tasks:status_change:task_id', {
-			'task_id': task_id
-		});
-	}
-
 	requestRenewTasks(project_uuid, send_all) {
 		if (!send_all) { send_all = false }
 		this.connector.emit('tasks:all:get', {
