@@ -15,53 +15,47 @@ function tasksCreated(state = {'active': [], 'finished': []}, action) {
 }
 
 
-function renew_tasks(state = {'active': [], 'finished': []}, action) {
-	const message = action.message;
+function renewTasks(state = {'active': [], 'finished': []}, action) {
+	const tasks = action.tasks;
 
-	if (message["status"] == 'success') {
-		const active_tasks = message['tasks']['active'];
-
-		var parsed_active_tasks = _.map(_.uniq(active_tasks), (x) => {
-			return {
-				"task_id": x["task_id"],
-				"task_type": x["task_type"],
-				"params": x["params"],
-				"target": x["target"],
-				"status": x["status"],
-				"progress": x["progress"],
-				"project_uuid": x["project_uuid"],
-				"text": x["text"],
-				"stdout": x["stdout"],
-				"stderr": x["stderr"],
-				"date_added": x["date_added"]
-			}
-		});
-
-		const finished_tasks = message['tasks']['finished'];
-		var parsed_finished_tasks = _.map(_.uniq(finished_tasks), (x) => {
-			return {
-				"task_id": x["task_id"],
-				"task_type": x["task_type"],
-				"params": x["params"],
-				"target": x["target"],
-				"status": x["status"],
-				"progress": x["progress"],
-				"project_uuid": x["project_uuid"],
-				"text": x["text"],
-				"stdout": x["stdout"],
-				"stderr": x["stderr"],
-				"date_added": x["date_added"]
-			}
-		});
-
+	const active_tasks = tasks['active'];
+	let parsed_active_tasks = _.map(_.uniq(active_tasks), (x) => {
 		return {
-			'active': parsed_active_tasks,
-			'finished': parsed_finished_tasks
-		};
-	} else {
-		/* TODO: add error handling */
-	}	
-	return state;
+			"task_id": x["task_id"],
+			"task_type": x["task_type"],
+			"params": x["params"],
+			"target": x["target"],
+			"status": x["status"],
+			"progress": x["progress"],
+			"project_uuid": x["project_uuid"],
+			"text": x["text"],
+			"stdout": x["stdout"],
+			"stderr": x["stderr"],
+			"date_added": x["date_added"]
+		}
+	});
+
+	const finished_tasks = tasks['finished'];
+	let parsed_finished_tasks = _.map(_.uniq(finished_tasks), (x) => {
+		return {
+			"task_id": x["task_id"],
+			"task_type": x["task_type"],
+			"params": x["params"],
+			"target": x["target"],
+			"status": x["status"],
+			"progress": x["progress"],
+			"project_uuid": x["project_uuid"],
+			"text": x["text"],
+			"stdout": x["stdout"],
+			"stderr": x["stderr"],
+			"date_added": x["date_added"]
+		}
+	});
+
+	return {
+		'active': parsed_active_tasks,
+		'finished': parsed_finished_tasks
+	};
 }
 
 function update_tasks(state = {'active': [], 'finished': []}, action) {
@@ -130,22 +124,17 @@ function update_tasks(state = {'active': [], 'finished': []}, action) {
 }
 
 function task_reduce(state = {'active': [], 'finished': []}, action) {
-	if (!action.hasOwnProperty('message')) {
-		return state
-	}
+	if (action.message && action.message.project_uuid && action.message.project_uuid != action.current_project_uuid ) { return state; }
 	else {
-		if (action.message && action.message.project_uuid != action.current_project_uuid ) { return state; }
-		else {
-			switch (action.type) {
-				case TASKS_CREATED:
-					return tasksCreated(state, action);
-				case RENEW_TASKS:
-					return renew_tasks(state, action);
-				case UPDATE_TASKS:
-					return update_tasks(state, action);
-				default:
-					return state;
-			}
+		switch (action.type) {
+			case TASKS_CREATED:
+				return tasksCreated(state, action);
+			case RENEW_TASKS:
+				return renewTasks(state, action);
+			case UPDATE_TASKS:
+				return update_tasks(state, action);
+			default:
+				return state;
 		}
 	}
 }

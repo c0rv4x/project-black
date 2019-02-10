@@ -15,6 +15,7 @@ import { fetchProjects } from '../redux/projects/actions.js'
 import { requestIPs } from '../redux/ips/actions.js'
 import { requestHosts } from '../redux/hosts/actions.js'
 import { setProjectUuid } from '../redux/project_uuid/actions.js'
+import { requestTasks } from '../redux/tasks/actions.js'
 
 
 class NavigationTabsWrapper extends React.Component {
@@ -38,6 +39,8 @@ class NavigationTabsWrapper extends React.Component {
         mainStore.dispatch(requestHosts(project_uuid));
 
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
+        mainStore.dispatch(requestTasks());
+
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
         this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);   
         this.notificationsSubscriber = new NotificationsSocketioEventsSubscriber(mainStore, project_uuid);

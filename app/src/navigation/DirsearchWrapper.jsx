@@ -11,6 +11,7 @@ import FilesSocketioEventsSubsriber from '../redux/files/FilesSocketioEventsSubs
 
 import { fetchProjects } from '../redux/projects/actions.js'
 import { setProjectUuid } from '../redux/project_uuid/actions.js'
+import { requestTasks } from '../redux/tasks/actions.js'
 
 class DirsearchWrapper extends React.Component {
     constructor(props) {
@@ -26,7 +27,10 @@ class DirsearchWrapper extends React.Component {
         mainStore.dispatch(fetchProjects());
         this.ipsSubscriber = new IPsSocketioEventsSubsriber(mainStore, project_uuid, null, {'files': ['%']}, 4);
         this.hostsSubscriber = new HostsSocketioEventsSubsriber(mainStore, project_uuid, null, {'files': ['%']}, 4);
+
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
+        mainStore.dispatch(requestTasks());
+
         this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
         this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);        
     }
