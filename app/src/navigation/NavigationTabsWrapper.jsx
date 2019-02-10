@@ -7,7 +7,6 @@ import ProjectsSocketioEventsSubscriber from '../redux/projects/ProjectsSocketio
 import IPsSocketioEventsSubsriber from '../redux/ips/IPsSocketioEventsSubscriber'
 import HostsSocketioEventsSubsriber from '../redux/hosts/HostsSocketioEventsSubscriber'
 import TasksSocketioEventsSubsriber from '../redux/tasks/TasksSocketioEventsSubsriber'
-import ScansSocketioEventsSubsriber from '../redux/scans/ScansSocketioEventsSubscriber'
 import FilesSocketioEventsSubsriber from '../redux/files/FilesSocketioEventsSubscriber'
 import NotificationsSocketioEventsSubscriber from '../redux/notifications/NotificationsSocketioEventsSubscriber'
 
@@ -16,6 +15,7 @@ import { requestIPs } from '../redux/ips/actions.js'
 import { requestHosts } from '../redux/hosts/actions.js'
 import { setProjectUuid } from '../redux/project_uuid/actions.js'
 import { requestTasks } from '../redux/tasks/actions.js'
+import { requestCountScans } from '../redux/scans/actions.js'
 
 
 class NavigationTabsWrapper extends React.Component {
@@ -41,7 +41,8 @@ class NavigationTabsWrapper extends React.Component {
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         mainStore.dispatch(requestTasks());
 
-        this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
+        mainStore.dispatch(requestCountScans());
+
         this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);   
         this.notificationsSubscriber = new NotificationsSocketioEventsSubscriber(mainStore, project_uuid);
     }
@@ -57,7 +58,6 @@ class NavigationTabsWrapper extends React.Component {
         this.ipsSubscriber.close();
         this.hostsSubscriber.close();
         this.tasksSubscriber.close();
-        this.scansSubscriber.close();
         this.filesSubscriber.close();
         this.notificationsSubscriber.close();
         this.scopesSubscriber.close();

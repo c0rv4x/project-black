@@ -1,7 +1,8 @@
 import _ from 'lodash';
 
 import { 
-	RENEW_SCANS_STATS
+	RENEW_SCANS_STATS,
+	SET_LOADING_SCANS
 } from './actions.js'
 
 
@@ -10,31 +11,28 @@ const defaultState = {
 	"loaded": false
 }
 
-function renew_scans_stats(state = defaultState, action) {
-	const message = action.message;
-
+function renewScansStats(state = defaultState, action) {
 	return {
-		"amount": message['amount'],
-		"loaded": true
+		"amount": action.amount,
+		...state
+	};
+}
+
+function setLoadingScans(state = defaultState, action) {
+	return {
+		"loaded": !action.loading,
+		...state
 	};
 }
 
 function scan_reduce(state = defaultState, action) {
-	if (!action.hasOwnProperty('message')) {
-		return state
-	}
-	else {
-		if (action.message && action.current_project_uuid != action.message.project_uuid) { 
+	switch (action.type) {
+		case RENEW_SCANS_STATS:
+			return renewScansStats(state, action);
+		case SET_LOADING_SCANS:
+			return setLoadingScans(state, action);
+		default:
 			return state;
-		}
-		else {	
-			switch (action.type) {
-				case RENEW_SCANS_STATS:
-					return renew_scans_stats(state, action);
-				default:
-					return state;
-			}
-		}
 	}
 }
 
