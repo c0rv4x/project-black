@@ -13,15 +13,15 @@ const defaultState = {
 
 function renewScansStats(state = defaultState, action) {
 	return {
-		"amount": action.amount,
-		...state
+		...state,
+		"amount": action.amount
 	};
 }
 
 function setLoadingScans(state = defaultState, action) {
 	return {
-		"loaded": !action.loading,
-		...state
+		...state,
+		"loaded": !action.loading
 	};
 }
 
