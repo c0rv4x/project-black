@@ -1,10 +1,10 @@
 import Notifications from 'react-notification-system-redux'
 
 import { 
-	newTask, 
-	changeStatusTask,
 	renewTasks,
-	updateTasks
+	updateTasks,
+
+	tasksCreated
 } from './actions';
 
 import Connector from '../SocketConnector.jsx';
@@ -33,21 +33,13 @@ class TasksSocketioEventsSubsriber {
 		// Received all tasks in one message
 		this.register_socketio_handler('tasks:all:get:back:all', renewTasks);
 		this.register_socketio_handler('tasks:all:get:back:updated', updateTasks);
-		this.register_socketio_handler('tasks:new', newTask);
+		this.register_socketio_handler('tasks:new', tasksCreated);
 	}
 
 	register_socketio_handler(eventName, callback) {
 		/* Just a wrapper for connector.listen */
 		this.connector.listen(eventName, (x) => {
-			if (x.status == 'success') {
-				this.store.dispatch(callback(x, this.project_uuid));
-			}
-			else {
-				this.store.dispatch(Notifications.error({
-					title: 'Error with tasks',
-					message: x.text
-				}));
-			}
+			this.store.dispatch(callback(x, this.project_uuid));
 		});
 	}
 

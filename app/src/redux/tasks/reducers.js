@@ -1,25 +1,17 @@
 import {
-	NEW_TASK,
-	CHANGE_STATUS_TASK,
+	TASKS_CREATED,
 	RENEW_TASKS,
 	UPDATE_TASKS
 } from './actions';
 
 
-function new_task(state = {'active': [], 'finished': []}, action) {
+function tasksCreated(state = {'active': [], 'finished': []}, action) {
 	const message = action.message;
 
 	return {
 		'active': state['active'].concat(message['new_tasks']),
 		'finished': state['finished']
 	}
-
-	return state;
-}
-
-
-function change_status_task(state = {'active': [], 'finished': []}, action) {
-	return state;
 }
 
 
@@ -145,10 +137,8 @@ function task_reduce(state = {'active': [], 'finished': []}, action) {
 		if (action.message && action.message.project_uuid != action.current_project_uuid ) { return state; }
 		else {
 			switch (action.type) {
-				case NEW_TASK:
-					return new_task(state, action);
-				case CHANGE_STATUS_TASK:
-					return change_status_task(state, action);
+				case TASKS_CREATED:
+					return tasksCreated(state, action);
 				case RENEW_TASKS:
 					return renew_tasks(state, action);
 				case UPDATE_TASKS:

@@ -1,14 +1,19 @@
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import TasksSocketioEventsEmitter from '../../redux/tasks/TasksSocketioEventsEmitter.js'
 import ButtonTasks from '../../common/tasks_buttons/components/ButtonTasks.jsx'
+
+import { requestCreateTask } from '../../redux/tasks/actions.js'
 
 
 class TitleButtonsWithHandlers extends React.Component {
 
 	constructor(props) {
 		super(props);
+
+		this.createTask = this.createTask.bind(this);
 
 		this.runMasscan = this.runMasscan.bind(this);
 		this.runNmap = this.runNmap.bind(this);
@@ -26,18 +31,18 @@ class TitleButtonsWithHandlers extends React.Component {
 		return !_.isEqual(nextProps, this.props);
 	}
 
+	createTask(task_type, params) {
+		const { filters, project_uuid } = this.props;
+
+		this.context.store.dispatch(requestCreateTask(task_type, filters, params, project_uuid));
+	}
+
 	runMasscan(params) {
-		this.tasksEmitter.requestCreateTask('masscan',
-											this.props.filters,
-											{'program': [params["argv"]]},
-											this.props.project_uuid)
+		this.createTask('masscan', {'program': [params["argv"]]});
 	}
 
 	runNmap(params) {
-		this.tasksEmitter.requestCreateTask('nmap', 
-											this.props.filters, 
-											{'program': [params["argv"]]},
-											this.props.project_uuid)
+		this.createTask('nmap', {'program': [params["argv"]]});
 	}
 
 	runNmapOnlyOpen(params) {
@@ -49,26 +54,16 @@ class TitleButtonsWithHandlers extends React.Component {
 		else {
 			filters['port'] = ["%"];
 		}
-		this.tasksEmitter.requestCreateTask('nmap_open',
-											filters,
-											{'program': [params["argv"]]},
-											this.props.project_uuid)
+
+		this.createTask('nmap_open', {'program': [params["argv"]]});
 	}
 
 	dirbusterStart(options) {
-		this.tasksEmitter.requestCreateTask('dirsearch',
-											this.props.filters,
-											{'program': options,
-											 'targets': 'ips'},
-											this.props.project_uuid);
+		this.createTask('dirsearch', {'program': options, 'targets': 'ips'});
 	}
 
 	runPatator(params) {
-		this.tasksEmitter.requestCreateTask('patator', 
-											this.props.filters, 
-											{'program': [params["argv"]],
-											'targets': 'ips'},
-											this.props.project_uuid);
+		this.createTask('patator', {'program': [params["argv"]], 'targets': 'ips'});
 	}
 
 	render() {
@@ -263,6 +258,11 @@ class TitleButtonsWithHandlers extends React.Component {
 		)
 	}
 
+}
+
+
+TitleButtonsWithHandlers.contextTypes = {
+    store: PropTypes.object
 }
 
 
