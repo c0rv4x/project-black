@@ -6,7 +6,6 @@ import DirsaerchPage from '../dirsearch_tables/components/MainAccumulatorWrapper
 import IPsSocketioEventsSubsriber from '../redux/ips/IPsSocketioEventsSubscriber'
 import HostsSocketioEventsSubsriber from '../redux/hosts/HostsSocketioEventsSubscriber'
 import TasksSocketioEventsSubsriber from '../redux/tasks/TasksSocketioEventsSubsriber'
-import ScansSocketioEventsSubsriber from '../redux/scans/ScansSocketioEventsSubscriber'
 import FilesSocketioEventsSubsriber from '../redux/files/FilesSocketioEventsSubscriber'
 
 import { fetchProjects } from '../redux/projects/actions.js'
@@ -31,7 +30,6 @@ class DirsearchWrapper extends React.Component {
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         mainStore.dispatch(requestTasks());
 
-        this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
         this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);        
     }
 
@@ -46,7 +44,6 @@ class DirsearchWrapper extends React.Component {
         this.ipsSubscriber.close();
         this.hostsSubscriber.close();
         this.tasksSubscriber.close();
-        this.scansSubscriber.close();
         this.filesSubscriber.close();        
     }     
 }

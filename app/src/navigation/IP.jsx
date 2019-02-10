@@ -5,7 +5,6 @@ import IPPage from '../ip_verbose/components/MainAccumulatorWrapper.jsx'
 
 import IPsSocketioEventsSubsriber from '../redux/ips/IPsSocketioEventsSubscriber'
 import TasksSocketioEventsSubsriber from '../redux/tasks/TasksSocketioEventsSubsriber'
-import ScansSocketioEventsSubsriber from '../redux/scans/ScansSocketioEventsSubscriber'
 import FilesSocketioEventsSubsriber from '../redux/files/FilesSocketioEventsSubscriber'
 
 import { fetchProjects } from '../redux/projects/actions.js'
@@ -31,7 +30,6 @@ class IP extends React.Component {
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         mainStore.dispatch(requestTasks());
 
-        this.scansSubscriber = new ScansSocketioEventsSubsriber(mainStore, project_uuid);
         this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid, ip_address);        
     }
 
@@ -45,7 +43,6 @@ class IP extends React.Component {
         this.projectsSubscriber.close();
         this.ipsSubscriber.close();
         this.tasksSubscriber.close();
-        this.scansSubscriber.close();
         this.filesSubscriber.close();    
     }       
 }
