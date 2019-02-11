@@ -57,9 +57,9 @@ class IPsHandlers:
                 project_uuid, ip_id, comment
             )
 
-            return response.json({ 'status': 'ok' })
+            return response.json({}, status=200)
         else:
-            return response.json({ 'status': 'error', 'message': result['text'] })
+            return response.json({ 'message': result['text'] }, status=403)
 
 
     @authorized_class_method()
@@ -74,9 +74,9 @@ class IPsHandlers:
                 project_uuid, ip_id
             )
 
-            return response.json({ 'status': 'ok' })
+            return response.json({}, status=200)
         else:
-            return response.json({ 'status': 'error', 'message': delete_result['text'] })
+            return response.json({ 'message': delete_result['text'] }, status=403)
 
 
     @authorized_class_method()
@@ -93,9 +93,9 @@ class IPsHandlers:
             return response.json({
                 'active': get_result['active'],
                 'finished': get_result['finished']  
-            })
+            }, status=200)
         else:
-            return response.json({ 'status': 'error', 'message': get_result.text })
+            return response.json({ 'message': get_result.text }, status=403)
 
 
 class IPsNotifier:

@@ -120,17 +120,19 @@ export function requestUpdateIPComment(project_uuid, ip_id, comment) {
 		})
 	})
 		.then(
-			response => response.json(),
-			error => console.log(error)
+			response => response.json().then(json => ({
+				status: response.status,
+				json
+			}))
 		)
 		.then(
-			json => {
-				if (json.status == 'ok') {
-					dispatch(notifySuccess("IP comment updated"))
+			({ status, json }) => {
+				if (status == 200) {
+					dispatch(notifySuccess("IP comment updated"));
 				}
 				else {
 					dispatch(notifyError("Error updating IP comment " + json.message));
-				}				
+				}
 			}
 		)
 }
@@ -220,13 +222,22 @@ export function fetchTasksForShownIPs() {
 				ips: ip_addresses
 			})
 		})
-			.then(
-				response => response.json(),
-				error => console.log(error)
-			)
-			.then(
-				json => dispatch(receiveTasksForIPs(json))
-			)
+		.then(
+			response => response.json().then(json => ({
+				status: response.status,
+				json
+			}))
+		)
+		.then(
+			({ status, json }) => {
+				if (status == 200) {
+					dispatch(receiveTasksForIPs(json));
+				}
+				else {
+					dispatch(notifyError("Error while fetching tasks for ips. " + json.message));
+				}
+			}
+		)
 	}
 }
 
