@@ -58,6 +58,8 @@ export function flushAndRequestIPs(project_uuid, filters={}, ip_page=0, ip_page_
 }
 
 
+import { fetchFilesStatsIPs } from '../files/actions.js'
+
 export function requestIPs(project_uuid, filters={}, ip_page=0, ip_page_size=12) {
 	const params = {
 		filters: filters,
@@ -71,6 +73,7 @@ export function requestIPs(project_uuid, filters={}, ip_page=0, ip_page_size=12)
 			dispatch(fetchTasksForShownIPs());
 			dispatch(setLoadingIPs(false));
 			dispatch(fetchCredsForIPs());
+			dispatch(fetchFilesStatsIPs());
 		});
 	}
 }

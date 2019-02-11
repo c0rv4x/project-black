@@ -59,6 +59,43 @@ export function emptyFiles(message, current_project_uuid) {
 
 /////
 
+export function fetchFilesStatsIPs() {
+	return (dispatch, getState) => {
+		const { project_uuid, ips } = getState();
+		const { filters } = ips;
+
+		return fetch(`/project/${project_uuid}/files/stats/ips`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				ip_ids: ips.data.map((ip) => ip.ip_id),
+				filters: filters
+			})
+		})
+			.then(
+				response => response.json(),
+				error => console.log(error)
+			)
+			.then(
+				json => {
+					dispatch(receiveFilesStatsIPs(json));			
+				}
+			)
+	}
+}
+
+
+export const RECEIVE_FILES_STATS_IPS = 'RECEIVE_FILES_STATS_IPS';
+
+export function receiveFilesStatsIPs(stats) {
+	return {
+		type: RECEIVE_FILES_STATS_IPS,
+		stats
+	}
+}
+
 export function fetchFilesStatsHosts() {
 	return (dispatch, getState) => {
 		const { project_uuid, hosts } = getState();
