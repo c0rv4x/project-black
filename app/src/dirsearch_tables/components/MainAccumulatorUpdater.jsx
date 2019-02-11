@@ -9,6 +9,7 @@ import Loading from '../../common/loading/Loading.jsx'
 
 import { flushAndRequestIPs } from '../../redux/ips/actions.js'
 import { flushAndRequestHosts } from '../../redux/hosts/actions.js'
+import { requestFilesHost } from '../../redux/files/actions.js'
 
 
 class MainAccumulatorUpdater extends React.Component {
@@ -79,14 +80,7 @@ class MainAccumulatorUpdater extends React.Component {
 	}
 
 	getFilesHosts(host, port_number, limit, offset, filters) {
-		this.filesEmitter.requestFilesHosts(
-			this.props.project_uuid,
-			host,
-			port_number,
-			limit,
-			offset,
-			filters
-		);
+		this.context.store.dispatch(requestFilesHost(host, port_number, limit, offset, filters));
 	}
 
 	getFilesIps(ip, port_number, limit, offset, filters) {

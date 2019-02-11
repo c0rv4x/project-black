@@ -2,13 +2,13 @@ import _ from 'lodash';
 
 import { 
 	ADD_FILES_IPS,
-	ADD_FILES_HOSTS,
 	EMPTY_FILES,
 
 	RENEW_FILES_STATS,
 	SET_LOADING_FILES,
 	RECEIVE_FILES_STATS_HOSTS,
-	RECEIVE_FILES_STATS_IPS
+	RECEIVE_FILES_STATS_IPS,
+	RECEIVE_FILES_DATA_HOSTS
 } from './actions.js'
 
 
@@ -25,32 +25,6 @@ const defaultState = {
 		"ip": {},
 		"host": {}
 	}
-}
-
-function add_files_hosts(state = defaultState, action) {
-	const message = action.message;
-
-	let new_files = JSON.parse(JSON.stringify(state['files']));
-
-	if (new_files.host.hasOwnProperty(message.host)) {
-		if (new_files.host[message.host].hasOwnProperty(message.port_number)) {
-			new_files.host[message.host][message.port_number] = new_files.host[message.host][message.port_number].concat(message['files']);
-		}
-		else {
-			new_files.host[message.host][message.port_number] = message['files'];
-		}
-	}
-	else {
-		new_files.host[message.host] = {};
-		new_files.host[message.host][message.port_number] = message['files'];
-	}
-
-	return {
-		"stats": state['stats'],
-		"amount": state['amount'],
-		"loaded": state['loaded'],
-		"files": new_files
-	};
 }
 
 function add_files_ips(state = defaultState, action) {
@@ -141,10 +115,36 @@ function receiveFilesStatsIPs(state = defaultState, action) {
 	};
 }
 
+function receiveFilesDataHosts(state = defaultState, action) {
+	const files = action.files;
+	const host = action.host;
+	const port_number = action.port_number;
+
+	let new_files = JSON.parse(JSON.stringify(state['files']));
+
+	if (new_files.host.hasOwnProperty(host)) {
+		if (new_files.host[host].hasOwnProperty(port_number)) {
+			new_files.host[host][port_number] = new_files.host[host][port_number].concat(files);
+		}
+		else {
+			new_files.host[host][port_number] = files;
+		}
+	}
+	else {
+		new_files.host[host] = {};
+		new_files.host[host][port_number] = files;
+	}
+
+	return {
+		"stats": state['stats'],
+		"amount": state['amount'],
+		"loaded": state['loaded'],
+		"files": new_files
+	};
+}
+
 function file_reduce(state = defaultState, action) {
 	switch (action.type) {
-		case ADD_FILES_HOSTS:
-			return add_files_hosts(state, action);
 		case ADD_FILES_IPS:
 			return add_files_ips(state, action);		
 		case EMPTY_FILES:
@@ -158,7 +158,8 @@ function file_reduce(state = defaultState, action) {
 			return receiveFilesStatsHosts(state, action);
 		case RECEIVE_FILES_STATS_IPS:
 			return receiveFilesStatsIPs(state, action);
-			
+		case RECEIVE_FILES_DATA_HOSTS:
+			return receiveFilesDataHosts(state, action);
 		default:
 			return state;
 	}

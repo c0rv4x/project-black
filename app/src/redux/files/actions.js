@@ -2,17 +2,8 @@ import fetch from 'cross-fetch'
 
 
 export const ADD_FILES_IPS = 'ADD_FILES_IPS'
-export const ADD_FILES_HOSTS = 'ADD_FILES_HOSTS'
 export const EMPTY_FILES = 'EMPTY_FILES'
 
-
-export function addFilesHosts(message, current_project_uuid) {
-	return {
-		type: ADD_FILES_HOSTS,
-		current_project_uuid: current_project_uuid,
-		message
-	}
-}
 
 export function addFilesIps(message, current_project_uuid) {
 	return {
@@ -150,5 +141,47 @@ export function renewCount(amount) {
     return { 
         type: RENEW_FILES_STATS,
         amount 
+    }
+}
+
+
+export function requestFilesHost(host, port_number, limit, offset, filters) {
+	return (dispatch, getState) => {
+		const { project_uuid } = getState();
+
+		return fetch(`/project/${project_uuid}/files/data/host`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				host: host,
+				port_number: port_number,
+				limit: limit,
+				offset: offset,
+				filters: filters
+			})
+		})
+			.then(
+				response => response.json(),
+				error => console.log(error)
+			)
+			.then(
+				json => {
+					dispatch(receiveFilesDataHosts(host, port_number, json));			
+				}
+			)
+	}
+
+}
+
+export const RECEIVE_FILES_DATA_HOSTS = 'RECEIVE_FILES_DATA_HOSTS'
+
+export function receiveFilesDataHosts(host, port_number, files) {
+    return { 
+        type: RECEIVE_FILES_DATA_HOSTS,
+		host,
+		port_number,
+		files
     }
 }

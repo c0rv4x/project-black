@@ -5,6 +5,7 @@ import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import PortsTabs from '../presentational/PortsTabs.jsx'
 
 import { requestUpdateHostComment } from '../../redux/hosts/actions.js'
+import { requestFilesHost } from '../../redux/files/actions.js'
 
 import { Heading } from 'grommet';
 
@@ -46,13 +47,7 @@ class HostVerbose extends React.Component {
 	}
 
 	getFilesHosts(host, port_number, limit=3, offset=0) {
-		this.filesEmitter.requestFilesHosts(
-			this.props.project_uuid,
-			host,
-			port_number,
-			limit,
-			offset
-		);
+		this.context.store.dispatch(requestFilesHost(host, port_number, limit, offset));
 	}
 
 	render() {
