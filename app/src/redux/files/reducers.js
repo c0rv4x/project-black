@@ -68,7 +68,7 @@ function receiveFilesStatsIPs(state = defaultState, action) {
 	//   files will be set to the first result, not the second
 	return {
 		"stats": {
-			"host": state.stats.ip,
+			"host": state.stats.host,
 			"ip": stats
 		},
 		"amount": state['amount'],
