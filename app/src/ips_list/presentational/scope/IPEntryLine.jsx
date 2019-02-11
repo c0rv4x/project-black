@@ -66,8 +66,8 @@ class IPEntryLine extends React.Component {
 			<Box
 				pad="small"
 				border={{
-					size: "xsmall",
-					color: "neutral-2"
+					size: "small",
+					color: "light-4"
 				}}
 				round="xsmall"
 			>

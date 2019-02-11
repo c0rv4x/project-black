@@ -54,7 +54,7 @@ class HostsEntryLine extends React.Component {
 					margin="xxsmall"
 					pad="xsmall"
 					border={{
-						size: "xsmall",
+						size: "small",
 						color: "brand"
 					}}
 					round="xsmall"
@@ -84,8 +84,8 @@ class HostsEntryLine extends React.Component {
 				gridArea={"host_" + host.host_id}
 				pad="small"
 				border={{
-					size: "xsmall",
-					color: "neutral-2"
+					size: "small",
+					color: "light-4"
 				}}
 				round="xsmall"
 			>
