@@ -1,27 +1,6 @@
 import fetch from 'cross-fetch'
 
 
-export const ADD_FILES_IPS = 'ADD_FILES_IPS'
-export const EMPTY_FILES = 'EMPTY_FILES'
-
-
-export function addFilesIps(message, current_project_uuid) {
-	return {
-		type: ADD_FILES_IPS,
-		current_project_uuid: current_project_uuid,
-		message
-	}
-}
-
-export function emptyFiles(message, current_project_uuid) {
-	return {
-		type: EMPTY_FILES,
-		current_project_uuid: current_project_uuid,
-		message
-	}
-}
-
-
 /////
 
 export function fetchFilesStatsIPs() {
