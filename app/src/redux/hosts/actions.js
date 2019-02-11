@@ -122,17 +122,21 @@ export function requestUpdateHostComment(project_uuid, host_id, comment) {
 		})
 	})
 		.then(
-			response => response.json(),
-			error => console.log(error)
+			response => response.json().then(json => ({
+				status: response.status,
+				json
+			}))
 		)
 		.then(
 			json => {
-				if (json.status == 'ok') {
-					dispatch(notifySuccess("Host comment updated"))
+				({ status, json }) => {
+					if (status == 200) {
+						dispatch(notifySuccess("Host comment updated"));
+					}
+					else {
+						dispatch(notifyError("Error updating host comment " + json.message));
+					}
 				}
-				else {
-					dispatch(notifyError("Error updating host comment " + json.message));
-				}				
 			}
 		)
 }
@@ -223,11 +227,20 @@ export function fetchTasksForShownHosts() {
 			})
 		})
 			.then(
-				response => response.json(),
-				error => console.log(error)
+				response => response.json().then(json => ({
+					status: response.status,
+					json
+				}))
 			)
 			.then(
-				json => dispatch(receiveTasksForHosts(json))
+				({ status, json }) => {
+					if (status == 200) {
+						dispatch(receiveTasksForHosts(json));
+					}
+					else {
+						dispatch(notifyError("Error getting tasks for hosts. " + json.message));
+					}
+				}
 			)
 	}
 }
