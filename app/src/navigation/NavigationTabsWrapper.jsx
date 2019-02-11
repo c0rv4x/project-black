@@ -60,7 +60,6 @@ class NavigationTabsWrapper extends React.Component {
         this.hostsSubscriber.close();
         this.tasksSubscriber.close();
         this.notificationsSubscriber.close();
-        this.scopesSubscriber.close();
     }
 }
 
