@@ -1,3 +1,6 @@
+import fetch from 'cross-fetch'
+
+
 export const RENEW_TOTAL_AMOUNT = 'RENEW_TOTAL_AMOUNT'
 export const ADD_STATS_HOSTS = 'ADD_STATS_HOSTS'
 export const ADD_STATS_IPS = 'ADD_STATS_IPS'
@@ -51,4 +54,53 @@ export function emptyFiles(message, current_project_uuid) {
 		current_project_uuid: current_project_uuid,
 		message
 	}
+}
+
+
+/////
+
+
+export function requestCountFiles() {
+    return dispatch => {
+        dispatch(setLoadingFiles(true));
+        dispatch(fetchCountFiles()).then(
+            () => dispatch(setLoadingFiles(false))
+        );
+    }
+}
+
+
+export const SET_LOADING_FILES = 'SET_LOADING_FILES'
+
+export function setLoadingFiles(loading) {
+    return { 
+        type: SET_LOADING_FILES,
+        loading 
+    }
+}
+
+
+export function fetchCountFiles() {
+    return (dispatch, getState) => {
+        const { project_uuid } = getState();
+
+        return fetch(`/project/${project_uuid}/files/count`)
+        .then(
+			response => response.json(),
+			error => console.log(error)
+		)
+		.then(
+			json => dispatch(renewCount(json))
+		)
+    }
+}
+
+
+export const RENEW_FILES_STATS = 'RENEW_FILES_STATS'
+
+export function renewCount(amount) {
+    return { 
+        type: RENEW_FILES_STATS,
+        amount 
+    }
 }

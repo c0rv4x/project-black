@@ -5,12 +5,12 @@ import HostPage from '../host_verbose/components/HostVerboseWrapper.jsx'
 
 import HostsSocketioEventsSubsriber from '../redux/hosts/HostsSocketioEventsSubscriber'
 import TasksSocketioEventsSubsriber from '../redux/tasks/TasksSocketioEventsSubsriber'
-import FilesSocketioEventsSubsriber from '../redux/files/FilesSocketioEventsSubscriber'
 
 import { fetchProjects } from '../redux/projects/actions.js'
 import { setProjectUuid } from '../redux/project_uuid/actions.js'
 import { requestSingleHost } from '../redux/hosts/actions.js'
 import { requestTasks } from '../redux/tasks/actions.js'
+import { requestCountFiles } from '../redux/files/actions.js'
 
 class Host extends React.Component {
     constructor(props) {
@@ -30,7 +30,7 @@ class Host extends React.Component {
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         mainStore.dispatch(requestTasks());
 
-        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid, hostname);        
+        mainStore.dispatch(requestCountFiles());       
     }
 
     render() {
@@ -42,7 +42,6 @@ class Host extends React.Component {
         this.projectsSubscriber.close();
         this.hostsSubscriber.close();
         this.tasksSubscriber.close();
-        this.filesSubscriber.close();        
     }       
 }
 

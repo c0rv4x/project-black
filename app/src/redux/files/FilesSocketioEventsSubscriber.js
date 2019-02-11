@@ -19,12 +19,6 @@ class FilesEventsSubsriber {
         this.project_uuid = project_uuid;
         this.hostname = hostname;
         this.connector = new Connector('files');
- 
-        this.connector.after_connected((x) => {
-            this.emitter = new FilesSocketioEventsEmitter();
-
-            this.emitter.renewCount(this.project_uuid);
-        });
 
         this.basic_events_registration();
     }

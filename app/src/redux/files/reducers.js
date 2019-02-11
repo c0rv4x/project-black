@@ -6,7 +6,10 @@ import {
 	ADD_STATS_IPS,
 	ADD_FILES_IPS,
 	ADD_FILES_HOSTS,
-	EMPTY_FILES
+	EMPTY_FILES,
+
+	RENEW_FILES_STATS,
+	SET_LOADING_FILES
 } from './actions.js'
 
 
@@ -135,30 +138,43 @@ function empty_files(state = defaultState, action) {
 	};
 }
 
-function file_reduce(state = defaultState, action) {
-	if (!action.hasOwnProperty('message')) {
-		return state
+
+function renewFilesStats(state = defaultState, action) {
+	return {
+		...state,
+		'amount': action.amount
+	};
+}
+
+function setLoadingFiles(state = defaultState, action) {
+	return {
+		...state,
+		'loaded': !action.loading
 	}
-	else {	
-		if (action.message && action.current_project_uuid != action.message.project_uuid) { return state; }
-		else {	
-			switch (action.type) {
-				case RENEW_TOTAL_AMOUNT:
-					return renew_total_amount(state, action);
-				case ADD_STATS_HOSTS:
-					return add_stats_hosts(state, action);
-				case ADD_STATS_IPS:
-					return add_stats_ips(state, action);					
-				case ADD_FILES_HOSTS:
-					return add_files_hosts(state, action);
-				case ADD_FILES_IPS:
-					return add_files_ips(state, action);		
-				case EMPTY_FILES:
-					return empty_files(state, action);
-				default:
-					return state;
-			}
-		}
+}
+
+
+function file_reduce(state = defaultState, action) {
+	switch (action.type) {
+		case RENEW_TOTAL_AMOUNT:
+			return renew_total_amount(state, action);
+		case ADD_STATS_HOSTS:
+			return add_stats_hosts(state, action);
+		case ADD_STATS_IPS:
+			return add_stats_ips(state, action);					
+		case ADD_FILES_HOSTS:
+			return add_files_hosts(state, action);
+		case ADD_FILES_IPS:
+			return add_files_ips(state, action);		
+		case EMPTY_FILES:
+			return empty_files(state, action);
+
+		case RENEW_FILES_STATS:
+			return renewFilesStats(state, action);
+		case SET_LOADING_FILES:
+			return setLoadingFiles(state, action);
+		default:
+			return state;
 	}
 }
 

@@ -6,11 +6,11 @@ import DirsaerchPage from '../dirsearch_tables/components/MainAccumulatorWrapper
 import IPsSocketioEventsSubsriber from '../redux/ips/IPsSocketioEventsSubscriber'
 import HostsSocketioEventsSubsriber from '../redux/hosts/HostsSocketioEventsSubscriber'
 import TasksSocketioEventsSubsriber from '../redux/tasks/TasksSocketioEventsSubsriber'
-import FilesSocketioEventsSubsriber from '../redux/files/FilesSocketioEventsSubscriber'
 
 import { fetchProjects } from '../redux/projects/actions.js'
 import { setProjectUuid } from '../redux/project_uuid/actions.js'
 import { requestTasks } from '../redux/tasks/actions.js'
+import { requestCountFiles } from '../redux/files/actions.js'
 
 class DirsearchWrapper extends React.Component {
     constructor(props) {
@@ -30,7 +30,7 @@ class DirsearchWrapper extends React.Component {
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         mainStore.dispatch(requestTasks());
 
-        this.filesSubscriber = new FilesSocketioEventsSubsriber(mainStore, project_uuid);        
+        mainStore.dispatch(requestCountFiles());    
     }
 
     render() {
@@ -44,7 +44,6 @@ class DirsearchWrapper extends React.Component {
         this.ipsSubscriber.close();
         this.hostsSubscriber.close();
         this.tasksSubscriber.close();
-        this.filesSubscriber.close();        
     }     
 }
 

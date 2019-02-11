@@ -14,12 +14,6 @@ class FilesSocketioEventsEmitter {
         });
     }
 
-    renewCount(project_uuid) {
-        this.connector.emit('files:count:get', {
-            "project_uuid": project_uuid
-        });
-    }
-
     requestFilesHosts(project_uuid, host, port_number, limit, offset, filters) {
         this.connector.emit('files:get:hosts', {
             "project_uuid": project_uuid,
