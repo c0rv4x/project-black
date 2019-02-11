@@ -128,14 +128,12 @@ export function requestUpdateHostComment(project_uuid, host_id, comment) {
 			}))
 		)
 		.then(
-			json => {
-				({ status, json }) => {
-					if (status == 200) {
-						dispatch(notifySuccess("Host comment updated"));
-					}
-					else {
-						dispatch(notifyError("Error updating host comment " + json.message));
-					}
+			({ status, json }) => {
+				if (status == 200) {
+					dispatch(notifySuccess("Host comment updated"));
+				}
+				else {
+					dispatch(notifyError("Error updating host comment " + json.message));
 				}
 			}
 		)
