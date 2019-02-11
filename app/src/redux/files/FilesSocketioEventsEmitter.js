@@ -7,13 +7,6 @@ class FilesSocketioEventsEmitter {
         this.connector = new Connector('files');
     }
 
-    renewSingleHost(project_uuid, hostname) {
-        this.connector.emit('files:all:get:single', {
-            "project_uuid": project_uuid,
-            "hostname": hostname
-        });
-    }
-
     requestFilesHosts(project_uuid, host, port_number, limit, offset, filters) {
         this.connector.emit('files:get:hosts', {
             "project_uuid": project_uuid,
