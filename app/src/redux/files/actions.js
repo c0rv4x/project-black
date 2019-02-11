@@ -59,6 +59,43 @@ export function emptyFiles(message, current_project_uuid) {
 
 /////
 
+export function fetchFilesStatsHosts() {
+	return (dispatch, getState) => {
+		const { project_uuid, hosts } = getState();
+		const { filters } = hosts;
+
+		return fetch(`/project/${project_uuid}/files/stats/hosts`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				host_ids: hosts.data.map((host) => host.host_id),
+				filters: filters
+			})
+		})
+			.then(
+				response => response.json(),
+				error => console.log(error)
+			)
+			.then(
+				json => {
+					dispatch(receiveFilesStatsHosts(json));			
+				}
+			)
+	}
+}
+
+
+export const RECEIVE_FILES_STATS_HOSTS = 'RECEIVE_FILES_STATS_HOSTS';
+
+export function receiveFilesStatsHosts(stats) {
+	return {
+		type: RECEIVE_FILES_STATS_HOSTS,
+		stats
+	}
+}
+
 
 export function requestCountFiles() {
     return dispatch => {

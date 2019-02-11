@@ -9,7 +9,8 @@ import {
 	EMPTY_FILES,
 
 	RENEW_FILES_STATS,
-	SET_LOADING_FILES
+	SET_LOADING_FILES,
+	RECEIVE_FILES_STATS_HOSTS
 } from './actions.js'
 
 
@@ -153,6 +154,25 @@ function setLoadingFiles(state = defaultState, action) {
 	}
 }
 
+function receiveFilesStatsHosts(state = defaultState, action) {
+	const stats = action.stats;
+
+	// TODO: merge stats['stats'] with the previous state
+	// This can help if we need to reload statsics on a single file
+	// Also this will fix a nasty race condition.
+	//   When the first page loads too long and the second - too fast,
+	//   files will be set to the first result, not the second
+	console.log(action);
+	return {
+		"stats": {
+			"host": stats,
+			"ip": state.stats.ip
+		},
+		"amount": state['amount'],
+		"loaded": state['loaded'],
+		"files": state['files']
+	};
+}
 
 function file_reduce(state = defaultState, action) {
 	switch (action.type) {
@@ -173,6 +193,8 @@ function file_reduce(state = defaultState, action) {
 			return renewFilesStats(state, action);
 		case SET_LOADING_FILES:
 			return setLoadingFiles(state, action);
+		case RECEIVE_FILES_STATS_HOSTS:
+			return receiveFilesStatsHosts(state, action);
 		default:
 			return state;
 	}

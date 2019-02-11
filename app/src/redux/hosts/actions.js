@@ -58,6 +58,8 @@ export function flushAndRequestHosts(project_uuid, filters={}, host_page=0, host
 }
 
 
+import { fetchFilesStatsHosts } from '../files/actions.js'
+
 export function requestHosts(project_uuid, filters={}, host_page=0, host_page_size=12) {
 	const params = {
 		filters: filters,
@@ -71,6 +73,7 @@ export function requestHosts(project_uuid, filters={}, host_page=0, host_page_si
 			dispatch(fetchTasksForShownHosts());
 			dispatch(setLoadingHosts(false));
 			dispatch(fetchCredsForHosts());
+			dispatch(fetchFilesStatsHosts());
 		});
 	}
 }
