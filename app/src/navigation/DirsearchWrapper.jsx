@@ -24,8 +24,12 @@ class DirsearchWrapper extends React.Component {
         mainStore.dispatch(setProjectUuid(project_uuid));
 
         mainStore.dispatch(fetchProjects());
-        this.ipsSubscriber = new IPsSocketioEventsSubsriber(mainStore, project_uuid, null, {'files': ['%']}, 4);
-        this.hostsSubscriber = new HostsSocketioEventsSubsriber(mainStore, project_uuid, null, {'files': ['%']}, 4);
+
+        this.ipsSubscriber = new IPsSocketioEventsSubsriber(mainStore, project_uuid);
+        mainStore.dispatch(requestIPs(project_uuid));
+
+        this.hostsSubscriber = new HostsSocketioEventsSubsriber(mainStore, project_uuid);
+        mainStore.dispatch(requestHosts(project_uuid));
 
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         mainStore.dispatch(requestTasks());

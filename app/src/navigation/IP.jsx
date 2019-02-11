@@ -26,7 +26,7 @@ class IP extends React.Component {
 
         mainStore.dispatch(fetchProjects());
         mainStore.dispatch(requestSingleIP(project_uuid, ip_address));
-        this.ipsSubscriber = new IPsSocketioEventsSubsriber(mainStore, project_uuid, ip_address);
+        this.ipsSubscriber = new IPsSocketioEventsSubsriber(mainStore, project_uuid);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         mainStore.dispatch(requestTasks());
 

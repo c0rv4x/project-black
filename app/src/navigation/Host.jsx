@@ -26,7 +26,7 @@ class Host extends React.Component {
 
         mainStore.dispatch(fetchProjects());
         mainStore.dispatch(requestSingleHost(project_uuid, hostname));
-        this.hostsSubscriber = new HostsSocketioEventsSubsriber(mainStore, project_uuid, hostname);
+        this.hostsSubscriber = new HostsSocketioEventsSubsriber(mainStore, project_uuid);
         this.tasksSubscriber = new TasksSocketioEventsSubsriber(mainStore, project_uuid);
         mainStore.dispatch(requestTasks());
 
