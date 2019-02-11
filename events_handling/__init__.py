@@ -9,7 +9,6 @@ from common.logger import log
 
 from events_handling.scopes_handlers import ScopeHandlers
 from events_handling.tasks_handlers import TaskHandlers
-from events_handling.files_handlers import FileHandlers
 from events_handling.dicts_handlers import DictHandlers
 
 from events_handling.new_data_notifier import Notifier
@@ -36,7 +35,6 @@ class Handlers(object):
         self.app.add_task(self.meta_manager.task_manager.spawn_asynqp())
 
         self.scope_handlers = ScopeHandlers(self.socketio, self.meta_manager.scope_manager)
-        self.file_handlers = FileHandlers(self.socketio, self.meta_manager.file_manager)
         self.task_handlers = TaskHandlers(self.socketio, self.meta_manager.task_manager)
         self.dict_handlers = DictHandlers(self.socketio, self.meta_manager.dict_manager)
 
