@@ -53,3 +53,22 @@ class FilesHandlers:
         ))
 
         return response.json(files)
+
+
+    @authorized_class_method()
+    async def cb_get_files_ip(self, request, project_uuid):
+        params = request.json
+        ip = params['ip']
+        port_number = int(params['port_number'])
+        limit = int(params['limit'])
+        offset = int(params['offset'])
+        filters = params.get('filters', None)
+
+        get_result = self.file_manager.get_files_ips(ip, port_number, limit, offset, filters)
+
+        files = list(map(
+            lambda file: file.dict(),
+            get_result['files']
+        ))
+
+        return response.json(files)
