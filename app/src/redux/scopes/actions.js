@@ -33,12 +33,14 @@ export function requestCreateScope(project_uuid, scopes) {
 			})
 		})
 			.then(
-				response => response.json(),
-				error => console.log(error)
+				response => response.json().then(json => ({
+					status: response.status,
+					json
+				}))
 			)
 			.then(
-				json => {
-					if (json.status == 'ok') {
+				({ status, json }) => {
+					if (status == 200) {
 						dispatch(notifySuccess("Scopes added"))
 						dispatch(setScopesCreated(true));
 						// Data update will be fired when sio event is received
@@ -49,7 +51,7 @@ export function requestCreateScope(project_uuid, scopes) {
 					else {
 						dispatch(notifyError("Error updating IP comment " + json.message));
 						dispatch(setScopesCreated(true));
-					}				
+					}
 				}
 			)
 	}

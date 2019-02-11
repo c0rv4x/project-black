@@ -66,6 +66,6 @@ class ScopesHandlers:
                 # TODO: implement this when HostsNotifier is finished
                 pass
 
-            return response.json({ 'status': 'ok' })
+            return response.json({}, status=200)
         else:
-            return response.json({ 'status': 'error', 'message': results['error_message'] })
+            return response.json({ 'message': results['error_message'] }, status=403)
