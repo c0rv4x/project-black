@@ -282,6 +282,8 @@ export function IPsInHostsUpdated(message, current_project_uuid) {
 	return (dispatch, getState) => {
 		const { project_uuid, hosts } = getState();
 
+		var found = false;
+
 		if (current_project_uuid == project_uuid) {
 			if (message.updated_ips) {
 				for (let each_id of message.updated_ips) {
