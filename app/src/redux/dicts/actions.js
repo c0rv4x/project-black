@@ -1,4 +1,5 @@
 import fetch from 'cross-fetch'
+import { notifyError } from '../notifications/actions.js'
 
 export const SET_DICTS = 'SET_DICTS'
 
@@ -15,12 +16,20 @@ export function requestDicts() {
 
 		fetch(`/project/${project_uuid}/dicts/stats`)
 		.then(
-			response => response.json(),
-			error => console.log(error)
+			response => response.json().then(json => ({
+				status: response.status,
+				json
+			}))
 		)
 		.then(
-			json => {
-				console.log(json);dispatch(setDicts(json))}
+			({ status, json }) => {
+				if (status == 200) {
+					dispatch(dispatch(setDicts(json)));
+				}
+				else {
+					dispatch(notifyError("Error requesting dictionaries. " + json.message));
+				}
+			}
 		)
 	}
 }
