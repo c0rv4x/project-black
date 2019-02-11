@@ -8,26 +8,6 @@ import Loading from '../../common/loading/Loading.jsx'
 
 
 class IPVerboseUpdater extends React.Component {
-	constructor(props) {
-		super(props);
-
-		this.requestStatsIP = this.requestStatsIP.bind(this);
-	}
-
-	componentDidMount() {
-		this.filesEmitter = new FilesSocketioEventsEmitter();
-	}
-
-	componentDidUpdate(prevProps) {
-		if (!_.isEqual(this.props.ip, prevProps.ip)) {
-			this.requestStatsIP();
-		}
-	}
-
-	requestStatsIP(ip=this.props.ip) {
-		this.filesEmitter.requestStatsIPs(this.props.project_uuid, [ip.ip_id]);
-	}
-
 	render() {
         const { loaded } = this.props.ip;
 
