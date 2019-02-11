@@ -88,6 +88,7 @@ if __name__ == '__main__':
     app.add_route(files_handlers.cb_count_files, '/project/<project_uuid:int>/files/count')
     app.add_route(files_handlers.cb_stats_hosts, '/project/<project_uuid:int>/files/stats/hosts', methods=['POST'])
     app.add_route(files_handlers.cb_stats_ips, '/project/<project_uuid:int>/files/stats/ips', methods=['POST'])
+    app.add_route(files_handlers.cb_get_files_host, '/project/<project_uuid:int>/files/data/host', methods=['POST'])
 
     # Static handlers: index.html and bundle.js
     app.add_route(StaticHandlers.cb_index_handler, '/')

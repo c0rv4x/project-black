@@ -36,4 +36,15 @@ class FilesHandlers:
         return response.json(get_result['stats'])
 
 
+    @authorized_class_method()
+    async def cb_get_files_host(self, request, project_uuid):
+        params = request.json
+        host = params['host']
+        port_number = int(params['port_number'])
+        limit = int(params['limit'])
+        offset = int(params['offset'])
+        filters = params['filters']
 
+        get_result = self.file_manager.get_files_hosts(host, port_number, limit, offset, filters)
+
+        return response.json(get_result)
