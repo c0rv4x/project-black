@@ -27,6 +27,7 @@ export function requestSingleHost(project_uuid, hostname) {
 		dispatch(setLoadingHosts(true));
 		dispatch(fetchSingleHost(project_uuid, hostname)).then(() => {
 			dispatch(setLoadingHosts(false))
+			dispatch(fetchFilesStatsHosts());
 		});
 	}
 }

@@ -27,7 +27,8 @@ export function requestSingleIP(project_uuid, ip_address) {
 	return dispatch => {
 		dispatch(setLoadingIPs(true));
 		dispatch(fetchSingleIP(project_uuid, ip_address)).then(() => {
-			dispatch(setLoadingIPs(false))
+			dispatch(setLoadingIPs(false));
+			dispatch(fetchFilesStatsIPs());
 		});
 	}
 }
