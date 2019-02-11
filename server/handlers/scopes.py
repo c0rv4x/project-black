@@ -3,12 +3,14 @@ from sanic import response
 
 from server.handlers.utils import authorized_class_method
 from server.handlers.ips import IPsNotifier
+from server.handlers.hosts import HostsNotifier
 
 
 class ScopesHandlers:
     def __init__(self, scope_manager, socketio):
         self.scope_manager = scope_manager
         self.ips_notifier = IPsNotifier(socketio)
+        self.hosts_notifier = HostsNotifier(socketio)
 
     @authorized_class_method()
     async def cd_create_scopes(self, request, project_uuid):
@@ -63,7 +65,7 @@ class ScopesHandlers:
             if results['ips_added']:
                 await self.ips_notifier.notify_on_created_ip(project_uuid)
             if results['hosts_added']:
-                # TODO: implement this when HostsNotifier is finished
+                await self.hosts_notifier.notify_on_created_host(project_uuid)
                 pass
 
             return response.json({}, status=200)
