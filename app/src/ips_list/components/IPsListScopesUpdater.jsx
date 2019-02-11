@@ -12,16 +12,12 @@ class IPsListScopesUpdater extends React.Component {
 		super(props);
 
 		this.renewIps = this.renewIps.bind(this);
-		this.renewFiles = this.renewFiles.bind(this);
 	}
 
 	renewIps(page=this.props.ips.page, page_size=this.props.ips.page_size, filters=this.props.filters) {
 		let { project_uuid } = this.props;
 
 		this.context.store.dispatch(flushAndRequestIPs(project_uuid, filters, page, page_size));
-	}
-
-	renewFiles(ips=this.props.ips.data) {
 	}
 
 	shouldComponentUpdate(nextProps) {

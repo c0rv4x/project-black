@@ -13,7 +13,6 @@ class HostsListScopesUpdater extends React.Component {
 		super(props);
 
 		this.renewHosts = this.renewHosts.bind(this);
-		this.renewFiles = this.renewFiles.bind(this);
 	}
 
 	shouldComponentUpdate(nextProps) {
@@ -22,9 +21,6 @@ class HostsListScopesUpdater extends React.Component {
 
 	renewHosts(page=this.props.hosts.page, page_size=this.props.hosts.page_size, filters=this.props.filters) {
 		this.context.store.dispatch(flushAndRequestHosts(this.props.project_uuid, filters, page, page_size));
-	}
-
-	renewFiles(hosts=this.props.hosts.data) {
 	}
 
 	componentDidUpdate(prevProps) {
