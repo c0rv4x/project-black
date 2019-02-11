@@ -1,9 +1,6 @@
 import _ from 'lodash';
 
 import { 
-	RENEW_TOTAL_AMOUNT,
-	ADD_STATS_HOSTS,
-	ADD_STATS_IPS,
 	ADD_FILES_IPS,
 	ADD_FILES_HOSTS,
 	EMPTY_FILES,
@@ -28,55 +25,6 @@ const defaultState = {
 		"ip": {},
 		"host": {}
 	}
-}
-
-function renew_total_amount(state = defaultState, action) {
-	const message = action.message;
-
-	return {
-		"stats": state['stats'],
-		"amount": message['amount'],
-		"loaded": true,
-		"files": state['files']
-	};
-}
-
-function add_stats_hosts(state = defaultState, action) {
-	const message = action.message;
-
-	// TODO: merge message['stats'] with the previous state
-	// This can help if we need to reload statsics on a single file
-	// Also this will fix a nasty race condition.
-	//   When the first page loads too long and the second - too fast,
-	//   files will be set to the first result, not the second
-	return {
-		"stats": {
-			"host": message['stats'],
-			"ip": state.stats.ip
-		},
-		"amount": state['amount'],
-		"loaded": state['loaded'],
-		"files": state['files']
-	};
-}
-
-function add_stats_ips(state = defaultState, action) {
-	const message = action.message;
-
-	// TODO: merge message['stats'] with the previous state
-	// This can help if we need to reload statsics on a single file
-	// Also this will fix a nasty race condition.
-	//   When the first page loads too long and the second - too fast,
-	//   files will be set to the first result, not the second
-	return {
-		"stats": {
-			"host": state.stats.host,
-			"ip": message['stats']
-		},
-		"amount": state['amount'],
-		"loaded": state['loaded'],
-		"files": state['files']
-	};
 }
 
 function add_files_hosts(state = defaultState, action) {
@@ -195,12 +143,6 @@ function receiveFilesStatsIPs(state = defaultState, action) {
 
 function file_reduce(state = defaultState, action) {
 	switch (action.type) {
-		case RENEW_TOTAL_AMOUNT:
-			return renew_total_amount(state, action);
-		case ADD_STATS_HOSTS:
-			return add_stats_hosts(state, action);
-		case ADD_STATS_IPS:
-			return add_stats_ips(state, action);					
 		case ADD_FILES_HOSTS:
 			return add_files_hosts(state, action);
 		case ADD_FILES_IPS:
