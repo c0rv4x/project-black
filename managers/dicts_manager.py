@@ -1,5 +1,4 @@
 from functools import reduce
-from sqlalchemy import func
 
 from black.db import Sessions, DictDatabase
 
