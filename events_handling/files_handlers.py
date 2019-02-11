@@ -7,13 +7,6 @@ class FileHandlers(object):
         self.register_handlers()
 
     def register_handlers(self):
-        @self.socketio.on('files:count:get', namespace='/files')
-        async def _cb_handle_files_get(sio, msg):
-            """ When received this message, send back all the files """
-            project_uuid = int(msg.get('project_uuid', None))
-
-            await self.send_count_back(project_uuid)
-
         @self.socketio.on('files:stats:get:ip', namespace='/files')
         async def _cb_handle_files_stats_get(sio, msg):
             """ Returns dicts with statistics on files for selected targets """
@@ -116,11 +109,3 @@ class FileHandlers(object):
                     namespace='/files'
                 )
 
-    async def send_count_back(self, project_uuid=None):
-        count_result = self.file_manager.count(project_uuid)
-        count_result['project_uuid'] = project_uuid
-
-        await self.socketio.emit(
-            'files:count:set', count_result,
-            namespace='/files'
-        )
