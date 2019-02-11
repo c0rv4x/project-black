@@ -24,7 +24,7 @@ export function requestDicts() {
 		.then(
 			({ status, json }) => {
 				if (status == 200) {
-					dispatch(dispatch(setDicts(json)));
+					dispatch(setDicts(json));
 				}
 				else {
 					dispatch(notifyError("Error requesting dictionaries. " + json.message));
