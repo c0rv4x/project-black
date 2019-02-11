@@ -9,7 +9,7 @@ import Loading from '../../common/loading/Loading.jsx'
 
 import { flushAndRequestIPs } from '../../redux/ips/actions.js'
 import { flushAndRequestHosts } from '../../redux/hosts/actions.js'
-import { requestFilesHost } from '../../redux/files/actions.js'
+import { requestFilesHost, requestFilesIP } from '../../redux/files/actions.js'
 
 
 class MainAccumulatorUpdater extends React.Component {
@@ -84,14 +84,7 @@ class MainAccumulatorUpdater extends React.Component {
 	}
 
 	getFilesIps(ip, port_number, limit, offset, filters) {
-		this.filesEmitter.requestFilesIps(
-			this.props.project_uuid,
-			ip,
-			port_number,
-			limit,
-			offset,
-			filters
-		);
+		this.context.store.dispatch(requestFilesIP(ip, port_number, limit, offset, filters));
 	}
 
 	getVisibleScopes() {

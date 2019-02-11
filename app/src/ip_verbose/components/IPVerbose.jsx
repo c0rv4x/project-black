@@ -6,6 +6,7 @@ import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import PortsTabs from '../../host_verbose/presentational/PortsTabs.jsx'
 
 import { requestUpdateIPComment } from '../../redux/ips/actions.js'
+import { requestFilesIP } from '../../redux/files/actions.js'
 
 import { Heading } from 'grommet'
 
@@ -21,14 +22,8 @@ class IPVerbose extends React.Component {
 		this.filesEmitter = new FilesSocketioEventsEmitter();
 	}
 
-	getFilesIPs(host, port_number, limit=3, offset=0) {
-		this.filesEmitter.requestFilesIps(
-			this.props.project_uuid,
-			host,
-			port_number,
-			limit,
-			offset
-		);
+	getFilesIPs(ip, port_number, limit=3, offset=0) {
+		this.context.store.dispatch(requestFilesIP(ip, port_number, limit, offset));
 	}
 
 	commentSubmitted(comment, _id) {

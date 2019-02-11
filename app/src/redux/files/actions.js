@@ -61,6 +61,49 @@ export function receiveFilesStatsIPs(stats) {
 	}
 }
 
+
+export function requestFilesIP(ip, port_number, limit, offset, filters) {
+	return (dispatch, getState) => {
+		const { project_uuid } = getState();
+
+		return fetch(`/project/${project_uuid}/files/data/ip`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				ip: ip,
+				port_number: port_number,
+				limit: limit,
+				offset: offset,
+				filters: filters
+			})
+		})
+			.then(
+				response => response.json(),
+				error => console.log(error)
+			)
+			.then(
+				json => {
+					dispatch(receiveFilesDataIPs(ip, port_number, json));			
+				}
+			)
+	}
+
+}
+
+export const RECEIVE_FILES_DATA_IPS = 'RECEIVE_FILES_DATA_IPS'
+
+export function receiveFilesDataIPs(ip, port_number, files) {
+    return { 
+        type: RECEIVE_FILES_DATA_IPS,
+		ip,
+		port_number,
+		files
+    }
+}
+
+
 export function fetchFilesStatsHosts() {
 	return (dispatch, getState) => {
 		const { project_uuid, hosts } = getState();
