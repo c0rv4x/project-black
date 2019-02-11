@@ -11,8 +11,10 @@ class FilesHandlers:
     async def cb_count_files(self, request, project_uuid):
         amount_result = self.file_manager.count(project_uuid)
 
-        return response.json(amount_result['amount'])
-
+        if amount_result['status'] == 'success':
+            return response.json(amount_result['amount'], status=200)
+        else:
+            return response.json(amount_result, status=403)
 
     @authorized_class_method()
     async def cb_stats_hosts(self, request, project_uuid):
@@ -22,7 +24,10 @@ class FilesHandlers:
 
         get_result = self.file_manager.get_stats_hosts(project_uuid, host_ids, filters)
 
-        return response.json(get_result['stats'])
+        if get_result['status'] == 'success':
+            return response.json(get_result['stats'], status=200)
+        else:
+            return response.json(get_result, status=403)
 
 
     @authorized_class_method()
@@ -33,7 +38,10 @@ class FilesHandlers:
 
         get_result = self.file_manager.get_stats_ips(project_uuid, ip_ids, filters)
 
-        return response.json(get_result['stats'])
+        if get_result['status'] == 'success':
+            return response.json(get_result['stats'], status=200)
+        else:
+            return response.json(get_result, status=403)
 
 
     @authorized_class_method()
@@ -47,12 +55,15 @@ class FilesHandlers:
 
         get_result = self.file_manager.get_files_hosts(host, port_number, limit, offset, filters)
 
-        files = list(map(
-            lambda file: file.dict(),
-            get_result['files']
-        ))
+        if get_result['status'] == 'success':
+            files = list(map(
+                lambda file: file.dict(),
+                get_result['files']
+            ))
 
-        return response.json(files)
+            return response.json(files, status=200)
+        else:
+            return response.json(get_result, status=403)
 
 
     @authorized_class_method()
@@ -66,9 +77,12 @@ class FilesHandlers:
 
         get_result = self.file_manager.get_files_ips(ip, port_number, limit, offset, filters)
 
-        files = list(map(
-            lambda file: file.dict(),
-            get_result['files']
-        ))
+        if get_result['status'] == 'success':
+            files = list(map(
+                lambda file: file.dict(),
+                get_result['files']
+            ))
 
-        return response.json(files)
+            return response.json(files, status=200)
+        else:
+            return response.json(get_result, status=403)

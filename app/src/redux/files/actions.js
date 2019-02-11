@@ -3,6 +3,7 @@ import fetch from 'cross-fetch'
 
 /////
 
+
 export function fetchFilesStatsIPs() {
 	return (dispatch, getState) => {
 		const { project_uuid, ips } = getState();
@@ -19,12 +20,19 @@ export function fetchFilesStatsIPs() {
 			})
 		})
 			.then(
-				response => response.json(),
-				error => console.log(error)
+				response => response.json().then(json => ({
+					status: response.status,
+					json
+				}))
 			)
 			.then(
-				json => {
-					dispatch(receiveFilesStatsIPs(json));			
+				({ status, json }) => {
+					if (status == 200) {
+						dispatch(receiveFilesStatsIPs(json));
+					}
+					else {
+						dispatch(notifyError("Error fetching files stats for IP. " + json.message));
+					}
 				}
 			)
 	}
@@ -59,16 +67,22 @@ export function requestFilesIP(ip, port_number, limit, offset, filters) {
 			})
 		})
 			.then(
-				response => response.json(),
-				error => console.log(error)
+				response => response.json().then(json => ({
+					status: response.status,
+					json
+				}))
 			)
 			.then(
-				json => {
-					dispatch(receiveFilesDataIPs(ip, port_number, json));			
+				({ status, json }) => {
+					if (status == 200) {
+						dispatch(receiveFilesDataIPs(ip, port_number, json));
+					}
+					else {
+						dispatch(notifyError("Error fetching files data for IP. " + json.message));
+					}
 				}
 			)
 	}
-
 }
 
 export const RECEIVE_FILES_DATA_IPS = 'RECEIVE_FILES_DATA_IPS'
@@ -99,12 +113,19 @@ export function fetchFilesStatsHosts() {
 			})
 		})
 			.then(
-				response => response.json(),
-				error => console.log(error)
+				response => response.json().then(json => ({
+					status: response.status,
+					json
+				}))
 			)
 			.then(
-				json => {
-					dispatch(receiveFilesStatsHosts(json));			
+				({ status, json }) => {
+					if (status == 200) {
+						dispatch(receiveFilesStatsHosts(json));
+					}
+					else {
+						dispatch(notifyError("Error fetching files stats for host. " + json.message));
+					}
 				}
 			)
 	}
@@ -147,11 +168,20 @@ export function fetchCountFiles() {
 
         return fetch(`/project/${project_uuid}/files/count`)
         .then(
-			response => response.json(),
-			error => console.log(error)
+			response => response.json().then(json => ({
+				status: response.status,
+				json
+			}))
 		)
 		.then(
-			json => dispatch(renewCount(json))
+			({ status, json }) => {
+				if (status == 200) {
+					dispatch(renewCount(json));
+				}
+				else {
+					dispatch(notifyError("Error fetching files stats for host. " + json.message));
+				}
+			}
 		)
     }
 }
@@ -185,16 +215,22 @@ export function requestFilesHost(host, port_number, limit, offset, filters) {
 			})
 		})
 			.then(
-				response => response.json(),
-				error => console.log(error)
+				response => response.json().then(json => ({
+					status: response.status,
+					json
+				}))
 			)
 			.then(
-				json => {
-					dispatch(receiveFilesDataHosts(host, port_number, json));			
+				({ status, json }) => {
+					if (status == 200) {
+						dispatch(receiveFilesDataHosts(host, port_number, json));
+					}
+					else {
+						dispatch(notifyError("Error fetching files stats for host. " + json.message));
+					}
 				}
 			)
 	}
-
 }
 
 export const RECEIVE_FILES_DATA_HOSTS = 'RECEIVE_FILES_DATA_HOSTS'
