@@ -21,12 +21,9 @@ class ProjectsHandlers:
         if create_result['status'] == 'success':
             await self.notifier.notify_on_created_project()
 
-            return response.json({ 'status': 'ok' })
+            return response.json({}, status=200)
         else:
-            return response.json({
-                'status': 'error',
-                'message': create_result['text']
-            })
+            return response.json({ 'message': create_result['text'] }, status=403)
 
 
     @authorized_class_method()
@@ -38,12 +35,9 @@ class ProjectsHandlers:
         if delete_result['status'] == 'success':
             await self.notifier.notify_on_deleted_project()
 
-            return response.json({ 'status': 'ok' })
+            return response.json({}, status=200)
         else:
-            return response.json({
-                'status': 'error',
-                'message': delete_result['text']
-            })
+            return response.json({ 'message': delete_result['text'] }, status=403)
             
 
     @authorized_class_method()
@@ -62,12 +56,9 @@ class ProjectsHandlers:
         if update_result['status'] == 'success':
             await self.notifier.notify_on_updated_project()
 
-            return response.json({ 'status': 'ok' })
+            return response.json({}, status=200)
         else:
-            return response.json({
-                'status': 'error',
-                'message': update_result['text']
-            })
+            return response.json({ 'message': update_result['text'] }, status=403)
 
 
 class ProjectsNotifier:

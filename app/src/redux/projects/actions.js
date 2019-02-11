@@ -1,4 +1,3 @@
-import fetch from 'cross-fetch'
 import { notifySuccess, notifyError } from '../notifications/actions.js'
 
 
@@ -34,17 +33,19 @@ export function submitNewProject(projectName) {
 		}
 	)
 		.then(
-			response => response.json(),
-			error => console.log(error)
+			response => response.json().then(json => ({
+				status: response.status,
+				json
+			}))
 		)
 		.then(
-			json => {
-				if (json.status == "ok") {
+			({ status, json }) => {
+				if (status == 200) {
 					dispatch(notifySuccess("Project created"));
-					dispatch(fetchProjects())
+					dispatch(fetchProjects());
 				}
 				else {
-					dispatch(notifyError("Error creating projects " + json.message));
+					dispatch(notifyError("Error creating projects. " + json.message));
 				}
 			}
 		)
@@ -65,17 +66,19 @@ export function submitDeleteProject(projectUUID) {
 		}
 	)
 		.then(
-			response => response.json(),
-			error => console.log(error)
+			response => response.json().then(json => ({
+				status: response.status,
+				json
+			}))
 		)
 		.then(
-			json => {
-				if (json.status == "ok") {
+			({ status, json }) => {
+				if (status == 200) {
 					dispatch(notifySuccess("Project deleted"));
-					dispatch(fetchProjects())
+					dispatch(fetchProjects());
 				}
 				else {
-					dispatch(notifyError("Error deleting projects " + json.message));
+					dispatch(notifyError("Error deleting project. " + json.message));
 				}
 			}
 		)
@@ -97,17 +100,19 @@ export function submitUpdateProject(projectUUID, parameters) {
 		}
 	)
 		.then(
-			response => response.json(),
-			error => console.log(error)
+			response => response.json().then(json => ({
+				status: response.status,
+				json
+			}))
 		)
 		.then(
-			json => {
-				if (json.status == "ok") {
+			({ status, json }) => {
+				if (status == 200) {
 					dispatch(notifySuccess("Project updated"));
 					dispatch(fetchProjects());
 				}
 				else {
-					dispatch(notifyError("Error updating projects " + json.message));
+					dispatch(notifyError("Error updating project. " + json.message));
 				}
 			}
 		)
