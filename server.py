@@ -15,6 +15,7 @@ from managers.meta_manager import MetaManager
 
 from server.handlers.creds import CredsHandlers
 from server.handlers.dictionaries import DictHandlers
+from server.handlers.files import FilesHandlers
 from server.handlers.ips import IPsHandlers
 from server.handlers.hosts import HostsHandlers
 from server.handlers.projects import ProjectsHandlers
@@ -81,6 +82,10 @@ if __name__ == '__main__':
     # Handler for scans
     scans_handlers = ScansHandlers(meta_manager.scan_manager)
     app.add_route(scans_handlers.cb_count_scans, '/project/<project_uuid:int>/scans/count')
+
+    # Handlers for files
+    files_handlers = FilesHandlers(meta_manager.file_manager)
+    app.add_route(files_handlers.cb_count_files, '/project/<project_uuid:int>/files/count')
 
     # Static handlers: index.html and bundle.js
     app.add_route(StaticHandlers.cb_index_handler, '/')
