@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
 import ScopeComment from '../../common/scope_comment/ScopeComment.jsx'
 import PortsTabs from '../../host_verbose/presentational/PortsTabs.jsx'
 
@@ -16,10 +15,6 @@ class IPVerbose extends React.Component {
 
 		this.commentSubmitted = this.commentSubmitted.bind(this);
 		this.getFilesIPs = this.getFilesIPs.bind(this);
-	}
-
-	componentDidMount() {
-		this.filesEmitter = new FilesSocketioEventsEmitter();
 	}
 
 	getFilesIPs(ip, port_number, limit=3, offset=0) {

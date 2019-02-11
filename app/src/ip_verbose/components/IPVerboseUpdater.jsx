@@ -2,7 +2,6 @@ import _ from 'lodash'
 import React from 'react'
 
 import IPVerbose from './IPVerbose.jsx'
-import FilesSocketioEventsEmitter from '../../redux/files/FilesSocketioEventsEmitter.js'
 
 import Loading from '../../common/loading/Loading.jsx'
 
