@@ -43,8 +43,13 @@ class FilesHandlers:
         port_number = int(params['port_number'])
         limit = int(params['limit'])
         offset = int(params['offset'])
-        filters = params['filters']
+        filters = params.get('filters', None)
 
         get_result = self.file_manager.get_files_hosts(host, port_number, limit, offset, filters)
 
-        return response.json(get_result)
+        files = list(map(
+            lambda file: file.dict(),
+            get_result['files']
+        ))
+
+        return response.json(files)
