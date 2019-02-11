@@ -14,7 +14,7 @@ class FilesHandlers:
         if amount_result['status'] == 'success':
             return response.json(amount_result['amount'], status=200)
         else:
-            return response.json(amount_result, status=403)
+            return response.json({ 'message': amount_result['text'] }, status=403)
 
     @authorized_class_method()
     async def cb_stats_hosts(self, request, project_uuid):
@@ -27,7 +27,7 @@ class FilesHandlers:
         if get_result['status'] == 'success':
             return response.json(get_result['stats'], status=200)
         else:
-            return response.json(get_result, status=403)
+            return response.json({ 'message': get_result['text'] }, status=403)
 
 
     @authorized_class_method()
@@ -41,7 +41,7 @@ class FilesHandlers:
         if get_result['status'] == 'success':
             return response.json(get_result['stats'], status=200)
         else:
-            return response.json(get_result, status=403)
+            return response.json({ 'message': get_result['text'] }, status=403)
 
 
     @authorized_class_method()
@@ -63,7 +63,7 @@ class FilesHandlers:
 
             return response.json(files, status=200)
         else:
-            return response.json(get_result, status=403)
+            return response.json({ 'message': get_result['text'] }, status=403)
 
 
     @authorized_class_method()
@@ -85,4 +85,4 @@ class FilesHandlers:
 
             return response.json(files, status=200)
         else:
-            return response.json(get_result, status=403)
+            return response.json({ 'message': get_result['text'] }, status=403)
