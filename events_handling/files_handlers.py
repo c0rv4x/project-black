@@ -7,39 +7,6 @@ class FileHandlers(object):
         self.register_handlers()
 
     def register_handlers(self):
-        @self.socketio.on('files:stats:get:ip', namespace='/files')
-        async def _cb_handle_files_stats_get(sio, msg):
-            """ Returns dicts with statistics on files for selected targets """
-            project_uuid = int(msg.get('project_uuid', None))
-            ip_ids = msg.get('ip_ids', [])
-            filters = msg.get('filters')
-
-            get_result = self.file_manager.get_stats_ips(project_uuid, ip_ids, filters)
-            get_result["project_uuid"] = project_uuid
-
-            await self.socketio.emit(
-                'files:stats:add:ips',
-                get_result,
-                room=sio,
-                namespace='/files'
-            )                
-
-        @self.socketio.on('files:stats:get:host', namespace='/files')
-        async def _cb_handle_files_stats_get(sio, msg):
-            """ Returns dicts with statistics on files for selected targets """
-            project_uuid = int(msg.get('project_uuid', None))
-            host_ids = msg.get('host_ids', [])
-            filters = msg.get('filters')
-
-            get_result = self.file_manager.get_stats_hosts(project_uuid, host_ids, filters)
-            get_result["project_uuid"] = project_uuid
-
-            await self.socketio.emit(
-                'files:stats:add:hosts',
-                get_result,
-                room=sio,
-                namespace='/files'
-            )                
 
         @self.socketio.on('files:get:hosts', namespace='/files')
         async def _cb_handle_files_data_get(sio, msg):
