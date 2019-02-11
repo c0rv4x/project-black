@@ -1,9 +1,6 @@
 import _ from 'lodash';
 
 import { 
-	ADD_FILES_IPS,
-	EMPTY_FILES,
-
 	RENEW_FILES_STATS,
 	SET_LOADING_FILES,
 	RECEIVE_FILES_STATS_HOSTS,
@@ -27,42 +24,6 @@ const defaultState = {
 		"host": {}
 	}
 }
-
-function add_files_ips(state = defaultState, action) {
-	const message = action.message;
-	let new_files = JSON.parse(JSON.stringify(state['files']));
-
-	if (new_files.ip.hasOwnProperty(message.ip)) {
-		if (new_files.ip[message.ip].hasOwnProperty(message.port_number)) {
-			new_files.ip[message.ip][message.port_number] = new_files.ip[message.ip][message.port_number].concat(message['files']);
-		}
-		else {
-			new_files.ip[message.ip][message.port_number] = message['files'];
-		}
-	}
-	else {
-		new_files.ip[message.ip] = {};
-		new_files.ip[message.ip][message.port_number] = message['files'];
-	}
-
-	return {
-		"stats": state['stats'],
-		"amount": state['amount'],
-		"loaded": state['loaded'],
-		"files": new_files
-	};
-}
-
-
-function empty_files(state = defaultState, action) {
-	return {
-		"stats": state['stats'],
-		"amount": state['amount'],
-		"loaded": state['loaded'],
-		"files": defaultState['files']
-	};
-}
-
 
 function renewFilesStats(state = defaultState, action) {
 	return {
@@ -174,11 +135,6 @@ function receiveFilesDataIPs(state = defaultState, action) {
 
 function file_reduce(state = defaultState, action) {
 	switch (action.type) {
-		case ADD_FILES_IPS:
-			return add_files_ips(state, action);		
-		case EMPTY_FILES:
-			return empty_files(state, action);
-
 		case RENEW_FILES_STATS:
 			return renewFilesStats(state, action);
 		case SET_LOADING_FILES:
