@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import ScopeAdder from '../presentational/ScopeAdder.jsx'
-import { requestCreateScope } from '../../../redux/scopes/actions.js'
+import { requestCreateScope } from '../../../../redux/scopes/actions.js'
 
 
 class ScopeAdderTracked extends React.Component {

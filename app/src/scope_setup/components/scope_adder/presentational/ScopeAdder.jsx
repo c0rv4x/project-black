@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types';
-import { createScope } from '../../../redux/scopes/actions'
 
 import ScopeUpload from '../components/ScopeUpload.jsx'
 import { Button, Heading, TextArea } from 'grommet'

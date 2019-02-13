@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Box, Markdown, TextArea } from 'grommet'
 
-import EditableElement from '../editable/EditableElement.jsx'
+import EditableElement from '../../../common/editable/EditableElement.jsx'
 
 
 class ProjectCommentPresentational extends React.Component {

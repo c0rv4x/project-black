@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import ProjectCommentPresentational from './ProjectCommentPresentational.jsx'
 
-import { submitUpdateProject } from '../../redux/projects/actions.js'
+import { submitUpdateProject } from '../../../redux/projects/actions.js'
 
 
 class ProjectComment extends React.Component {
