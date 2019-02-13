@@ -55,8 +55,8 @@ class Notifications extends React.Component {
             <div className="notif__container">
                 <CSSTransitionGroup
                     transitionName="notif-transition"
-                    transitionEnterTimeout={600}
-                    transitionLeaveTimeout={600}
+                    transitionEnterTimeout={400}
+                    transitionLeaveTimeout={400}
                 >
                     {renderedNotifications}
                 </CSSTransitionGroup>
