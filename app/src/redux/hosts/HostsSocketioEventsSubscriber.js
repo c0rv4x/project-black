@@ -1,6 +1,5 @@
 import { 
-	resolveHosts,
-
+	resolveFinished,
 	hostCommentUpdated,
 	hostsCreated,
 	hostDeleted,
@@ -27,7 +26,7 @@ class HostsSocketioEventsSubscriber {
 		this.register_socketio_handler('hosts:updated', hostsDataUpdated);
 		this.register_socketio_handler('hosts:updated:ips', IPsInHostsUpdated);
 
-		this.register_socketio_handler('hosts:resolve:done', resolveHosts);
+		this.register_socketio_handler('hosts:resolve:done', resolveFinished);
 
 	}
 

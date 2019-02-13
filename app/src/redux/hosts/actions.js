@@ -2,6 +2,15 @@ import fetch from 'cross-fetch'
 
 import { notifySuccess, notifyError } from '../notifications/actions.js'
 
+
+export function resolveFinished(message, current_project_uuid) {
+	return dispatch => {
+		dispatch(notifySuccess("Resolve finished"));
+		dispatch(resolveHosts(message, current_project_uuid));
+	}
+}
+
+
 export const RESOLVE_HOSTS = 'RESOLVE_HOSTS'
 
 export function resolveHosts(message, current_project_uuid) {

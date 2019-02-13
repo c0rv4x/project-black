@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 
 import { Button } from 'grommet'
@@ -13,12 +14,17 @@ class ResolveButton extends React.Component {
 		};
 	}
 
-	componentWillReceiveProps(nextProps) {
-		if (this.props.hostsResolved) {
+	shouldComponentUpdate(nextProps, nextState) {
+        return (!_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state));
+	}
+
+	componentDidUpdate() {
+		const { hostsResolved } = this.props;
+
+		if (hostsResolved) {
 			this.setState({
-				"color": "green",
-				"loading": false
-			});
+				loading: false
+			})
 		}
 	}
 
