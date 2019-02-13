@@ -1,7 +1,6 @@
 
 import { 
-	renewTasks,
-	updateTasks,
+	receiveTasksUpdate,
 
 	tasksCreated
 } from './actions';
@@ -26,7 +25,7 @@ class TasksSocketioEventsSubsriber {
 		// Received all tasks in one message
 		this.register_socketio_handler('tasks:new', tasksCreated);
 
-		this.register_socketio_handler('tasks:all:get:back:updated', updateTasks);
+		this.register_socketio_handler('tasks:all:get:back:updated', receiveTasksUpdate);
 	}
 
 	register_socketio_handler(eventName, callback) {

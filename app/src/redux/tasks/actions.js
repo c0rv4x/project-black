@@ -1,15 +1,36 @@
+import _ from 'lodash'
 import fetch from 'cross-fetch'
 
+import { notifySuccess, notifyError } from '../notifications/actions.js'
+
+
+export function receiveTasksUpdate(message, current_project_uuid) {
+	return dispatch => {
+		for (let finishedTask of message.tasks.finished) {
+			dispatch(notifyOnFinishedTask(finishedTask));
+		}
+		dispatch(updateTasks(message, current_project_uuid));
+	}
+}
+
+export function notifyOnFinishedTask(task) {
+	return dispatch => {
+		if (task.status == 'Finished') {
+			dispatch(notifySuccess(task.task_type + " finished"));
+		}
+		else {
+			dispatch(notifyError(task.task_type + " failed. " + task.text));
+		}
+	}
+}
+
 export const UPDATE_TASKS = 'UPDATE_TASKS'
-
-
 export function updateTasks(message, current_project_uuid) {
 	return { type: UPDATE_TASKS,
 		current_project_uuid: current_project_uuid,
 		message
 	}
 }
-
 
 /////
 
@@ -66,6 +87,7 @@ export function fetchTasks() {
 		)
 		.then(
 			json => {
+				console.log(json);
 				dispatch(renewTasks(json));
 			}
 		)

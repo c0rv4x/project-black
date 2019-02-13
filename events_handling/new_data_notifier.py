@@ -2,7 +2,6 @@ import re
 import json
 from common.logger import log
 
-from events_handling.notifications_spawner import send_notification
 
 @log
 class Notifier:
@@ -32,27 +31,6 @@ class Notifier:
                 targets = json.loads(text)
             except:
                 targets = text
-
-        if task_status == "Finished":
-            await send_notification(
-                self.socketio,
-                "success",
-                "Task finished",
-                "{} for {} hosts finished. {} hosts updated".format(
-                    task_name.capitalize(),
-                    len(targets) if targets else 0,
-                    len(targets) if targets else 0
-                ),
-                project_uuid=project_uuid
-            )
-        else:
-            await send_notification(
-                self.socketio,
-                "Error",
-                "Task failed",
-                "{}: {}".format(task_name.capitalize(), text),
-                project_uuid=project_uuid
-            )
 
         if targets:
             await self.send_scans_updated_notifications(targets, project_uuid)
@@ -86,16 +64,6 @@ class Notifier:
         if text:
             updated_target = text.split(':')[0]
 
-            await send_notification(
-                self.socketio,
-                "success" if task_status == "Finished" else "error",
-                "Task finished",
-                "Dirsearch for {} finished".format(
-                    text
-                ),
-                project_uuid=project_uuid
-            )
-
             await self.send_updated_files_notification(project_uuid, updated_target)
 
     async def send_updated_files_notification(self, project_uuid, updated_target=None):
@@ -121,16 +89,6 @@ class Notifier:
 
     async def notify_on_creds(self, project_uuid, target, task_status):
         updated_target = target.split(':')[0]
-
-        await send_notification(
-            self.socketio,
-            "success",
-            "Task finished",
-            "Patator for {} finished".format(
-                target
-            ),
-            project_uuid=project_uuid
-        )
 
         if self.ip_regex.match(updated_target):
             await self.socketio.emit(
