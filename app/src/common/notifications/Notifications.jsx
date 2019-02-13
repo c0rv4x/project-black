@@ -30,13 +30,24 @@ class Notifications extends React.Component {
                 <Box
                     key={id}
                     id={id}
-                    background={color}
-                    round="medium"
+                    align="center"
+                    direction="row"
+                    gap="small"
+                    justify="between"
+                    round="small"
+                    elevation="medium"
                     pad={{ vertical: "xsmall", horizontal: "small" }}
+                    border={{
+                        color: color,
+                        size: 'medium'
+                    }}
+                    background={color}
                     onClick={() => {store.dispatch(notifDismiss(id))}}
                 >
+                <Box align="center" direction="row" gap="xsmall">
                     <Text>{getter(notification, 'message')}</Text>
                 </Box>
+            </Box>
             )
         });
 
