@@ -1,7 +1,5 @@
 import asyncio
 
-from events_handling.notifications_spawner import send_notification
-
 
 class HostHandlers(object):
 
@@ -25,17 +23,8 @@ class HostHandlers(object):
                     'status': 'success',
                     'project_uuid': project_uuid
                 },
+                room=sio,
                 namespace='/hosts'
-            )
-
-            await send_notification(
-                self.socketio,
-                "success",
-                "Hosts resolved",
-                "Hosts resolved. Found {} ips, {} new".format(
-                    total_ips, new_ips
-                ),
-                project_uuid=project_uuid
             )
 
 

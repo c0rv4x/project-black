@@ -1,5 +1,4 @@
 """ Keep class for handling tasks events """
-from events_handling.notifications_spawner import send_notification
 
 
 class TaskHandlers(object):
