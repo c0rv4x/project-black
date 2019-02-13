@@ -48,8 +48,8 @@ function receiveHosts(state = initialState, action) {
 	const hosts = action.message;
 
 	return {
-		...hosts,
-		filters: state['filters']
+		...state,
+		...hosts
 	}
 }
 
