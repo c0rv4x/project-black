@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 
+import autosize from 'autosize'
+
 import ScopeUpload from '../components/ScopeUpload.jsx'
 import { Box, Button, Heading, TextArea } from 'grommet'
 
@@ -55,6 +57,12 @@ class ScopeAdder extends React.Component {
 
 	componentDidUpdate() {
 		if (this.input) {
+			autosize.update(this.input);
+		}
+	}
+
+	componentDidMount() {
+		if (this.input) {
 			autosize(this.input);
 		}
 	}
@@ -87,13 +95,16 @@ class ScopeAdder extends React.Component {
 					Add IPs, Hosts or CIDR separated with newline
 				</Heading>
 				<TextArea 
-					autoHeight
+					ref={(input) => {
+						this.input = input;
+					}}
 					rows={1}
 					type="text"
 					placeholder="1.1.1.1"
 					value={this.props.newScopeInput}
 					onKeyUp={this.handleKeyPress}
 					onChange={(e) => this.props.handleNewScopeChange(e.target.value)}
+					style={{ resize: 'none' }}
 				/>
 
 				<Box
