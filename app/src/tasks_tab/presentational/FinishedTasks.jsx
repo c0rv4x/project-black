@@ -27,7 +27,7 @@ class FinishedTasks extends React.Component {
 							<TableCell>Type</TableCell>
 							<TableCell>Status</TableCell>
 							<TableCell>Targets</TableCell>
-							<TableCell>Added</TableCell>
+							<TableCell>Time To Complete</TableCell>
 							<TableCell>Finished</TableCell>
 						</TableRow>
 					</TableHeader>
