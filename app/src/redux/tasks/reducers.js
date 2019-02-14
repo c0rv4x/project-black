@@ -16,46 +16,7 @@ function tasksCreated(state = {'active': [], 'finished': []}, action) {
 
 
 function renewTasks(state = {'active': [], 'finished': []}, action) {
-	const tasks = action.tasks;
-
-	const active_tasks = tasks['active'];
-	let parsed_active_tasks = _.map(_.uniq(active_tasks), (x) => {
-		return {
-			"task_id": x["task_id"],
-			"task_type": x["task_type"],
-			"params": x["params"],
-			"target": x["target"],
-			"status": x["status"],
-			"progress": x["progress"],
-			"project_uuid": x["project_uuid"],
-			"text": x["text"],
-			"stdout": x["stdout"],
-			"stderr": x["stderr"],
-			"date_added": x["date_added"]
-		}
-	});
-
-	const finished_tasks = tasks['finished'];
-	let parsed_finished_tasks = _.map(_.uniq(finished_tasks), (x) => {
-		return {
-			"task_id": x["task_id"],
-			"task_type": x["task_type"],
-			"params": x["params"],
-			"target": x["target"],
-			"status": x["status"],
-			"progress": x["progress"],
-			"project_uuid": x["project_uuid"],
-			"text": x["text"],
-			"stdout": x["stdout"],
-			"stderr": x["stderr"],
-			"date_added": x["date_added"]
-		}
-	});
-
-	return {
-		'active': parsed_active_tasks,
-		'finished': parsed_finished_tasks
-	};
+	return action.tasks;
 }
 
 function update_tasks(state = {'active': [], 'finished': []}, action) {
