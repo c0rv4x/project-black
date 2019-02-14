@@ -9,7 +9,7 @@ class ResolveButton extends React.Component {
 		super(props);
 
 		this.state = {
-			"color": "blue",
+			"color": "brand",
 			"loading": false
 		};
 	}
@@ -36,7 +36,7 @@ class ResolveButton extends React.Component {
 				alignSelf="end"
 				onClick={() => {
 					this.setState({
-						"color": "blue",
+						"color": "brand",
 						"loading": true
 					});
 					this.props.resolveScopes();

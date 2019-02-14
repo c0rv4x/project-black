@@ -2,7 +2,8 @@ import React from 'react'
 import _ from 'lodash'
 
 import {
-	Box
+    Box,
+    Heading
 } from 'grommet'
 
 
@@ -62,13 +63,19 @@ class FilesStats extends React.Component {
 
                 i++;
             }
-        }) 
+        });
 
         return (
             <Box
                 align="center"
             >
-                {filesBoxes}
+                {
+                    filesBoxes.length ? filesBoxes : (
+                        <Heading level="5" color="light-4">
+                            No files yet
+                        </Heading>
+                    )
+                }
             </Box>
         )
     }

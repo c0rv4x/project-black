@@ -86,7 +86,7 @@ class IPEntryLine extends React.Component {
 						{ name: 'files-' + ip.ip_address, start: [3, 0], end: [3, 0] },
 						{ name: 'control-' + ip.ip_address, start: [4, 0], end: [4, 0] },
 					]}
-					columns={["small", "small", "auto", "auto", "auto"]}
+					columns={["small", "small", "auto", "small", "small"]}
 					rows={["auto"]}
 					align="center"
 					pad="xsmall"
@@ -121,8 +121,12 @@ class IPEntryLine extends React.Component {
 							onCommentSubmit={onCommentSubmit}
 						/>
 					</Box>
-					<Box gridArea={"ports-" + ip.ip_address} direction="column" gap="small" pad="xxsmall">
-						{ports}
+					<Box gridArea={"ports-" + ip.ip_address} align="center" direction="column" gap="small" pad="xxsmall">
+						{
+							ports.length ? ports : (
+								<Heading level="5" color="light-4">No ports yet</Heading>
+							)
+						}
 					</Box>
 					<Box gridArea={"files-" + ip.ip_address} direction="row" gap="small" pad="xxsmall">
 						<FilesStats targetId={ip.ip_id} files={ip.files} />
