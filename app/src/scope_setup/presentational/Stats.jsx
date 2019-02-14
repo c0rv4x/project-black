@@ -13,8 +13,15 @@ class ScopeSetup extends React.Component {
 		const all_loaded = ips.loaded && hosts.loaded && scans.loaded && files.loaded;
 
 		return (
-			<div>
-				<br />
+			<Box
+				border={{
+					size: "small",
+					color: "light-4"
+				}}
+				round="xsmall"
+				pad="small"
+				margin="small"
+			>
 				{
 					all_loaded ? (
 							<Grid
@@ -46,7 +53,7 @@ class ScopeSetup extends React.Component {
 						<Loading />
 					)
 				}
-			</div>
+			</Box>
 		)
 	}
 }

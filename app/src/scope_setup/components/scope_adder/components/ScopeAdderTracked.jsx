@@ -28,24 +28,22 @@ class ScopeAdderTracked extends React.Component {
 
 	render() {
 		return (
-			<div>
-				<ScopeAdder
-					newScopeInput={this.state.newScopeInput}
-					handleNewScopeChange={(value) => {
-						this.handleNewScopeChange(value)
-					}}
-					onNewScopeClick={
-						(scopes) => {
-							this.submitNewScope(scopes);
-							this.setState({
-								"newScopeInput": ""
-							});
-						}
+			<ScopeAdder
+				newScopeInput={this.state.newScopeInput}
+				handleNewScopeChange={(value) => {
+					this.handleNewScopeChange(value)
+				}}
+				onNewScopeClick={
+					(scopes) => {
+						this.submitNewScope(scopes);
+						this.setState({
+							"newScopeInput": ""
+						});
 					}
-					scopesCreated={this.props.scopesCreated}
-					project_uuid={this.props.project.project_uuid}
-				/>
-			</div>
+				}
+				scopesCreated={this.props.scopesCreated}
+				project_uuid={this.props.project.project_uuid}
+			/>
 		)
 	}
 

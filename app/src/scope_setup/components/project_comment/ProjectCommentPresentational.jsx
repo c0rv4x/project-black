@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Box, Markdown, TextArea } from 'grommet'
+import { Box, Heading, Markdown, TextArea } from 'grommet'
 
 import EditableElement from '../../../common/editable/EditableElement.jsx'
 
@@ -8,7 +8,24 @@ import EditableElement from '../../../common/editable/EditableElement.jsx'
 class ProjectCommentPresentational extends React.Component {
 	render() {
 		return (
-			<Box>
+			<Box
+				border={{
+					color: "light-4",
+					size: "small"
+				}}
+				round="xsmall"
+				pad="small"
+				margin="small"
+			>
+				<Heading
+					level="5"
+					margin={{
+						top: "none",
+						bottom: "small"
+					}}
+				>
+					Project comment
+				</Heading>
 				<EditableElement
 					value={this.props.projectComment}
 					onBlur={this.props.commentSubmitted}

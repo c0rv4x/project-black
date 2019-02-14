@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types';
 
 import ScopeUpload from '../components/ScopeUpload.jsx'
-import { Button, Heading, TextArea } from 'grommet'
+import { Box, Button, Heading, TextArea } from 'grommet'
 
 class ScopeAdder extends React.Component {
 
@@ -63,31 +63,58 @@ class ScopeAdder extends React.Component {
 		const { scopesCreated } = this.props;
 
 		return (
-			<div>
-				<Heading level="3">Add new scope</Heading>
+			<Box
+				border={{
+					size: "small",
+					color: "light-4"
+				}}
+				round="xsmall"
+				pad="small"
+				margin={{
+					top: 'none',
+					bottom: 'small',
+					left: 'small',
+					right: 'small'
+				}}
+			>
+				<Heading
+					level="5"
+					margin={{
+						top: "none",
+						bottom: "small"
+					}}
+				>
+					Add IPs, Hosts or CIDR separated with newline
+				</Heading>
 				<TextArea 
 					autoHeight
 					rows={1}
 					type="text"
-					placeholder="Newline-separated hosts, ips, networks (CIDR notation)"
+					placeholder="1.1.1.1"
 					value={this.props.newScopeInput}
 					onKeyUp={this.handleKeyPress}
 					onChange={(e) => this.props.handleNewScopeChange(e.target.value)}
 				/>
 
-				<ScopeUpload
-					fileLoadedHandler={this.props.handleNewScopeChange}
-					label="Upload scope"
-				/>
+				<Box
+					direction="row"
+					gap="xsmall"
+					margin={{ top: 'small' }}
+				>
+					<ScopeUpload
+						fileLoadedHandler={this.props.handleNewScopeChange}
+						label="Upload scope"
+					/>
 
-				<Button
-					label="Add to scope"
-					color={scopesCreated ? 'brand' : 'status-warning'}
-					active={!scopesCreated}
-					disabled={!scopesCreated}
-					onClick={() => this.props.onNewScopeClick(this.props.newScopeInput)}
-				/>
-			</div>
+					<Button
+						label="Add to scope"
+						color={scopesCreated ? 'brand' : 'status-warning'}
+						active={!scopesCreated}
+						disabled={!scopesCreated}
+						onClick={() => this.props.onNewScopeClick(this.props.newScopeInput)}
+					/>
+				</Box>
+			</Box>
 		)
 	}
 }

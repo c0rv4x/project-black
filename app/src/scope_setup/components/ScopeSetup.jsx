@@ -17,9 +17,6 @@ class ScopeSetup extends React.Component {
 
 		return (
 			<div>
-				<ProjectComment project={project} />
-				<br />
-
 				<HeadButtonsTracked
 					project={project}
 					hosts={hosts}
@@ -33,11 +30,14 @@ class ScopeSetup extends React.Component {
 					project={project}
 				/>
 
-				<br />
+				<ProjectComment project={project} />
+
 				<ScopeAdderTracked
 					project={project}
 					scopesCreated={scopes.scopes_created}
 				/>
+
+
 			</div>
 		)
 	}

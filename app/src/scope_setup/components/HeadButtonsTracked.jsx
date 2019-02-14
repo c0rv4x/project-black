@@ -44,7 +44,7 @@ class HeadButtonsTracked extends React.Component {
 
 	render() {
 		return (
-			<Box direction="row" align="center" gap="xsmall" pad="xsmall">
+			<Box direction="row" align="center" gap="xsmall" pad="xsmall" margin="small">
 				<ScopesLock 
 					status={this.props.project.ips_locked}
 					name="ips"
