@@ -29,6 +29,7 @@ class TasksCache:
                                         progress=x.progress,
                                         text=x.text,
                                         date_added=x.date_added,
+                                        date_finished=x.date_finished,
                                         stdout=x.stdout,
                                         stderr=x.stderr),
                             tasks_from_db))

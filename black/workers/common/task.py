@@ -1,6 +1,8 @@
 """ Basic class for Task (the isntance of a running scan
 against 1 target) """
 import json
+from datetime import datetime
+
 from black.db import Sessions, TaskDatabase
 
 
@@ -65,6 +67,10 @@ class Task(object):
         task_db_object.status = new_status
         task_db_object.progress = progress
         task_db_object.text = text
+
+        if new_status == 'Finished' or new_status == 'Aborted':
+            task_db_object.date_finished = datetime.utcnow()
+
         session.commit()
         self.sessions.destroy_session(session)
 

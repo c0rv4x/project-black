@@ -42,6 +42,9 @@ class TaskDatabase(Base):
     # Time of adding
     date_added = Column(DateTime, default=datetime.datetime.utcnow)
 
+    # Time of adding
+    date_finished = Column(DateTime)
+
     # The name of the related project
     project_uuid = Column(
         Integer, ForeignKey('projects.project_uuid', ondelete='CASCADE'), index=True
@@ -60,7 +63,9 @@ class TaskDatabase(Base):
             "text": self.text,
             "stdout": self.stdout,
             "stderr": self.stderr,
-            "project_uuid": self.project_uuid
+            "project_uuid": self.project_uuid,
+            "date_added": self.date_added,
+            "date_finished": self.date_finished
         }
 
     @classmethod

@@ -16,6 +16,7 @@ class ShadowTask(object):
         progress=None,
         text=None,
         date_added=datetime.datetime.utcnow(),
+        date_finished=None,
         stdout="",
         stderr=""
     ):
@@ -32,6 +33,7 @@ class ShadowTask(object):
         self.progress = progress
         self.text = text
         self.date_added = date_added
+        self.date_finished = date_finished
         self.stdout = stdout
         self.stderr = stderr
 
@@ -72,7 +74,8 @@ class ShadowTask(object):
                     "project_uuid": self.project_uuid,
                     "stdout": self.stdout,
                     "stderr": self.stderr,
-                    "date_added": str(self.date_added)
+                    "date_added": str(self.date_added),
+                    "date_finished": str(self.date_finished)
                 }
 
         return {
@@ -86,5 +89,6 @@ class ShadowTask(object):
             "project_uuid": self.project_uuid,
             # "stdout" : self.stdout,
             # "stderr" : self.stderr,
-            "date_added": str(self.date_added)
+            "date_added": str(self.date_added),
+            "date_finished": str(self.date_finished)
         }
