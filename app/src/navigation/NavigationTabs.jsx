@@ -14,7 +14,7 @@ import {
 import ScopeSetupWrapper from '../scope_setup/components/ScopeSetupWrapper.js'
 import IPsListWrapper from '../ips_list/components/IPsListWrapper.js'
 import HostsListWrapper from '../hosts_list/components/HostsListWrapper.js'
-import DirsearchWrapper from './DirsearchWrapper.jsx'
+import TasksTabWrapper from '../tasks_tab/components/TasksTabWrapper.js'
 
 
 class NavigationTabs extends React.Component {
@@ -22,7 +22,7 @@ class NavigationTabs extends React.Component {
 		super(props);
 
 		this.state = {
-			activeIndex : 2
+			activeIndex : 5
 		}
 
 		this.project_uuid = this.props.match.params.project_uuid;
@@ -89,6 +89,16 @@ class NavigationTabs extends React.Component {
 				<Tab
 					title="Dirsearch list"
 				>
+				</Tab>
+				<Tab
+					title="Tasks"
+				>
+					<Box
+						margin="small"
+						align="stretch"
+					>
+						<TasksTabWrapper />
+					</Box>
 				</Tab>
 			</Tabs>
 		)

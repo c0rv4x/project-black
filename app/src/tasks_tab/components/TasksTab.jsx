@@ -1,19 +1,15 @@
 import React from 'react'
 
+import FinishedTasks from '../presentational/FinishedTasks.jsx'
+
 
 class TasksTab extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
-	shouldComponentUpdate(nextProps) {
-		return !_.isEqual(nextProps, this.props);
-	}	
-
 	render() {
+		const { tasks } = this.props;
+
 		return (
 			<div>
-
+				<FinishedTasks tasks={tasks.finished} />
 			</div>
 		)
 	}
