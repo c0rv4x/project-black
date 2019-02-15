@@ -104,7 +104,7 @@ class Notifier:
                 'hosts:updated', {
                     'status': 'success',
                     'project_uuid': project_uuid,
-                    'updated_hostname': updated_target
+                    'updated_hostname': [updated_target]
                 },
                 namespace='/hosts'
             )
@@ -114,18 +114,20 @@ class Notifier:
 
         if text["updated_hosts"]:
             await self.socketio.emit(
-                'hosts:updated', {
+                'hosts:created', {
                     'status': 'success',
                     'project_uuid': project_uuid
                 },
+                room=None,
                 namespace='/hosts'
             )
 
         if text["updated_ips"]:
             await self.socketio.emit(
-                'ips:updated', {
+                'ips:created', {
                     'status': 'success',
                     'project_uuid': project_uuid
                 },
+                room=None,
                 namespace='/ips'
             )
