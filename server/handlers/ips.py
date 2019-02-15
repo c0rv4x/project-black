@@ -98,6 +98,49 @@ class IPsHandlers:
             return response.json({ 'message': get_result.text }, status=403)
 
 
+    @authorized_class_method()
+    async def cb_export(self, request, project_uuid):
+        filters = request.json['filters']
+
+        get_result = self.scope_manager.get_ips_with_ports(
+            project_uuid=project_uuid,
+            filters=filters
+        )
+
+        ips_formed = []
+        for ip in get_result['ips']:
+            scans = ip['scans']
+
+            if scans:
+                ip_address = ip['ip_address']
+
+                ips_formed.append("Host {} ():    Ports: {}".format(
+                    ip_address,
+                    form_ports(scans)
+                ))
+
+        print(ips_formed)
+        return response.text(ips_formed, status=200)
+
+
+def form_ports(scans):
+    return ', '.join(map(lambda scan: form_single_port(scan), scans))
+
+
+def form_single_port(scan):
+    port_data = [
+        str(scan['port_number']),
+        'open',
+        'tcp',
+        '',
+        scan['protocol'],
+        '',
+        scan['banner'],
+        ''
+    ]
+
+    return '/'.join(port_data)
+
 class IPsNotifier:
     def __init__(self, socketio):
         self.socketio = socketio
