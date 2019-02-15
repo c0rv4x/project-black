@@ -294,18 +294,24 @@ export function requestExportIPs() {
 			})
 		})
 		.then(
-			response => response.json().then(json => ({
+			response => response.blob().then(blob => ({
 				status: response.status,
-				json
+				blob
 			}))
 		)
 		.then(
-			({ status, json }) => {
+			({ status, blob }) => {
 				if (status == 200) {
-					console.log(json);
+					let url = window.URL.createObjectURL(blob);
+					let aTag = document.createElement('a');
+					aTag.href = url;
+					aTag.download = "nmap-tcp.txt";
+					document.body.appendChild(aTag); // we need to append the element to the dom -> otherwise it will not work in firefox
+					aTag.click();    
+					aTag.remove();  //afterwards we remove the element again  
 				}
 				else {
-					dispatch(notifyError("Error while exporting ips. " + json.message));
+					dispatch(notifyError("Error while exporting ips. " + blob));
 				}
 			}
 		)
