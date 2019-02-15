@@ -119,8 +119,7 @@ class IPsHandlers:
                     form_ports(scans)
                 ))
 
-        print(ips_formed)
-        return response.text(ips_formed, status=200)
+        return response.text('\n'.join(ips_formed), status=200)
 
 
 def form_ports(scans):
