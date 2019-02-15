@@ -10,7 +10,7 @@ import {
 } from 'grommet'
 
 import { Upload } from 'grommet-icons'
-import ScopeUpload from '../../../scope_setup/component/scope_adder/components/ScopeUpload.jsx'
+import ScopeUpload from '../../../scope_setup/components/scope_adder/components/ScopeUpload.jsx'
 
 import autosize from 'autosize'
 
