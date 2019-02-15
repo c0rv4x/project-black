@@ -11,7 +11,7 @@ const DropContent = ({ doExport }) => (
             style={{ cursor: "pointer" }}
             onClick={doExport}
         >
-            Export Selected IPs
+            Export selected IPs in oG format
         </Text>
     </Box>
 );
