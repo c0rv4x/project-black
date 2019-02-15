@@ -278,3 +278,36 @@ export function IPsDataUpdated(message, current_project_uuid) {
 		}
 	}
 }
+
+
+export function requestExportIPs() {
+	return (dispatch, getState) => {
+		const { project_uuid, ips } = getState();
+		console.log(1234);
+		fetch(`/project/${project_uuid}/ips/export`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				filters: ips.filters
+			})
+		})
+		.then(
+			response => response.json().then(json => ({
+				status: response.status,
+				json
+			}))
+		)
+		.then(
+			({ status, json }) => {
+				if (status == 200) {
+					console.log(json);
+				}
+				else {
+					dispatch(notifyError("Error while exporting ips. " + json.message));
+				}
+			}
+		)
+	}
+}
