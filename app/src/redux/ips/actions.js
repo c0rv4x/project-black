@@ -278,3 +278,42 @@ export function IPsDataUpdated(message, current_project_uuid) {
 		}
 	}
 }
+
+
+export function requestExportIPs() {
+	return (dispatch, getState) => {
+		const { project_uuid, ips } = getState();
+		console.log(1234);
+		fetch(`/project/${project_uuid}/ips/export`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				filters: ips.filters
+			})
+		})
+		.then(
+			response => response.blob().then(blob => ({
+				status: response.status,
+				blob
+			}))
+		)
+		.then(
+			({ status, blob }) => {
+				if (status == 200) {
+					let url = window.URL.createObjectURL(blob);
+					let aTag = document.createElement('a');
+					aTag.href = url;
+					aTag.download = "nmap-tcp.txt";
+					document.body.appendChild(aTag); // we need to append the element to the dom -> otherwise it will not work in firefox
+					aTag.click();    
+					aTag.remove();  //afterwards we remove the element again  
+				}
+				else {
+					dispatch(notifyError("Error while exporting ips. " + blob));
+				}
+			}
+		)
+	}
+}

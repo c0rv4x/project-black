@@ -16,24 +16,24 @@ import { Tasks } from 'grommet-icons'
 
 function renderParams(params) {
 	if (params.program) {
-		if (params instanceof Array) {
-			if (params.length <= 1) {
-				return params;
+		if (params['program'] instanceof Array) {
+			if (params['program'].length <= 1) {
+				return params['program'];
 			}
 			else {
 				return (
 					<Box>
-						{params.map((x) => {
+						{params['program'].map((x) => {
 							return <div key="x">{x}</div>
 						})}
 					</Box>
 				)
 			}
 		}
-		else if (params instanceof Object) {
+		else if (params['program'] instanceof Object) {
 			let dictionaryEntriesParsed = [];
 
-			_.forOwn(params, (value, key) => {
+			_.forOwn(params['program'], (value, key) => {
 				if (value) {
 					dictionaryEntriesParsed.push(
 						<div key={key}><b>{key}</b>: {value}</div>

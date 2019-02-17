@@ -16,13 +16,12 @@ class IPsList extends React.Component {
 
 		return (
 			<div>
-				<Tasks tasks={tasks} />
-				<br/>
-
 				<TitleButtonsWithHandlers
 					dicts={this.props.dicts}
 					project_uuid={project_uuid} 
 					filters={filters} />
+
+				<Tasks tasks={tasks} />
 
 				<IPTableTracked
 					ips={ips}
