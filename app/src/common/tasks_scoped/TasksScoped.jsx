@@ -14,7 +14,7 @@ import {
 import { Tasks } from 'grommet-icons'
 
 
-function renderParams(params) {
+export function renderParams(params) {
 	if (params.program) {
 		if (params['program'] instanceof Array) {
 			if (params['program'].length <= 1) {

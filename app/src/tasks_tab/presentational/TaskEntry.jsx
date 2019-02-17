@@ -1,7 +1,9 @@
 import React from 'react'
 import ReactTimeAgo from 'react-time-ago'
 
-import { TableCell, TableRow, Text } from 'grommet'
+import { renderParams } from '../../common/tasks_scoped/TasksScoped.jsx'
+
+import { Box, TableCell, TableRow, Text } from 'grommet'
 
 
 class TaskEntry extends React.Component {
@@ -18,6 +20,7 @@ class TaskEntry extends React.Component {
 				<TableCell>{task.task_type}</TableCell>
 				<TableCell><Text color={color}>{task.status}</Text></TableCell>
 				<TableCell>{task.target}</TableCell>
+				<TableCell>{renderParams(task.params)}</TableCell>
 				<TableCell>{timeToComplete / 1000 }s</TableCell>
 				<TableCell><ReactTimeAgo date={new Date(task.date_finished)} /></TableCell>
 			</TableRow>

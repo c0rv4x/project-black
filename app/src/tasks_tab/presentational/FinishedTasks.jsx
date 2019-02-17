@@ -19,13 +19,14 @@ class FinishedTasks extends React.Component {
 
 		return (
 			<Box>
-				<Heading level="3">Active tasks</Heading>
+				<Heading level="3">Completed tasks</Heading>
 				<Table>
 					<TableHeader>
 						<TableRow>
 							<TableCell>Type</TableCell>
 							<TableCell>Status</TableCell>
 							<TableCell>Targets</TableCell>
+							<TableCell>Options</TableCell>
 							<TableCell>Time To Complete</TableCell>
 							<TableCell>Finished</TableCell>
 						</TableRow>
