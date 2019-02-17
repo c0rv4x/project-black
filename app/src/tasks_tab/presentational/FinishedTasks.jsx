@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TaskEntry from './TaskEntry.jsx'
+import FinishedTaskEntry from './FinishedTaskEntry.jsx'
 
 import {
 	Box,
@@ -20,7 +20,7 @@ class FinishedTasks extends React.Component {
 		return (
 			<Box>
 				<Heading level="3">Completed tasks</Heading>
-				<Table>
+				<Table alignSelf='stretch'>
 					<TableHeader>
 						<TableRow>
 							<TableCell>Type</TableCell>
@@ -33,7 +33,7 @@ class FinishedTasks extends React.Component {
 					</TableHeader>
 					<TableBody>
 						{tasks.map((task) => {
-							return <TaskEntry key={task.task_id} task={task} />
+							return <FinishedTaskEntry key={task.task_id} task={task} />
 						})}
 					</TableBody>
 				</Table>

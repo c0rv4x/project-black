@@ -6,7 +6,7 @@ import { renderParams } from '../../common/tasks_scoped/TasksScoped.jsx'
 import { Box, TableCell, TableRow, Text } from 'grommet'
 
 
-class TaskEntry extends React.Component {
+class FinishedTaskEntry extends React.Component {
 	render() {
 		const { task } = this.props;
 		const timeToComplete = new Date(new Date(task.date_finished) - new Date(task.date_added));
@@ -28,4 +28,4 @@ class TaskEntry extends React.Component {
 	}
 }
 
-export default TaskEntry;
+export default FinishedTaskEntry;
