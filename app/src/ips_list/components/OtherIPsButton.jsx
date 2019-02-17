@@ -31,6 +31,7 @@ class OtherIPsButton extends React.Component {
 
 		return (
             <DropButton
+                hoverIndicator={true}
                 icon={<More />}
                 open={open}
                 onClose={() => this.setState({ open: false })}
