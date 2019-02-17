@@ -1,6 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import ActiveTaskEntry from '../presentational/ActiveTaskEntry.jsx'
+import { cancelTask } from '../../redux/tasks/actions.js'
 
 import {
 	Box,
@@ -20,7 +22,7 @@ class ActiveTasks extends React.Component {
     }
 
     cancelTask(task_id) {
-        console.log(task_id);
+        this.context.store.dispatch(cancelTask(task_id));
     }
 
 	render() {
@@ -54,6 +56,10 @@ class ActiveTasks extends React.Component {
 			</Box>
 		)
 	}
+}
+
+ActiveTasks.contextTypes = {
+    store: PropTypes.object
 }
 
 export default ActiveTasks;

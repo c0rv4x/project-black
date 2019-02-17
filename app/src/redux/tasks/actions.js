@@ -101,3 +101,30 @@ export function renewTasks(tasks) {
 		tasks
 	}
 }
+
+
+export function cancelTask(task_id) {
+	return (dispatch, getState) => {
+		const { project_uuid } = getState();
+
+		fetch(`/project/${project_uuid}/tasks/cancel`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				task_id: task_id
+			})
+		})
+			.then(
+				response => response.json(),
+				error => console.log(error)
+			)
+			.then(
+				json => {
+					// The cancel tasjs event will be recieved through sio
+					// event. As this event will be broadcasted among all clients
+				}
+			)
+	}
+}
