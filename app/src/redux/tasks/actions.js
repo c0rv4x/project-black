@@ -87,7 +87,6 @@ export function fetchTasks() {
 		)
 		.then(
 			json => {
-				console.log(json);
 				dispatch(renewTasks(json));
 			}
 		)

@@ -16,7 +16,6 @@ import {
 class FinishedTasks extends React.Component {
 	render() {
 		const { tasks } = this.props;
-		console.log(tasks);
 
 		return (
 			<Box>
