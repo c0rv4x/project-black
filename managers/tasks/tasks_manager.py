@@ -225,3 +225,18 @@ class TaskManager(object):
                 }).encode()
             )
         ))
+
+    def cancel_tasks(self, tasks_ids):
+        for task_id in tasks_ids:
+            task = self.cache.get_active_task(task_id)
+
+            if task:
+                asyncio.get_event_loop().create_task(self.exchange.publish(
+                    routing_key=task.task_type + "_notifications",
+                    message=aio_pika.Message(
+                        body=json.dumps({
+                            'task_id': task.task_id,
+                            'command': 'cancel'
+                        }).encode()
+                    )
+                ))

@@ -79,6 +79,7 @@ if __name__ == '__main__':
     tasks_handlers = TasksHandlers(meta_manager.task_manager, socketio)
     app.add_route(tasks_handlers.cb_get_tasks, '/project/<project_uuid:int>/tasks')
     app.add_route(tasks_handlers.cb_create_task, '/project/<project_uuid:int>/tasks/create', methods=['POST'])
+    app.add_route(tasks_handlers.cb_cancel_tasks, '/project/<project_uuid:int>/tasks/cancel', methods=['POST'])
 
     # Handler for scans
     scans_handlers = ScansHandlers(meta_manager.scan_manager)

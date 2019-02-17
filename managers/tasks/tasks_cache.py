@@ -145,3 +145,6 @@ class TasksCache:
     def handle_quitted(self, task):
         self.finished[task.task_id] = task
         del self.active[task.task_id]
+
+    def get_active_task(self, task_id):
+        return self.active.get(task_id, None)

@@ -113,7 +113,7 @@ export function cancelTask(task_id) {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
-				task_id: task_id
+				tasks_ids: [task_id]
 			})
 		})
 			.then(
