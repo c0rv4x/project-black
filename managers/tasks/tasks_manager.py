@@ -99,7 +99,11 @@ class TaskManager(object):
 
         else:
             active = self.cache.get_active(project_uuid)
-            finished = self.cache.get_finished(project_uuid)
+            finished = sorted(
+                self.cache.get_finished(project_uuid),
+                key=lambda x: x.date_finished,
+                reverse=True
+            )
 
         return {
             'active': list(map(
