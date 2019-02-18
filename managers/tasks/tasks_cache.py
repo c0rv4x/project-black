@@ -146,7 +146,14 @@ class TasksCache:
     def handle_quitted(self, task):
         self.finished[task.task_id] = task
         task.date_finished = datetime.utcnow()
+        task.fresh = True
         del self.active[task.task_id]
 
     def get_active_task(self, task_id):
         return self.active.get(task_id, None)
+
+    def cancel(self, task_id):
+        task = self.get_active_task(task_id)
+
+        if task:
+            self.handle_quitted(task)

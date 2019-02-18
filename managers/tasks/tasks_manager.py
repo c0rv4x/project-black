@@ -37,7 +37,7 @@ class TaskManager(object):
 
     async def spawn_asynqp(self):
         """ Spawns all the necessary queues and launches a statuses parser """
-        connection = await aio_pika.connect_robust(
+        self.connection = await aio_pika.connect_robust(
             "amqp://{}:{}@{}:{}/".format(
                 CONFIG['rabbit']['username'],
                 CONFIG['rabbit']['password'],
@@ -47,7 +47,7 @@ class TaskManager(object):
         )
 
         # Open a communications channel
-        channel = await connection.channel()
+        channel = await self.connection.channel()
 
         # Create an exchange on the broker
         self.exchange = await channel.declare_exchange(
@@ -213,7 +213,6 @@ class TaskManager(object):
 
     def launch_task(self, task):
         """ Put a message to the queue, which says "start my task, please """
-        print("Launching", task.task_type)
         asyncio.get_event_loop().create_task(self.exchange.publish(
             routing_key=task.task_type + "_tasks",
             message=aio_pika.Message(
@@ -226,7 +225,9 @@ class TaskManager(object):
             )
         ))
 
-    def cancel_tasks(self, tasks_ids):
+    async def cancel_tasks(self, tasks_ids):
+        task_types_to_free = []
+
         for task_id in tasks_ids:
             task = self.cache.get_active_task(task_id)
 
@@ -240,3 +241,40 @@ class TaskManager(object):
                         }).encode()
                     )
                 ))
+
+                task_types_to_free.append(task.task_type)
+
+
+        # Empty the queue to remove the tasks which were asked to be cancelled
+        for task_type in task_types_to_free:
+            channel = await self.connection.channel()
+
+            queue = await channel.declare_queue(
+                task_type + '_tasks',
+                durable=True
+            )
+
+            messages = []
+
+            try:
+                while True:
+                    message = await queue.get()
+                    parsed_body = json.loads(message.body)
+
+                    if parsed_body['task_id'] not in tasks_ids:
+                        messages.append(message.body)
+                    message.ack()
+            except:
+                pass
+
+
+            for message in messages:
+                asyncio.get_event_loop().create_task(self.exchange.publish(
+                    routing_key=task_type + "_tasks",
+                    message=aio_pika.Message(
+                        body=message
+                    )
+                ))
+
+        for task_id in tasks_ids:
+            self.cache.cancel(task_id)

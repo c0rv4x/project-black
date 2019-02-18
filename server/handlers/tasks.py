@@ -40,7 +40,7 @@ class TasksHandlers:
         cancel_parameters = request.json
         tasks_ids = cancel_parameters['tasks_ids']
 
-        self.task_manager.cancel_tasks(tasks_ids)
+        await self.task_manager.cancel_tasks(tasks_ids)
 
         return response.json({})
 
