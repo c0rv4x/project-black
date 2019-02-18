@@ -48,7 +48,6 @@ export function renderParams(params) {
 			)
 		}
 	} else if (params instanceof Object) {
-		console.log(params);
 		let dictionaryEntriesParsed = [];
 
 		_.forOwn(params, (value, key) => {
