@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from black.db import Sessions, TaskDatabase
 from managers.tasks.shadow_task import ShadowTask
@@ -144,6 +145,7 @@ class TasksCache:
 
     def handle_quitted(self, task):
         self.finished[task.task_id] = task
+        task.date_finished = datetime.utcnow()
         del self.active[task.task_id]
 
     def get_active_task(self, task_id):

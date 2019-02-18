@@ -43,7 +43,8 @@ function update_tasks(state = {'active': [], 'finished': []}, action) {
 				"text": x["text"],
 				"stdout": x["stdout"],
 				"stderr": x["stderr"],
-				"date_added": x["date_added"]
+				"date_added": x["date_added"],
+				"date_finished": x["date_finished"]
 			}
 		});
 
@@ -66,7 +67,8 @@ function update_tasks(state = {'active': [], 'finished': []}, action) {
 				"text": x["text"],
 				"stdout": x["stdout"],
 				"stderr": x["stderr"],
-				"date_added": x["date_added"]
+				"date_added": x["date_added"],
+				"date_finished": x["date_finished"]
 			}
 		});
 
