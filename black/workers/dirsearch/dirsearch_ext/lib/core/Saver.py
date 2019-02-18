@@ -1,6 +1,8 @@
 import uuid
 import urllib
 from black.db import Sessions, FileDatabase, IPDatabase, HostDatabase
+from sqlalchemy.exc import IntegrityError
+
 
 class Saver(object):
     def __init__(self, task_id, project_uuid):
@@ -73,5 +75,7 @@ class Saver(object):
                 )
 
                 session.add(new_file)
-        except Exception as e:
-            print(e)
+        except IntegrityError:
+            pass
+        except Exception as exc:
+            print(exc)
