@@ -7,6 +7,14 @@ import { Clear } from 'grommet-icons'
 
 
 class ActiveTaskEntry extends React.Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			buttonPressed: false
+		}
+	}
+
 	render() {
 		const { task } = this.props;
 
@@ -18,7 +26,13 @@ class ActiveTaskEntry extends React.Component {
 				<TableCell>{renderParams(task.params)}</TableCell>
 				<TableCell>
                     <Button
-                        onClick={this.props.cancelTask}
+						disabled={this.state.buttonPressed}
+                        onClick={() => {
+							this.props.cancelTask();
+							this.setState({
+								buttonPressed: true
+							});
+						}}
                         hoverIndicator={true}
                         icon={<Clear />}
                     />
