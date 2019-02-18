@@ -40,11 +40,9 @@ class TasksHandlers:
         cancel_parameters = request.json
         tasks_ids = cancel_parameters['tasks_ids']
 
-        tasks = self.task_manager.get_tasks(
-            project_uuid, only_fresh=False
-        )
+        self.task_manager.cancel_tasks(tasks_ids)
 
-        return response.json(tasks)
+        return response.json({})
 
 
 class TasksNotifier:

@@ -100,8 +100,8 @@ class AsyncWorker(Worker):
 
                 # Do some finalization
                 self.handle_finished_task(proc)
-        except Exception as e:
-            print("++++++++++++ Async_worker.py:execute_task ~ " + str(e))
+        except Exception as exc:
+            print("[!!]Generic class for tasks caught exception: " + str(exc))
 
             self.release_resources()
 
@@ -115,11 +115,15 @@ class AsyncWorker(Worker):
     async def start_notifications_consumer(self):
         """ Check if tasks queue has any data.
         If any, launch the tasks execution """
-        await self.notifications_queue.consume(self.handle_notification)
+        await self.notifications_queue.consume(self.schedule_command)
 
-    def handle_notification(self, raw_message):
+    def schedule_command(self, message):
+        """ Wrapper of execute_task that puts the task to the event loop """
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.handle_notification(message))
+
+    async def handle_notification(self, raw_message):
         """ Handle the notification, just received. """
-        print("Notification received")
         # Add a unique id to the task, so we can track the notifications
         # which are addressed to the ceratin task
         raw_message.ack()
@@ -127,21 +131,19 @@ class AsyncWorker(Worker):
         task_id = message['task_id']
         command = message['command']
 
-        sent = False
         for proc in self.active_processes:
             if proc.get_id() == task_id:
-                print("Now sending")
-                proc.send_notification(command)
-                sent = True
+                print("Found process for {}, sending".format(command))
+                await proc.handle_command(command)
 
-        if not sent:
-            for proc in self.finished_processes:
-                if proc.get_id() == task_id:
-                    print("Now sending")
-                    proc.send_notification(command)
-                    sent = True
-        if not sent:
-            raise Exception("Mess with the queues")
+                break
+
+        # if not sent:
+        #     for proc in self.finished_processes:
+        #         if proc.get_id() == task_id:
+        #             print("Now sending")
+        #             proc.handle_command(command)
+        #             sent = True
 
     async def stop(self):
         """ Stops the worker, aborting all the tasks """

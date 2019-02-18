@@ -12,4 +12,4 @@ class DirsearchWorker(AsyncWorker):
         """ Start all the necessary consumers """
         await self.initialize()
         await self.start_tasks_consumer()
-        # await self.start_notifications_consumer()
+        await self.start_notifications_consumer()
