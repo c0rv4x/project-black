@@ -183,3 +183,7 @@ class MasscanTask(AsyncTask):
     async def cancel(self):
         self.send_notification("stop")
         await self.set_status("Aborted", progress=0)
+
+    async def handle_command(self, command):
+        if command == 'cancel':
+            await self.cancel()
