@@ -15,9 +15,8 @@ class AsyncWorker(Worker):
 
     def __init__(self, worker_name, task_class):
         Worker.__init__(self, worker_name, task_class)
-        self.semaphore = asyncio.Semaphore(value=3)
 
-    async def initialize(self):
+    async def initialize(self, max_tasks=3):
         """ Init variables """
         # connect to the RabbitMQ broker
         connection = await aio_pika.connect_robust(
@@ -31,6 +30,7 @@ class AsyncWorker(Worker):
 
         # Open a communications channel
         channel = await connection.channel()
+        await channel.set_qos(prefetch_count=max_tasks)
 
         # Create an exchange on the broker
         exchange = await channel.declare_exchange(
@@ -51,14 +51,6 @@ class AsyncWorker(Worker):
         )
         await self.notifications_queue.bind(exchange, self.name + '_notifications')
 
-    async def acquire_resources(self):
-        """ Function that captures resources, now it is just a semaphore """
-        await self.semaphore.acquire()
-
-    def release_resources(self):
-        """ Function that releases resources, now it is just a semaphore """
-        self.semaphore.release()
-
     async def start_tasks_consumer(self):
         """ Check if tasks queue has any data.
         If any, launch the tasks execution """
@@ -72,8 +64,7 @@ class AsyncWorker(Worker):
     async def execute_task(self, raw_message):
         """ Method launches the task execution, remembering the
             processes's object. """
-        await self.acquire_resources()
-        raw_message.ack()
+        print('Message processed')
 
         try:
             # Add a unique id to the task, so we can track the notifications
@@ -103,7 +94,7 @@ class AsyncWorker(Worker):
         except Exception as exc:
             print("[!!]Generic class for tasks caught exception: " + str(exc))
 
-            self.release_resources()
+        raw_message.ack()
 
     def handle_finished_task(self, proc):
         """ After the task is finished, remove it from 'active' list """
