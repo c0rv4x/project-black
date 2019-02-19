@@ -10,6 +10,6 @@ class NmapWorker(AsyncWorker):
 
     async def start(self):
         """ Start all the necessary consumers """
-        await self.initialize()
+        await self.initialize(max_tasks=5)
         await self.start_tasks_consumer()
         await self.start_notifications_consumer()

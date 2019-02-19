@@ -10,6 +10,6 @@ class AmassWorker(AsyncWorker):
 
     async def start(self):
         """ Start all the necessary consumers """
-        await self.initialize()
+        await self.initialize(max_tasks=2)
         await self.start_tasks_consumer()
         await self.start_notifications_consumer()
