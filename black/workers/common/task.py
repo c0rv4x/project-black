@@ -117,7 +117,7 @@ class Task(object):
         task_new_object = TaskDatabase(
             task_id=self.get_id(),
             task_type=self.task_type,
-            target=self.target,
+            target=json.dumps(self.target),
             params=json.dumps(self.params),
             project_uuid=self.project_uuid,
             stdout="",
