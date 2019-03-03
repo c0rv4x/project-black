@@ -13,7 +13,6 @@ Simple version means running the following docker images:
 - Workers: each task has it's own worker. For instance, masscan and nmap will be run only in separate workers
 
 For complex installation, see the wiki.
-24
 Now head to http://localhost:5000, enter the credentials (can be found 
 
 ```
@@ -24,7 +23,9 @@ docker-compose up`
 
 That's it!
 
-Now head to http://localhost:5000, enter the credentials (can be found in https://github.com/c0rvax/black/blob/master/config/config_docker.yml under `application`)
+Now head to http://localhost:5000, enter the credentials
+(can be found in https://github.com/c0rvax/black/blob/master/config/config_docker.yml
+under `application`)
 
 ## How to work with this?
 
