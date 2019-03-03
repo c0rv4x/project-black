@@ -13,7 +13,6 @@ Simple version means running the following docker images:
 - Workers: each task has it's own worker. For instance, masscan and nmap will be run only in separate workers
 
 For complex installation, see the wiki.
-Now head to http://localhost:5000, enter the credentials (can be found 
 
 ```
 git clone https://github.com/c0rvax/black
@@ -23,14 +22,12 @@ docker-compose up`
 
 That's it!
 
-Now head to http://localhost:5000, enter the credentials
-(can be found in https://github.com/c0rvax/black/blob/master/config/config_docker.yml
-under `application`)
+Now head to http://localhost:5000, enter the credentials (can be found in https://github.com/c0rvax/black/blob/master/config/config_docker.yml under `application`)
 
 ## How to work with this?
 
-After a setup, create a project and head to the respective page.
+After a setup, create a project and head to the respective page. Now we will follow the basic steps which you can do within the application
 
 ### Add scope
 
-Let's say we are assessing hackerone.com and all it's subdomains. Write `hackerone.com`
+Let's say we are assessing hackerone.com and all it's subdomains. Write `hackerone.com` into the `add scope` field
