@@ -1,8 +1,10 @@
 # Black
 
+Basic scanner and progress tracker for a bug bounty or pentest project
+
 ## What is this tool for?
 
-Track progress of the team during pentest/bugbounty. Launch masscan, nmap, dirsearch, amass and patator against the scope you work on.
+The tools encourages more **methodical** work on pentest/bugbounty, tracking the progress and general scans information. It can launch masscan, nmap, dirsearch, amass and patator against the scope you work on and store the data in a handy form. Perform useful filtering of the project's data, for instance 'find me all hosts, which have open ports, but not 80' or 'find me all hosts, whose ips start with 82.' or 'find me hosts where dirsearch has found at least 1 file with 200 status code'.
 
 ## Installation
 
@@ -12,12 +14,12 @@ Simple version means running the following docker images:
 - Web server
 - Workers: each task has it's own worker. For instance, masscan and nmap will be run only in separate workers
 
-For complex installation, see the wiki.
+For a more complex setup, see the wiki.
 
 ```
 git clone https://github.com/c0rvax/black
 cd black
-docker-compose up`
+docker-compose up
 ```
 
 That's it!
