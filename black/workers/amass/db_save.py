@@ -36,11 +36,14 @@ class Saver:
 
                         splitted = target.split(' ')
                         host = splitted[0]
+                        ips = target[1].split(',')
                         if not re.match(HOSTNAME_REGEX, host):
                             print("  {} not valid hostname for {}".format(host, self.task_id))
 
                             continue
-                    ips = splitted[1:]
+
+                    else:
+                        ips = splitted[1:]
                 except:
                     host = target
                     ips = []
