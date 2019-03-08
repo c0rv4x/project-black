@@ -20,7 +20,7 @@ class Saver:
     async def save_raw_output(self, output):
         print("saving amass {}".format(self.task_id))
         with open("amass-{}".format(self.task_id), 'w') as f:
-            f.write(output)
+            f.write(''.join(output))
 
         try:
             updated_hosts = False
