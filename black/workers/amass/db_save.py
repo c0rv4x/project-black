@@ -1,7 +1,13 @@
 """ Work with the database """
+import re
 import uuid
+from datetime import datetime
 
 from black.db import Sessions, HostDatabase, IPDatabase
+
+
+HOSTNAME_REGEX = "^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$"
+IP_REGEX = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
 
 
 class Saver:
@@ -12,7 +18,10 @@ class Saver:
         self.session_spawner = Sessions()
 
     async def save_raw_output(self, output):
-        print("saving '{}'".format(output))
+        print("saving amass {}".format(self.task_id))
+        with open("amass-{}".format(self.task_id), 'w') as f:
+            f.write(output)
+
         try:
             updated_hosts = False
             updated_ips = False
@@ -22,6 +31,9 @@ class Saver:
                 try:
                     splitted = target.split(',')
                     host = splitted[0]
+                    if not re.match(HOSTNAME_REGEX, host):
+                        print("{} not valid hostname for {}".format(host, self.task_id))
+                        continue
                     ips = splitted[1:]
                 except:
                     host = target
@@ -56,6 +68,10 @@ class Saver:
             updated_hosts = True
 
         for ip in ips:
+            if not re.match(IP_REGEX, ip):
+                print("{} not valid ip for {}".format(ip, self.task_id))
+                continue
+
             ip_db, created = await IPDatabase.get_or_create(ip, self.project_uuid, self.task_id)
 
             if created:
