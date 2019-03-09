@@ -32,13 +32,13 @@ class Saver:
                     splitted = target.split(',')
                     host = splitted[0]
                     if not re.match(HOSTNAME_REGEX, host):
-                        print("{} not valid hostname for {}".format(host, self.task_id))
+                        print("'{}' not valid hostname for {}".format(host, self.task_id))
 
                         splitted = target.split(' ')
                         host = splitted[0]
-                        ips = target[1].split(',')
+                        ips = splitted[1].split(',')
                         if not re.match(HOSTNAME_REGEX, host):
-                            print("  {} not valid hostname for {}".format(host, self.task_id))
+                            print("  '{}' not valid hostname for {}".format(host, self.task_id))
 
                             continue
 
