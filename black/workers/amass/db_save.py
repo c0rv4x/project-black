@@ -26,7 +26,7 @@ class Saver:
             updated_hosts = False
             updated_ips = False
 
-            targets = ''.join(output).strip().split()
+            targets = ''.join(output).strip().split('\n')
             for target in targets:
                 try:
                     splitted = target.split(',')
