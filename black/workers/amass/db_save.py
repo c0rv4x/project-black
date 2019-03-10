@@ -19,8 +19,6 @@ class Saver:
 
     async def save_raw_output(self, output):
         print("saving amass {}".format(self.task_id))
-        with open("amass-{}".format(self.task_id), 'w') as f:
-            f.write(''.join(output))
 
         try:
             updated_hosts = False
@@ -32,13 +30,13 @@ class Saver:
                     splitted = target.split(',')
                     host = splitted[0]
                     if not re.match(HOSTNAME_REGEX, host):
-                        print("'{}' not valid hostname for {}".format(host, self.task_id))
+                        print("{} not valid hostname for {}. Trying other format".format(host, self.task_id))
 
                         splitted = target.split(' ')
                         host = splitted[0]
                         ips = splitted[1].split(',')
                         if not re.match(HOSTNAME_REGEX, host):
-                            print("  '{}' not valid hostname for {}".format(host, self.task_id))
+                            print("  {} not valid hostname for {}. Fucked up. Sorry".format(host, self.task_id))
 
                             continue
 

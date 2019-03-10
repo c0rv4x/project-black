@@ -65,9 +65,12 @@ export function requestCreateTask(task_type, filters, params) {
 export const TASKS_CREATED = 'TASKS_CREATED'
 
 export function tasksCreated(message, current_project_uuid) {
-	return { type: TASKS_CREATED,
-		message,
-		current_project_uuid
+	return dispatch => {
+		dispatch(notifySuccess(message['new_tasks'].length + " " + message['new_tasks'][0].task_type + " tasks created"));
+		return { type: TASKS_CREATED,
+			message,
+			current_project_uuid
+		}
 	}
 }
 
