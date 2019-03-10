@@ -6,6 +6,17 @@ import { renderParams } from '../../common/tasks_scoped/TasksScoped.jsx'
 import { Box, TableCell, TableRow, Text } from 'grommet'
 
 
+function renderTargets(targets) {
+	if (targets instanceof Array) {
+		return targets.map((target) => {
+			return <div key={target}>{target}</div>;
+		});
+	}
+
+	return targets;
+}
+
+
 class FinishedTaskEntry extends React.Component {
 	render() {
 		const { task } = this.props;
@@ -19,7 +30,7 @@ class FinishedTaskEntry extends React.Component {
 			<TableRow>
 				<TableCell>{task.task_type}</TableCell>
 				<TableCell><Text color={color}>{task.status}</Text></TableCell>
-				<TableCell>{task.target}</TableCell>
+				<TableCell>{renderTargets(task.target)}</TableCell>
 				<TableCell>{renderParams(task.params)}</TableCell>
 				<TableCell>{timeToComplete / 1000 }s</TableCell>
 				<TableCell><ReactTimeAgo date={new Date(task.date_finished)} /></TableCell>

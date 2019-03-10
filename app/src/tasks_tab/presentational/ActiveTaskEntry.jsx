@@ -6,6 +6,16 @@ import { Button, TableCell, TableRow, Text } from 'grommet'
 import { Clear } from 'grommet-icons'
 
 
+function renderTargets(targets) {
+	if (targets instanceof Array) {
+		return targets.map((target) => {
+			return <div key={target}>{target}</div>;
+		});
+	}
+
+	return targets;
+}
+
 class ActiveTaskEntry extends React.Component {
 	constructor(props) {
 		super(props);
@@ -22,7 +32,7 @@ class ActiveTaskEntry extends React.Component {
 			<TableRow>
 				<TableCell>{task.task_type}</TableCell>
 				<TableCell><Text>{task.status}</Text></TableCell>
-				<TableCell>{task.target}</TableCell>
+				<TableCell>{renderTargets(task.target)}</TableCell>
 				<TableCell>{renderParams(task.params)}</TableCell>
 				<TableCell>
                     <Button
