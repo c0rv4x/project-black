@@ -1,11 +1,13 @@
 import fetch from 'cross-fetch'
 
 import { notifySuccess, notifyError } from '../notifications/actions.js'
+import { flushAndRequestIPs } from '../ips/actions.js'
 
 
 export function resolveFinished(message, current_project_uuid) {
 	return dispatch => {
 		dispatch(notifySuccess("Resolve finished"));
+		dispatch(flushAndRequestIPs(current_project_uuid));
 		dispatch(resolveHosts(message, current_project_uuid));
 	}
 }
