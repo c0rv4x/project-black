@@ -22,7 +22,7 @@ class FilesHandlers:
         host_ids = params['host_ids']
         filters = params['filters']
 
-        get_result = self.file_manager.get_stats_hosts(project_uuid, host_ids, filters)
+        get_result = self.file_manager.get_stats_hosts(project_uuid, host_ids, filters.get('files', []))
 
         if get_result['status'] == 'success':
             return response.json(get_result['stats'], status=200)
@@ -36,7 +36,7 @@ class FilesHandlers:
         ip_ids = params['ip_ids']
         filters = params['filters']
 
-        get_result = self.file_manager.get_stats_ips(project_uuid, ip_ids, filters)
+        get_result = self.file_manager.get_stats_ips(project_uuid, ip_ids, filters.get('files', []))
 
         if get_result['status'] == 'success':
             return response.json(get_result['stats'], status=200)
