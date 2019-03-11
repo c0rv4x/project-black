@@ -33,9 +33,11 @@ class Search extends React.Component {
 
 		let gatheredValue = [];
 
-		for (let key of Object.keys(filters)) {
-			for (let value of filters[key]) {
-				gatheredValue.push(key + ": " + value);
+		if (filters) {
+			for (let key of Object.keys(filters)) {
+				for (let value of filters[key]) {
+					gatheredValue.push(key + ": " + value);
+				}
 			}
 		}
 
