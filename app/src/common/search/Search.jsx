@@ -5,16 +5,18 @@ import { Box, MaskedInput, Keyboard } from 'grommet'
 import { Close } from 'grommet-icons'
 
 
+
 class Search extends React.Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
 			currentEnteredValue: "",
-			currentValue: [],
+			currentValue: this.propsFiltersToCurrentValue(),
 			lastHighlighted: false
 		}
 
+		this.propsFiltersToCurrentValue = this.propsFiltersToCurrentValue.bind(this);
 		this.handleOnChange = this.handleOnChange.bind(this);
 		this.addOption = this.addOption.bind(this);
 		this.popOption = this.popOption.bind(this);
@@ -24,6 +26,20 @@ class Search extends React.Component {
 
 	shouldComponentUpdate(nextProps, nextState) {
 		return (!_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state));
+	}
+
+	propsFiltersToCurrentValue() {
+		const { filters } = this.props;
+
+		let gatheredValue = [];
+
+		for (let key of Object.keys(filters)) {
+			for (let value of filters[key]) {
+				gatheredValue.push(key + ": " + value);
+			}
+		}
+
+		return gatheredValue;
 	}
 
 	handleOnChange(value) {

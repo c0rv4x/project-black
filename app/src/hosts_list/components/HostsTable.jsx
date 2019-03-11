@@ -74,7 +74,7 @@ class HostsTable extends React.Component {
 
 		return (
 			<div>
-				<Search applyFilters={applyFilters} />
+				<Search filters={hosts.filters} applyFilters={applyFilters} />
 				<br />
 				{hosts.data.length === 0 && hosts.loaded && 
 					<Heading level="2">No data found.</Heading>

@@ -79,7 +79,7 @@ class IPTable extends React.Component {
 
 		return (
 			<div>
-				<Search applyFilters={applyFilters} />
+				<Search filters={ips.filters} applyFilters={applyFilters} />
 				<br />
 				{ipsList.length === 0 && ips.loaded && 
 					<Heading level="2">No data found.</Heading>
