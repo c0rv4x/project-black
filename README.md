@@ -37,7 +37,7 @@ docker-compose up
 
 That's it!
 
-Now head to http://localhost:5000, enter the credentials (can be found in https://github.com/c0rvax/black/blob/master/config/config_docker.yml under `application`)
+Now head to http://localhost:5000, enter the credentials. They can be found in https://github.com/c0rvax/black/blob/master/config/config_docker.yml under `application`
 
 ## How to work with this?
 
