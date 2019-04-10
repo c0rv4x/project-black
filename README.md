@@ -34,12 +34,15 @@ git clone https://github.com/c0rvax/black
 cd black
 docker-compose up
 ```
-
-That's it!
+This might take some time but that's it!
 
 Now head to http://localhost:5000, enter the credentials. They can be found in https://github.com/c0rvax/black/blob/master/config/config_docker.yml under `application`
 
-## How to work with this?
+### Resources notice
+
+None of the docker containers restrict the amount of resources usage, you are on your own here, however, you can change the amount of parallel tasks for each worker separately. See the wiki for that: TODO
+
+## How to work?
 
 After a setup, create a project and head to the respective page. Now we will follow the basic steps which you can do within the application
 
