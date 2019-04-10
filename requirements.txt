@@ -2,7 +2,7 @@ websockets==5.0.1
 dnspython
 netaddr
 sqlalchemy
-psycopg2
+psycopg2-binary
 aio-pika
 sanic==0.7.0
 apscheduler
