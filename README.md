@@ -4,7 +4,20 @@ Basic scanner and progress tracker for a bug bounty or pentest project
 
 ## What is this tool for?
 
-The tools encourages more **methodical** work on pentest/bugbounty, tracking the progress and general scans information. It can launch masscan, nmap, dirsearch, amass and patator against the scope you work on and store the data in a handy form. Perform useful filtering of the project's data, for instance 'find me all hosts, which have open ports, but not 80' or 'find me all hosts, whose ips start with 82.' or 'find me hosts where dirsearch has found at least 1 file with 200 status code'.
+The tools encourages more **methodical** work on pentest/bugbounty, tracking the progress and general scans information.
+
+It can launch
+* masscan
+* nmap
+* dirsearch
+* amass
+* patator
+
+against the scope you work on and store the data in a handy form. Perform useful filtering of the project's data, for instance:
+
+* find me all hosts, which have open ports, but not 80
+* find me all hosts, whose ips start with 82.
+* find me hosts where dirsearch has found at least 1 file with 200 status code
 
 ## Installation
 
