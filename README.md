@@ -52,4 +52,8 @@ After a setup, create a project and head to the respective page. Now we will fol
 
 ### Add scope
 
-Let's say we are assessing hackerone.com and all it's subdomains. Write `hackerone.com` into the `add scope` field
+Let's say we are assessing hackerone.com and all it's subdomains. Write `hackerone.com` into the `add scope` field and press `Add to scope`
+
+![Scope add](https://i.imgur.com/uZrsBi2.png)
+
+Entrypoint has been added.
