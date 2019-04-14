@@ -97,3 +97,7 @@ Now click `Launch task` and choose `nmap only open`. This will find all the open
 Click `Banner` and `Fire`.
 
 ![nmap only open start](https://i.imgur.com/9NmQsVQ.png)
+
+Detected banner will automatically appear
+
+![nmap banners](https://i.imgur.com/undefined.png)
