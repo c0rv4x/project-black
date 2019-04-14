@@ -10,7 +10,9 @@ from asyncio.subprocess import PIPE
 from black.workers.common.async_task import AsyncTask
 from black.workers.amass.db_save import Saver
 
+from common.logger import log
 
+@log
 class AmassTask(AsyncTask):
     """ Major class for working with amass """
 
@@ -40,6 +42,7 @@ class AmassTask(AsyncTask):
 
         except Exception as exc:
             print(str(exc))
+            self.logger.error(str(exc))
             await self.set_status("Aborted", 0, str(exc))
 
     def send_notification(self, command):
