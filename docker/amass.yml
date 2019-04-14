@@ -1,6 +1,6 @@
-FROM golang:alpine as build
+FROM golang:stretch as build
 WORKDIR /go/src/github.com/OWASP/Amass1
-RUN apk --no-cache add git && go get -f -u github.com/OWASP/Amass/...
+RUN apt update && apt install -y git && go get -f -u github.com/OWASP/Amass/...
 
 # Build python worker for amass
 FROM ubuntu:16.04
@@ -20,7 +20,8 @@ RUN apt install -y \
     build-essential \
     python3.6 \
     python3.6-dev \
-    python3-pip
+    python3-pip \
+    vim
 
 RUN python3.6 -m pip install --upgrade pip
 
