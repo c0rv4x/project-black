@@ -57,3 +57,15 @@ Let's say we are assessing hackerone.com and all it's subdomains. Write `hackero
 ![Scope add](https://i.imgur.com/uZrsBi2.png)
 
 Entrypoint has been added.
+
+### Start amass
+
+Click the blue button `Launch task`.
+
+![Launch task](https://i.imgur.com/jX2cP4K.png)
+
+A popup with parameters appear. 
+
+![amass options](https://i.imgur.com/f25OKVf.png)
+
+It is recommended to click the 'All_top_level_domains' check box and in argv enter `-ip` and click `Fire!` button.
