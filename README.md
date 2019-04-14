@@ -68,4 +68,5 @@ A popup with parameters appear.
 
 ![amass options](https://i.imgur.com/f25OKVf.png)
 
-It is recommended to click the 'All_top_level_domains' check box and in argv enter `-ip` and click `Fire!` button.
+It is recommended to click the `All_top_level_domains` check box and in argv enter `-ip` and click `Fire!` button.
+This would be launch `amass -d hackerone.com -ip`. Note that in this case we did not specify any domain. This is beacause the `All_top_level_domains` check box looked into the scope, saw that `hackerone.com` was added to the scope and launched `amass` against it.
