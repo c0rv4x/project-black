@@ -72,7 +72,7 @@ class TitleButtonsWithHandlers extends React.Component {
 
 	render() {
 		return (
-			<Box align='center' alignContent='center' direction='row' justify='end'>
+			<Box align='center' alignContent='center' direction='row' justify='start'>
 				<ButtonTasks
 					dicts={this.props.dicts}
 					project_uuid={this.props.project_uuid}
