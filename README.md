@@ -68,7 +68,7 @@ Click the blue button `Launch task`.
 
 ![Launch task](https://i.imgur.com/jX2cP4K.png)
 
-A popup with parameters appear. 
+A popup with parameters will appear. 
 
 ![amass options](https://i.imgur.com/f25OKVf.png)
 
@@ -76,7 +76,7 @@ It is recommended to click the `All_top_level_domains` check box and in argv ent
 
 ![amass recommended](https://i.imgur.com/UaGkqmu.png)
 
-This would be launch `amass -d hackerone.com -ip`. Note that in this case we did not specify any domain. This is beacause the `All_top_level_domains` check box looked into the scope, saw that `hackerone.com` was added to the scope and launched `amass` against it.
+This would launch `amass -d hackerone.com -ip`. Note that in this case we did not specify any domain. This is beacause the `All_top_level_domains` check box means looking into the scope which is stored in the database. So the program sees that `hackerone.com` was added to the scope and launches `amass` against it.
 
 Upon finishing, the new data is automatically added to scope.
 
@@ -106,12 +106,17 @@ Detected banner will automatically appear
 
 Launch dirsearch against all ips and all open ports (both HTTP and HTTPS would be tried)
 
-Click `Launch task` and select `dirsearch`. Fill in extenstions you want to try and click `Fire!`
+On `IPs` tab click `Launch task` and select `dirsearch`. Fill in extenstions you want to try and click `Fire!`
 
+You can launch dirseach agains hosts (not ips) on the `Hosts` tab.
+
+#### Note on dirsearch
+
+If there are no ports, dirsearch won't even start. So first, make sure you launched nmap or masscan to discover open ports.
 
 ## Inspecting results
 
-There are three possible ways to check the results:
+There are generally three ways to check the results:
 
 * IPs/Hosts list
 * IP/Host details
@@ -129,7 +134,7 @@ Important part here is **filtering** box.
 
 ![Filtering](https://i.imgur.com/4sxDYlX.png)
 
-You can aggregate different filters using the field shown above. Type the filter (there is a helper for that) and press **Shift + Enter**
+You can aggregate different filters using the field shown above. Type the filter you want (there is a helper for that) and press **Shift + Enter**
 
 ![Applied filters](https://i.imgur.com/ZdRsSjp.png)
 
@@ -140,3 +145,21 @@ You can also view details on a specific host or ip. Press button with the glasse
 ![Spectacles](https://i.imgur.com/XJCcFJl.png)
 
 There you will see dirsearch result for every open port on that host
+
+### Dirsearch list
+
+`Dirsearch list` button will open a new window showing all found files for every dirsearch which was launched in this project.
+
+## Launching tasks against specific scope
+
+IPs and Hosts `Launch task` are different! The button on IPs page will start against all ips within the current project, meanwhile the button on the Hosts page will launch against hosts.
+
+To launch a task against some hosts, you should
+
+1. Filter the hosts
+2. Launch the task
+
+Example:
+![Applied filters 2](https://i.imgur.com/ZdRsSjp.png)
+
+Some filters have been applied. If we now launch dirsearch, it will be launched against hosts which correspond to the used filters.
