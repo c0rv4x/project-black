@@ -114,8 +114,8 @@ Click `Launch task` and select `dirsearch`. Fill in extenstions you want to try 
 There are three possible ways to check the results:
 
 * IPs/Hosts list
-* Dirsearch list
 * IP/Host details
+* Dirsearch list
 
 ### IPs and Hosts list
 
@@ -125,10 +125,18 @@ Those are two tabs. They work the same way so we will stop on Hosts.
 
 You can see a list of hosts, their ports and files. Also you can edit a comment for that host.
 
-Important party here is **filtering** box.
+Important part here is **filtering** box.
 
 ![Filtering](https://i.imgur.com/4sxDYlX.png)
 
 You can aggregate different filters using the field shown above. Type the filter (there is a helper for that) and press **Shift + Enter**
 
 ![Applied filters](https://i.imgur.com/ZdRsSjp.png)
+
+### IP/Host details
+
+You can also view details on a specific host or ip. Press button with the glasses
+
+![Spectacles](https://i.imgur.com/XJCcFJl.png)
+
+There you will see dirsearch result for every open port on that host
