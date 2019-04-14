@@ -119,7 +119,7 @@ class Search extends React.Component {
 		else if (currentEnteredValue.indexOf("ip") === 0) {
 			return {
 				options: ["192%", "10.10.121.25"],
-				regexp: /^[0-9%]+$/,
+				regexp: /^[0-9\.%]+$/,
 				placeholder: "value (Shift+Enter to submit)"
 			}
 		}
@@ -133,7 +133,7 @@ class Search extends React.Component {
 		else if (currentEnteredValue.indexOf("files") === 0) {
 			return {
 				options: ["200", "401"],
-				regexp: /^([0-9]{3})$/,
+				regexp: /^([0-9]{1,3})$/,
 				placeholder: "value (Shift+Enter to submit)"
 			}
 		}
