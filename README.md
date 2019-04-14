@@ -101,3 +101,12 @@ Click `Banner` and `Fire`.
 Detected banner will automatically appear
 
 ![nmap banners](https://i.imgur.com/TEXmp9u.png)
+
+### Launching dirsearch
+
+Launch dirsearch against all ips and all open ports (both HTTP and HTTPS would be tried)
+
+Click `Launch task` and select `dirsearch`. Fill in extenstions you want to try and click `Fire!`
+
+
+
