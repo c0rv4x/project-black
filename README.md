@@ -58,6 +58,10 @@ Let's say we are assessing hackerone.com and all it's subdomains. Write `hackero
 
 Entrypoint has been added.
 
+### Quick note on working
+
+All of the tasks can read parameters from the user, however, lauching with some options won't diplay any new result as it is pretty difficult to parse all possible outputs of a program. So to start, try working duplicating the options from this manual.
+
 ### Start amass
 
 Click the blue button `Launch task`.
@@ -80,6 +84,16 @@ Upon finishing, the new data is automatically added to scope.
 
 Now head to `IPs` tab. Click the already known button `Launch task` and choose `masscan`.
 
-We will launch a quick scan, using the button `Top N ports`. This autocompletes the `argv` parameter.
+We will launch a quick scan, using the button `Top N ports`. This autocompletes the `argv` parameter. Press `Fire!`
 
 ![Masscan launch](https://i.imgur.com/eveBuU5.png)
+
+Results are automatically downloaded from the database.
+
+![Masscan results](https://i.imgur.com/unDdXPB.png)
+
+Now click `Launch task` and choose `nmap only open`. This will find all the open ports which exist in the database and run nmap only against them.
+
+Click `Banner` and `Fire`.
+
+![nmap only open start](https://i.imgur.com/9NmQsVQ.png)
