@@ -82,7 +82,7 @@ class NmapTask(AsyncTask):
                     raise Exception("No data left")
                 else:
                     await self.append_stdout(stdout_chunk_decoded)
-                    loop.create_task(self.read_stdout())
+                    await self.read_stdout()
             except TimeoutError as _:
                 pass
             except Exception as _:
@@ -110,7 +110,7 @@ class NmapTask(AsyncTask):
                     raise Exception("No data left")
                 else:
                     await self.append_stderr(stderr_chunk_decoded)
-                    loop.create_task(self.read_stderr())
+                    await self.read_stderr()
             except TimeoutError as _:
                 pass
             except Exception as _:
@@ -137,7 +137,7 @@ class NmapTask(AsyncTask):
         else:
             if self.exit_code == 0:
                 try:
-                    target = self.parse_results()
+                    target = await self.parse_results()
                 except Exception as e:
                     print("Set to aborted", "".join(self.stderr))
                     print(str(e))
@@ -152,7 +152,7 @@ class NmapTask(AsyncTask):
                 print("".join(self.stderr))
                 await self.set_status("Aborted", progress=-1, text="".join(self.stderr))
 
-    def parse_results(self):
+    async def parse_results(self):
         def save_scan(data):
             session = sessions.get_new_session()
 
@@ -206,7 +206,8 @@ class NmapTask(AsyncTask):
 
             sessions.destroy_session(session)
             
-
+        await self.read_stdout()
+        await self.read_stderr()
         stdout = "".join(self.stdout)
 
         try:
