@@ -100,4 +100,4 @@ Click `Banner` and `Fire`.
 
 Detected banner will automatically appear
 
-![nmap banners](https://i.imgur.com/undefined.png)
+![nmap banners](https://i.imgur.com/TEXmp9u.png)
