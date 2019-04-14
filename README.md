@@ -69,4 +69,17 @@ A popup with parameters appear.
 ![amass options](https://i.imgur.com/f25OKVf.png)
 
 It is recommended to click the `All_top_level_domains` check box and in argv enter `-ip` and click `Fire!` button.
+
+![amass recommended](https://i.imgur.com/UaGkqmu.png)
+
 This would be launch `amass -d hackerone.com -ip`. Note that in this case we did not specify any domain. This is beacause the `All_top_level_domains` check box looked into the scope, saw that `hackerone.com` was added to the scope and launched `amass` against it.
+
+Upon finishing, the new data is automatically added to scope.
+
+### Start masscan and nmap
+
+Now head to `IPs` tab. Click the already known button `Launch task` and choose `masscan`.
+
+We will launch a quick scan, using the button `Top N ports`. This autocompletes the `argv` parameter.
+
+![Masscan launch](https://i.imgur.com/eveBuU5.png)
