@@ -6,4 +6,3 @@ __pycache__/
 .python-version
 .vscode
 logs/
-public/
