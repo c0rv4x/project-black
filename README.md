@@ -109,4 +109,26 @@ Launch dirsearch against all ips and all open ports (both HTTP and HTTPS would b
 Click `Launch task` and select `dirsearch`. Fill in extenstions you want to try and click `Fire!`
 
 
+## Inspecting results
 
+There are three possible ways to check the results:
+
+* IPs/Hosts list
+* Dirsearch list
+* IP/Host details
+
+### IPs and Hosts list
+
+Those are two tabs. They work the same way so we will stop on Hosts.
+
+![Hosts list](https://i.imgur.com/HQefnhu.png)
+
+You can see a list of hosts, their ports and files. Also you can edit a comment for that host.
+
+Important party here is **filtering** box.
+
+![Filtering](https://i.imgur.com/4sxDYlX.png)
+
+You can aggregate different filters using the field shown above. Type the filter (there is a helper for that) and press **Shift + Enter**
+
+![Applied filters](https://i.imgur.com/ZdRsSjp.png)
