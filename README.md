@@ -60,7 +60,7 @@ Let's say we are assessing hackerone.com and all it's subdomains. Write `hackero
 
 Entrypoint has been added.
 
-There are other ways to add scope, see [wiki](https://github.com/c0rvax/project-black/wiki/Adding-scope)
+There are other ways to add scope, see [wiki](https://github.com/c0rvax/project-black/wiki/Scope)
 
 ### Quick note on working
 
