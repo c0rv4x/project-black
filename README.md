@@ -44,7 +44,7 @@ For a more complex setup, see the wiki.
 
 ### Resources notice
 
-None of the docker containers restrict the amount of resources usage, you are on your own here, however, you can change the amount of parallel tasks for each worker separately. See the wiki for that: TODO
+None of the docker containers restrict the amount of resources usage, you are on your own here, however, you can change the amount of parallel tasks for each worker separately. See the wiki for [that](https://github.com/c0rvax/black/wiki/Tuning#parallel-tasks-inside-worker)
 
 ## How to work?
 
