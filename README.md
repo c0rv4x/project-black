@@ -50,7 +50,11 @@ None of the docker containers restrict the amount of resources usage, you are on
 
 ## How to work?
 
-After a setup, create a project and head to the respective page. Now we will follow the basic steps which you can do within the application
+After a setup, create a project and head to the respective page.
+
+![Open project](https://i.imgur.com/pQT19Yt.png)
+
+Now we will follow the basic steps which you can do within the application
 
 ### Add scope
 
