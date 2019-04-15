@@ -1,4 +1,4 @@
-# Black
+# Project Black
 
 Scope control, scope scanner and progress tracker for easier working on a bug bounty or pentest project
 
@@ -32,21 +32,21 @@ OR for Ubuntu simply
 
 ```
 sudo apt install docker docker-compose
-git clone https://github.com/c0rvax/black
-cd black
+git clone https://github.com/c0rvax/https://github.com/c0rvax/project-black
+cd project-black
 docker-compose up
 ```
 
 This might take some time but that's it! Other distros should have very similar guidance.
 
-Now head to http://localhost:5000, enter the credentials. They can be found in https://github.com/c0rvax/black/blob/master/config/config_docker.yml under `application`
+Now head to http://localhost:5000, enter the credentials. They can be found in https://github.com/c0rvax/project-black/blob/master/config/config_docker.yml under `application`
 
-For a more complex setup, see the wiki.
+For a more complex setup, see the [wiki](https://github.com/c0rvax/project-black/wiki/Set-up).
 
 
 ### Resources notice
 
-None of the docker containers restrict the amount of resources usage, you are on your own here, however, you can change the amount of parallel tasks for each worker separately. See the wiki for [that](https://github.com/c0rvax/black/wiki/Tuning#parallel-tasks-inside-worker)
+None of the docker containers restrict the amount of resources usage, you are on your own here, however, you can change the amount of parallel tasks for each worker separately. See the wiki for [that](https://github.com/c0rvax/project-black/wiki/Tuning#parallel-tasks-inside-worker)
 
 ## How to work?
 
