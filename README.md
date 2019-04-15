@@ -70,7 +70,7 @@ There are other ways to add scope, see [wiki](https://github.com/c0rvax/project-
 
 All of the tasks can read parameters from the user, however, lauching with some options won't diplay any new result as it is pretty difficult to parse all possible outputs of a program. So to start, try working duplicating the options from this manual. 
 
-Available options can be found on this ![page](https://github.com/c0rvax/project-black/wiki/Supported-options)
+Available options can be found on this [page](https://github.com/c0rvax/project-black/wiki/Supported-options)
 
 ### Start amass
 
