@@ -41,7 +41,7 @@ This might take some time but that's it! Other distros should have very similar 
 
 Now head to http://localhost:5000, enter the credentials. They can be found in https://github.com/c0rvax/project-black/blob/master/config/config_docker.yml under `application`
 
-For a more complex setup, see the wiki.
+For a more complex setup, see the ![wiki](https://github.com/c0rvax/project-black/wiki/Set-up).
 
 
 ### Resources notice
