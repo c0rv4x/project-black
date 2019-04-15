@@ -32,6 +32,9 @@ const theme = {
             "border": {
                 "radius": "4px"
             }
+        },
+        "font": {
+            "family": "Roboto",
         }
     },
     "button": {
