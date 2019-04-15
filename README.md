@@ -60,6 +60,8 @@ Let's say we are assessing hackerone.com and all it's subdomains. Write `hackero
 
 Entrypoint has been added.
 
+There are other ways to add scope, see [wiki](https://github.com/c0rvax/project-black/wiki/Adding-scope)
+
 ### Quick note on working
 
 All of the tasks can read parameters from the user, however, lauching with some options won't diplay any new result as it is pretty difficult to parse all possible outputs of a program. So to start, try working duplicating the options from this manual.
