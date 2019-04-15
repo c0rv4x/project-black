@@ -1,6 +1,6 @@
 # Black
 
-Basic scanner and progress tracker for a bug bounty or pentest project
+Scope control, scope scanner and progress tracker for easier working on a bug bounty or pentest project
 
 ## What is this tool for?
 
