@@ -66,6 +66,16 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+  black_patator:
+    build:
+      context: .
+      dockerfile: docker/patator.yml
+    container_name: black_patator
+    depends_on:
+      rabbit:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
   black:
     image: black
     build:
