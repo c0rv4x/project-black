@@ -342,11 +342,11 @@ Public License instead of this License.
 * Author: Anatoly Ivanov of Positive Technologies                          *
 *                                                                          *
 *                                                                          *
-* The soft uses several other tools: nmap, masscan, dirsearch, patator.    *
+* The soft uses other tools: nmap, masscan, dirsearch, patator, amass.     *
 * All of their licenses can be found on the respecitve pages               *
 * https://github.com/nmap/nmap/blob/master/COPYING                         *
 * https://github.com/robertdavidgraham/masscan/blob/master/LICENSE         *
 * https://github.com/lanjelot/patator/blob/master/LICENSE                  *
 * https://github.com/maurosoria/dirsearch/blob/master/README.md#license    *
-*                                                                          *
+* https://github.com/OWASP/Amass/blob/master/LICENSE                       *
 ****************************************************************************/
