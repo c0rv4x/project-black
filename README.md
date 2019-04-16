@@ -35,6 +35,10 @@ cd project-black
 docker-compose up
 ```
 
+If you see this or similar error, try stopping docker-compose (Ctrl + C once and wait for nice shutdown) and run `docker-compose up`
+![SQLAlchemy error creating tables](https://i.imgur.com/PXRZSh6.png)
+
+
 This might take some time but that's it! Other distros should have very similar guidance.
 
 Now head to http://localhost:5000, enter the credentials. They can be found in https://github.com/c0rvax/project-black/blob/master/config/config_docker.yml under `application`
