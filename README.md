@@ -25,10 +25,12 @@ against the scope you work on and store the data in a handy form. Perform useful
 
 Basic setup via docker-compose will run on any system which has docker and docker-compose dependency
 
-For Ubuntu simply
+If you have docker setup, then for Ubuntu/Debian simply
 
 ```
-sudo apt install docker docker-compose
+sudo apt install docker
+sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 git clone https://github.com/c0rvax/project-black
 cd project-black
 docker-compose up
@@ -38,7 +40,7 @@ This might take some time but that's it! Other distros should have very similar 
 
 Now head to http://localhost:5000, enter the credentials. They can be found in https://github.com/c0rvax/project-black/blob/master/config/config_docker.yml under `application`
 
-For a more complex setup, see the [wiki](https://github.com/c0rvax/project-black/wiki/Set-up).
+For a more complex setup or something failed, see the [wiki](https://github.com/c0rvax/project-black/wiki/Set-up).
 
 ### Resources notice
 
