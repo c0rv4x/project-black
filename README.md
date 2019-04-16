@@ -32,7 +32,7 @@ OR for Ubuntu simply
 
 ```
 sudo apt install docker docker-compose
-git clone https://github.com/c0rvax/https://github.com/c0rvax/project-black
+git clone https://github.com/c0rvax/project-black
 cd project-black
 docker-compose up
 ```
