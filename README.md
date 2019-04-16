@@ -2,6 +2,8 @@
 
 Scope control, scope scanner and progress tracker for easier working on a bug bounty or pentest project
 
+Anatoly Ivanov of [Positive Technologies](https://ptsecurity.com)
+
 ## What is this tool for?
 
 The tools encourages more **methodical** work on pentest/bugbounty, tracking the progress and general scans information.
