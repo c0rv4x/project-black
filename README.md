@@ -21,14 +21,9 @@ against the scope you work on and store the data in a handy form. Perform useful
 
 ## Installation
 
-1. Install docker and docker-compose.
-2. Simple version means running the following docker images:
-- Postgres
-- RabbitMQ
-- Web server
-- Workers: each task has it's own worker. For instance, masscan and nmap will be run only in separate workers
+Basic setup via docker-compose will run on any system which has docker and docker-compose dependency
 
-OR for Ubuntu simply
+For Ubuntu simply
 
 ```
 sudo apt install docker docker-compose
@@ -42,7 +37,6 @@ This might take some time but that's it! Other distros should have very similar 
 Now head to http://localhost:5000, enter the credentials. They can be found in https://github.com/c0rvax/project-black/blob/master/config/config_docker.yml under `application`
 
 For a more complex setup, see the [wiki](https://github.com/c0rvax/project-black/wiki/Set-up).
-
 
 ### Resources notice
 
