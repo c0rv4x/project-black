@@ -11,11 +11,7 @@ RUN apt install -y \
     build-essential \
     python3.6 \
     python3.6-dev \
-    python3-pip \
-    nmap \
-    masscan \
-    vim \
-    sudo
+    python3-pip
 
 RUN python3.6 -m pip install --upgrade pip
 

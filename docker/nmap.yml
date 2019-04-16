@@ -12,10 +12,7 @@ RUN apt install -y \
     python3.6 \
     python3.6-dev \
     python3-pip \
-    nmap \
-    masscan \
-    vim \
-    sudo
+    nmap
 
 RUN python3.6 -m pip install --upgrade pip
 
