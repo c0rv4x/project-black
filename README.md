@@ -25,10 +25,9 @@ against the scope you work on and store the data in a handy form. Perform useful
 
 Basic setup via docker-compose will run on any system which has docker and docker-compose dependency
 
-If you have docker setup, then for Ubuntu/Debian simply
+If you have docker set up, then for Ubuntu/Debian simply
 
 ```
-sudo apt install docker
 sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 git clone https://github.com/c0rvax/project-black
