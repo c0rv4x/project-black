@@ -2,6 +2,8 @@
 
 Scope control, scope scanner and progress tracker for easier working on a bug bounty or pentest project
 
+Anatoly Ivanov of [Positive Technologies](https://ptsecurity.com)
+
 ## What is this tool for?
 
 The tools encourages more **methodical** work on pentest/bugbounty, tracking the progress and general scans information.
@@ -21,28 +23,26 @@ against the scope you work on and store the data in a handy form. Perform useful
 
 ## Installation
 
-1. Install docker and docker-compose.
-2. Simple version means running the following docker images:
-- Postgres
-- RabbitMQ
-- Web server
-- Workers: each task has it's own worker. For instance, masscan and nmap will be run only in separate workers
+Basic setup via docker-compose will run on any system which has docker and docker-compose dependency
 
-OR for Ubuntu simply
+If you have docker set up, then for Ubuntu/Debian simply
 
 ```
-sudo apt install docker docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 git clone https://github.com/c0rvax/project-black
 cd project-black
 docker-compose up
 ```
 
+If you see some SQL errors, try stopping docker-compose (Ctrl + C **once** and wait for nice shutdown) and run `docker-compose up`
+
+
 This might take some time but that's it! Other distros should have very similar guidance.
 
 Now head to http://localhost:5000, enter the credentials. They can be found in https://github.com/c0rvax/project-black/blob/master/config/config_docker.yml under `application`
 
-For a more complex setup, see the [wiki](https://github.com/c0rvax/project-black/wiki/Set-up).
-
+For a more complex setup or something failed, see the [wiki](https://github.com/c0rvax/project-black/wiki/Set-up).
 
 ### Resources notice
 
