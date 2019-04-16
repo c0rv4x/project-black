@@ -35,8 +35,7 @@ cd project-black
 docker-compose up
 ```
 
-If you see this or similar error, try stopping docker-compose (Ctrl + C once and wait for nice shutdown) and run `docker-compose up`
-![SQLAlchemy error creating tables](https://i.imgur.com/PXRZSh6.png)
+If you see some SQL errors, try stopping docker-compose (Ctrl + C **once** and wait for nice shutdown) and run `docker-compose up`
 
 
 This might take some time but that's it! Other distros should have very similar guidance.
