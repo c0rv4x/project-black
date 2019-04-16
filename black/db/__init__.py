@@ -9,5 +9,11 @@ from .models.file import FileDatabase
 from .models.cred import CredDatabase
 from .models.dictionary import DictDatabase
 
+from sqlalchemy.exc import IntegrityError
+
 sessions = Sessions()
-Base.metadata.create_all(sessions.engine, checkfirst=True)
+
+try:
+    Base.metadata.create_all(sessions.engine, checkfirst=True)
+except IntegrityError as exc:
+    print('{} during DB initialization'.format(exc))
