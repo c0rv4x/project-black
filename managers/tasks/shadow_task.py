@@ -39,7 +39,7 @@ class ShadowTask(object):
 
         # This variable keeps information whether the corresponding task
         # should be sent back to the web.
-        self.fresh = False
+        self.fresh = True
 
     def set_status(self, new_status, progress, text, new_stdout, new_stderr):
         """ Change status, progress and text of the task """
