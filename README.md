@@ -25,6 +25,22 @@ against the scope you work on and store the data in a handy form. Perform useful
 
 Basic setup via docker-compose will run on any system which has docker and docker-compose dependency
 
+If you don't have docker installed then
+
+### Docker for Ubuntu
+
+```
+sudo apt install docker.io
+```
+
+### Docker for Debian
+
+```
+sudo apt install docker
+```
+
+### Tool installation
+
 If you have docker set up, then for Ubuntu/Debian simply
 
 ```
@@ -32,7 +48,7 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-
 sudo chmod +x /usr/local/bin/docker-compose
 git clone https://github.com/c0rvax/project-black
 cd project-black
-docker-compose up
+sudo docker-compose up
 ```
 
 If you see some SQL errors, try stopping docker-compose (Ctrl + C **once** and wait for nice shutdown) and run `docker-compose up`
