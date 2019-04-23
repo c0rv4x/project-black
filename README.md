@@ -27,16 +27,10 @@ Basic setup via docker-compose will run on any system which has docker and docke
 
 If you don't have docker installed then
 
-### Docker for Ubuntu
+### Docker for Ubuntu/Debian
 
 ```
 sudo apt install docker.io
-```
-
-### Docker for Debian
-
-```
-sudo apt install docker
 ```
 
 ### Tool installation
