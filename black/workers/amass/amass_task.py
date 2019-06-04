@@ -28,7 +28,7 @@ class AmassTask(AsyncTask):
     async def start(self):
         """ Launch the task and readers of stdout, stderr """
         try:
-            self.command = ['amass', '-d'] + [self.target] + [self.params['program']['argv']]
+            self.command = ['amass', 'enum' '-d'] + [self.target] + [self.params['program']['argv']]
             print(' '.join(self.command))
             self.proc = await asyncio.create_subprocess_shell(' '.join(self.command), stdout=PIPE, stderr=PIPE)
 
