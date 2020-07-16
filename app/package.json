@@ -48,7 +48,7 @@
     "grommet-icons": "^4.1.0",
     "history": "1.13.x",
     "html-webpack-plugin": "^3.0.7",
-    "lodash": ">=4.17.13",
+    "lodash": ">=4.17.19",
     "mixin-deep": ">=2.0.1",
     "natives": "^1.1.6",
     "randomatic": ">=3.0.0",
